@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'presupuesto_screen.dart';
+import '../features/expedientes/presentation/screens/expedientes_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -8,76 +10,125 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("OBRA IA"),
+        title: const Text('OBRA IA'),
+        centerTitle: true,
       ),
-      body: ListView(
+      body: Padding(
         padding: const EdgeInsets.all(20),
-        children: [
-          const SizedBox(height: 10),
-
-          const Text(
-            "Bienvenido",
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Bienvenido',
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
+            const SizedBox(height: 8),
+            const Text(
+              '¿Qué quieres hacer hoy?',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 30),
 
-          const SizedBox(height: 25),
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 15,
+                mainAxisSpacing: 15,
+                children: [
+                 _HomeButton(
+                    icon: Icons.folder_copy,
+                    titulo: 'Expedientes',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ExpedientesScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  _HomeButton(
+                    icon: Icons.calculate,
+                    titulo: 'Presupuestos',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const PresupuestoScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  _HomeButton(
+                    icon: Icons.people,
+                    titulo: 'Contactos',
+                    onTap: () {},
+                  ),
+                  _HomeButton(
+                    icon: Icons.home_repair_service,
+                    titulo: 'Obras',
+                    onTap: () {},
+                  ),
+                  _HomeButton(
+                    icon: Icons.attach_money,
+                    titulo: 'Base de precios',
+                    onTap: () {},
+                  ),
+                  _HomeButton(
+                    icon: Icons.smart_toy,
+                    titulo: 'IA',
+                    onTap: () {},
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
-          ElevatedButton.icon(
-            icon: const Icon(Icons.calculate),
-            label: const Text("Presupuestos"),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const PresupuestoScreen(),
-                ),
-              );
-            },
-          ),
+class _HomeButton extends StatelessWidget {
+  final IconData icon;
+  final String titulo;
+  final VoidCallback onTap;
 
-          const SizedBox(height: 15),
+  const _HomeButton({
+    required this.icon,
+    required this.titulo,
+    required this.onTap,
+  });
 
-          ElevatedButton.icon(
-            icon: const Icon(Icons.people),
-            label: const Text("Clientes"),
-            onPressed: () {},
-          ),
-
-          const SizedBox(height: 15),
-
-          ElevatedButton.icon(
-            icon: const Icon(Icons.home_repair_service),
-            label: const Text("Obras"),
-            onPressed: () {},
-          ),
-
-          const SizedBox(height: 15),
-
-          ElevatedButton.icon(
-            icon: const Icon(Icons.attach_money),
-            label: const Text("Base de precios"),
-            onPressed: () {},
-          ),
-
-          const SizedBox(height: 15),
-
-          ElevatedButton.icon(
-            icon: const Icon(Icons.smart_toy),
-            label: const Text("IA"),
-            onPressed: () {},
-          ),
-
-          const SizedBox(height: 15),
-
-          ElevatedButton.icon(
-            icon: const Icon(Icons.settings),
-            label: const Text("Configuración"),
-            onPressed: () {},
-          ),
-        ],
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: onTap,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 42,
+            ),
+            const SizedBox(height: 15),
+            Text(
+              titulo,
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
