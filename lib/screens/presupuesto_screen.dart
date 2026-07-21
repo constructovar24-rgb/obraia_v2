@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../engines/pool_engine.dart';
 import 'pool_result_screen.dart';
 
@@ -39,9 +40,7 @@ class _PresupuestoScreenState extends State<PresupuestoScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-
             const SizedBox(height: 25),
-
             TextField(
               controller: largoController,
               keyboardType: TextInputType.number,
@@ -50,9 +49,7 @@ class _PresupuestoScreenState extends State<PresupuestoScreen> {
                 border: OutlineInputBorder(),
               ),
             ),
-
             const SizedBox(height: 15),
-
             TextField(
               controller: anchoController,
               keyboardType: TextInputType.number,
@@ -61,9 +58,7 @@ class _PresupuestoScreenState extends State<PresupuestoScreen> {
                 border: OutlineInputBorder(),
               ),
             ),
-
             const SizedBox(height: 15),
-
             TextField(
               controller: profundidadController,
               keyboardType: TextInputType.number,
@@ -72,37 +67,71 @@ class _PresupuestoScreenState extends State<PresupuestoScreen> {
                 border: OutlineInputBorder(),
               ),
             ),
-
             const SizedBox(height: 30),
-
             SizedBox(
               height: 55,
               child: ElevatedButton(
                 onPressed: () {
-  final largo =
-      double.tryParse(largoController.text.replaceAll(',', '.')) ?? 0;
+                  final largo = double.tryParse(
+                    largoController.text.replaceAll(',', '.'),
+                  );
 
-  final ancho =
-      double.tryParse(anchoController.text.replaceAll(',', '.')) ?? 0;
+                  final ancho = double.tryParse(
+                    anchoController.text.replaceAll(',', '.'),
+                  );
 
-  final profundidad =
-      double.tryParse(profundidadController.text.replaceAll(',', '.')) ?? 0;
+                  final profundidad = double.tryParse(
+                    profundidadController.text.replaceAll(',', '.'),
+                  );
 
-  final presupuesto = PoolEngine.calcular(
-    largo: largo,
-    ancho: ancho,
-    profundidad: profundidad,
-  );
+                  if (largo == null || largo <= 0) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Introduce un largo mayor que 0.',
+                        ),
+                      ),
+                    );
+                    return;
+                  }
 
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => PoolResultScreen(
-        presupuesto: presupuesto,
-      ),
-    ),
-  );
-},
+                  if (ancho == null || ancho <= 0) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Introduce un ancho mayor que 0.',
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+
+                  if (profundidad == null || profundidad <= 0) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Introduce una profundidad mayor que 0.',
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+
+                  final presupuesto = PoolEngine.calcular(
+                    largo: largo,
+                    ancho: ancho,
+                    profundidad: profundidad,
+                  );
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => PoolResultScreen(
+                        presupuesto: presupuesto,
+                      ),
+                    ),
+                  );
+                },
                 child: const Text(
                   "Calcular presupuesto",
                   style: TextStyle(fontSize: 18),
