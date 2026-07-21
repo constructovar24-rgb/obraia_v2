@@ -44,6 +44,36 @@ class AppDatabase extends _$AppDatabase {
           ]))
         .watch();
   }
+
+  Future<Expediente?> obtenerExpediente(String id) {
+    return (select(expedientes)
+          ..where((t) => t.id.equals(id)))
+        .getSingleOrNull();
+  }
+
+  Future<void> actualizarExpediente({
+    required String id,
+    required String codigo,
+    required String nombre,
+    required String cliente,
+    required String direccion,
+    required String poblacion,
+    required String provincia,
+    required String codigoPostal,
+  }) async {
+    await (update(expedientes)..where((t) => t.id.equals(id))).write(
+      ExpedientesCompanion(
+        codigo: Value(codigo),
+        nombre: Value(nombre),
+        cliente: Value(cliente),
+        direccion: Value(direccion),
+        poblacion: Value(poblacion),
+        provincia: Value(provincia),
+        codigoPostal: Value(codigoPostal),
+        fechaModificacion: Value(DateTime.now()),
+      ),
+    );
+  }
 }
 
 LazyDatabase _openConnection() {
@@ -53,6 +83,10 @@ LazyDatabase _openConnection() {
     final file = File(
       p.join(dir.path, 'obraia.sqlite'),
     );
+
+    print('========================================');
+    print('BASE DE DATOS: ${file.path}');
+    print('========================================');
 
     return NativeDatabase(file);
   });

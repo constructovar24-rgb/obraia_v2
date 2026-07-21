@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../screens/home_screen.dart';
+import 'app_theme.dart';
 
 class ObraIAApp extends StatelessWidget {
   const ObraIAApp({super.key});
@@ -10,12 +11,7 @@ class ObraIAApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'OBRA IA',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF1565C0),
-        ),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.light,
       home: const HomeScreen(),
     );
   }

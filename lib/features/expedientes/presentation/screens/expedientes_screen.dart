@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../database/database_provider.dart';
+import '../../data/expediente_repository.dart';
+import 'expediente_detail_screen.dart';
 import 'nuevo_expediente_screen.dart';
 
 class ExpedientesScreen extends ConsumerWidget {
@@ -10,6 +12,7 @@ class ExpedientesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final db = ref.read(databaseProvider);
+    final repository = ExpedienteRepository(db);
 
     return Scaffold(
       appBar: AppBar(
@@ -27,15 +30,27 @@ class ExpedientesScreen extends ConsumerWidget {
         child: const Icon(Icons.add),
       ),
       body: StreamBuilder(
-        stream: db.observarExpedientes(),
+        stream: repository.observarExpedientes(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: SelectableText(
+                  'ERROR:\n\n${snapshot.error}',
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
+            );
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
 
-          final expedientes = snapshot.data!;
+          final expedientes = snapshot.data ?? [];
 
           if (expedientes.isEmpty) {
             return const Center(
@@ -51,10 +66,36 @@ class ExpedientesScreen extends ConsumerWidget {
             itemBuilder: (context, index) {
               final expediente = expedientes[index];
 
-              return ListTile(
-                leading: const Icon(Icons.folder),
-                title: Text(expediente.nombre),
-                subtitle: Text(expediente.codigo),
+              return Card(
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                child: ListTile(
+                  leading: const CircleAvatar(
+                    child: Icon(Icons.folder),
+                  ),
+                  title: Text(
+                    expediente.nombre,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  subtitle: Text(expediente.codigo),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ExpedienteDetailScreen(
+                          id: expediente.id,
+                          codigo: expediente.codigo,
+                          nombre: expediente.nombre,
+                        ),
+                      ),
+                    );
+                  },
+                ),
               );
             },
           );

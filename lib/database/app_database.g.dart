@@ -36,6 +36,76 @@ class $ExpedientesTable extends Expedientes
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _clienteMeta = const VerificationMeta(
+    'cliente',
+  );
+  @override
+  late final GeneratedColumn<String> cliente = GeneratedColumn<String>(
+    'cliente',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _direccionMeta = const VerificationMeta(
+    'direccion',
+  );
+  @override
+  late final GeneratedColumn<String> direccion = GeneratedColumn<String>(
+    'direccion',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _poblacionMeta = const VerificationMeta(
+    'poblacion',
+  );
+  @override
+  late final GeneratedColumn<String> poblacion = GeneratedColumn<String>(
+    'poblacion',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _provinciaMeta = const VerificationMeta(
+    'provincia',
+  );
+  @override
+  late final GeneratedColumn<String> provincia = GeneratedColumn<String>(
+    'provincia',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _codigoPostalMeta = const VerificationMeta(
+    'codigoPostal',
+  );
+  @override
+  late final GeneratedColumn<String> codigoPostal = GeneratedColumn<String>(
+    'codigo_postal',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _paisMeta = const VerificationMeta('pais');
+  @override
+  late final GeneratedColumn<String> pais = GeneratedColumn<String>(
+    'pais',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('España'),
+  );
   static const VerificationMeta _estadoMeta = const VerificationMeta('estado');
   @override
   late final GeneratedColumn<int> estado = GeneratedColumn<int>(
@@ -92,6 +162,12 @@ class $ExpedientesTable extends Expedientes
     id,
     codigo,
     nombre,
+    cliente,
+    direccion,
+    poblacion,
+    provincia,
+    codigoPostal,
+    pais,
     estado,
     eliminado,
     fechaCreacion,
@@ -129,6 +205,45 @@ class $ExpedientesTable extends Expedientes
       );
     } else if (isInserting) {
       context.missing(_nombreMeta);
+    }
+    if (data.containsKey('cliente')) {
+      context.handle(
+        _clienteMeta,
+        cliente.isAcceptableOrUnknown(data['cliente']!, _clienteMeta),
+      );
+    }
+    if (data.containsKey('direccion')) {
+      context.handle(
+        _direccionMeta,
+        direccion.isAcceptableOrUnknown(data['direccion']!, _direccionMeta),
+      );
+    }
+    if (data.containsKey('poblacion')) {
+      context.handle(
+        _poblacionMeta,
+        poblacion.isAcceptableOrUnknown(data['poblacion']!, _poblacionMeta),
+      );
+    }
+    if (data.containsKey('provincia')) {
+      context.handle(
+        _provinciaMeta,
+        provincia.isAcceptableOrUnknown(data['provincia']!, _provinciaMeta),
+      );
+    }
+    if (data.containsKey('codigo_postal')) {
+      context.handle(
+        _codigoPostalMeta,
+        codigoPostal.isAcceptableOrUnknown(
+          data['codigo_postal']!,
+          _codigoPostalMeta,
+        ),
+      );
+    }
+    if (data.containsKey('pais')) {
+      context.handle(
+        _paisMeta,
+        pais.isAcceptableOrUnknown(data['pais']!, _paisMeta),
+      );
     }
     if (data.containsKey('estado')) {
       context.handle(
@@ -181,6 +296,30 @@ class $ExpedientesTable extends Expedientes
         DriftSqlType.string,
         data['${effectivePrefix}nombre'],
       )!,
+      cliente: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cliente'],
+      )!,
+      direccion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}direccion'],
+      )!,
+      poblacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}poblacion'],
+      )!,
+      provincia: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}provincia'],
+      )!,
+      codigoPostal: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}codigo_postal'],
+      )!,
+      pais: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}pais'],
+      )!,
       estado: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}estado'],
@@ -210,6 +349,12 @@ class Expediente extends DataClass implements Insertable<Expediente> {
   final String id;
   final String codigo;
   final String nombre;
+  final String cliente;
+  final String direccion;
+  final String poblacion;
+  final String provincia;
+  final String codigoPostal;
+  final String pais;
   final int estado;
   final bool eliminado;
   final DateTime fechaCreacion;
@@ -218,6 +363,12 @@ class Expediente extends DataClass implements Insertable<Expediente> {
     required this.id,
     required this.codigo,
     required this.nombre,
+    required this.cliente,
+    required this.direccion,
+    required this.poblacion,
+    required this.provincia,
+    required this.codigoPostal,
+    required this.pais,
     required this.estado,
     required this.eliminado,
     required this.fechaCreacion,
@@ -229,6 +380,12 @@ class Expediente extends DataClass implements Insertable<Expediente> {
     map['id'] = Variable<String>(id);
     map['codigo'] = Variable<String>(codigo);
     map['nombre'] = Variable<String>(nombre);
+    map['cliente'] = Variable<String>(cliente);
+    map['direccion'] = Variable<String>(direccion);
+    map['poblacion'] = Variable<String>(poblacion);
+    map['provincia'] = Variable<String>(provincia);
+    map['codigo_postal'] = Variable<String>(codigoPostal);
+    map['pais'] = Variable<String>(pais);
     map['estado'] = Variable<int>(estado);
     map['eliminado'] = Variable<bool>(eliminado);
     map['fecha_creacion'] = Variable<DateTime>(fechaCreacion);
@@ -241,6 +398,12 @@ class Expediente extends DataClass implements Insertable<Expediente> {
       id: Value(id),
       codigo: Value(codigo),
       nombre: Value(nombre),
+      cliente: Value(cliente),
+      direccion: Value(direccion),
+      poblacion: Value(poblacion),
+      provincia: Value(provincia),
+      codigoPostal: Value(codigoPostal),
+      pais: Value(pais),
       estado: Value(estado),
       eliminado: Value(eliminado),
       fechaCreacion: Value(fechaCreacion),
@@ -257,6 +420,12 @@ class Expediente extends DataClass implements Insertable<Expediente> {
       id: serializer.fromJson<String>(json['id']),
       codigo: serializer.fromJson<String>(json['codigo']),
       nombre: serializer.fromJson<String>(json['nombre']),
+      cliente: serializer.fromJson<String>(json['cliente']),
+      direccion: serializer.fromJson<String>(json['direccion']),
+      poblacion: serializer.fromJson<String>(json['poblacion']),
+      provincia: serializer.fromJson<String>(json['provincia']),
+      codigoPostal: serializer.fromJson<String>(json['codigoPostal']),
+      pais: serializer.fromJson<String>(json['pais']),
       estado: serializer.fromJson<int>(json['estado']),
       eliminado: serializer.fromJson<bool>(json['eliminado']),
       fechaCreacion: serializer.fromJson<DateTime>(json['fechaCreacion']),
@@ -272,6 +441,12 @@ class Expediente extends DataClass implements Insertable<Expediente> {
       'id': serializer.toJson<String>(id),
       'codigo': serializer.toJson<String>(codigo),
       'nombre': serializer.toJson<String>(nombre),
+      'cliente': serializer.toJson<String>(cliente),
+      'direccion': serializer.toJson<String>(direccion),
+      'poblacion': serializer.toJson<String>(poblacion),
+      'provincia': serializer.toJson<String>(provincia),
+      'codigoPostal': serializer.toJson<String>(codigoPostal),
+      'pais': serializer.toJson<String>(pais),
       'estado': serializer.toJson<int>(estado),
       'eliminado': serializer.toJson<bool>(eliminado),
       'fechaCreacion': serializer.toJson<DateTime>(fechaCreacion),
@@ -283,6 +458,12 @@ class Expediente extends DataClass implements Insertable<Expediente> {
     String? id,
     String? codigo,
     String? nombre,
+    String? cliente,
+    String? direccion,
+    String? poblacion,
+    String? provincia,
+    String? codigoPostal,
+    String? pais,
     int? estado,
     bool? eliminado,
     DateTime? fechaCreacion,
@@ -291,6 +472,12 @@ class Expediente extends DataClass implements Insertable<Expediente> {
     id: id ?? this.id,
     codigo: codigo ?? this.codigo,
     nombre: nombre ?? this.nombre,
+    cliente: cliente ?? this.cliente,
+    direccion: direccion ?? this.direccion,
+    poblacion: poblacion ?? this.poblacion,
+    provincia: provincia ?? this.provincia,
+    codigoPostal: codigoPostal ?? this.codigoPostal,
+    pais: pais ?? this.pais,
     estado: estado ?? this.estado,
     eliminado: eliminado ?? this.eliminado,
     fechaCreacion: fechaCreacion ?? this.fechaCreacion,
@@ -301,6 +488,14 @@ class Expediente extends DataClass implements Insertable<Expediente> {
       id: data.id.present ? data.id.value : this.id,
       codigo: data.codigo.present ? data.codigo.value : this.codigo,
       nombre: data.nombre.present ? data.nombre.value : this.nombre,
+      cliente: data.cliente.present ? data.cliente.value : this.cliente,
+      direccion: data.direccion.present ? data.direccion.value : this.direccion,
+      poblacion: data.poblacion.present ? data.poblacion.value : this.poblacion,
+      provincia: data.provincia.present ? data.provincia.value : this.provincia,
+      codigoPostal: data.codigoPostal.present
+          ? data.codigoPostal.value
+          : this.codigoPostal,
+      pais: data.pais.present ? data.pais.value : this.pais,
       estado: data.estado.present ? data.estado.value : this.estado,
       eliminado: data.eliminado.present ? data.eliminado.value : this.eliminado,
       fechaCreacion: data.fechaCreacion.present
@@ -318,6 +513,12 @@ class Expediente extends DataClass implements Insertable<Expediente> {
           ..write('id: $id, ')
           ..write('codigo: $codigo, ')
           ..write('nombre: $nombre, ')
+          ..write('cliente: $cliente, ')
+          ..write('direccion: $direccion, ')
+          ..write('poblacion: $poblacion, ')
+          ..write('provincia: $provincia, ')
+          ..write('codigoPostal: $codigoPostal, ')
+          ..write('pais: $pais, ')
           ..write('estado: $estado, ')
           ..write('eliminado: $eliminado, ')
           ..write('fechaCreacion: $fechaCreacion, ')
@@ -331,6 +532,12 @@ class Expediente extends DataClass implements Insertable<Expediente> {
     id,
     codigo,
     nombre,
+    cliente,
+    direccion,
+    poblacion,
+    provincia,
+    codigoPostal,
+    pais,
     estado,
     eliminado,
     fechaCreacion,
@@ -343,6 +550,12 @@ class Expediente extends DataClass implements Insertable<Expediente> {
           other.id == this.id &&
           other.codigo == this.codigo &&
           other.nombre == this.nombre &&
+          other.cliente == this.cliente &&
+          other.direccion == this.direccion &&
+          other.poblacion == this.poblacion &&
+          other.provincia == this.provincia &&
+          other.codigoPostal == this.codigoPostal &&
+          other.pais == this.pais &&
           other.estado == this.estado &&
           other.eliminado == this.eliminado &&
           other.fechaCreacion == this.fechaCreacion &&
@@ -353,6 +566,12 @@ class ExpedientesCompanion extends UpdateCompanion<Expediente> {
   final Value<String> id;
   final Value<String> codigo;
   final Value<String> nombre;
+  final Value<String> cliente;
+  final Value<String> direccion;
+  final Value<String> poblacion;
+  final Value<String> provincia;
+  final Value<String> codigoPostal;
+  final Value<String> pais;
   final Value<int> estado;
   final Value<bool> eliminado;
   final Value<DateTime> fechaCreacion;
@@ -362,6 +581,12 @@ class ExpedientesCompanion extends UpdateCompanion<Expediente> {
     this.id = const Value.absent(),
     this.codigo = const Value.absent(),
     this.nombre = const Value.absent(),
+    this.cliente = const Value.absent(),
+    this.direccion = const Value.absent(),
+    this.poblacion = const Value.absent(),
+    this.provincia = const Value.absent(),
+    this.codigoPostal = const Value.absent(),
+    this.pais = const Value.absent(),
     this.estado = const Value.absent(),
     this.eliminado = const Value.absent(),
     this.fechaCreacion = const Value.absent(),
@@ -372,6 +597,12 @@ class ExpedientesCompanion extends UpdateCompanion<Expediente> {
     required String id,
     required String codigo,
     required String nombre,
+    this.cliente = const Value.absent(),
+    this.direccion = const Value.absent(),
+    this.poblacion = const Value.absent(),
+    this.provincia = const Value.absent(),
+    this.codigoPostal = const Value.absent(),
+    this.pais = const Value.absent(),
     this.estado = const Value.absent(),
     this.eliminado = const Value.absent(),
     this.fechaCreacion = const Value.absent(),
@@ -384,6 +615,12 @@ class ExpedientesCompanion extends UpdateCompanion<Expediente> {
     Expression<String>? id,
     Expression<String>? codigo,
     Expression<String>? nombre,
+    Expression<String>? cliente,
+    Expression<String>? direccion,
+    Expression<String>? poblacion,
+    Expression<String>? provincia,
+    Expression<String>? codigoPostal,
+    Expression<String>? pais,
     Expression<int>? estado,
     Expression<bool>? eliminado,
     Expression<DateTime>? fechaCreacion,
@@ -394,6 +631,12 @@ class ExpedientesCompanion extends UpdateCompanion<Expediente> {
       if (id != null) 'id': id,
       if (codigo != null) 'codigo': codigo,
       if (nombre != null) 'nombre': nombre,
+      if (cliente != null) 'cliente': cliente,
+      if (direccion != null) 'direccion': direccion,
+      if (poblacion != null) 'poblacion': poblacion,
+      if (provincia != null) 'provincia': provincia,
+      if (codigoPostal != null) 'codigo_postal': codigoPostal,
+      if (pais != null) 'pais': pais,
       if (estado != null) 'estado': estado,
       if (eliminado != null) 'eliminado': eliminado,
       if (fechaCreacion != null) 'fecha_creacion': fechaCreacion,
@@ -406,6 +649,12 @@ class ExpedientesCompanion extends UpdateCompanion<Expediente> {
     Value<String>? id,
     Value<String>? codigo,
     Value<String>? nombre,
+    Value<String>? cliente,
+    Value<String>? direccion,
+    Value<String>? poblacion,
+    Value<String>? provincia,
+    Value<String>? codigoPostal,
+    Value<String>? pais,
     Value<int>? estado,
     Value<bool>? eliminado,
     Value<DateTime>? fechaCreacion,
@@ -416,6 +665,12 @@ class ExpedientesCompanion extends UpdateCompanion<Expediente> {
       id: id ?? this.id,
       codigo: codigo ?? this.codigo,
       nombre: nombre ?? this.nombre,
+      cliente: cliente ?? this.cliente,
+      direccion: direccion ?? this.direccion,
+      poblacion: poblacion ?? this.poblacion,
+      provincia: provincia ?? this.provincia,
+      codigoPostal: codigoPostal ?? this.codigoPostal,
+      pais: pais ?? this.pais,
       estado: estado ?? this.estado,
       eliminado: eliminado ?? this.eliminado,
       fechaCreacion: fechaCreacion ?? this.fechaCreacion,
@@ -435,6 +690,24 @@ class ExpedientesCompanion extends UpdateCompanion<Expediente> {
     }
     if (nombre.present) {
       map['nombre'] = Variable<String>(nombre.value);
+    }
+    if (cliente.present) {
+      map['cliente'] = Variable<String>(cliente.value);
+    }
+    if (direccion.present) {
+      map['direccion'] = Variable<String>(direccion.value);
+    }
+    if (poblacion.present) {
+      map['poblacion'] = Variable<String>(poblacion.value);
+    }
+    if (provincia.present) {
+      map['provincia'] = Variable<String>(provincia.value);
+    }
+    if (codigoPostal.present) {
+      map['codigo_postal'] = Variable<String>(codigoPostal.value);
+    }
+    if (pais.present) {
+      map['pais'] = Variable<String>(pais.value);
     }
     if (estado.present) {
       map['estado'] = Variable<int>(estado.value);
@@ -460,6 +733,12 @@ class ExpedientesCompanion extends UpdateCompanion<Expediente> {
           ..write('id: $id, ')
           ..write('codigo: $codigo, ')
           ..write('nombre: $nombre, ')
+          ..write('cliente: $cliente, ')
+          ..write('direccion: $direccion, ')
+          ..write('poblacion: $poblacion, ')
+          ..write('provincia: $provincia, ')
+          ..write('codigoPostal: $codigoPostal, ')
+          ..write('pais: $pais, ')
           ..write('estado: $estado, ')
           ..write('eliminado: $eliminado, ')
           ..write('fechaCreacion: $fechaCreacion, ')
@@ -486,6 +765,12 @@ typedef $$ExpedientesTableCreateCompanionBuilder =
       required String id,
       required String codigo,
       required String nombre,
+      Value<String> cliente,
+      Value<String> direccion,
+      Value<String> poblacion,
+      Value<String> provincia,
+      Value<String> codigoPostal,
+      Value<String> pais,
       Value<int> estado,
       Value<bool> eliminado,
       Value<DateTime> fechaCreacion,
@@ -497,6 +782,12 @@ typedef $$ExpedientesTableUpdateCompanionBuilder =
       Value<String> id,
       Value<String> codigo,
       Value<String> nombre,
+      Value<String> cliente,
+      Value<String> direccion,
+      Value<String> poblacion,
+      Value<String> provincia,
+      Value<String> codigoPostal,
+      Value<String> pais,
       Value<int> estado,
       Value<bool> eliminado,
       Value<DateTime> fechaCreacion,
@@ -525,6 +816,36 @@ class $$ExpedientesTableFilterComposer
 
   ColumnFilters<String> get nombre => $composableBuilder(
     column: $table.nombre,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cliente => $composableBuilder(
+    column: $table.cliente,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get direccion => $composableBuilder(
+    column: $table.direccion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get poblacion => $composableBuilder(
+    column: $table.poblacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get provincia => $composableBuilder(
+    column: $table.provincia,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get codigoPostal => $composableBuilder(
+    column: $table.codigoPostal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get pais => $composableBuilder(
+    column: $table.pais,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -573,6 +894,36 @@ class $$ExpedientesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get cliente => $composableBuilder(
+    column: $table.cliente,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get direccion => $composableBuilder(
+    column: $table.direccion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get poblacion => $composableBuilder(
+    column: $table.poblacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get provincia => $composableBuilder(
+    column: $table.provincia,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get codigoPostal => $composableBuilder(
+    column: $table.codigoPostal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get pais => $composableBuilder(
+    column: $table.pais,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get estado => $composableBuilder(
     column: $table.estado,
     builder: (column) => ColumnOrderings(column),
@@ -611,6 +962,26 @@ class $$ExpedientesTableAnnotationComposer
 
   GeneratedColumn<String> get nombre =>
       $composableBuilder(column: $table.nombre, builder: (column) => column);
+
+  GeneratedColumn<String> get cliente =>
+      $composableBuilder(column: $table.cliente, builder: (column) => column);
+
+  GeneratedColumn<String> get direccion =>
+      $composableBuilder(column: $table.direccion, builder: (column) => column);
+
+  GeneratedColumn<String> get poblacion =>
+      $composableBuilder(column: $table.poblacion, builder: (column) => column);
+
+  GeneratedColumn<String> get provincia =>
+      $composableBuilder(column: $table.provincia, builder: (column) => column);
+
+  GeneratedColumn<String> get codigoPostal => $composableBuilder(
+    column: $table.codigoPostal,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get pais =>
+      $composableBuilder(column: $table.pais, builder: (column) => column);
 
   GeneratedColumn<int> get estado =>
       $composableBuilder(column: $table.estado, builder: (column) => column);
@@ -663,6 +1034,12 @@ class $$ExpedientesTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<String> codigo = const Value.absent(),
                 Value<String> nombre = const Value.absent(),
+                Value<String> cliente = const Value.absent(),
+                Value<String> direccion = const Value.absent(),
+                Value<String> poblacion = const Value.absent(),
+                Value<String> provincia = const Value.absent(),
+                Value<String> codigoPostal = const Value.absent(),
+                Value<String> pais = const Value.absent(),
                 Value<int> estado = const Value.absent(),
                 Value<bool> eliminado = const Value.absent(),
                 Value<DateTime> fechaCreacion = const Value.absent(),
@@ -672,6 +1049,12 @@ class $$ExpedientesTableTableManager
                 id: id,
                 codigo: codigo,
                 nombre: nombre,
+                cliente: cliente,
+                direccion: direccion,
+                poblacion: poblacion,
+                provincia: provincia,
+                codigoPostal: codigoPostal,
+                pais: pais,
                 estado: estado,
                 eliminado: eliminado,
                 fechaCreacion: fechaCreacion,
@@ -683,6 +1066,12 @@ class $$ExpedientesTableTableManager
                 required String id,
                 required String codigo,
                 required String nombre,
+                Value<String> cliente = const Value.absent(),
+                Value<String> direccion = const Value.absent(),
+                Value<String> poblacion = const Value.absent(),
+                Value<String> provincia = const Value.absent(),
+                Value<String> codigoPostal = const Value.absent(),
+                Value<String> pais = const Value.absent(),
                 Value<int> estado = const Value.absent(),
                 Value<bool> eliminado = const Value.absent(),
                 Value<DateTime> fechaCreacion = const Value.absent(),
@@ -692,6 +1081,12 @@ class $$ExpedientesTableTableManager
                 id: id,
                 codigo: codigo,
                 nombre: nombre,
+                cliente: cliente,
+                direccion: direccion,
+                poblacion: poblacion,
+                provincia: provincia,
+                codigoPostal: codigoPostal,
+                pais: pais,
                 estado: estado,
                 eliminado: eliminado,
                 fechaCreacion: fechaCreacion,
