@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'presupuesto_screen.dart';
+import 'presupuesto_menu_screen.dart';
 import '../features/expedientes/presentation/screens/expedientes_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -34,14 +34,13 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 30),
-
             Expanded(
               child: GridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 15,
                 mainAxisSpacing: 15,
                 children: [
-                 _HomeButton(
+                  _HomeButton(
                     icon: Icons.folder_copy,
                     titulo: 'Expedientes',
                     onTap: () {
@@ -60,7 +59,7 @@ class HomeScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const PresupuestoScreen(),
+                          builder: (_) => const PresupuestoMenuScreen(),
                         ),
                       );
                     },
