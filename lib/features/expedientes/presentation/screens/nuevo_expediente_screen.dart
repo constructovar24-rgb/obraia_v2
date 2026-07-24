@@ -27,7 +27,7 @@ class _NuevoExpedienteScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Nuevo expediente"),
+        title: const Text('Nuevo expediente'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -36,32 +36,32 @@ class _NuevoExpedienteScreenState
             TextField(
               controller: _codigoController,
               decoration: const InputDecoration(
-                labelText: "Código",
+                labelText: 'Código',
               ),
             ),
             const SizedBox(height: 20),
             TextField(
               controller: _nombreController,
               decoration: const InputDecoration(
-                labelText: "Nombre",
+                labelText: 'Nombre',
               ),
             ),
             const SizedBox(height: 30),
             FilledButton.icon(
               onPressed: () async {
-  final db = ref.read(databaseProvider);
+                final db = ref.read(databaseProvider);
 
-  await db.crearExpediente(
-    codigo: _codigoController.text.trim(),
-    nombre: _nombreController.text.trim(),
-  );
+                await db.crearExpediente(
+                  codigo: _codigoController.text.trim(),
+                  nombre: _nombreController.text.trim(),
+                );
 
-  if (mounted) {
-    Navigator.pop(context);
-  }
-},
+                if (!context.mounted) return;
+
+                Navigator.of(context).pop();
+              },
               icon: const Icon(Icons.save),
-              label: const Text("Guardar"),
+              label: const Text('Guardar'),
             ),
           ],
         ),

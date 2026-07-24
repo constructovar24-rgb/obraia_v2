@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'presupuesto_menu_screen.dart';
 import '../features/expedientes/presentation/screens/expedientes_screen.dart';
+import '../features/clientes/presentation/screens/clientes_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -66,8 +67,15 @@ class HomeScreen extends StatelessWidget {
                   ),
                   _HomeButton(
                     icon: Icons.people,
-                    titulo: 'Contactos',
-                    onTap: () {},
+                    titulo: 'Clientes',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ClientesScreen(),
+                        ),
+                      );
+                    },
                   ),
                   _HomeButton(
                     icon: Icons.home_repair_service,

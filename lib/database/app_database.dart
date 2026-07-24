@@ -5,14 +5,21 @@ import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
-
 import 'tables/expedientes.dart';
+import 'tables/clientes.dart';
+import 'dao/expedientes_dao.dart';
+import 'dao/clientes_dao.dart';
 
 part 'app_database.g.dart';
 
 @DriftDatabase(
   tables: [
     Expedientes,
+    Clientes,
+  ],
+  daos: [
+    ExpedientesDao,
+    ClientesDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -22,6 +29,7 @@ class AppDatabase extends _$AppDatabase {
   int get schemaVersion => 1;
 
   final _uuid = const Uuid();
+  
 
   Future<void> crearExpediente({
     required String codigo,
@@ -70,6 +78,88 @@ class AppDatabase extends _$AppDatabase {
         poblacion: Value(poblacion),
         provincia: Value(provincia),
         codigoPostal: Value(codigoPostal),
+        fechaModificacion: Value(DateTime.now()),
+      ),
+    );
+  }
+
+  Future<void> crearCliente({
+    required String nombre,
+    required String apellidos,
+    required String nif,
+    required String telefono,
+    required String email,
+    required String direccion,
+    required String poblacion,
+    required String provincia,
+    required String codigoPostal,
+    required String pais,
+    required String empresa,
+    required String observaciones,
+  }) async {
+    await into(clientes).insert(
+      ClientesCompanion(
+        id: Value(_uuid.v4()),
+        nombre: Value(nombre),
+        apellidos: Value(apellidos),
+        nif: Value(nif),
+        telefono: Value(telefono),
+        email: Value(email),
+        direccion: Value(direccion),
+        poblacion: Value(poblacion),
+        provincia: Value(provincia),
+        codigoPostal: Value(codigoPostal),
+        pais: Value(pais),
+        empresa: Value(empresa),
+        observaciones: Value(observaciones),
+      ),
+    );
+  }
+
+  Stream<List<Cliente>> observarClientes() {
+    return (select(clientes)
+          ..where((t) => t.eliminado.equals(false))
+          ..orderBy([
+            (t) => OrderingTerm.desc(t.fechaCreacion),
+          ]))
+        .watch();
+  }
+
+  Future<Cliente?> obtenerCliente(String id) {
+    return (select(clientes)
+          ..where((t) => t.id.equals(id)))
+        .getSingleOrNull();
+  }
+
+  Future<void> actualizarCliente({
+    required String id,
+    required String nombre,
+    required String apellidos,
+    required String nif,
+    required String telefono,
+    required String email,
+    required String direccion,
+    required String poblacion,
+    required String provincia,
+    required String codigoPostal,
+    required String pais,
+    required String empresa,
+    required String observaciones,
+  }) async {
+    await (update(clientes)..where((t) => t.id.equals(id))).write(
+      ClientesCompanion(
+        nombre: Value(nombre),
+        apellidos: Value(apellidos),
+        nif: Value(nif),
+        telefono: Value(telefono),
+        email: Value(email),
+        direccion: Value(direccion),
+        poblacion: Value(poblacion),
+        provincia: Value(provincia),
+        codigoPostal: Value(codigoPostal),
+        pais: Value(pais),
+        empresa: Value(empresa),
+        observaciones: Value(observaciones),
         fechaModificacion: Value(DateTime.now()),
       ),
     );
