@@ -16,85 +16,84 @@ class ExpedienteDetailScreen extends StatelessWidget {
   final String nombre;
   final String? clienteNombre;
 
+  static const List<Tab> _tabs = [
+    Tab(text: 'Datos generales'),
+    Tab(text: 'Cliente'),
+    Tab(text: 'Presupuestos'),
+    Tab(text: 'Certificaciones'),
+    Tab(text: 'Facturas'),
+    Tab(text: 'Documentos'),
+    Tab(text: 'Notas'),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(codigo),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Text(
-            nombre,
-            style: Theme.of(context).textTheme.headlineSmall,
+    return DefaultTabController(
+      length: _tabs.length,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(codigo),
+          bottom: const TabBar(
+            isScrollable: true,
+            tabs: _tabs,
           ),
-          const SizedBox(height: 8),
-          if (clienteNombre != null && clienteNombre!.isNotEmpty)
-            Text(
-              'Cliente: $clienteNombre',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          const SizedBox(height: 8),
-          const Chip(
-            label: Text('Abierto'),
-          ),
-          const SizedBox(height: 24),
-
-          ListTile(
-            leading: const Icon(Icons.description_outlined),
-            title: const Text('Datos generales'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => DatosGeneralesScreen(
-                    id: id,
-                    codigoExpediente: codigo,
+        ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    nombre,
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
-                ),
-              );
-            },
-          ),
-
-          const ListTile(
-            leading: Icon(Icons.person_outline),
-            title: Text('Cliente'),
-          ),
-          const ListTile(
-            leading: Icon(Icons.request_quote_outlined),
-            title: Text('Presupuestos'),
-          ),
-          const ListTile(
-            leading: Icon(Icons.straighten),
-            title: Text('Mediciones'),
-          ),
-          const ListTile(
-            leading: Icon(Icons.construction),
-            title: Text('Obras'),
-          ),
-          const ListTile(
-            leading: Icon(Icons.photo_library_outlined),
-            title: Text('Fotografías'),
-          ),
-          const ListTile(
-            leading: Icon(Icons.folder_outlined),
-            title: Text('Documentos'),
-          ),
-          const ListTile(
-            leading: Icon(Icons.euro_outlined),
-            title: Text('Costes'),
-          ),
-          const ListTile(
-            leading: Icon(Icons.receipt_long_outlined),
-            title: Text('Facturas'),
-          ),
-          const ListTile(
-            leading: Icon(Icons.bar_chart_outlined),
-            title: Text('Rentabilidad'),
-          ),
-        ],
+                  const SizedBox(height: 8),
+                  if (clienteNombre != null && clienteNombre!.isNotEmpty)
+                    Text(
+                      'Cliente: $clienteNombre',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  const SizedBox(height: 8),
+                  const Chip(
+                    label: Text('Abierto'),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  Center(
+                    child: ListTile(
+                      leading: const Icon(Icons.description_outlined),
+                      title: const Text('Datos generales'),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => DatosGeneralesScreen(
+                              id: id,
+                              codigoExpediente: codigo,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  const Center(child: Text('En desarrollo')),
+                  const Center(child: Text('En desarrollo')),
+                  const Center(child: Text('En desarrollo')),
+                  const Center(child: Text('En desarrollo')),
+                  const Center(child: Text('En desarrollo')),
+                  const Center(child: Text('En desarrollo')),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
