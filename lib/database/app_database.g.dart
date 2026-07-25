@@ -1731,20 +1731,503 @@ class ExpedientesCompanion extends UpdateCompanion<Expediente> {
   }
 }
 
+class $PresupuestosTable extends Presupuestos
+    with TableInfo<$PresupuestosTable, Presupuesto> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PresupuestosTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _expedienteIdMeta = const VerificationMeta(
+    'expedienteId',
+  );
+  @override
+  late final GeneratedColumn<String> expedienteId = GeneratedColumn<String>(
+    'expediente_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES expedientes (id)',
+    ),
+  );
+  static const VerificationMeta _tituloMeta = const VerificationMeta('titulo');
+  @override
+  late final GeneratedColumn<String> titulo = GeneratedColumn<String>(
+    'titulo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _estadoMeta = const VerificationMeta('estado');
+  @override
+  late final GeneratedColumn<int> estado = GeneratedColumn<int>(
+    'estado',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _eliminadoMeta = const VerificationMeta(
+    'eliminado',
+  );
+  @override
+  late final GeneratedColumn<bool> eliminado = GeneratedColumn<bool>(
+    'eliminado',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("eliminado" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _fechaCreacionMeta = const VerificationMeta(
+    'fechaCreacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaCreacion =
+      GeneratedColumn<DateTime>(
+        'fecha_creacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+        defaultValue: currentDateAndTime,
+      );
+  static const VerificationMeta _fechaModificacionMeta = const VerificationMeta(
+    'fechaModificacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaModificacion =
+      GeneratedColumn<DateTime>(
+        'fecha_modificacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+        defaultValue: currentDateAndTime,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    expedienteId,
+    titulo,
+    estado,
+    eliminado,
+    fechaCreacion,
+    fechaModificacion,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'presupuestos';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Presupuesto> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('expediente_id')) {
+      context.handle(
+        _expedienteIdMeta,
+        expedienteId.isAcceptableOrUnknown(
+          data['expediente_id']!,
+          _expedienteIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_expedienteIdMeta);
+    }
+    if (data.containsKey('titulo')) {
+      context.handle(
+        _tituloMeta,
+        titulo.isAcceptableOrUnknown(data['titulo']!, _tituloMeta),
+      );
+    }
+    if (data.containsKey('estado')) {
+      context.handle(
+        _estadoMeta,
+        estado.isAcceptableOrUnknown(data['estado']!, _estadoMeta),
+      );
+    }
+    if (data.containsKey('eliminado')) {
+      context.handle(
+        _eliminadoMeta,
+        eliminado.isAcceptableOrUnknown(data['eliminado']!, _eliminadoMeta),
+      );
+    }
+    if (data.containsKey('fecha_creacion')) {
+      context.handle(
+        _fechaCreacionMeta,
+        fechaCreacion.isAcceptableOrUnknown(
+          data['fecha_creacion']!,
+          _fechaCreacionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('fecha_modificacion')) {
+      context.handle(
+        _fechaModificacionMeta,
+        fechaModificacion.isAcceptableOrUnknown(
+          data['fecha_modificacion']!,
+          _fechaModificacionMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Presupuesto map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Presupuesto(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      expedienteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}expediente_id'],
+      )!,
+      titulo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}titulo'],
+      )!,
+      estado: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}estado'],
+      )!,
+      eliminado: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}eliminado'],
+      )!,
+      fechaCreacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_creacion'],
+      )!,
+      fechaModificacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_modificacion'],
+      )!,
+    );
+  }
+
+  @override
+  $PresupuestosTable createAlias(String alias) {
+    return $PresupuestosTable(attachedDatabase, alias);
+  }
+}
+
+class Presupuesto extends DataClass implements Insertable<Presupuesto> {
+  final String id;
+  final String expedienteId;
+  final String titulo;
+  final int estado;
+  final bool eliminado;
+  final DateTime fechaCreacion;
+  final DateTime fechaModificacion;
+  const Presupuesto({
+    required this.id,
+    required this.expedienteId,
+    required this.titulo,
+    required this.estado,
+    required this.eliminado,
+    required this.fechaCreacion,
+    required this.fechaModificacion,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['expediente_id'] = Variable<String>(expedienteId);
+    map['titulo'] = Variable<String>(titulo);
+    map['estado'] = Variable<int>(estado);
+    map['eliminado'] = Variable<bool>(eliminado);
+    map['fecha_creacion'] = Variable<DateTime>(fechaCreacion);
+    map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion);
+    return map;
+  }
+
+  PresupuestosCompanion toCompanion(bool nullToAbsent) {
+    return PresupuestosCompanion(
+      id: Value(id),
+      expedienteId: Value(expedienteId),
+      titulo: Value(titulo),
+      estado: Value(estado),
+      eliminado: Value(eliminado),
+      fechaCreacion: Value(fechaCreacion),
+      fechaModificacion: Value(fechaModificacion),
+    );
+  }
+
+  factory Presupuesto.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Presupuesto(
+      id: serializer.fromJson<String>(json['id']),
+      expedienteId: serializer.fromJson<String>(json['expedienteId']),
+      titulo: serializer.fromJson<String>(json['titulo']),
+      estado: serializer.fromJson<int>(json['estado']),
+      eliminado: serializer.fromJson<bool>(json['eliminado']),
+      fechaCreacion: serializer.fromJson<DateTime>(json['fechaCreacion']),
+      fechaModificacion: serializer.fromJson<DateTime>(
+        json['fechaModificacion'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'expedienteId': serializer.toJson<String>(expedienteId),
+      'titulo': serializer.toJson<String>(titulo),
+      'estado': serializer.toJson<int>(estado),
+      'eliminado': serializer.toJson<bool>(eliminado),
+      'fechaCreacion': serializer.toJson<DateTime>(fechaCreacion),
+      'fechaModificacion': serializer.toJson<DateTime>(fechaModificacion),
+    };
+  }
+
+  Presupuesto copyWith({
+    String? id,
+    String? expedienteId,
+    String? titulo,
+    int? estado,
+    bool? eliminado,
+    DateTime? fechaCreacion,
+    DateTime? fechaModificacion,
+  }) => Presupuesto(
+    id: id ?? this.id,
+    expedienteId: expedienteId ?? this.expedienteId,
+    titulo: titulo ?? this.titulo,
+    estado: estado ?? this.estado,
+    eliminado: eliminado ?? this.eliminado,
+    fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+    fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+  );
+  Presupuesto copyWithCompanion(PresupuestosCompanion data) {
+    return Presupuesto(
+      id: data.id.present ? data.id.value : this.id,
+      expedienteId: data.expedienteId.present
+          ? data.expedienteId.value
+          : this.expedienteId,
+      titulo: data.titulo.present ? data.titulo.value : this.titulo,
+      estado: data.estado.present ? data.estado.value : this.estado,
+      eliminado: data.eliminado.present ? data.eliminado.value : this.eliminado,
+      fechaCreacion: data.fechaCreacion.present
+          ? data.fechaCreacion.value
+          : this.fechaCreacion,
+      fechaModificacion: data.fechaModificacion.present
+          ? data.fechaModificacion.value
+          : this.fechaModificacion,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Presupuesto(')
+          ..write('id: $id, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('titulo: $titulo, ')
+          ..write('estado: $estado, ')
+          ..write('eliminado: $eliminado, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    expedienteId,
+    titulo,
+    estado,
+    eliminado,
+    fechaCreacion,
+    fechaModificacion,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Presupuesto &&
+          other.id == this.id &&
+          other.expedienteId == this.expedienteId &&
+          other.titulo == this.titulo &&
+          other.estado == this.estado &&
+          other.eliminado == this.eliminado &&
+          other.fechaCreacion == this.fechaCreacion &&
+          other.fechaModificacion == this.fechaModificacion);
+}
+
+class PresupuestosCompanion extends UpdateCompanion<Presupuesto> {
+  final Value<String> id;
+  final Value<String> expedienteId;
+  final Value<String> titulo;
+  final Value<int> estado;
+  final Value<bool> eliminado;
+  final Value<DateTime> fechaCreacion;
+  final Value<DateTime> fechaModificacion;
+  final Value<int> rowid;
+  const PresupuestosCompanion({
+    this.id = const Value.absent(),
+    this.expedienteId = const Value.absent(),
+    this.titulo = const Value.absent(),
+    this.estado = const Value.absent(),
+    this.eliminado = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.fechaModificacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PresupuestosCompanion.insert({
+    required String id,
+    required String expedienteId,
+    this.titulo = const Value.absent(),
+    this.estado = const Value.absent(),
+    this.eliminado = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.fechaModificacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       expedienteId = Value(expedienteId);
+  static Insertable<Presupuesto> custom({
+    Expression<String>? id,
+    Expression<String>? expedienteId,
+    Expression<String>? titulo,
+    Expression<int>? estado,
+    Expression<bool>? eliminado,
+    Expression<DateTime>? fechaCreacion,
+    Expression<DateTime>? fechaModificacion,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (expedienteId != null) 'expediente_id': expedienteId,
+      if (titulo != null) 'titulo': titulo,
+      if (estado != null) 'estado': estado,
+      if (eliminado != null) 'eliminado': eliminado,
+      if (fechaCreacion != null) 'fecha_creacion': fechaCreacion,
+      if (fechaModificacion != null) 'fecha_modificacion': fechaModificacion,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PresupuestosCompanion copyWith({
+    Value<String>? id,
+    Value<String>? expedienteId,
+    Value<String>? titulo,
+    Value<int>? estado,
+    Value<bool>? eliminado,
+    Value<DateTime>? fechaCreacion,
+    Value<DateTime>? fechaModificacion,
+    Value<int>? rowid,
+  }) {
+    return PresupuestosCompanion(
+      id: id ?? this.id,
+      expedienteId: expedienteId ?? this.expedienteId,
+      titulo: titulo ?? this.titulo,
+      estado: estado ?? this.estado,
+      eliminado: eliminado ?? this.eliminado,
+      fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+      fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (expedienteId.present) {
+      map['expediente_id'] = Variable<String>(expedienteId.value);
+    }
+    if (titulo.present) {
+      map['titulo'] = Variable<String>(titulo.value);
+    }
+    if (estado.present) {
+      map['estado'] = Variable<int>(estado.value);
+    }
+    if (eliminado.present) {
+      map['eliminado'] = Variable<bool>(eliminado.value);
+    }
+    if (fechaCreacion.present) {
+      map['fecha_creacion'] = Variable<DateTime>(fechaCreacion.value);
+    }
+    if (fechaModificacion.present) {
+      map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PresupuestosCompanion(')
+          ..write('id: $id, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('titulo: $titulo, ')
+          ..write('estado: $estado, ')
+          ..write('eliminado: $eliminado, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $ClientesTable clientes = $ClientesTable(this);
   late final $ExpedientesTable expedientes = $ExpedientesTable(this);
+  late final $PresupuestosTable presupuestos = $PresupuestosTable(this);
   late final ExpedientesDao expedientesDao = ExpedientesDao(
     this as AppDatabase,
   );
   late final ClientesDao clientesDao = ClientesDao(this as AppDatabase);
+  late final PresupuestosDao presupuestosDao = PresupuestosDao(
+    this as AppDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [clientes, expedientes];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    clientes,
+    expedientes,
+    presupuestos,
+  ];
 }
 
 typedef $$ClientesTableCreateCompanionBuilder =
@@ -2340,6 +2823,24 @@ final class $$ExpedientesTableReferences
       manager.$state.copyWith(prefetchedData: [item]),
     );
   }
+
+  static MultiTypedResultKey<$PresupuestosTable, List<Presupuesto>>
+  _presupuestosRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.presupuestos,
+    aliasName: 'expedientes__id__presupuestos__expediente_id',
+  );
+
+  $$PresupuestosTableProcessedTableManager get presupuestosRefs {
+    final manager = $$PresupuestosTableTableManager(
+      $_db,
+      $_db.presupuestos,
+    ).filter((f) => f.expedienteId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_presupuestosRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$ExpedientesTableFilterComposer
@@ -2437,6 +2938,31 @@ class $$ExpedientesTableFilterComposer
           ),
     );
     return composer;
+  }
+
+  Expression<bool> presupuestosRefs(
+    Expression<bool> Function($$PresupuestosTableFilterComposer f) f,
+  ) {
+    final $$PresupuestosTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.presupuestos,
+      getReferencedColumn: (t) => t.expedienteId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PresupuestosTableFilterComposer(
+            $db: $db,
+            $table: $db.presupuestos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
   }
 }
 
@@ -2614,6 +3140,31 @@ class $$ExpedientesTableAnnotationComposer
     );
     return composer;
   }
+
+  Expression<T> presupuestosRefs<T extends Object>(
+    Expression<T> Function($$PresupuestosTableAnnotationComposer a) f,
+  ) {
+    final $$PresupuestosTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.presupuestos,
+      getReferencedColumn: (t) => t.expedienteId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PresupuestosTableAnnotationComposer(
+            $db: $db,
+            $table: $db.presupuestos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$ExpedientesTableTableManager
@@ -2629,7 +3180,7 @@ class $$ExpedientesTableTableManager
           $$ExpedientesTableUpdateCompanionBuilder,
           (Expediente, $$ExpedientesTableReferences),
           Expediente,
-          PrefetchHooks Function({bool clienteId})
+          PrefetchHooks Function({bool clienteId, bool presupuestosRefs})
         > {
   $$ExpedientesTableTableManager(_$AppDatabase db, $ExpedientesTable table)
     : super(
@@ -2718,7 +3269,394 @@ class $$ExpedientesTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({clienteId = false}) {
+          prefetchHooksCallback:
+              ({clienteId = false, presupuestosRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (presupuestosRefs) db.presupuestos,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (clienteId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.clienteId,
+                                    referencedTable:
+                                        $$ExpedientesTableReferences
+                                            ._clienteIdTable(db),
+                                    referencedColumn:
+                                        $$ExpedientesTableReferences
+                                            ._clienteIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (presupuestosRefs)
+                        await $_getPrefetchedData<
+                          Expediente,
+                          $ExpedientesTable,
+                          Presupuesto
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ExpedientesTableReferences
+                              ._presupuestosRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ExpedientesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).presupuestosRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.expedienteId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$ExpedientesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ExpedientesTable,
+      Expediente,
+      $$ExpedientesTableFilterComposer,
+      $$ExpedientesTableOrderingComposer,
+      $$ExpedientesTableAnnotationComposer,
+      $$ExpedientesTableCreateCompanionBuilder,
+      $$ExpedientesTableUpdateCompanionBuilder,
+      (Expediente, $$ExpedientesTableReferences),
+      Expediente,
+      PrefetchHooks Function({bool clienteId, bool presupuestosRefs})
+    >;
+typedef $$PresupuestosTableCreateCompanionBuilder =
+    PresupuestosCompanion Function({
+      required String id,
+      required String expedienteId,
+      Value<String> titulo,
+      Value<int> estado,
+      Value<bool> eliminado,
+      Value<DateTime> fechaCreacion,
+      Value<DateTime> fechaModificacion,
+      Value<int> rowid,
+    });
+typedef $$PresupuestosTableUpdateCompanionBuilder =
+    PresupuestosCompanion Function({
+      Value<String> id,
+      Value<String> expedienteId,
+      Value<String> titulo,
+      Value<int> estado,
+      Value<bool> eliminado,
+      Value<DateTime> fechaCreacion,
+      Value<DateTime> fechaModificacion,
+      Value<int> rowid,
+    });
+
+final class $$PresupuestosTableReferences
+    extends BaseReferences<_$AppDatabase, $PresupuestosTable, Presupuesto> {
+  $$PresupuestosTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $ExpedientesTable _expedienteIdTable(_$AppDatabase db) => db
+      .expedientes
+      .createAlias('presupuestos__expediente_id__expedientes__id');
+
+  $$ExpedientesTableProcessedTableManager get expedienteId {
+    final $_column = $_itemColumn<String>('expediente_id')!;
+
+    final manager = $$ExpedientesTableTableManager(
+      $_db,
+      $_db.expedientes,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_expedienteIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$PresupuestosTableFilterComposer
+    extends Composer<_$AppDatabase, $PresupuestosTable> {
+  $$PresupuestosTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get titulo => $composableBuilder(
+    column: $table.titulo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get estado => $composableBuilder(
+    column: $table.estado,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get eliminado => $composableBuilder(
+    column: $table.eliminado,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ExpedientesTableFilterComposer get expedienteId {
+    final $$ExpedientesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.expedienteId,
+      referencedTable: $db.expedientes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExpedientesTableFilterComposer(
+            $db: $db,
+            $table: $db.expedientes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PresupuestosTableOrderingComposer
+    extends Composer<_$AppDatabase, $PresupuestosTable> {
+  $$PresupuestosTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get titulo => $composableBuilder(
+    column: $table.titulo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get estado => $composableBuilder(
+    column: $table.estado,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get eliminado => $composableBuilder(
+    column: $table.eliminado,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ExpedientesTableOrderingComposer get expedienteId {
+    final $$ExpedientesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.expedienteId,
+      referencedTable: $db.expedientes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExpedientesTableOrderingComposer(
+            $db: $db,
+            $table: $db.expedientes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PresupuestosTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PresupuestosTable> {
+  $$PresupuestosTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get titulo =>
+      $composableBuilder(column: $table.titulo, builder: (column) => column);
+
+  GeneratedColumn<int> get estado =>
+      $composableBuilder(column: $table.estado, builder: (column) => column);
+
+  GeneratedColumn<bool> get eliminado =>
+      $composableBuilder(column: $table.eliminado, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => column,
+  );
+
+  $$ExpedientesTableAnnotationComposer get expedienteId {
+    final $$ExpedientesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.expedienteId,
+      referencedTable: $db.expedientes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExpedientesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.expedientes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PresupuestosTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PresupuestosTable,
+          Presupuesto,
+          $$PresupuestosTableFilterComposer,
+          $$PresupuestosTableOrderingComposer,
+          $$PresupuestosTableAnnotationComposer,
+          $$PresupuestosTableCreateCompanionBuilder,
+          $$PresupuestosTableUpdateCompanionBuilder,
+          (Presupuesto, $$PresupuestosTableReferences),
+          Presupuesto,
+          PrefetchHooks Function({bool expedienteId})
+        > {
+  $$PresupuestosTableTableManager(_$AppDatabase db, $PresupuestosTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PresupuestosTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PresupuestosTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PresupuestosTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> expedienteId = const Value.absent(),
+                Value<String> titulo = const Value.absent(),
+                Value<int> estado = const Value.absent(),
+                Value<bool> eliminado = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<DateTime> fechaModificacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PresupuestosCompanion(
+                id: id,
+                expedienteId: expedienteId,
+                titulo: titulo,
+                estado: estado,
+                eliminado: eliminado,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String expedienteId,
+                Value<String> titulo = const Value.absent(),
+                Value<int> estado = const Value.absent(),
+                Value<bool> eliminado = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<DateTime> fechaModificacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PresupuestosCompanion.insert(
+                id: id,
+                expedienteId: expedienteId,
+                titulo: titulo,
+                estado: estado,
+                eliminado: eliminado,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$PresupuestosTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({expedienteId = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -2738,15 +3676,15 @@ class $$ExpedientesTableTableManager
                       dynamic
                     >
                   >(state) {
-                    if (clienteId) {
+                    if (expedienteId) {
                       state =
                           state.withJoin(
                                 currentTable: table,
-                                currentColumn: table.clienteId,
-                                referencedTable: $$ExpedientesTableReferences
-                                    ._clienteIdTable(db),
-                                referencedColumn: $$ExpedientesTableReferences
-                                    ._clienteIdTable(db)
+                                currentColumn: table.expedienteId,
+                                referencedTable: $$PresupuestosTableReferences
+                                    ._expedienteIdTable(db),
+                                referencedColumn: $$PresupuestosTableReferences
+                                    ._expedienteIdTable(db)
                                     .id,
                               )
                               as T;
@@ -2763,19 +3701,19 @@ class $$ExpedientesTableTableManager
       );
 }
 
-typedef $$ExpedientesTableProcessedTableManager =
+typedef $$PresupuestosTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
-      $ExpedientesTable,
-      Expediente,
-      $$ExpedientesTableFilterComposer,
-      $$ExpedientesTableOrderingComposer,
-      $$ExpedientesTableAnnotationComposer,
-      $$ExpedientesTableCreateCompanionBuilder,
-      $$ExpedientesTableUpdateCompanionBuilder,
-      (Expediente, $$ExpedientesTableReferences),
-      Expediente,
-      PrefetchHooks Function({bool clienteId})
+      $PresupuestosTable,
+      Presupuesto,
+      $$PresupuestosTableFilterComposer,
+      $$PresupuestosTableOrderingComposer,
+      $$PresupuestosTableAnnotationComposer,
+      $$PresupuestosTableCreateCompanionBuilder,
+      $$PresupuestosTableUpdateCompanionBuilder,
+      (Presupuesto, $$PresupuestosTableReferences),
+      Presupuesto,
+      PrefetchHooks Function({bool expedienteId})
     >;
 
 class $AppDatabaseManager {
@@ -2785,4 +3723,6 @@ class $AppDatabaseManager {
       $$ClientesTableTableManager(_db, _db.clientes);
   $$ExpedientesTableTableManager get expedientes =>
       $$ExpedientesTableTableManager(_db, _db.expedientes);
+  $$PresupuestosTableTableManager get presupuestos =>
+      $$PresupuestosTableTableManager(_db, _db.presupuestos);
 }

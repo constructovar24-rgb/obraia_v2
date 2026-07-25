@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'cliente_tab.dart';
 import 'datos_generales_screen.dart';
+import '../../../presupuestos/presentation/widgets/presupuestos_tab.dart';
 
 class ExpedienteDetailScreen extends StatelessWidget {
   const ExpedienteDetailScreen({
@@ -90,7 +91,7 @@ class ExpedienteDetailScreen extends StatelessWidget {
               codigoExpediente: codigo,
             ),
             ClienteTab(expedienteId: id),
-            const Center(child: Text('En desarrollo')),
+            PresupuestosTab(expedienteId: id),
             const Center(child: Text('En desarrollo')),
             const Center(child: Text('En desarrollo')),
             const Center(child: Text('En desarrollo')),

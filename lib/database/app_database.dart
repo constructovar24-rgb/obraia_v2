@@ -7,8 +7,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'tables/expedientes.dart';
 import 'tables/clientes.dart';
+import 'tables/presupuestos.dart';
 import 'dao/expedientes_dao.dart';
 import 'dao/clientes_dao.dart';
+import 'dao/presupuestos_dao.dart';
 
 part 'app_database.g.dart';
 
@@ -16,17 +18,19 @@ part 'app_database.g.dart';
   tables: [
     Expedientes,
     Clientes,
+    Presupuestos,
   ],
   daos: [
     ExpedientesDao,
     ClientesDao,
+    PresupuestosDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -36,6 +40,10 @@ class AppDatabase extends _$AppDatabase {
         onUpgrade: (m, from, to) async {
           if (from < 2) {
             await m.addColumn(expedientes, expedientes.clienteId);
+          }
+
+          if (from < 3) {
+            await m.createTable(presupuestos);
           }
         },
       );
