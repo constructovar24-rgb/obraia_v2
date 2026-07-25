@@ -24,13 +24,18 @@ class PresupuestoRepository {
 
   Future<void> crearPresupuesto({
     required String expedienteId,
-    String titulo = '',
+    required String codigo,
+    required DateTime fecha,
+    String descripcion = '',
   }) {
     return database.presupuestosDao.insertarPresupuesto(
       PresupuestosCompanion.insert(
         id: const Uuid().v4(),
         expedienteId: expedienteId,
-        titulo: Value(titulo),
+        titulo: Value(codigo),
+        codigo: Value(codigo),
+        fecha: Value(fecha),
+        descripcion: Value(descripcion),
       ),
     );
   }

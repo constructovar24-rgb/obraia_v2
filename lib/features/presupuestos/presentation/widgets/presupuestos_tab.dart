@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/presupuesto_repository.dart';
 import '../../domain/presupuesto.dart' as presupuesto_domain;
+import '../screens/nuevo_presupuesto_screen.dart';
+import '../screens/presupuesto_detail_screen.dart';
 
 class PresupuestosTab extends ConsumerStatefulWidget {
   const PresupuestosTab({
@@ -29,6 +31,24 @@ class _PresupuestosTabState extends ConsumerState<PresupuestosTab> {
 
   @override
   Widget build(BuildContext context) {
+    void abrirNuevoPresupuesto() {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => NuevoPresupuestoScreen(
+            expedienteId: widget.expedienteId,
+          ),
+        ),
+      );
+    }
+
+    String formatearFecha(DateTime fecha) {
+      final day = fecha.day.toString().padLeft(2, '0');
+      final month = fecha.month.toString().padLeft(2, '0');
+      final year = fecha.year.toString();
+      return '$day/$month/$year';
+    }
+
     return StreamBuilder<List<presupuesto_domain.Presupuesto>>(
       stream: _stream,
       builder: (context, snapshot) {
@@ -68,7 +88,7 @@ class _PresupuestosTabState extends ConsumerState<PresupuestosTab> {
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton(
-                    onPressed: () {},
+                    onPressed: abrirNuevoPresupuesto,
                     child: const Text('Nuevo presupuesto'),
                   ),
                 ),
@@ -92,11 +112,22 @@ class _PresupuestosTabState extends ConsumerState<PresupuestosTab> {
                       child: ListTile(
                         leading: const Icon(Icons.request_quote_outlined),
                         title: Text(
-                          presupuesto.titulo.isNotEmpty
-                              ? presupuesto.titulo
-                              : 'Presupuesto',
+                          presupuesto.codigo,
                         ),
-                        subtitle: Text('ID: ${presupuesto.id}'),
+                        subtitle: Text(
+                          '${formatearFecha(presupuesto.fecha)}\n${presupuesto.descripcion}',
+                        ),
+                        isThreeLine: presupuesto.descripcion.isNotEmpty,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => PresupuestoDetailScreen(
+                                presupuesto: presupuesto,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     );
                   },
@@ -105,7 +136,7 @@ class _PresupuestosTabState extends ConsumerState<PresupuestosTab> {
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
-                  onPressed: () {},
+                  onPressed: abrirNuevoPresupuesto,
                   child: const Text('Nuevo presupuesto'),
                 ),
               ),

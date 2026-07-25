@@ -1,7 +1,9 @@
 class Presupuesto {
   final String id;
   final String expedienteId;
-  final String titulo;
+  final String codigo;
+  final DateTime fecha;
+  final String descripcion;
   final int estado;
   final bool eliminado;
   final DateTime fechaCreacion;
@@ -10,7 +12,9 @@ class Presupuesto {
   const Presupuesto({
     required this.id,
     required this.expedienteId,
-    required this.titulo,
+    required this.codigo,
+    required this.fecha,
+    required this.descripcion,
     required this.estado,
     required this.eliminado,
     required this.fechaCreacion,

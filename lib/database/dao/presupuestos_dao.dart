@@ -20,7 +20,7 @@ class PresupuestosDao extends DatabaseAccessor<AppDatabase>
           ..where(
             (t) => t.expedienteId.equals(expedienteId) & t.eliminado.equals(false),
           )
-          ..orderBy([(t) => OrderingTerm.desc(t.fechaCreacion)]))
+          ..orderBy([(t) => OrderingTerm.desc(t.fecha)]))
         .watch()
         .map(
           (rows) => rows
@@ -28,7 +28,9 @@ class PresupuestosDao extends DatabaseAccessor<AppDatabase>
                 (row) => presupuesto_domain.Presupuesto(
                   id: row.id,
                   expedienteId: row.expedienteId,
-                  titulo: row.titulo,
+                  codigo: row.codigo,
+                  fecha: row.fecha,
+                  descripcion: row.descripcion,
                   estado: row.estado,
                   eliminado: row.eliminado,
                   fechaCreacion: row.fechaCreacion,

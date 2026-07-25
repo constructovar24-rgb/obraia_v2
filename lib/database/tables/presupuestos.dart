@@ -9,6 +9,12 @@ class Presupuestos extends Table {
 
   TextColumn get titulo => text().withDefault(const Constant(''))();
 
+  TextColumn get codigo => text().withDefault(const Constant(''))();
+
+  DateTimeColumn get fecha => dateTime().withDefault(currentDateAndTime)();
+
+  TextColumn get descripcion => text().withDefault(const Constant(''))();
+
   IntColumn get estado => integer().withDefault(const Constant(0))();
 
   BoolColumn get eliminado => boolean().withDefault(const Constant(false))();
