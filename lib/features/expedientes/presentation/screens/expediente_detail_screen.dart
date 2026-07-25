@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'cliente_tab.dart';
 import 'datos_generales_screen.dart';
 
 class ExpedienteDetailScreen extends StatelessWidget {
@@ -28,70 +29,72 @@ class ExpedienteDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasCliente = clienteNombre != null && clienteNombre!.isNotEmpty;
+
     return DefaultTabController(
       length: _tabs.length,
       child: Scaffold(
         appBar: AppBar(
           title: Text(codigo),
-          bottom: const TabBar(
-            isScrollable: true,
-            tabs: _tabs,
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(hasCliente ? 196 : 172),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            codigo,
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            nombre,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          if (hasCliente) ...[
+                            const SizedBox(height: 6),
+                            Text(
+                              'Cliente: $clienteNombre',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                          const SizedBox(height: 8),
+                          const Chip(
+                            label: Text('Sin estado'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const TabBar(
+                  isScrollable: true,
+                  tabs: _tabs,
+                ),
+              ],
+            ),
           ),
         ),
-        body: Column(
+        body: TabBarView(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    nombre,
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  const SizedBox(height: 8),
-                  if (clienteNombre != null && clienteNombre!.isNotEmpty)
-                    Text(
-                      'Cliente: $clienteNombre',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  const SizedBox(height: 8),
-                  const Chip(
-                    label: Text('Abierto'),
-                  ),
-                ],
-              ),
+            DatosGeneralesTab(
+              id: id,
+              codigoExpediente: codigo,
             ),
-            Expanded(
-              child: TabBarView(
-                children: [
-                  Center(
-                    child: ListTile(
-                      leading: const Icon(Icons.description_outlined),
-                      title: const Text('Datos generales'),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => DatosGeneralesScreen(
-                              id: id,
-                              codigoExpediente: codigo,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  const Center(child: Text('En desarrollo')),
-                  const Center(child: Text('En desarrollo')),
-                  const Center(child: Text('En desarrollo')),
-                  const Center(child: Text('En desarrollo')),
-                  const Center(child: Text('En desarrollo')),
-                  const Center(child: Text('En desarrollo')),
-                ],
-              ),
-            ),
+            ClienteTab(expedienteId: id),
+            const Center(child: Text('En desarrollo')),
+            const Center(child: Text('En desarrollo')),
+            const Center(child: Text('En desarrollo')),
+            const Center(child: Text('En desarrollo')),
+            const Center(child: Text('En desarrollo')),
           ],
         ),
       ),
