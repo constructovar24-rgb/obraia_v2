@@ -8,11 +8,13 @@ class ExpedienteDetailScreen extends StatelessWidget {
     required this.id,
     required this.codigo,
     required this.nombre,
+    this.clienteNombre,
   });
 
   final String id;
   final String codigo;
   final String nombre;
+  final String? clienteNombre;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,12 @@ class ExpedienteDetailScreen extends StatelessWidget {
             nombre,
             style: Theme.of(context).textTheme.headlineSmall,
           ),
+          const SizedBox(height: 8),
+          if (clienteNombre != null && clienteNombre!.isNotEmpty)
+            Text(
+              'Cliente: $clienteNombre',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
           const SizedBox(height: 8),
           const Chip(
             label: Text('Abierto'),

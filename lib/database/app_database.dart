@@ -26,20 +26,37 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onCreate: (m) async {
+          await m.createAll();
+        },
+        onUpgrade: (m, from, to) async {
+          if (from < 2) {
+            await m.addColumn(expedientes, expedientes.clienteId);
+          }
+        },
+      );
 
   final _uuid = const Uuid();
-  
 
   Future<void> crearExpediente({
     required String codigo,
     required String nombre,
+    String? clienteId,
+    String? cliente,
   }) async {
     await into(expedientes).insert(
       ExpedientesCompanion.insert(
         id: _uuid.v4(),
         codigo: codigo,
         nombre: nombre,
+        cliente: Value(cliente ?? ''),
+        clienteId: clienteId == null
+            ? const Value.absent()
+            : Value(clienteId),
       ),
     );
   }
@@ -63,7 +80,8 @@ class AppDatabase extends _$AppDatabase {
     required String id,
     required String codigo,
     required String nombre,
-    required String cliente,
+    String? clienteId,
+    String? cliente,
     required String direccion,
     required String poblacion,
     required String provincia,
@@ -73,7 +91,8 @@ class AppDatabase extends _$AppDatabase {
       ExpedientesCompanion(
         codigo: Value(codigo),
         nombre: Value(nombre),
-        cliente: Value(cliente),
+        cliente: Value(cliente ?? ''),
+        clienteId: Value(clienteId),
         direccion: Value(direccion),
         poblacion: Value(poblacion),
         provincia: Value(provincia),

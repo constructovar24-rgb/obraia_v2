@@ -81,7 +81,11 @@ class ExpedientesScreen extends ConsumerWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  subtitle: Text(expediente.codigo),
+                  subtitle: Text(
+                    expediente.clienteNombre?.isNotEmpty == true
+                        ? '${expediente.codigo} · ${expediente.clienteNombre}'
+                        : expediente.codigo,
+                  ),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
                     Navigator.push(
@@ -91,6 +95,7 @@ class ExpedientesScreen extends ConsumerWidget {
                           id: expediente.id,
                           codigo: expediente.codigo,
                           nombre: expediente.nombre,
+                          clienteNombre: expediente.clienteNombre,
                         ),
                       ),
                     );

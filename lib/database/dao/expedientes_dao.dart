@@ -1,36 +1,71 @@
 import 'package:drift/drift.dart';
 
+import '../../features/expedientes/domain/expediente.dart' as expediente_domain;
 import '../app_database.dart';
+import '../tables/clientes.dart';
 import '../tables/expedientes.dart';
 
 part 'expedientes_dao.g.dart';
 
-@DriftAccessor(tables: [Expedientes])
+@DriftAccessor(tables: [Expedientes, Clientes])
 class ExpedientesDao extends DatabaseAccessor<AppDatabase>
     with _$ExpedientesDaoMixin {
   ExpedientesDao(AppDatabase db) : super(db);
 
-  Stream<List<Expediente>> observarExpedientes() {
+  Stream<List<expediente_domain.Expediente>> observarExpedientes() {
     final table = attachedDatabase.expedientes;
+    final clientes = attachedDatabase.clientes;
 
-    return (select(table)
-          ..where((t) => t.eliminado.equals(false))
-          ..orderBy([
-            (t) => OrderingTerm.desc(t.fechaCreacion),
-          ]))
-        .watch();
+    final query = select(table).join([
+      leftOuterJoin(clientes, clientes.id.equalsExp(table.clienteId)),
+    ])
+      ..where(table.eliminado.equals(false))
+      ..orderBy([OrderingTerm.desc(table.fechaCreacion)]);
+
+    return query.watch().map((rows) {
+      return rows.map((row) {
+        final expediente = row.readTable(table);
+        final cliente = row.readTableOrNull(clientes);
+
+        return expediente_domain.Expediente(
+          id: expediente.id,
+          codigo: expediente.codigo,
+          nombre: expediente.nombre,
+          clienteId: expediente.clienteId,
+          clienteNombre: cliente?.nombre ?? '',
+        );
+      }).toList();
+    });
   }
 
-  Future<Expediente?> obtenerExpediente(String id) {
+  Future<expediente_domain.Expediente?> obtenerExpediente(String id) async {
     final table = attachedDatabase.expedientes;
+    final clientes = attachedDatabase.clientes;
 
-    return (select(table)
-          ..where((t) => t.id.equals(id)))
-        .getSingleOrNull();
+    final query = select(table).join([
+      leftOuterJoin(clientes, clientes.id.equalsExp(table.clienteId)),
+    ])
+      ..where(table.id.equals(id));
+
+    final row = await query.getSingleOrNull();
+
+    if (row == null) {
+      return null;
+    }
+
+    final expediente = row.readTable(table);
+    final cliente = row.readTableOrNull(clientes);
+
+    return expediente_domain.Expediente(
+      id: expediente.id,
+      codigo: expediente.codigo,
+      nombre: expediente.nombre,
+      clienteId: expediente.clienteId,
+      clienteNombre: cliente?.nombre ?? '',
+    );
   }
 
-  Future<void> insertarExpediente(
-      ExpedientesCompanion expediente) async {
+  Future<void> insertarExpediente(ExpedientesCompanion expediente) async {
     final table = attachedDatabase.expedientes;
 
     await into(table).insert(expediente);

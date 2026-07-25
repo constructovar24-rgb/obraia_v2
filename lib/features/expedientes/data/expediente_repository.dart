@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:obraia_v2/database/app_database.dart';
 import 'package:obraia_v2/database/database_provider.dart';
+import 'package:obraia_v2/features/expedientes/domain/expediente.dart'
+    as expediente_domain;
 
 final expedienteRepositoryProvider = Provider<ExpedienteRepository>((ref) {
   final database = ref.read(databaseProvider);
@@ -15,26 +17,31 @@ class ExpedienteRepository {
   Future<void> crearExpediente({
     required String codigo,
     required String nombre,
+    String? clienteId,
+    String? cliente,
   }) {
     return database.crearExpediente(
       codigo: codigo,
       nombre: nombre,
+      clienteId: clienteId,
+      cliente: cliente,
     );
   }
 
-  Stream<List<Expediente>> observarExpedientes() {
-    return database.observarExpedientes();
+  Stream<List<expediente_domain.Expediente>> observarExpedientes() {
+    return database.expedientesDao.observarExpedientes();
   }
 
-  Future<Expediente?> obtenerExpediente(String id) {
-    return database.obtenerExpediente(id);
+  Future<expediente_domain.Expediente?> obtenerExpediente(String id) {
+    return database.expedientesDao.obtenerExpediente(id);
   }
 
   Future<void> actualizarExpediente({
     required String id,
     required String codigo,
     required String nombre,
-    required String cliente,
+    String? clienteId,
+    String? cliente,
     required String direccion,
     required String poblacion,
     required String provincia,
@@ -44,6 +51,7 @@ class ExpedienteRepository {
       id: id,
       codigo: codigo,
       nombre: nombre,
+      clienteId: clienteId,
       cliente: cliente,
       direccion: direccion,
       poblacion: poblacion,

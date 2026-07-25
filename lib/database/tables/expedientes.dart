@@ -1,5 +1,7 @@
 import 'package:drift/drift.dart';
 
+import 'clientes.dart';
+
 class Expedientes extends Table {
   TextColumn get id => text()();
 
@@ -10,6 +12,8 @@ class Expedientes extends Table {
   // Cliente / Promotor
   TextColumn get cliente =>
       text().withDefault(const Constant(''))();
+
+  TextColumn get clienteId => text().nullable().references(Clientes, #id)();
 
   // Datos de ubicación
   TextColumn get direccion =>
