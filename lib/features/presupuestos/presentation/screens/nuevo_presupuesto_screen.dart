@@ -18,11 +18,20 @@ class NuevoPresupuestoScreen extends ConsumerStatefulWidget {
 
 class _NuevoPresupuestoScreenState
     extends ConsumerState<NuevoPresupuestoScreen> {
+  static const List<String> _estados = [
+    'Borrador',
+    'Presentado',
+    'Aceptado',
+    'Rechazado',
+  ];
+
   final _formKey = GlobalKey<FormState>();
   final _codigoController = TextEditingController();
   final _fechaController = TextEditingController();
   final _descripcionController = TextEditingController();
+  final _importeTotalController = TextEditingController();
   late DateTime _fechaSeleccionada;
+  String _estadoSeleccionado = 'Borrador';
 
   @override
   void initState() {
@@ -36,6 +45,7 @@ class _NuevoPresupuestoScreenState
     _codigoController.dispose();
     _fechaController.dispose();
     _descripcionController.dispose();
+    _importeTotalController.dispose();
     super.dispose();
   }
 
@@ -111,6 +121,50 @@ class _NuevoPresupuestoScreenState
                 minLines: 3,
                 maxLines: 5,
               ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _importeTotalController,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                decoration: const InputDecoration(
+                  labelText: 'Importe total (€)',
+                ),
+                validator: (value) {
+                  final raw = value?.trim() ?? '';
+                  if (raw.isEmpty) {
+                    return null;
+                  }
+
+                  final parsed = double.tryParse(raw.replaceAll(',', '.'));
+                  if (parsed == null) {
+                    return 'Introduce un importe decimal válido';
+                  }
+
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              DropdownButtonFormField<String>(
+                value: _estadoSeleccionado,
+                decoration: const InputDecoration(
+                  labelText: 'Estado',
+                ),
+                items: _estados
+                    .map(
+                      (estado) => DropdownMenuItem<String>(
+                        value: estado,
+                        child: Text(estado),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  if (value == null) return;
+                  setState(() {
+                    _estadoSeleccionado = value;
+                  });
+                },
+              ),
               const SizedBox(height: 30),
               SizedBox(
                 width: double.infinity,
@@ -126,12 +180,19 @@ class _NuevoPresupuestoScreenState
                       _fechaSeleccionada.month,
                       _fechaSeleccionada.day,
                     );
+                    final importeRaw = _importeTotalController.text.trim();
+                    final importeTotal = importeRaw.isEmpty
+                        ? 0.0
+                        : (double.tryParse(importeRaw.replaceAll(',', '.')) ??
+                            0.0);
 
                     await repository.crearPresupuesto(
                       expedienteId: widget.expedienteId,
                       codigo: _codigoController.text.trim(),
                       fecha: fecha,
                       descripcion: _descripcionController.text.trim(),
+                      importeTotal: importeTotal,
+                      estado: _estadoSeleccionado,
                     );
 
                     if (!context.mounted) return;

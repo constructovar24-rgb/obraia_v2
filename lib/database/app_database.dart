@@ -30,7 +30,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -50,6 +50,71 @@ class AppDatabase extends _$AppDatabase {
             await m.addColumn(presupuestos, presupuestos.codigo);
             await m.addColumn(presupuestos, presupuestos.fecha);
             await m.addColumn(presupuestos, presupuestos.descripcion);
+          }
+
+          if (from < 5) {
+            await m.addColumn(presupuestos, presupuestos.importeTotal);
+          }
+
+          if (from < 6) {
+            await customStatement('ALTER TABLE presupuestos RENAME TO presupuestos_old');
+
+            await customStatement('''
+              CREATE TABLE presupuestos (
+                id TEXT NOT NULL PRIMARY KEY,
+                expediente_id TEXT NOT NULL REFERENCES expedientes(id),
+                titulo TEXT NOT NULL DEFAULT '',
+                codigo TEXT NOT NULL DEFAULT '',
+                fecha INTEGER NOT NULL DEFAULT (CAST(strftime('%s', CURRENT_TIMESTAMP) AS INTEGER)),
+                descripcion TEXT NOT NULL DEFAULT '',
+                importe_total REAL NOT NULL DEFAULT 0,
+                estado TEXT NOT NULL DEFAULT 'Borrador',
+                eliminado INTEGER NOT NULL DEFAULT 0 CHECK (eliminado IN (0, 1)),
+                fecha_creacion INTEGER NOT NULL DEFAULT (CAST(strftime('%s', CURRENT_TIMESTAMP) AS INTEGER)),
+                fecha_modificacion INTEGER NOT NULL DEFAULT (CAST(strftime('%s', CURRENT_TIMESTAMP) AS INTEGER))
+              )
+            ''');
+
+            await customStatement('''
+              INSERT INTO presupuestos (
+                id,
+                expediente_id,
+                titulo,
+                codigo,
+                fecha,
+                descripcion,
+                importe_total,
+                estado,
+                eliminado,
+                fecha_creacion,
+                fecha_modificacion
+              )
+              SELECT
+                id,
+                expediente_id,
+                titulo,
+                codigo,
+                fecha,
+                descripcion,
+                importe_total,
+                CASE
+                  WHEN typeof(estado) = 'integer' THEN
+                    CASE estado
+                      WHEN 1 THEN 'Presentado'
+                      WHEN 2 THEN 'Aceptado'
+                      WHEN 3 THEN 'Rechazado'
+                      ELSE 'Borrador'
+                    END
+                  WHEN trim(COALESCE(estado, '')) = '' THEN 'Borrador'
+                  ELSE estado
+                END,
+                eliminado,
+                fecha_creacion,
+                fecha_modificacion
+              FROM presupuestos_old
+            ''');
+
+            await customStatement('DROP TABLE presupuestos_old');
           }
         },
       );

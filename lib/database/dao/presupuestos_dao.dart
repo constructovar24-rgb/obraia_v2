@@ -31,6 +31,7 @@ class PresupuestosDao extends DatabaseAccessor<AppDatabase>
                   codigo: row.codigo,
                   fecha: row.fecha,
                   descripcion: row.descripcion,
+                  importeTotal: row.importeTotal,
                   estado: row.estado,
                   eliminado: row.eliminado,
                   fechaCreacion: row.fechaCreacion,

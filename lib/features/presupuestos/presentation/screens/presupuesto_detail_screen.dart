@@ -17,6 +17,10 @@ class PresupuestoDetailScreen extends StatelessWidget {
     return '$day/$month/$year';
   }
 
+  String _formatearImporte(double importe) {
+    return '${importe.toStringAsFixed(2)} €';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,6 +51,30 @@ class PresupuestoDetailScreen extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             _formatearFecha(presupuesto.fecha),
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Estado',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            presupuesto.estado,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Importe total (€)',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            _formatearImporte(presupuesto.importeTotal),
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           const SizedBox(height: 16),

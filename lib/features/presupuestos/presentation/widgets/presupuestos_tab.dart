@@ -49,6 +49,10 @@ class _PresupuestosTabState extends ConsumerState<PresupuestosTab> {
       return '$day/$month/$year';
     }
 
+    String formatearImporte(double importe) {
+      return '${importe.toStringAsFixed(2)} €';
+    }
+
     return StreamBuilder<List<presupuesto_domain.Presupuesto>>(
       stream: _stream,
       builder: (context, snapshot) {
@@ -115,9 +119,9 @@ class _PresupuestosTabState extends ConsumerState<PresupuestosTab> {
                           presupuesto.codigo,
                         ),
                         subtitle: Text(
-                          '${formatearFecha(presupuesto.fecha)}\n${presupuesto.descripcion}',
+                          '${formatearFecha(presupuesto.fecha)}\nEstado: ${presupuesto.estado}\nImporte: ${formatearImporte(presupuesto.importeTotal)}\n${presupuesto.descripcion}',
                         ),
-                        isThreeLine: presupuesto.descripcion.isNotEmpty,
+                        isThreeLine: true,
                         onTap: () {
                           Navigator.push(
                             context,

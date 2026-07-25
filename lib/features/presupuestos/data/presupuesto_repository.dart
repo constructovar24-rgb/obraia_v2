@@ -27,6 +27,8 @@ class PresupuestoRepository {
     required String codigo,
     required DateTime fecha,
     String descripcion = '',
+    double importeTotal = 0,
+    String estado = 'Borrador',
   }) {
     return database.presupuestosDao.insertarPresupuesto(
       PresupuestosCompanion.insert(
@@ -36,6 +38,8 @@ class PresupuestoRepository {
         codigo: Value(codigo),
         fecha: Value(fecha),
         descripcion: Value(descripcion),
+        importeTotal: Value(importeTotal),
+        estado: Value(estado),
       ),
     );
   }

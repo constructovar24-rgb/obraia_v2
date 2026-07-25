@@ -15,7 +15,9 @@ class Presupuestos extends Table {
 
   TextColumn get descripcion => text().withDefault(const Constant(''))();
 
-  IntColumn get estado => integer().withDefault(const Constant(0))();
+  RealColumn get importeTotal => real().withDefault(const Constant(0))();
+
+  TextColumn get estado => text().withDefault(const Constant('Borrador'))();
 
   BoolColumn get eliminado => boolean().withDefault(const Constant(false))();
 

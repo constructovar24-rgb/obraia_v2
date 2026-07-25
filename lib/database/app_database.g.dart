@@ -1802,15 +1802,27 @@ class $PresupuestosTable extends Presupuestos
     requiredDuringInsert: false,
     defaultValue: const Constant(''),
   );
+  static const VerificationMeta _importeTotalMeta = const VerificationMeta(
+    'importeTotal',
+  );
+  @override
+  late final GeneratedColumn<double> importeTotal = GeneratedColumn<double>(
+    'importe_total',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _estadoMeta = const VerificationMeta('estado');
   @override
-  late final GeneratedColumn<int> estado = GeneratedColumn<int>(
+  late final GeneratedColumn<String> estado = GeneratedColumn<String>(
     'estado',
     aliasedName,
     false,
-    type: DriftSqlType.int,
+    type: DriftSqlType.string,
     requiredDuringInsert: false,
-    defaultValue: const Constant(0),
+    defaultValue: const Constant('Borrador'),
   );
   static const VerificationMeta _eliminadoMeta = const VerificationMeta(
     'eliminado',
@@ -1861,6 +1873,7 @@ class $PresupuestosTable extends Presupuestos
     codigo,
     fecha,
     descripcion,
+    importeTotal,
     estado,
     eliminado,
     fechaCreacion,
@@ -1918,6 +1931,15 @@ class $PresupuestosTable extends Presupuestos
         descripcion.isAcceptableOrUnknown(
           data['descripcion']!,
           _descripcionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('importe_total')) {
+      context.handle(
+        _importeTotalMeta,
+        importeTotal.isAcceptableOrUnknown(
+          data['importe_total']!,
+          _importeTotalMeta,
         ),
       );
     }
@@ -1984,8 +2006,12 @@ class $PresupuestosTable extends Presupuestos
         DriftSqlType.string,
         data['${effectivePrefix}descripcion'],
       )!,
+      importeTotal: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}importe_total'],
+      )!,
       estado: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
+        DriftSqlType.string,
         data['${effectivePrefix}estado'],
       )!,
       eliminado: attachedDatabase.typeMapping.read(
@@ -2016,7 +2042,8 @@ class Presupuesto extends DataClass implements Insertable<Presupuesto> {
   final String codigo;
   final DateTime fecha;
   final String descripcion;
-  final int estado;
+  final double importeTotal;
+  final String estado;
   final bool eliminado;
   final DateTime fechaCreacion;
   final DateTime fechaModificacion;
@@ -2027,6 +2054,7 @@ class Presupuesto extends DataClass implements Insertable<Presupuesto> {
     required this.codigo,
     required this.fecha,
     required this.descripcion,
+    required this.importeTotal,
     required this.estado,
     required this.eliminado,
     required this.fechaCreacion,
@@ -2041,7 +2069,8 @@ class Presupuesto extends DataClass implements Insertable<Presupuesto> {
     map['codigo'] = Variable<String>(codigo);
     map['fecha'] = Variable<DateTime>(fecha);
     map['descripcion'] = Variable<String>(descripcion);
-    map['estado'] = Variable<int>(estado);
+    map['importe_total'] = Variable<double>(importeTotal);
+    map['estado'] = Variable<String>(estado);
     map['eliminado'] = Variable<bool>(eliminado);
     map['fecha_creacion'] = Variable<DateTime>(fechaCreacion);
     map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion);
@@ -2056,6 +2085,7 @@ class Presupuesto extends DataClass implements Insertable<Presupuesto> {
       codigo: Value(codigo),
       fecha: Value(fecha),
       descripcion: Value(descripcion),
+      importeTotal: Value(importeTotal),
       estado: Value(estado),
       eliminado: Value(eliminado),
       fechaCreacion: Value(fechaCreacion),
@@ -2075,7 +2105,8 @@ class Presupuesto extends DataClass implements Insertable<Presupuesto> {
       codigo: serializer.fromJson<String>(json['codigo']),
       fecha: serializer.fromJson<DateTime>(json['fecha']),
       descripcion: serializer.fromJson<String>(json['descripcion']),
-      estado: serializer.fromJson<int>(json['estado']),
+      importeTotal: serializer.fromJson<double>(json['importeTotal']),
+      estado: serializer.fromJson<String>(json['estado']),
       eliminado: serializer.fromJson<bool>(json['eliminado']),
       fechaCreacion: serializer.fromJson<DateTime>(json['fechaCreacion']),
       fechaModificacion: serializer.fromJson<DateTime>(
@@ -2093,7 +2124,8 @@ class Presupuesto extends DataClass implements Insertable<Presupuesto> {
       'codigo': serializer.toJson<String>(codigo),
       'fecha': serializer.toJson<DateTime>(fecha),
       'descripcion': serializer.toJson<String>(descripcion),
-      'estado': serializer.toJson<int>(estado),
+      'importeTotal': serializer.toJson<double>(importeTotal),
+      'estado': serializer.toJson<String>(estado),
       'eliminado': serializer.toJson<bool>(eliminado),
       'fechaCreacion': serializer.toJson<DateTime>(fechaCreacion),
       'fechaModificacion': serializer.toJson<DateTime>(fechaModificacion),
@@ -2107,7 +2139,8 @@ class Presupuesto extends DataClass implements Insertable<Presupuesto> {
     String? codigo,
     DateTime? fecha,
     String? descripcion,
-    int? estado,
+    double? importeTotal,
+    String? estado,
     bool? eliminado,
     DateTime? fechaCreacion,
     DateTime? fechaModificacion,
@@ -2118,6 +2151,7 @@ class Presupuesto extends DataClass implements Insertable<Presupuesto> {
     codigo: codigo ?? this.codigo,
     fecha: fecha ?? this.fecha,
     descripcion: descripcion ?? this.descripcion,
+    importeTotal: importeTotal ?? this.importeTotal,
     estado: estado ?? this.estado,
     eliminado: eliminado ?? this.eliminado,
     fechaCreacion: fechaCreacion ?? this.fechaCreacion,
@@ -2135,6 +2169,9 @@ class Presupuesto extends DataClass implements Insertable<Presupuesto> {
       descripcion: data.descripcion.present
           ? data.descripcion.value
           : this.descripcion,
+      importeTotal: data.importeTotal.present
+          ? data.importeTotal.value
+          : this.importeTotal,
       estado: data.estado.present ? data.estado.value : this.estado,
       eliminado: data.eliminado.present ? data.eliminado.value : this.eliminado,
       fechaCreacion: data.fechaCreacion.present
@@ -2155,6 +2192,7 @@ class Presupuesto extends DataClass implements Insertable<Presupuesto> {
           ..write('codigo: $codigo, ')
           ..write('fecha: $fecha, ')
           ..write('descripcion: $descripcion, ')
+          ..write('importeTotal: $importeTotal, ')
           ..write('estado: $estado, ')
           ..write('eliminado: $eliminado, ')
           ..write('fechaCreacion: $fechaCreacion, ')
@@ -2171,6 +2209,7 @@ class Presupuesto extends DataClass implements Insertable<Presupuesto> {
     codigo,
     fecha,
     descripcion,
+    importeTotal,
     estado,
     eliminado,
     fechaCreacion,
@@ -2186,6 +2225,7 @@ class Presupuesto extends DataClass implements Insertable<Presupuesto> {
           other.codigo == this.codigo &&
           other.fecha == this.fecha &&
           other.descripcion == this.descripcion &&
+          other.importeTotal == this.importeTotal &&
           other.estado == this.estado &&
           other.eliminado == this.eliminado &&
           other.fechaCreacion == this.fechaCreacion &&
@@ -2199,7 +2239,8 @@ class PresupuestosCompanion extends UpdateCompanion<Presupuesto> {
   final Value<String> codigo;
   final Value<DateTime> fecha;
   final Value<String> descripcion;
-  final Value<int> estado;
+  final Value<double> importeTotal;
+  final Value<String> estado;
   final Value<bool> eliminado;
   final Value<DateTime> fechaCreacion;
   final Value<DateTime> fechaModificacion;
@@ -2211,6 +2252,7 @@ class PresupuestosCompanion extends UpdateCompanion<Presupuesto> {
     this.codigo = const Value.absent(),
     this.fecha = const Value.absent(),
     this.descripcion = const Value.absent(),
+    this.importeTotal = const Value.absent(),
     this.estado = const Value.absent(),
     this.eliminado = const Value.absent(),
     this.fechaCreacion = const Value.absent(),
@@ -2224,6 +2266,7 @@ class PresupuestosCompanion extends UpdateCompanion<Presupuesto> {
     this.codigo = const Value.absent(),
     this.fecha = const Value.absent(),
     this.descripcion = const Value.absent(),
+    this.importeTotal = const Value.absent(),
     this.estado = const Value.absent(),
     this.eliminado = const Value.absent(),
     this.fechaCreacion = const Value.absent(),
@@ -2238,7 +2281,8 @@ class PresupuestosCompanion extends UpdateCompanion<Presupuesto> {
     Expression<String>? codigo,
     Expression<DateTime>? fecha,
     Expression<String>? descripcion,
-    Expression<int>? estado,
+    Expression<double>? importeTotal,
+    Expression<String>? estado,
     Expression<bool>? eliminado,
     Expression<DateTime>? fechaCreacion,
     Expression<DateTime>? fechaModificacion,
@@ -2251,6 +2295,7 @@ class PresupuestosCompanion extends UpdateCompanion<Presupuesto> {
       if (codigo != null) 'codigo': codigo,
       if (fecha != null) 'fecha': fecha,
       if (descripcion != null) 'descripcion': descripcion,
+      if (importeTotal != null) 'importe_total': importeTotal,
       if (estado != null) 'estado': estado,
       if (eliminado != null) 'eliminado': eliminado,
       if (fechaCreacion != null) 'fecha_creacion': fechaCreacion,
@@ -2266,7 +2311,8 @@ class PresupuestosCompanion extends UpdateCompanion<Presupuesto> {
     Value<String>? codigo,
     Value<DateTime>? fecha,
     Value<String>? descripcion,
-    Value<int>? estado,
+    Value<double>? importeTotal,
+    Value<String>? estado,
     Value<bool>? eliminado,
     Value<DateTime>? fechaCreacion,
     Value<DateTime>? fechaModificacion,
@@ -2279,6 +2325,7 @@ class PresupuestosCompanion extends UpdateCompanion<Presupuesto> {
       codigo: codigo ?? this.codigo,
       fecha: fecha ?? this.fecha,
       descripcion: descripcion ?? this.descripcion,
+      importeTotal: importeTotal ?? this.importeTotal,
       estado: estado ?? this.estado,
       eliminado: eliminado ?? this.eliminado,
       fechaCreacion: fechaCreacion ?? this.fechaCreacion,
@@ -2308,8 +2355,11 @@ class PresupuestosCompanion extends UpdateCompanion<Presupuesto> {
     if (descripcion.present) {
       map['descripcion'] = Variable<String>(descripcion.value);
     }
+    if (importeTotal.present) {
+      map['importe_total'] = Variable<double>(importeTotal.value);
+    }
     if (estado.present) {
-      map['estado'] = Variable<int>(estado.value);
+      map['estado'] = Variable<String>(estado.value);
     }
     if (eliminado.present) {
       map['eliminado'] = Variable<bool>(eliminado.value);
@@ -2335,6 +2385,7 @@ class PresupuestosCompanion extends UpdateCompanion<Presupuesto> {
           ..write('codigo: $codigo, ')
           ..write('fecha: $fecha, ')
           ..write('descripcion: $descripcion, ')
+          ..write('importeTotal: $importeTotal, ')
           ..write('estado: $estado, ')
           ..write('eliminado: $eliminado, ')
           ..write('fechaCreacion: $fechaCreacion, ')
@@ -3502,7 +3553,8 @@ typedef $$PresupuestosTableCreateCompanionBuilder =
       Value<String> codigo,
       Value<DateTime> fecha,
       Value<String> descripcion,
-      Value<int> estado,
+      Value<double> importeTotal,
+      Value<String> estado,
       Value<bool> eliminado,
       Value<DateTime> fechaCreacion,
       Value<DateTime> fechaModificacion,
@@ -3516,7 +3568,8 @@ typedef $$PresupuestosTableUpdateCompanionBuilder =
       Value<String> codigo,
       Value<DateTime> fecha,
       Value<String> descripcion,
-      Value<int> estado,
+      Value<double> importeTotal,
+      Value<String> estado,
       Value<bool> eliminado,
       Value<DateTime> fechaCreacion,
       Value<DateTime> fechaModificacion,
@@ -3580,7 +3633,12 @@ class $$PresupuestosTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get estado => $composableBuilder(
+  ColumnFilters<double> get importeTotal => $composableBuilder(
+    column: $table.importeTotal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get estado => $composableBuilder(
     column: $table.estado,
     builder: (column) => ColumnFilters(column),
   );
@@ -3658,7 +3716,12 @@ class $$PresupuestosTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get estado => $composableBuilder(
+  ColumnOrderings<double> get importeTotal => $composableBuilder(
+    column: $table.importeTotal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get estado => $composableBuilder(
     column: $table.estado,
     builder: (column) => ColumnOrderings(column),
   );
@@ -3728,7 +3791,12 @@ class $$PresupuestosTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<int> get estado =>
+  GeneratedColumn<double> get importeTotal => $composableBuilder(
+    column: $table.importeTotal,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get estado =>
       $composableBuilder(column: $table.estado, builder: (column) => column);
 
   GeneratedColumn<bool> get eliminado =>
@@ -3802,7 +3870,8 @@ class $$PresupuestosTableTableManager
                 Value<String> codigo = const Value.absent(),
                 Value<DateTime> fecha = const Value.absent(),
                 Value<String> descripcion = const Value.absent(),
-                Value<int> estado = const Value.absent(),
+                Value<double> importeTotal = const Value.absent(),
+                Value<String> estado = const Value.absent(),
                 Value<bool> eliminado = const Value.absent(),
                 Value<DateTime> fechaCreacion = const Value.absent(),
                 Value<DateTime> fechaModificacion = const Value.absent(),
@@ -3814,6 +3883,7 @@ class $$PresupuestosTableTableManager
                 codigo: codigo,
                 fecha: fecha,
                 descripcion: descripcion,
+                importeTotal: importeTotal,
                 estado: estado,
                 eliminado: eliminado,
                 fechaCreacion: fechaCreacion,
@@ -3828,7 +3898,8 @@ class $$PresupuestosTableTableManager
                 Value<String> codigo = const Value.absent(),
                 Value<DateTime> fecha = const Value.absent(),
                 Value<String> descripcion = const Value.absent(),
-                Value<int> estado = const Value.absent(),
+                Value<double> importeTotal = const Value.absent(),
+                Value<String> estado = const Value.absent(),
                 Value<bool> eliminado = const Value.absent(),
                 Value<DateTime> fechaCreacion = const Value.absent(),
                 Value<DateTime> fechaModificacion = const Value.absent(),
@@ -3840,6 +3911,7 @@ class $$PresupuestosTableTableManager
                 codigo: codigo,
                 fecha: fecha,
                 descripcion: descripcion,
+                importeTotal: importeTotal,
                 estado: estado,
                 eliminado: eliminado,
                 fechaCreacion: fechaCreacion,
