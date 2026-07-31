@@ -4,6 +4,7 @@ import 'package:obraia_v2/database/app_database.dart';
 import 'package:obraia_v2/database/database_provider.dart';
 import 'package:obraia_v2/features/presupuestos/domain/presupuesto.dart'
     as presupuesto_domain;
+import 'package:obraia_v2/features/timeline/data/timeline_repository.dart';
 import 'package:uuid/uuid.dart';
 
 final presupuestoRepositoryProvider = Provider<PresupuestoRepository>((ref) {
@@ -13,8 +14,10 @@ final presupuestoRepositoryProvider = Provider<PresupuestoRepository>((ref) {
 
 class PresupuestoRepository {
   final AppDatabase database;
+  final TimelineRepository _timelineRepository;
 
-  PresupuestoRepository(this.database);
+  PresupuestoRepository(this.database)
+      : _timelineRepository = TimelineRepository(database.timelineEventsDao);
 
   Stream<List<presupuesto_domain.Presupuesto>> observarPorExpediente(
     String expedienteId,
@@ -66,10 +69,11 @@ class PresupuestoRepository {
     String estado = 'Borrador',
   }) async {
     final codigo = await _generarCodigoPresupuesto(expedienteId);
+    final presupuestoId = const Uuid().v4();
 
-    return database.presupuestosDao.insertarPresupuesto(
+    await database.presupuestosDao.insertarPresupuesto(
       PresupuestosCompanion.insert(
-        id: const Uuid().v4(),
+        id: presupuestoId,
         expedienteId: expedienteId,
         titulo: Value(codigo),
         codigo: Value(codigo),
@@ -78,6 +82,12 @@ class PresupuestoRepository {
         importeTotal: Value(importeTotal),
         estado: Value(estado),
       ),
+    );
+
+    await _timelineRepository.registrarPresupuestoCreado(
+      expedienteId: expedienteId,
+      presupuestoId: presupuestoId,
+      titulo: codigo,
     );
   }
 

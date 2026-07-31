@@ -5883,6 +5883,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this as AppDatabase,
   );
   late final CobrosDao cobrosDao = CobrosDao(this as AppDatabase);
+  late final TimelineEventsDao timelineEventsDao = TimelineEventsDao(
+    this as AppDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
