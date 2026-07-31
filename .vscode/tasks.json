@@ -1,0 +1,90 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "flutter-analyze-sprint-9",
+			"type": "shell",
+			"command": "flutter.bat",
+			"args": [
+				"analyze"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "flutter-analyze-sprint-9-review",
+			"type": "shell",
+			"command": "flutter.bat",
+			"args": [
+				"analyze"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "flutter-analyze-sprint-9-1",
+			"type": "shell",
+			"command": "flutter.bat",
+			"args": [
+				"analyze"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "flutter-analyze-sprint-9-2",
+			"type": "shell",
+			"command": "flutter.bat",
+			"args": [
+				"analyze"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "flutter-analyze-sprint-9-2-rerun",
+			"type": "shell",
+			"command": "flutter.bat",
+			"args": [
+				"analyze"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "flutter-analyze-sprint-9-3",
+			"type": "shell",
+			"command": "flutter.bat",
+			"args": [
+				"analyze"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "flutter-analyze-sprint-9-3-confirm",
+			"type": "shell",
+			"command": "flutter.bat",
+			"args": [
+				"analyze"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "flutter-analyze-sprint-9-4",
+			"type": "shell",
+			"command": "flutter.bat",
+			"args": [
+				"analyze"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "drift-build-cobros",
+			"type": "shell",
+			"command": "flutter.bat",
+			"args": [
+				"pub",
+				"run",
+				"build_runner",
+				"build",
+				"--delete-conflicting-outputs"
+			],
+			"isBackground": false
+		}
+	]
+}

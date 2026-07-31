@@ -1,0 +1,229 @@
+import 'package:drift/drift.dart';
+
+import '../../features/facturas/domain/estado_factura.dart';
+import '../../features/facturas/domain/factura.dart' as factura_domain;
+import '../app_database.dart';
+import '../tables/clientes.dart';
+import '../tables/facturas.dart';
+import '../tables/presupuestos.dart';
+
+part 'facturas_dao.g.dart';
+
+@DriftAccessor(tables: [Facturas, Clientes, Presupuestos])
+class FacturasDao extends DatabaseAccessor<AppDatabase>
+    with _$FacturasDaoMixin {
+  FacturasDao(super.db);
+
+  factura_domain.Factura _toDomain(
+    Factura row, {
+    String clienteNombre = '',
+  }) {
+    return factura_domain.Factura(
+      id: row.id,
+      codigo: row.codigo,
+      clienteId: row.clienteId,
+      clienteNombre: clienteNombre,
+      fecha: row.fecha,
+      fechaVencimiento: row.fechaVencimiento,
+      estado: estadoFacturaFromString(row.estado),
+      subtotal: row.subtotal,
+      iva: row.iva,
+      total: row.total,
+      observaciones: row.observaciones,
+      presupuestoOrigenId: row.presupuestoOrigenId,
+    );
+  }
+
+  Future<List<String>> obtenerCodigosPorCliente(String clienteId) async {
+    final rows = await (select(facturas)
+          ..where((t) => t.clienteId.equals(clienteId)))
+        .get();
+
+    return rows.map((row) => row.codigo).toList();
+  }
+
+  Future<List<String>> obtenerCodigosPorPrefijo(String prefijo) async {
+    final rows = await (select(facturas)
+          ..where((t) => t.codigo.like('$prefijo%')))
+        .get();
+
+    return rows.map((row) => row.codigo).toList();
+  }
+
+  Stream<List<factura_domain.Factura>> observarFacturas() {
+    final tableFacturas = attachedDatabase.facturas;
+    final tableClientes = attachedDatabase.clientes;
+
+    final query = select(tableFacturas).join([
+      leftOuterJoin(tableClientes, tableClientes.id.equalsExp(tableFacturas.clienteId)),
+    ])
+      ..orderBy([OrderingTerm.desc(tableFacturas.fecha)]);
+
+    return query.watch().map((rows) {
+      return rows.map((row) {
+        final factura = row.readTable(tableFacturas);
+        final cliente = row.readTableOrNull(tableClientes);
+        final clienteNombre = cliente == null
+            ? ''
+            : '${cliente.nombre} ${cliente.apellidos}'.trim();
+
+        return _toDomain(
+          factura,
+          clienteNombre: clienteNombre,
+        );
+      }).toList();
+    });
+  }
+
+  Stream<List<factura_domain.Factura>> observarPorCliente(String clienteId) {
+    final tableFacturas = attachedDatabase.facturas;
+    final tableClientes = attachedDatabase.clientes;
+
+    final query = select(tableFacturas).join([
+      leftOuterJoin(tableClientes, tableClientes.id.equalsExp(tableFacturas.clienteId)),
+    ])
+      ..where(tableFacturas.clienteId.equals(clienteId))
+      ..orderBy([OrderingTerm.desc(tableFacturas.fecha)]);
+
+    return query
+        .watch()
+        .map((rows) {
+      return rows.map((row) {
+        final factura = row.readTable(tableFacturas);
+        final cliente = row.readTableOrNull(tableClientes);
+        final clienteNombre = cliente == null
+            ? ''
+            : '${cliente.nombre} ${cliente.apellidos}'.trim();
+
+        return _toDomain(
+          factura,
+          clienteNombre: clienteNombre,
+        );
+      }).toList();
+    });
+  }
+
+  Stream<List<factura_domain.Factura>> observarPorExpediente(
+    String expedienteId,
+  ) {
+    final tableFacturas = attachedDatabase.facturas;
+    final tableClientes = attachedDatabase.clientes;
+    final tablePresupuestos = attachedDatabase.presupuestos;
+
+    final query = select(tableFacturas).join([
+      innerJoin(
+        tablePresupuestos,
+        tablePresupuestos.id.equalsExp(tableFacturas.presupuestoOrigenId),
+      ),
+      leftOuterJoin(
+        tableClientes,
+        tableClientes.id.equalsExp(tableFacturas.clienteId),
+      ),
+    ])
+      ..where(tablePresupuestos.expedienteId.equals(expedienteId))
+      ..orderBy([OrderingTerm.desc(tableFacturas.fecha)]);
+
+    return query.watch().map((rows) {
+      return rows.map((row) {
+        final factura = row.readTable(tableFacturas);
+        final cliente = row.readTableOrNull(tableClientes);
+        final clienteNombre = cliente == null
+            ? ''
+            : '${cliente.nombre} ${cliente.apellidos}'.trim();
+
+        return _toDomain(
+          factura,
+          clienteNombre: clienteNombre,
+        );
+      }).toList();
+    });
+  }
+
+  Future<factura_domain.Factura?> obtenerPorId(String id) async {
+    final tableFacturas = attachedDatabase.facturas;
+    final tableClientes = attachedDatabase.clientes;
+
+    final row = await (select(tableFacturas).join([
+      leftOuterJoin(tableClientes, tableClientes.id.equalsExp(tableFacturas.clienteId)),
+    ])
+          ..where(tableFacturas.id.equals(id)))
+        .getSingleOrNull();
+
+    if (row == null) {
+      return null;
+    }
+
+    final factura = row.readTable(tableFacturas);
+    final cliente = row.readTableOrNull(tableClientes);
+    final clienteNombre = cliente == null
+        ? ''
+        : '${cliente.nombre} ${cliente.apellidos}'.trim();
+
+    return _toDomain(
+      factura,
+      clienteNombre: clienteNombre,
+    );
+  }
+
+  Future<String?> obtenerIdPorPresupuestoOrigen(String presupuestoId) async {
+    final row = await (select(facturas)
+          ..where((t) => t.presupuestoOrigenId.equals(presupuestoId))
+          ..limit(1))
+        .getSingleOrNull();
+
+    return row?.id;
+  }
+
+  Future<void> insertarFactura(FacturasCompanion factura) async {
+    await into(facturas).insert(factura);
+  }
+
+  Future<void> actualizarTotales({
+    required String facturaId,
+    required double subtotal,
+    required double iva,
+    required double total,
+  }) async {
+    await (update(facturas)..where((t) => t.id.equals(facturaId))).write(
+      FacturasCompanion(
+        subtotal: Value(subtotal),
+        iva: Value(iva),
+        total: Value(total),
+        fechaModificacion: Value(DateTime.now()),
+      ),
+    );
+  }
+
+  Future<void> actualizarEstado(String facturaId, String estado) async {
+    await (update(facturas)..where((t) => t.id.equals(facturaId))).write(
+      FacturasCompanion(
+        estado: Value(estado),
+        fechaModificacion: Value(DateTime.now()),
+      ),
+    );
+  }
+
+  Future<void> actualizarFactura({
+    required String id,
+    required String clienteId,
+    required DateTime fecha,
+    required DateTime fechaVencimiento,
+    required String estado,
+    required String observaciones,
+  }) async {
+    await (update(facturas)..where((t) => t.id.equals(id))).write(
+      FacturasCompanion(
+        clienteId: Value(clienteId),
+        fecha: Value(fecha),
+        fechaVencimiento: Value(fechaVencimiento),
+        estado: Value(estado),
+        observaciones: Value(observaciones),
+        fechaModificacion: Value(DateTime.now()),
+      ),
+    );
+  }
+
+  Future<void> eliminarFactura(String id) async {
+    await (delete(facturas)..where((t) => t.id.equals(id))).go();
+  }
+}

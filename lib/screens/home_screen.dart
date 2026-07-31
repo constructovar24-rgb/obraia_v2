@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../features/dashboard/presentation/screens/dashboard_screen.dart';
+import '../features/facturas/presentation/screens/facturas_screen.dart';
 import 'presupuesto_menu_screen.dart';
 import '../features/expedientes/presentation/screens/expedientes_screen.dart';
 import '../features/clientes/presentation/screens/clientes_screen.dart';
+import '../features/search/presentation/screens/search_screen.dart';
+import '../features/configuracion/presentation/screens/empresa_configuracion_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -78,6 +82,30 @@ class HomeScreen extends StatelessWidget {
                     },
                   ),
                   _HomeButton(
+                    icon: Icons.manage_search,
+                    titulo: 'Búsqueda global',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const SearchScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  _HomeButton(
+                    icon: Icons.receipt_long,
+                    titulo: 'Facturas',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const FacturasScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  _HomeButton(
                     icon: Icons.home_repair_service,
                     titulo: 'Obras',
                     onTap: () {},
@@ -89,8 +117,27 @@ class HomeScreen extends StatelessWidget {
                   ),
                   _HomeButton(
                     icon: Icons.smart_toy,
-                    titulo: 'IA',
-                    onTap: () {},
+                    titulo: 'Dashboard',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const DashboardScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  _HomeButton(
+                    icon: Icons.settings,
+                    titulo: 'Configuración',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const EmpresaConfiguracionScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

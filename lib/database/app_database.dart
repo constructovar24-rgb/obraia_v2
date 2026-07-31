@@ -2,15 +2,26 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'tables/expedientes.dart';
 import 'tables/clientes.dart';
 import 'tables/presupuestos.dart';
+import 'tables/lineas_presupuesto.dart';
+import 'tables/empresa_configuracion.dart';
+import 'tables/facturas.dart';
+import 'tables/factura_lineas.dart';
+import 'tables/cobros.dart';
 import 'dao/expedientes_dao.dart';
 import 'dao/clientes_dao.dart';
 import 'dao/presupuestos_dao.dart';
+import 'dao/lineas_presupuesto_dao.dart';
+import 'dao/empresa_configuracion_dao.dart';
+import 'dao/facturas_dao.dart';
+import 'dao/factura_lineas_dao.dart';
+import 'dao/cobros_dao.dart';
 
 part 'app_database.g.dart';
 
@@ -19,18 +30,28 @@ part 'app_database.g.dart';
     Expedientes,
     Clientes,
     Presupuestos,
+    LineasPresupuesto,
+    EmpresaConfiguracion,
+    Facturas,
+    FacturaLineas,
+    Cobros,
   ],
   daos: [
     ExpedientesDao,
     ClientesDao,
     PresupuestosDao,
+    LineasPresupuestoDao,
+    EmpresaConfiguracionDao,
+    FacturasDao,
+    FacturaLineasDao,
+    CobrosDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -115,6 +136,27 @@ class AppDatabase extends _$AppDatabase {
             ''');
 
             await customStatement('DROP TABLE presupuestos_old');
+          }
+
+          if (from < 7) {
+            await m.createTable(lineasPresupuesto);
+          }
+
+          if (from < 8) {
+            await m.addColumn(presupuestos, presupuestos.ivaPorcentaje);
+          }
+
+          if (from < 9) {
+            await m.createTable(empresaConfiguracion);
+          }
+
+          if (from < 10) {
+            await m.createTable(facturas);
+            await m.createTable(facturaLineas);
+          }
+
+          if (from < 11) {
+            await m.createTable(cobros);
           }
         },
       );
@@ -272,9 +314,9 @@ LazyDatabase _openConnection() {
       p.join(dir.path, 'obraia.sqlite'),
     );
 
-    print('========================================');
-    print('BASE DE DATOS: ${file.path}');
-    print('========================================');
+    debugPrint('========================================');
+    debugPrint('BASE DE DATOS: ${file.path}');
+    debugPrint('========================================');
 
     return NativeDatabase(file);
   });

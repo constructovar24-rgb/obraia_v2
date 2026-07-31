@@ -10,7 +10,7 @@ part 'expedientes_dao.g.dart';
 @DriftAccessor(tables: [Expedientes, Clientes])
 class ExpedientesDao extends DatabaseAccessor<AppDatabase>
     with _$ExpedientesDaoMixin {
-  ExpedientesDao(AppDatabase db) : super(db);
+  ExpedientesDao(super.db);
 
   Stream<List<expediente_domain.Expediente>> observarExpedientes() {
     final table = attachedDatabase.expedientes;

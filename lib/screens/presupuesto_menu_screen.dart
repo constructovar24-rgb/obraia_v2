@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../core/widgets/app_page_header.dart';
 import 'presupuesto_screen.dart';
 
 class PresupuestoMenuScreen extends StatelessWidget {
@@ -8,9 +9,7 @@ class PresupuestoMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Presupuestos'),
-      ),
+      appBar: const AppPageHeader(title: 'Presupuestos'),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: GridView.count(

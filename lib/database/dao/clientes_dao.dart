@@ -9,7 +9,7 @@ part 'clientes_dao.g.dart';
 @DriftAccessor(tables: [Clientes])
 class ClientesDao extends DatabaseAccessor<AppDatabase>
     with _$ClientesDaoMixin {
-  ClientesDao(AppDatabase db) : super(db);
+  ClientesDao(super.db);
 
   Stream<List<cliente_domain.Cliente>> observarClientes() {
     return (select(clientes)

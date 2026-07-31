@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/shortcuts/app_shortcuts.dart';
+import '../../../../core/widgets/app_page_header.dart';
+import '../../../../core/widgets/entity_summary_card.dart';
+import '../../../../core/widgets/status_chip.dart';
+import '../../../facturas/presentation/widgets/facturas_tab.dart';
 import 'cliente_tab.dart';
 import 'datos_generales_screen.dart';
 import '../../../presupuestos/presentation/widgets/presupuestos_tab.dart';
@@ -34,69 +39,57 @@ class ExpedienteDetailScreen extends StatelessWidget {
 
     return DefaultTabController(
       length: _tabs.length,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(codigo),
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(hasCliente ? 196 : 172),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            codigo,
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            nombre,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          if (hasCliente) ...[
-                            const SizedBox(height: 6),
-                            Text(
-                              'Cliente: $clienteNombre',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          ],
-                          const SizedBox(height: 8),
-                          const Chip(
-                            label: Text('Sin estado'),
-                          ),
-                        ],
+      child: AppShortcutScope(
+        onBack: () => Navigator.maybePop(context),
+        child: Scaffold(
+          appBar: AppPageHeader(
+            showBackButton: true,
+            title: 'Expediente',
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(hasCliente ? 196 : 172),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+                    child: EntitySummaryCard(
+                      title: codigo,
+                      subtitle: nombre,
+                      details: hasCliente
+                          ? [
+                              Text(
+                                'Cliente: $clienteNombre',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ]
+                          : null,
+                      statusWidget: const StatusChip(
+                        label: 'Sin estado',
+                        type: StatusType.neutral,
                       ),
                     ),
                   ),
-                ),
-                const TabBar(
-                  isScrollable: true,
-                  tabs: _tabs,
-                ),
-              ],
+                  const TabBar(
+                    isScrollable: true,
+                    tabs: _tabs,
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-        body: TabBarView(
-          children: [
-            DatosGeneralesTab(
-              id: id,
-              codigoExpediente: codigo,
-            ),
-            ClienteTab(expedienteId: id),
-            PresupuestosTab(expedienteId: id),
-            const Center(child: Text('En desarrollo')),
-            const Center(child: Text('En desarrollo')),
-            const Center(child: Text('En desarrollo')),
-            const Center(child: Text('En desarrollo')),
-          ],
+          body: TabBarView(
+            children: [
+              DatosGeneralesTab(
+                id: id,
+                codigoExpediente: codigo,
+              ),
+              ClienteTab(expedienteId: id),
+              PresupuestosTab(expedienteId: id),
+              const Center(child: Text('En desarrollo')),
+              FacturasTab(expedienteId: id),
+              const Center(child: Text('En desarrollo')),
+              const Center(child: Text('En desarrollo')),
+            ],
+          ),
         ),
       ),
     );

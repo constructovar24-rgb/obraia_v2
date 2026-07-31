@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/shortcuts/app_shortcuts.dart';
 import '../../data/presupuesto_repository.dart';
 
 class NuevoPresupuestoScreen extends ConsumerStatefulWidget {
@@ -26,7 +27,6 @@ class _NuevoPresupuestoScreenState
   ];
 
   final _formKey = GlobalKey<FormState>();
-  final _codigoController = TextEditingController();
   final _fechaController = TextEditingController();
   final _descripcionController = TextEditingController();
   final _importeTotalController = TextEditingController();
@@ -42,7 +42,6 @@ class _NuevoPresupuestoScreenState
 
   @override
   void dispose() {
-    _codigoController.dispose();
     _fechaController.dispose();
     _descripcionController.dispose();
     _importeTotalController.dispose();
@@ -76,133 +75,124 @@ class _NuevoPresupuestoScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Nuevo presupuesto'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _codigoController,
-                decoration: const InputDecoration(
-                  labelText: 'Código',
+    return AppShortcutScope(
+      onBack: () {
+        Navigator.maybePop(context);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Nuevo presupuesto'),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                TextFormField(
+                  readOnly: true,
+                  controller: _fechaController,
+                  decoration: const InputDecoration(
+                    labelText: 'Fecha',
+                    suffixIcon: Icon(Icons.calendar_today),
+                  ),
+                  onTap: _seleccionarFecha,
+                  validator: (value) =>
+                      (value == null || value.trim().isEmpty)
+                          ? 'La fecha es obligatoria'
+                          : null,
                 ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'El código es obligatorio';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                readOnly: true,
-                controller: _fechaController,
-                decoration: const InputDecoration(
-                  labelText: 'Fecha',
-                  suffixIcon: Icon(Icons.calendar_today),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: _descripcionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Descripción',
+                  ),
+                  minLines: 3,
+                  maxLines: 5,
                 ),
-                onTap: _seleccionarFecha,
-                validator: (value) =>
-                    (value == null || value.trim().isEmpty)
-                        ? 'La fecha es obligatoria'
-                        : null,
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: _descripcionController,
-                decoration: const InputDecoration(
-                  labelText: 'Descripción',
-                ),
-                minLines: 3,
-                maxLines: 5,
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: _importeTotalController,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                decoration: const InputDecoration(
-                  labelText: 'Importe total (€)',
-                ),
-                validator: (value) {
-                  final raw = value?.trim() ?? '';
-                  if (raw.isEmpty) {
-                    return null;
-                  }
-
-                  final parsed = double.tryParse(raw.replaceAll(',', '.'));
-                  if (parsed == null) {
-                    return 'Introduce un importe decimal válido';
-                  }
-
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              DropdownButtonFormField<String>(
-                value: _estadoSeleccionado,
-                decoration: const InputDecoration(
-                  labelText: 'Estado',
-                ),
-                items: _estados
-                    .map(
-                      (estado) => DropdownMenuItem<String>(
-                        value: estado,
-                        child: Text(estado),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    _estadoSeleccionado = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 30),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton.icon(
-                  onPressed: () async {
-                    if (!_formKey.currentState!.validate()) {
-                      return;
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: _importeTotalController,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  decoration: const InputDecoration(
+                    labelText: 'Importe total (€)',
+                  ),
+                  validator: (value) {
+                    final raw = value?.trim() ?? '';
+                    if (raw.isEmpty) {
+                      return null;
                     }
 
-                    final repository = ref.read(presupuestoRepositoryProvider);
-                    final fecha = DateTime(
-                      _fechaSeleccionada.year,
-                      _fechaSeleccionada.month,
-                      _fechaSeleccionada.day,
-                    );
-                    final importeRaw = _importeTotalController.text.trim();
-                    final importeTotal = importeRaw.isEmpty
-                        ? 0.0
-                        : (double.tryParse(importeRaw.replaceAll(',', '.')) ??
-                            0.0);
+                    final parsed = double.tryParse(raw.replaceAll(',', '.'));
+                    if (parsed == null) {
+                      return 'Introduce un importe decimal válido';
+                    }
 
-                    await repository.crearPresupuesto(
-                      expedienteId: widget.expedienteId,
-                      codigo: _codigoController.text.trim(),
-                      fecha: fecha,
-                      descripcion: _descripcionController.text.trim(),
-                      importeTotal: importeTotal,
-                      estado: _estadoSeleccionado,
-                    );
-
-                    if (!context.mounted) return;
-                    Navigator.of(context).pop();
+                    return null;
                   },
-                  icon: const Icon(Icons.save),
-                  label: const Text('Guardar'),
                 ),
-              ),
-            ],
+                const SizedBox(height: 20),
+                DropdownButtonFormField<String>(
+                  initialValue: _estadoSeleccionado,
+                  decoration: const InputDecoration(
+                    labelText: 'Estado',
+                  ),
+                  items: _estados
+                      .map(
+                        (estado) => DropdownMenuItem<String>(
+                          value: estado,
+                          child: Text(estado),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    if (value == null) return;
+                    setState(() {
+                      _estadoSeleccionado = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 30),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: () async {
+                      if (!_formKey.currentState!.validate()) {
+                        return;
+                      }
+
+                      final repository = ref.read(presupuestoRepositoryProvider);
+                      final fecha = DateTime(
+                        _fechaSeleccionada.year,
+                        _fechaSeleccionada.month,
+                        _fechaSeleccionada.day,
+                      );
+                      final importeRaw = _importeTotalController.text.trim();
+                      final importeTotal = importeRaw.isEmpty
+                          ? 0.0
+                          : (double.tryParse(importeRaw.replaceAll(',', '.')) ??
+                              0.0);
+
+                      await repository.crearPresupuesto(
+                        expedienteId: widget.expedienteId,
+                        fecha: fecha,
+                        descripcion: _descripcionController.text.trim(),
+                        importeTotal: importeTotal,
+                        estado: _estadoSeleccionado,
+                      );
+
+                      if (!context.mounted) return;
+                      Navigator.of(context).pop();
+                    },
+                    icon: const Icon(Icons.save),
+                    label: const Text('Guardar'),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

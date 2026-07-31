@@ -5,6 +5,7 @@ class Presupuesto {
   final DateTime fecha;
   final String descripcion;
   final double importeTotal;
+  final double ivaPorcentaje;
   final String estado;
   final bool eliminado;
   final DateTime fechaCreacion;
@@ -17,6 +18,7 @@ class Presupuesto {
     required this.fecha,
     required this.descripcion,
     required this.importeTotal,
+    required this.ivaPorcentaje,
     required this.estado,
     required this.eliminado,
     required this.fechaCreacion,

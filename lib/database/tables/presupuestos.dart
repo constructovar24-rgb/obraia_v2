@@ -17,6 +17,8 @@ class Presupuestos extends Table {
 
   RealColumn get importeTotal => real().withDefault(const Constant(0))();
 
+  RealColumn get ivaPorcentaje => real().withDefault(const Constant(21.0))();
+
   TextColumn get estado => text().withDefault(const Constant('Borrador'))();
 
   BoolColumn get eliminado => boolean().withDefault(const Constant(false))();

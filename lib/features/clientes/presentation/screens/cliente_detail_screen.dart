@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/widgets/app_page_header.dart';
+import '../../../../core/widgets/entity_summary_card.dart';
 import '../../../../database/database_provider.dart';
 import '../../data/cliente_repository.dart';
 import '../../domain/cliente.dart';
@@ -19,11 +21,13 @@ class ClienteDetailScreen extends ConsumerWidget {
     final repository = ClienteRepository(ref.read(databaseProvider));
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('${cliente.nombre} ${cliente.apellidos}'.trim()),
+      appBar: AppPageHeader(
+        showBackButton: true,
+        title: 'Cliente',
         actions: [
-          IconButton(
-            icon: const Icon(Icons.delete_outline),
+          AppPageHeaderAction(
+            icon: Icons.delete_outline,
+            tooltip: 'Eliminar cliente',
             onPressed: () async {
               await repository.eliminarCliente(cliente.id);
 
@@ -37,13 +41,11 @@ class ClienteDetailScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text(
-            '${cliente.nombre} ${cliente.apellidos}'.trim(),
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          const SizedBox(height: 8),
-          Chip(
-            label: Text(cliente.empresa.isNotEmpty ? cliente.empresa : 'Sin empresa'),
+          EntitySummaryCard(
+            title: '${cliente.nombre} ${cliente.apellidos}'.trim(),
+            subtitle: cliente.empresa.isNotEmpty
+                ? cliente.empresa
+                : 'Sin empresa',
           ),
           const SizedBox(height: 24),
           ListTile(
