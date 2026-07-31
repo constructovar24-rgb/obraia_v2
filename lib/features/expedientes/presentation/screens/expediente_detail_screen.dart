@@ -5,6 +5,7 @@ import '../../../../core/widgets/app_page_header.dart';
 import '../../../../core/widgets/entity_summary_card.dart';
 import '../../../../core/widgets/status_chip.dart';
 import '../../../facturas/presentation/widgets/facturas_tab.dart';
+import '../../../timeline/presentation/timeline_page.dart';
 import 'cliente_tab.dart';
 import 'datos_generales_screen.dart';
 import '../../../presupuestos/presentation/widgets/presupuestos_tab.dart';
@@ -29,6 +30,7 @@ class ExpedienteDetailScreen extends StatelessWidget {
     Tab(text: 'Presupuestos'),
     Tab(text: 'Certificaciones'),
     Tab(text: 'Facturas'),
+    Tab(text: 'Timeline'),
     Tab(text: 'Documentos'),
     Tab(text: 'Notas'),
   ];
@@ -86,6 +88,7 @@ class ExpedienteDetailScreen extends StatelessWidget {
               PresupuestosTab(expedienteId: id),
               const Center(child: Text('En desarrollo')),
               FacturasTab(expedienteId: id),
+              TimelinePage(expedienteId: id),
               const Center(child: Text('En desarrollo')),
               const Center(child: Text('En desarrollo')),
             ],
