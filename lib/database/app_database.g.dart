@@ -5326,6 +5326,532 @@ class CobrosCompanion extends UpdateCompanion<Cobro> {
   }
 }
 
+class $TimelineEventsTable extends TimelineEvents
+    with TableInfo<$TimelineEventsTable, TimelineEvent> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TimelineEventsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _expedienteIdMeta = const VerificationMeta(
+    'expedienteId',
+  );
+  @override
+  late final GeneratedColumn<String> expedienteId = GeneratedColumn<String>(
+    'expediente_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES expedientes (id)',
+    ),
+  );
+  static const VerificationMeta _fechaMeta = const VerificationMeta('fecha');
+  @override
+  late final GeneratedColumn<DateTime> fecha = GeneratedColumn<DateTime>(
+    'fecha',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _tipoMeta = const VerificationMeta('tipo');
+  @override
+  late final GeneratedColumn<String> tipo = GeneratedColumn<String>(
+    'tipo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _tituloMeta = const VerificationMeta('titulo');
+  @override
+  late final GeneratedColumn<String> titulo = GeneratedColumn<String>(
+    'titulo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _descripcionMeta = const VerificationMeta(
+    'descripcion',
+  );
+  @override
+  late final GeneratedColumn<String> descripcion = GeneratedColumn<String>(
+    'descripcion',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _referenciaIdMeta = const VerificationMeta(
+    'referenciaId',
+  );
+  @override
+  late final GeneratedColumn<String> referenciaId = GeneratedColumn<String>(
+    'referencia_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _fechaCreacionMeta = const VerificationMeta(
+    'fechaCreacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaCreacion =
+      GeneratedColumn<DateTime>(
+        'fecha_creacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+        defaultValue: currentDateAndTime,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    expedienteId,
+    fecha,
+    tipo,
+    titulo,
+    descripcion,
+    referenciaId,
+    fechaCreacion,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'timeline_events';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TimelineEvent> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('expediente_id')) {
+      context.handle(
+        _expedienteIdMeta,
+        expedienteId.isAcceptableOrUnknown(
+          data['expediente_id']!,
+          _expedienteIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_expedienteIdMeta);
+    }
+    if (data.containsKey('fecha')) {
+      context.handle(
+        _fechaMeta,
+        fecha.isAcceptableOrUnknown(data['fecha']!, _fechaMeta),
+      );
+    }
+    if (data.containsKey('tipo')) {
+      context.handle(
+        _tipoMeta,
+        tipo.isAcceptableOrUnknown(data['tipo']!, _tipoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tipoMeta);
+    }
+    if (data.containsKey('titulo')) {
+      context.handle(
+        _tituloMeta,
+        titulo.isAcceptableOrUnknown(data['titulo']!, _tituloMeta),
+      );
+    }
+    if (data.containsKey('descripcion')) {
+      context.handle(
+        _descripcionMeta,
+        descripcion.isAcceptableOrUnknown(
+          data['descripcion']!,
+          _descripcionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('referencia_id')) {
+      context.handle(
+        _referenciaIdMeta,
+        referenciaId.isAcceptableOrUnknown(
+          data['referencia_id']!,
+          _referenciaIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('fecha_creacion')) {
+      context.handle(
+        _fechaCreacionMeta,
+        fechaCreacion.isAcceptableOrUnknown(
+          data['fecha_creacion']!,
+          _fechaCreacionMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TimelineEvent map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TimelineEvent(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      expedienteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}expediente_id'],
+      )!,
+      fecha: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha'],
+      )!,
+      tipo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tipo'],
+      )!,
+      titulo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}titulo'],
+      )!,
+      descripcion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}descripcion'],
+      ),
+      referenciaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}referencia_id'],
+      ),
+      fechaCreacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_creacion'],
+      )!,
+    );
+  }
+
+  @override
+  $TimelineEventsTable createAlias(String alias) {
+    return $TimelineEventsTable(attachedDatabase, alias);
+  }
+}
+
+class TimelineEvent extends DataClass implements Insertable<TimelineEvent> {
+  final String id;
+  final String expedienteId;
+  final DateTime fecha;
+  final String tipo;
+  final String titulo;
+  final String? descripcion;
+  final String? referenciaId;
+  final DateTime fechaCreacion;
+  const TimelineEvent({
+    required this.id,
+    required this.expedienteId,
+    required this.fecha,
+    required this.tipo,
+    required this.titulo,
+    this.descripcion,
+    this.referenciaId,
+    required this.fechaCreacion,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['expediente_id'] = Variable<String>(expedienteId);
+    map['fecha'] = Variable<DateTime>(fecha);
+    map['tipo'] = Variable<String>(tipo);
+    map['titulo'] = Variable<String>(titulo);
+    if (!nullToAbsent || descripcion != null) {
+      map['descripcion'] = Variable<String>(descripcion);
+    }
+    if (!nullToAbsent || referenciaId != null) {
+      map['referencia_id'] = Variable<String>(referenciaId);
+    }
+    map['fecha_creacion'] = Variable<DateTime>(fechaCreacion);
+    return map;
+  }
+
+  TimelineEventsCompanion toCompanion(bool nullToAbsent) {
+    return TimelineEventsCompanion(
+      id: Value(id),
+      expedienteId: Value(expedienteId),
+      fecha: Value(fecha),
+      tipo: Value(tipo),
+      titulo: Value(titulo),
+      descripcion: descripcion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(descripcion),
+      referenciaId: referenciaId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(referenciaId),
+      fechaCreacion: Value(fechaCreacion),
+    );
+  }
+
+  factory TimelineEvent.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TimelineEvent(
+      id: serializer.fromJson<String>(json['id']),
+      expedienteId: serializer.fromJson<String>(json['expedienteId']),
+      fecha: serializer.fromJson<DateTime>(json['fecha']),
+      tipo: serializer.fromJson<String>(json['tipo']),
+      titulo: serializer.fromJson<String>(json['titulo']),
+      descripcion: serializer.fromJson<String?>(json['descripcion']),
+      referenciaId: serializer.fromJson<String?>(json['referenciaId']),
+      fechaCreacion: serializer.fromJson<DateTime>(json['fechaCreacion']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'expedienteId': serializer.toJson<String>(expedienteId),
+      'fecha': serializer.toJson<DateTime>(fecha),
+      'tipo': serializer.toJson<String>(tipo),
+      'titulo': serializer.toJson<String>(titulo),
+      'descripcion': serializer.toJson<String?>(descripcion),
+      'referenciaId': serializer.toJson<String?>(referenciaId),
+      'fechaCreacion': serializer.toJson<DateTime>(fechaCreacion),
+    };
+  }
+
+  TimelineEvent copyWith({
+    String? id,
+    String? expedienteId,
+    DateTime? fecha,
+    String? tipo,
+    String? titulo,
+    Value<String?> descripcion = const Value.absent(),
+    Value<String?> referenciaId = const Value.absent(),
+    DateTime? fechaCreacion,
+  }) => TimelineEvent(
+    id: id ?? this.id,
+    expedienteId: expedienteId ?? this.expedienteId,
+    fecha: fecha ?? this.fecha,
+    tipo: tipo ?? this.tipo,
+    titulo: titulo ?? this.titulo,
+    descripcion: descripcion.present ? descripcion.value : this.descripcion,
+    referenciaId: referenciaId.present ? referenciaId.value : this.referenciaId,
+    fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+  );
+  TimelineEvent copyWithCompanion(TimelineEventsCompanion data) {
+    return TimelineEvent(
+      id: data.id.present ? data.id.value : this.id,
+      expedienteId: data.expedienteId.present
+          ? data.expedienteId.value
+          : this.expedienteId,
+      fecha: data.fecha.present ? data.fecha.value : this.fecha,
+      tipo: data.tipo.present ? data.tipo.value : this.tipo,
+      titulo: data.titulo.present ? data.titulo.value : this.titulo,
+      descripcion: data.descripcion.present
+          ? data.descripcion.value
+          : this.descripcion,
+      referenciaId: data.referenciaId.present
+          ? data.referenciaId.value
+          : this.referenciaId,
+      fechaCreacion: data.fechaCreacion.present
+          ? data.fechaCreacion.value
+          : this.fechaCreacion,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TimelineEvent(')
+          ..write('id: $id, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('fecha: $fecha, ')
+          ..write('tipo: $tipo, ')
+          ..write('titulo: $titulo, ')
+          ..write('descripcion: $descripcion, ')
+          ..write('referenciaId: $referenciaId, ')
+          ..write('fechaCreacion: $fechaCreacion')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    expedienteId,
+    fecha,
+    tipo,
+    titulo,
+    descripcion,
+    referenciaId,
+    fechaCreacion,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TimelineEvent &&
+          other.id == this.id &&
+          other.expedienteId == this.expedienteId &&
+          other.fecha == this.fecha &&
+          other.tipo == this.tipo &&
+          other.titulo == this.titulo &&
+          other.descripcion == this.descripcion &&
+          other.referenciaId == this.referenciaId &&
+          other.fechaCreacion == this.fechaCreacion);
+}
+
+class TimelineEventsCompanion extends UpdateCompanion<TimelineEvent> {
+  final Value<String> id;
+  final Value<String> expedienteId;
+  final Value<DateTime> fecha;
+  final Value<String> tipo;
+  final Value<String> titulo;
+  final Value<String?> descripcion;
+  final Value<String?> referenciaId;
+  final Value<DateTime> fechaCreacion;
+  final Value<int> rowid;
+  const TimelineEventsCompanion({
+    this.id = const Value.absent(),
+    this.expedienteId = const Value.absent(),
+    this.fecha = const Value.absent(),
+    this.tipo = const Value.absent(),
+    this.titulo = const Value.absent(),
+    this.descripcion = const Value.absent(),
+    this.referenciaId = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TimelineEventsCompanion.insert({
+    required String id,
+    required String expedienteId,
+    this.fecha = const Value.absent(),
+    required String tipo,
+    this.titulo = const Value.absent(),
+    this.descripcion = const Value.absent(),
+    this.referenciaId = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       expedienteId = Value(expedienteId),
+       tipo = Value(tipo);
+  static Insertable<TimelineEvent> custom({
+    Expression<String>? id,
+    Expression<String>? expedienteId,
+    Expression<DateTime>? fecha,
+    Expression<String>? tipo,
+    Expression<String>? titulo,
+    Expression<String>? descripcion,
+    Expression<String>? referenciaId,
+    Expression<DateTime>? fechaCreacion,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (expedienteId != null) 'expediente_id': expedienteId,
+      if (fecha != null) 'fecha': fecha,
+      if (tipo != null) 'tipo': tipo,
+      if (titulo != null) 'titulo': titulo,
+      if (descripcion != null) 'descripcion': descripcion,
+      if (referenciaId != null) 'referencia_id': referenciaId,
+      if (fechaCreacion != null) 'fecha_creacion': fechaCreacion,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TimelineEventsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? expedienteId,
+    Value<DateTime>? fecha,
+    Value<String>? tipo,
+    Value<String>? titulo,
+    Value<String?>? descripcion,
+    Value<String?>? referenciaId,
+    Value<DateTime>? fechaCreacion,
+    Value<int>? rowid,
+  }) {
+    return TimelineEventsCompanion(
+      id: id ?? this.id,
+      expedienteId: expedienteId ?? this.expedienteId,
+      fecha: fecha ?? this.fecha,
+      tipo: tipo ?? this.tipo,
+      titulo: titulo ?? this.titulo,
+      descripcion: descripcion ?? this.descripcion,
+      referenciaId: referenciaId ?? this.referenciaId,
+      fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (expedienteId.present) {
+      map['expediente_id'] = Variable<String>(expedienteId.value);
+    }
+    if (fecha.present) {
+      map['fecha'] = Variable<DateTime>(fecha.value);
+    }
+    if (tipo.present) {
+      map['tipo'] = Variable<String>(tipo.value);
+    }
+    if (titulo.present) {
+      map['titulo'] = Variable<String>(titulo.value);
+    }
+    if (descripcion.present) {
+      map['descripcion'] = Variable<String>(descripcion.value);
+    }
+    if (referenciaId.present) {
+      map['referencia_id'] = Variable<String>(referenciaId.value);
+    }
+    if (fechaCreacion.present) {
+      map['fecha_creacion'] = Variable<DateTime>(fechaCreacion.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TimelineEventsCompanion(')
+          ..write('id: $id, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('fecha: $fecha, ')
+          ..write('tipo: $tipo, ')
+          ..write('titulo: $titulo, ')
+          ..write('descripcion: $descripcion, ')
+          ..write('referenciaId: $referenciaId, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -5339,6 +5865,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $FacturasTable facturas = $FacturasTable(this);
   late final $FacturaLineasTable facturaLineas = $FacturaLineasTable(this);
   late final $CobrosTable cobros = $CobrosTable(this);
+  late final $TimelineEventsTable timelineEvents = $TimelineEventsTable(this);
   late final ExpedientesDao expedientesDao = ExpedientesDao(
     this as AppDatabase,
   );
@@ -5369,6 +5896,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     facturas,
     facturaLineas,
     cobros,
+    timelineEvents,
   ];
 }
 
@@ -6080,6 +6608,24 @@ final class $$ExpedientesTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<$TimelineEventsTable, List<TimelineEvent>>
+  _timelineEventsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.timelineEvents,
+    aliasName: 'expedientes__id__timeline_events__expediente_id',
+  );
+
+  $$TimelineEventsTableProcessedTableManager get timelineEventsRefs {
+    final manager = $$TimelineEventsTableTableManager(
+      $_db,
+      $_db.timelineEvents,
+    ).filter((f) => f.expedienteId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_timelineEventsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$ExpedientesTableFilterComposer
@@ -6195,6 +6741,31 @@ class $$ExpedientesTableFilterComposer
           }) => $$PresupuestosTableFilterComposer(
             $db: $db,
             $table: $db.presupuestos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> timelineEventsRefs(
+    Expression<bool> Function($$TimelineEventsTableFilterComposer f) f,
+  ) {
+    final $$TimelineEventsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.timelineEvents,
+      getReferencedColumn: (t) => t.expedienteId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TimelineEventsTableFilterComposer(
+            $db: $db,
+            $table: $db.timelineEvents,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -6404,6 +6975,31 @@ class $$ExpedientesTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> timelineEventsRefs<T extends Object>(
+    Expression<T> Function($$TimelineEventsTableAnnotationComposer a) f,
+  ) {
+    final $$TimelineEventsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.timelineEvents,
+      getReferencedColumn: (t) => t.expedienteId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TimelineEventsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.timelineEvents,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$ExpedientesTableTableManager
@@ -6419,7 +7015,11 @@ class $$ExpedientesTableTableManager
           $$ExpedientesTableUpdateCompanionBuilder,
           (Expediente, $$ExpedientesTableReferences),
           Expediente,
-          PrefetchHooks Function({bool clienteId, bool presupuestosRefs})
+          PrefetchHooks Function({
+            bool clienteId,
+            bool presupuestosRefs,
+            bool timelineEventsRefs,
+          })
         > {
   $$ExpedientesTableTableManager(_$AppDatabase db, $ExpedientesTable table)
     : super(
@@ -6509,11 +7109,16 @@ class $$ExpedientesTableTableManager
               )
               .toList(),
           prefetchHooksCallback:
-              ({clienteId = false, presupuestosRefs = false}) {
+              ({
+                clienteId = false,
+                presupuestosRefs = false,
+                timelineEventsRefs = false,
+              }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (presupuestosRefs) db.presupuestos,
+                    if (timelineEventsRefs) db.timelineEvents,
                   ],
                   addJoins:
                       <
@@ -6572,6 +7177,27 @@ class $$ExpedientesTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (timelineEventsRefs)
+                        await $_getPrefetchedData<
+                          Expediente,
+                          $ExpedientesTable,
+                          TimelineEvent
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ExpedientesTableReferences
+                              ._timelineEventsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ExpedientesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).timelineEventsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.expedienteId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -6592,7 +7218,11 @@ typedef $$ExpedientesTableProcessedTableManager =
       $$ExpedientesTableUpdateCompanionBuilder,
       (Expediente, $$ExpedientesTableReferences),
       Expediente,
-      PrefetchHooks Function({bool clienteId, bool presupuestosRefs})
+      PrefetchHooks Function({
+        bool clienteId,
+        bool presupuestosRefs,
+        bool timelineEventsRefs,
+      })
     >;
 typedef $$PresupuestosTableCreateCompanionBuilder =
     PresupuestosCompanion Function({
@@ -9475,6 +10105,394 @@ typedef $$CobrosTableProcessedTableManager =
       Cobro,
       PrefetchHooks Function({bool facturaId})
     >;
+typedef $$TimelineEventsTableCreateCompanionBuilder =
+    TimelineEventsCompanion Function({
+      required String id,
+      required String expedienteId,
+      Value<DateTime> fecha,
+      required String tipo,
+      Value<String> titulo,
+      Value<String?> descripcion,
+      Value<String?> referenciaId,
+      Value<DateTime> fechaCreacion,
+      Value<int> rowid,
+    });
+typedef $$TimelineEventsTableUpdateCompanionBuilder =
+    TimelineEventsCompanion Function({
+      Value<String> id,
+      Value<String> expedienteId,
+      Value<DateTime> fecha,
+      Value<String> tipo,
+      Value<String> titulo,
+      Value<String?> descripcion,
+      Value<String?> referenciaId,
+      Value<DateTime> fechaCreacion,
+      Value<int> rowid,
+    });
+
+final class $$TimelineEventsTableReferences
+    extends BaseReferences<_$AppDatabase, $TimelineEventsTable, TimelineEvent> {
+  $$TimelineEventsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ExpedientesTable _expedienteIdTable(_$AppDatabase db) => db
+      .expedientes
+      .createAlias('timeline_events__expediente_id__expedientes__id');
+
+  $$ExpedientesTableProcessedTableManager get expedienteId {
+    final $_column = $_itemColumn<String>('expediente_id')!;
+
+    final manager = $$ExpedientesTableTableManager(
+      $_db,
+      $_db.expedientes,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_expedienteIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$TimelineEventsTableFilterComposer
+    extends Composer<_$AppDatabase, $TimelineEventsTable> {
+  $$TimelineEventsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fecha => $composableBuilder(
+    column: $table.fecha,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tipo => $composableBuilder(
+    column: $table.tipo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get titulo => $composableBuilder(
+    column: $table.titulo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get descripcion => $composableBuilder(
+    column: $table.descripcion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get referenciaId => $composableBuilder(
+    column: $table.referenciaId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ExpedientesTableFilterComposer get expedienteId {
+    final $$ExpedientesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.expedienteId,
+      referencedTable: $db.expedientes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExpedientesTableFilterComposer(
+            $db: $db,
+            $table: $db.expedientes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TimelineEventsTableOrderingComposer
+    extends Composer<_$AppDatabase, $TimelineEventsTable> {
+  $$TimelineEventsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fecha => $composableBuilder(
+    column: $table.fecha,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tipo => $composableBuilder(
+    column: $table.tipo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get titulo => $composableBuilder(
+    column: $table.titulo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get descripcion => $composableBuilder(
+    column: $table.descripcion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get referenciaId => $composableBuilder(
+    column: $table.referenciaId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ExpedientesTableOrderingComposer get expedienteId {
+    final $$ExpedientesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.expedienteId,
+      referencedTable: $db.expedientes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExpedientesTableOrderingComposer(
+            $db: $db,
+            $table: $db.expedientes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TimelineEventsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TimelineEventsTable> {
+  $$TimelineEventsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get fecha =>
+      $composableBuilder(column: $table.fecha, builder: (column) => column);
+
+  GeneratedColumn<String> get tipo =>
+      $composableBuilder(column: $table.tipo, builder: (column) => column);
+
+  GeneratedColumn<String> get titulo =>
+      $composableBuilder(column: $table.titulo, builder: (column) => column);
+
+  GeneratedColumn<String> get descripcion => $composableBuilder(
+    column: $table.descripcion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get referenciaId => $composableBuilder(
+    column: $table.referenciaId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => column,
+  );
+
+  $$ExpedientesTableAnnotationComposer get expedienteId {
+    final $$ExpedientesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.expedienteId,
+      referencedTable: $db.expedientes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExpedientesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.expedientes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TimelineEventsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TimelineEventsTable,
+          TimelineEvent,
+          $$TimelineEventsTableFilterComposer,
+          $$TimelineEventsTableOrderingComposer,
+          $$TimelineEventsTableAnnotationComposer,
+          $$TimelineEventsTableCreateCompanionBuilder,
+          $$TimelineEventsTableUpdateCompanionBuilder,
+          (TimelineEvent, $$TimelineEventsTableReferences),
+          TimelineEvent,
+          PrefetchHooks Function({bool expedienteId})
+        > {
+  $$TimelineEventsTableTableManager(
+    _$AppDatabase db,
+    $TimelineEventsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TimelineEventsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TimelineEventsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TimelineEventsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> expedienteId = const Value.absent(),
+                Value<DateTime> fecha = const Value.absent(),
+                Value<String> tipo = const Value.absent(),
+                Value<String> titulo = const Value.absent(),
+                Value<String?> descripcion = const Value.absent(),
+                Value<String?> referenciaId = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TimelineEventsCompanion(
+                id: id,
+                expedienteId: expedienteId,
+                fecha: fecha,
+                tipo: tipo,
+                titulo: titulo,
+                descripcion: descripcion,
+                referenciaId: referenciaId,
+                fechaCreacion: fechaCreacion,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String expedienteId,
+                Value<DateTime> fecha = const Value.absent(),
+                required String tipo,
+                Value<String> titulo = const Value.absent(),
+                Value<String?> descripcion = const Value.absent(),
+                Value<String?> referenciaId = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TimelineEventsCompanion.insert(
+                id: id,
+                expedienteId: expedienteId,
+                fecha: fecha,
+                tipo: tipo,
+                titulo: titulo,
+                descripcion: descripcion,
+                referenciaId: referenciaId,
+                fechaCreacion: fechaCreacion,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$TimelineEventsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({expedienteId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (expedienteId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.expedienteId,
+                                referencedTable: $$TimelineEventsTableReferences
+                                    ._expedienteIdTable(db),
+                                referencedColumn:
+                                    $$TimelineEventsTableReferences
+                                        ._expedienteIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$TimelineEventsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TimelineEventsTable,
+      TimelineEvent,
+      $$TimelineEventsTableFilterComposer,
+      $$TimelineEventsTableOrderingComposer,
+      $$TimelineEventsTableAnnotationComposer,
+      $$TimelineEventsTableCreateCompanionBuilder,
+      $$TimelineEventsTableUpdateCompanionBuilder,
+      (TimelineEvent, $$TimelineEventsTableReferences),
+      TimelineEvent,
+      PrefetchHooks Function({bool expedienteId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -9495,4 +10513,6 @@ class $AppDatabaseManager {
       $$FacturaLineasTableTableManager(_db, _db.facturaLineas);
   $$CobrosTableTableManager get cobros =>
       $$CobrosTableTableManager(_db, _db.cobros);
+  $$TimelineEventsTableTableManager get timelineEvents =>
+      $$TimelineEventsTableTableManager(_db, _db.timelineEvents);
 }
