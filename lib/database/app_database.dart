@@ -23,6 +23,7 @@ import 'dao/empresa_configuracion_dao.dart';
 import 'dao/facturas_dao.dart';
 import 'dao/factura_lineas_dao.dart';
 import 'dao/cobros_dao.dart';
+import 'dao/timeline_events_dao.dart';
 
 part 'app_database.g.dart';
 
@@ -47,6 +48,7 @@ part 'app_database.g.dart';
     FacturasDao,
     FacturaLineasDao,
     CobrosDao,
+    TimelineEventsDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
