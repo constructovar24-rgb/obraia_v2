@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/shortcuts/app_shortcuts.dart';
-import '../../data/presupuesto_repository.dart';
+import '../providers/presupuesto_providers.dart';
 
 class NuevoPresupuestoScreen extends ConsumerStatefulWidget {
   const NuevoPresupuestoScreen({

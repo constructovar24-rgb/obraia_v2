@@ -1,17 +1,9 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:obraia_v2/database/app_database.dart';
-import 'package:obraia_v2/database/database_provider.dart';
 import 'package:obraia_v2/features/presupuestos/domain/linea_presupuesto.dart'
     as linea_domain;
 import 'package:obraia_v2/features/presupuestos/data/presupuesto_repository.dart';
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
-
-final lineaPresupuestoRepositoryProvider =
-    Provider<LineaPresupuestoRepository>((ref) {
-      final database = ref.read(databaseProvider);
-      return LineaPresupuestoRepository(database);
-    });
 
 class LineaPresupuestoRepository {
   final AppDatabase database;

@@ -11,6 +11,7 @@ import '../../cobros/data/cobro_repository.dart';
 import '../../expedientes/data/expediente_repository.dart';
 import '../../facturas/data/factura_repository.dart';
 import '../../presupuestos/data/presupuesto_repository.dart';
+import '../../presupuestos/presentation/providers/presupuesto_providers.dart';
 import '../domain/dashboard_resumen.dart';
 
 final dashboardRepositoryProvider = Provider<DashboardRepository>((ref) {

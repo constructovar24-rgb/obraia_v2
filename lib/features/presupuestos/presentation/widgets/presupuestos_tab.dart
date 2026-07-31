@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/presupuesto_repository.dart';
 import '../../domain/presupuesto.dart' as presupuesto_domain;
+import '../providers/presupuesto_providers.dart';
 import '../screens/nuevo_presupuesto_screen.dart';
 import '../screens/presupuesto_detail_screen.dart';
 

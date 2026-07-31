@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/shortcuts/app_shortcuts.dart';
-import '../../data/linea_presupuesto_repository.dart';
 import '../../domain/linea_presupuesto.dart' as linea_domain;
+import '../providers/presupuesto_providers.dart';
 import 'nuevo_linea_presupuesto_screen.dart';
 
 class EditarLineaPresupuestoScreen extends ConsumerWidget {

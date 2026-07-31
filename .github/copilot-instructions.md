@@ -1,38 +1,155 @@
-# Instrucciones permanentes de desarrollo para OBRA IA v3
+# OBRA IA v3 - GitHub Copilot Instructions
 
-## Contexto del proyecto
-- Proyecto: OBRA IA v3.
-- Mantener la arquitectura existente salvo indicación expresa.
+## Project Context
 
-## Arquitectura
-- Mantener una arquitectura modular por features.
-- Antes de crear un nuevo patrón reutilizar los existentes.
-- No duplicar lógica.
+You are working on **OBRA IA v3**, an ERP application specialized in construction and renovation companies.
 
-## Calidad
-- Código legible y documentado cuando sea necesario.
-- Evitar archivos excesivamente largos.
-- Mantener nombres consistentes.
+This is not a generic CRUD application.
 
-## Drift
-- Cada cambio en tablas debe actualizar app_database.dart.
-- Ejecutar build_runner después de modificar el esquema.
-- Ejecutar flutter analyze antes de finalizar.
+Every implementation must respect the existing architecture and coding style.
 
-## Flujo de trabajo
-- Trabajar siempre por entregas pequeñas.
-- Explicar el plan antes de modificar código.
-- Esperar aprobación entre entregas.
+The project has evolved over time and consistency is more important than introducing new patterns.
 
-## Seguridad
-- Nunca eliminar código existente sin justificación.
-- Nunca hacer refactorizaciones globales salvo petición expresa.
+Always prefer extending the current architecture instead of inventing a new one.
 
-## Normas de trabajo
-- Ejecutar build_runner cuando cambie Drift.
-- Ejecutar flutter analyze al finalizar cada entrega.
-- No continuar con la siguiente entrega sin aprobación.
-- No hacer refactorizaciones generales.
-- Reutilizar el estilo y patrones existentes.
-- Mantener compatibilidad con el código ya implementado.
-- Priorizar código claro, mantenible y consistente.
+---
+
+# Main Goal
+
+Generate production-quality code.
+
+Code should be:
+
+- simple
+- readable
+- maintainable
+- testable
+- consistent with the rest of the project
+
+Never generate demonstration code.
+
+Never generate placeholder implementations unless explicitly requested.
+
+---
+
+# Core Domain
+
+The central entity of the application is:
+
+Expediente
+
+Every business feature should be related to an Expediente whenever appropriate.
+
+Examples:
+
+- Clientes
+- Presupuestos
+- Facturas
+- Cobros
+- Timeline
+- Compras
+- Documentos
+- Fotografías
+- Diario de obra
+
+Never design isolated modules that ignore the project domain.
+
+---
+
+# Architecture
+
+Always follow this architecture:
+
+UI
+
+↓
+
+Riverpod
+
+↓
+
+Repository
+
+↓
+
+DAO
+
+↓
+
+Drift
+
+↓
+
+SQLite
+
+Never break this flow.
+
+Forbidden:
+
+UI → DAO
+
+UI → Drift
+
+Repository → Widget
+
+DAO → Flutter
+
+DAO → Business Logic
+
+---
+
+# General Principles
+
+Before writing code ask yourself:
+
+1. Does this already exist?
+
+If yes:
+
+Reuse it.
+
+Never duplicate logic.
+
+---
+
+2. Does this follow the current project style?
+
+If not:
+
+Adapt to the project.
+
+Never adapt the project to the generated code.
+
+---
+
+3. Is this the simplest implementation?
+
+Prefer simple solutions.
+
+Avoid unnecessary abstractions.
+
+Avoid premature optimization.
+
+---
+
+4. Is this production-ready?
+
+If not:
+
+Improve it before returning.
+
+---
+
+# Project Philosophy
+
+OBRA IA v3 is intended to become a professional ERP.
+
+Every implementation should improve:
+
+- maintainability
+- consistency
+- scalability
+
+without increasing unnecessary complexity.
+
+Prefer evolution over redesign.

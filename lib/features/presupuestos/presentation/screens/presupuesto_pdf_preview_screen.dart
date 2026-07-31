@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:printing/printing.dart';
 
 import '../../../configuracion/data/empresa_configuracion_repository.dart';
-import '../../data/linea_presupuesto_repository.dart';
 import '../../domain/linea_presupuesto.dart' as linea_domain;
 import '../../domain/presupuesto.dart' as presupuesto_domain;
+import '../providers/presupuesto_providers.dart';
 import '../../services/presupuesto_pdf_service.dart';
 
 class PresupuestoPdfPreviewScreen extends ConsumerWidget {

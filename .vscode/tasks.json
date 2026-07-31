@@ -85,6 +85,24 @@
 				"--delete-conflicting-outputs"
 			],
 			"isBackground": false
+		},
+		{
+			"label": "flutter-analyze-presupuestos-provider-refactor",
+			"type": "shell",
+			"command": "flutter.bat",
+			"args": [
+				"analyze"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "flutter-analyze-presupuestos-provider-refactor-rerun",
+			"type": "shell",
+			"command": "flutter.bat",
+			"args": [
+				"analyze"
+			],
+			"isBackground": false
 		}
 	]
 }
