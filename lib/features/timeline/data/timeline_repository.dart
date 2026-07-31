@@ -1,11 +1,13 @@
 import '../../../database/dao/timeline_events_dao.dart';
 import '../domain/timeline_event.dart';
 import 'timeline_event_mapper.dart';
+import 'package:uuid/uuid.dart';
 
 class TimelineRepository {
   TimelineRepository(this._dao);
 
   final TimelineEventsDao _dao;
+  final _uuid = const Uuid();
 
   Future<void> registrarEvento(TimelineEvent event) {
     return _dao.insertar(event.toCompanion());
@@ -24,5 +26,92 @@ class TimelineRepository {
 
   Future<void> eliminarEventos(String expedienteId) {
     return _dao.eliminarPorExpediente(expedienteId);
+  }
+
+  Future<void> registrarExpedienteCreado({
+    required String expedienteId,
+    required String titulo,
+    String? descripcion,
+    DateTime? fecha,
+  }) {
+    return _registrar(
+      expedienteId: expedienteId,
+      tipo: TimelineEventType.expedienteCreado,
+      titulo: titulo,
+      descripcion: descripcion,
+      fecha: fecha,
+    );
+  }
+
+  Future<void> registrarPresupuestoCreado({
+    required String expedienteId,
+    required String presupuestoId,
+    required String titulo,
+    String? descripcion,
+    DateTime? fecha,
+  }) {
+    return _registrar(
+      expedienteId: expedienteId,
+      tipo: TimelineEventType.presupuestoCreado,
+      titulo: titulo,
+      descripcion: descripcion,
+      referenciaId: presupuestoId,
+      fecha: fecha,
+    );
+  }
+
+  Future<void> registrarFacturaCreada({
+    required String expedienteId,
+    required String facturaId,
+    required String titulo,
+    String? descripcion,
+    DateTime? fecha,
+  }) {
+    return _registrar(
+      expedienteId: expedienteId,
+      tipo: TimelineEventType.facturaCreada,
+      titulo: titulo,
+      descripcion: descripcion,
+      referenciaId: facturaId,
+      fecha: fecha,
+    );
+  }
+
+  Future<void> registrarCobroRegistrado({
+    required String expedienteId,
+    required String cobroId,
+    required String titulo,
+    String? descripcion,
+    DateTime? fecha,
+  }) {
+    return _registrar(
+      expedienteId: expedienteId,
+      tipo: TimelineEventType.cobroRegistrado,
+      titulo: titulo,
+      descripcion: descripcion,
+      referenciaId: cobroId,
+      fecha: fecha,
+    );
+  }
+
+  Future<void> _registrar({
+    required String expedienteId,
+    required TimelineEventType tipo,
+    required String titulo,
+    String? descripcion,
+    String? referenciaId,
+    DateTime? fecha,
+  }) {
+    final event = TimelineEvent(
+      id: _uuid.v4(),
+      expedienteId: expedienteId,
+      fecha: fecha ?? DateTime.now(),
+      tipo: tipo,
+      titulo: titulo,
+      descripcion: descripcion,
+      referenciaId: referenciaId,
+    );
+
+    return registrarEvento(event);
   }
 }
