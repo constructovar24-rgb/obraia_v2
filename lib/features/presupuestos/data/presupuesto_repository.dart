@@ -82,6 +82,18 @@ class PresupuestoRepository {
       presupuestoId: presupuestoId,
       titulo: codigo,
     );
+
+    if (_esEstadoAceptado(estado)) {
+      await _timelineRepository.registrarPresupuestoAceptado(
+        expedienteId: expedienteId,
+        presupuestoId: presupuestoId,
+        titulo: codigo,
+      );
+    }
+  }
+
+  bool _esEstadoAceptado(String estado) {
+    return estado.trim().toLowerCase() == 'aceptado';
   }
 
   Future<void> actualizarImporteTotal(

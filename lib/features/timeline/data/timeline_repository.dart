@@ -90,6 +90,23 @@ class TimelineRepository {
     );
   }
 
+  Future<void> registrarPresupuestoAceptado({
+    required String expedienteId,
+    required String presupuestoId,
+    required String titulo,
+    String? descripcion,
+    DateTime? fecha,
+  }) {
+    return _registrar(
+      expedienteId: expedienteId,
+      tipo: TimelineEventType.presupuestoAceptado,
+      titulo: titulo,
+      descripcion: descripcion,
+      referenciaId: presupuestoId,
+      fecha: fecha,
+    );
+  }
+
   Future<void> registrarFacturaCreada({
     required String expedienteId,
     required String facturaId,
