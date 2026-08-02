@@ -59,6 +59,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return '$day/$month/$year';
   }
 
+  String _formatearPorcentaje(double value) {
+    return '${value.toStringAsFixed(1)}%';
+  }
+
   Future<void> _abrirNuevoExpediente() async {
     await Navigator.push(
       context,
@@ -346,7 +350,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           child: LayoutBuilder(
                             builder: (context, sectionConstraints) {
                               final columns = sectionConstraints.maxWidth >= 1000
-                                  ? 4
+                                  ? 6
                                   : sectionConstraints.maxWidth >= 640
                                       ? 2
                                       : 1;
@@ -502,6 +506,39 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                 spacing: AppSpacing.sm,
                                 runSpacing: AppSpacing.sm,
                                 children: [
+                                  SizedBox(
+                                    width: itemWidth,
+                                    child: _KpiCard(
+                                      title: 'Cobertura de cobro',
+                                      subtitle: 'Porcentaje cobrado sobre facturado',
+                                      value: Text(
+                                        _formatearPorcentaje(
+                                          resumen.coberturaCobroPorcentaje,
+                                        ),
+                                        style: textTheme.headlineSmall,
+                                      ),
+                                      statusLabel: 'Salud financiera',
+                                      statusType: StatusType.info,
+                                      icon: Icons.show_chart_outlined,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: itemWidth,
+                                    child: _KpiCard(
+                                      title: 'Conversión presupuesto->factura',
+                                      subtitle: 'Porcentaje de presupuestos facturados',
+                                      value: Text(
+                                        _formatearPorcentaje(
+                                          resumen
+                                              .conversionPresupuestosFacturasPorcentaje,
+                                        ),
+                                        style: textTheme.headlineSmall,
+                                      ),
+                                      statusLabel: 'Conversión',
+                                      statusType: StatusType.info,
+                                      icon: Icons.swap_horiz_outlined,
+                                    ),
+                                  ),
                                   SizedBox(
                                     width: itemWidth,
                                     child: _KpiCard(

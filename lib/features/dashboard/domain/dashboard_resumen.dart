@@ -17,6 +17,8 @@ class DashboardResumen {
     required this.facturasVencidasConteo,
     required this.facturasVencidasImporte,
     required this.facturasVencenProximos7Dias,
+    required this.coberturaCobroPorcentaje,
+    required this.conversionPresupuestosFacturasPorcentaje,
   });
 
   final int numeroExpedientes;
@@ -36,6 +38,8 @@ class DashboardResumen {
   final int facturasVencidasConteo;
   final double facturasVencidasImporte;
   final int facturasVencenProximos7Dias;
+  final double coberturaCobroPorcentaje;
+  final double conversionPresupuestosFacturasPorcentaje;
 
   bool get isEmpty {
     return numeroExpedientes == 0 &&

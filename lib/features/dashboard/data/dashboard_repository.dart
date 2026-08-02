@@ -161,6 +161,13 @@ class DashboardRepository {
             )
             .fold<double>(0, (sum, cobro) => sum + cobro.importe);
 
+        final coberturaCobroPorcentaje = totalFacturado == 0
+          ? 0.0
+          : (totalCobrado / totalFacturado) * 100;
+        final conversionPresupuestosFacturasPorcentaje = numeroPresupuestos == 0
+          ? 0.0
+          : (presupuestosFacturados / numeroPresupuestos) * 100;
+
         final pendienteTotal =
             (totalFacturado - totalCobrado).clamp(0, double.infinity).toDouble();
 
@@ -183,6 +190,9 @@ class DashboardRepository {
             facturasVencidasConteo: facturasVencidasConteo,
             facturasVencidasImporte: facturasVencidasImporte,
             facturasVencenProximos7Dias: facturasVencenProximos7Dias,
+            coberturaCobroPorcentaje: coberturaCobroPorcentaje,
+            conversionPresupuestosFacturasPorcentaje:
+                conversionPresupuestosFacturasPorcentaje,
           ),
         );
       }
