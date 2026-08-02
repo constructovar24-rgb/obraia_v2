@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../domain/timeline_event.dart';
 import 'providers/timeline_providers.dart';
 
 class TimelinePage extends ConsumerWidget {
   const TimelinePage({
     super.key,
     required this.expedienteId,
-  });
+  }) : _modo = _TimelinePageMode.porExpediente;
 
-  final String expedienteId;
+  const TimelinePage.global({
+    super.key,
+  })  : _modo = _TimelinePageMode.global,
+        expedienteId = null;
+
+  final _TimelinePageMode _modo;
+  final String? expedienteId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final eventosAsync = ref.watch(timelineEventsProvider(expedienteId));
+    final eventosAsync = ref.watch(_eventosProvider);
 
     return eventosAsync.when(
       data: (eventos) {
@@ -51,6 +58,14 @@ class TimelinePage extends ConsumerWidget {
     );
   }
 
+  ProviderListenable<AsyncValue<List<TimelineEvent>>> get _eventosProvider {
+    if (_modo == _TimelinePageMode.global) {
+      return timelineGlobalEventsProvider;
+    }
+
+    return timelineEventsProvider(expedienteId!);
+  }
+
   String _formatearFecha(DateTime fecha) {
     final day = fecha.day.toString().padLeft(2, '0');
     final month = fecha.month.toString().padLeft(2, '0');
@@ -60,4 +75,9 @@ class TimelinePage extends ConsumerWidget {
 
     return '$day/$month/$year $hour:$minute';
   }
+}
+
+enum _TimelinePageMode {
+  porExpediente,
+  global,
 }

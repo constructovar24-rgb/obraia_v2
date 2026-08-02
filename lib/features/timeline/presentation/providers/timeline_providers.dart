@@ -14,3 +14,8 @@ final timelineEventsProvider =
       final timelineRepository = ref.read(timelineRepositoryProvider);
       return timelineRepository.observarEventos(expedienteId);
     });
+
+final timelineGlobalEventsProvider = StreamProvider<List<TimelineEvent>>((ref) {
+  final timelineRepository = ref.read(timelineRepositoryProvider);
+  return timelineRepository.observarEventosGlobales();
+});
