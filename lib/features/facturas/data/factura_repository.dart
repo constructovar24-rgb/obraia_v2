@@ -6,6 +6,7 @@ import 'package:obraia_v2/features/facturas/domain/estado_factura.dart';
 import 'package:obraia_v2/features/facturas/domain/factura.dart' as factura_domain;
 import 'package:obraia_v2/features/presupuestos/domain/presupuesto.dart'
   as presupuesto_domain;
+import 'package:obraia_v2/features/timeline/data/timeline_repository.dart';
 import 'package:uuid/uuid.dart';
 
 final facturaRepositoryProvider = Provider<FacturaRepository>((ref) {
@@ -25,8 +26,10 @@ class PresupuestoYaConvertidoException implements Exception {
 
 class FacturaRepository {
   final AppDatabase database;
+  final TimelineRepository _timelineRepository;
 
-  FacturaRepository(this.database);
+  FacturaRepository(this.database)
+      : _timelineRepository = TimelineRepository(database.timelineEventsDao);
 
   Stream<List<factura_domain.Factura>> observarFacturas() {
     return database.facturasDao.observarFacturas();
@@ -168,6 +171,13 @@ class FacturaRepository {
           ),
         );
       }
+
+      await _timelineRepository.registrarFacturaCreada(
+        expedienteId: presupuesto.expedienteId,
+        facturaId: facturaId,
+        titulo: 'Factura creada',
+        descripcion: 'Generada desde presupuesto ${presupuesto.codigo}',
+      );
     });
 
     return facturaId;
@@ -189,9 +199,9 @@ class FacturaRepository {
   }
 
   Future<void> actualizarEstado(String facturaId, EstadoFactura estado) {
-    return database.facturasDao.actualizarEstado(
-      facturaId,
-      estadoFacturaToString(estado),
+    return _actualizarEstadoConEvento(
+      facturaId: facturaId,
+      nuevoEstado: estado,
     );
   }
 
@@ -202,8 +212,10 @@ class FacturaRepository {
     required DateTime fechaVencimiento,
     required EstadoFactura estado,
     required String observaciones,
-  }) {
-    return database.facturasDao.actualizarFactura(
+  }) async {
+    final facturaActual = await database.facturasDao.obtenerPorId(id);
+
+    await database.facturasDao.actualizarFactura(
       id: id,
       clienteId: clienteId,
       fecha: fecha,
@@ -211,6 +223,17 @@ class FacturaRepository {
       estado: estadoFacturaToString(estado),
       observaciones: observaciones,
     );
+
+    if (_esTransicionRealAAnulada(
+      estadoAnterior: facturaActual?.estado,
+      estadoNuevo: estado,
+    )) {
+      await _registrarFacturaAnuladaSiAplica(
+        facturaId: id,
+        facturaCodigo: facturaActual?.codigo,
+        presupuestoOrigenId: facturaActual?.presupuestoOrigenId,
+      );
+    }
   }
 
   Future<void> eliminarFactura(String facturaId) async {
@@ -219,5 +242,81 @@ class FacturaRepository {
       await database.facturaLineasDao.eliminarPorFactura(facturaId);
       await database.facturasDao.eliminarFactura(facturaId);
     });
+  }
+
+  Future<void> _actualizarEstadoConEvento({
+    required String facturaId,
+    required EstadoFactura nuevoEstado,
+  }) async {
+    final facturaActual = await database.facturasDao.obtenerPorId(facturaId);
+
+    await database.facturasDao.actualizarEstado(
+      facturaId,
+      estadoFacturaToString(nuevoEstado),
+    );
+
+    if (_esTransicionRealAAnulada(
+      estadoAnterior: facturaActual?.estado,
+      estadoNuevo: nuevoEstado,
+    )) {
+      await _registrarFacturaAnuladaSiAplica(
+        facturaId: facturaId,
+        facturaCodigo: facturaActual?.codigo,
+        presupuestoOrigenId: facturaActual?.presupuestoOrigenId,
+      );
+    }
+  }
+
+  bool _esTransicionRealAAnulada({
+    required EstadoFactura? estadoAnterior,
+    required EstadoFactura estadoNuevo,
+  }) {
+    if (estadoNuevo != EstadoFactura.anulada) {
+      return false;
+    }
+
+    if (estadoAnterior == null) {
+      return false;
+    }
+
+    return estadoAnterior != EstadoFactura.anulada;
+  }
+
+  Future<void> _registrarFacturaAnuladaSiAplica({
+    required String facturaId,
+    required String? facturaCodigo,
+    required String? presupuestoOrigenId,
+  }) async {
+    final expedienteId = await _obtenerExpedienteIdDesdePresupuestoOrigen(
+      presupuestoOrigenId,
+    );
+    if (expedienteId == null || expedienteId.trim().isEmpty) {
+      return;
+    }
+
+    await _timelineRepository.registrarFacturaAnulada(
+      expedienteId: expedienteId,
+      facturaId: facturaId,
+      titulo: 'Factura anulada',
+      descripcion: facturaCodigo,
+    );
+  }
+
+  Future<String?> _obtenerExpedienteIdDesdePresupuestoOrigen(
+    String? presupuestoOrigenId,
+  ) async {
+    if (presupuestoOrigenId == null || presupuestoOrigenId.trim().isEmpty) {
+      return null;
+    }
+
+    final presupuestos = await database.presupuestosDao.observarPresupuestos().first;
+
+    for (final presupuesto in presupuestos) {
+      if (presupuesto.id == presupuestoOrigenId) {
+        return presupuesto.expedienteId;
+      }
+    }
+
+    return null;
   }
 }

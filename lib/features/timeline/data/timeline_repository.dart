@@ -114,9 +114,26 @@ class TimelineRepository {
     String? descripcion,
     DateTime? fecha,
   }) {
-    return _registrar(
+    return _registrarEventoNegocioUnico(
       expedienteId: expedienteId,
       tipo: TimelineEventType.facturaCreada,
+      titulo: titulo,
+      descripcion: descripcion,
+      referenciaId: facturaId,
+      fecha: fecha,
+    );
+  }
+
+  Future<void> registrarFacturaAnulada({
+    required String expedienteId,
+    required String facturaId,
+    required String titulo,
+    String? descripcion,
+    DateTime? fecha,
+  }) {
+    return _registrarEventoNegocioUnico(
+      expedienteId: expedienteId,
+      tipo: TimelineEventType.facturaAnulada,
       titulo: titulo,
       descripcion: descripcion,
       referenciaId: facturaId,
@@ -177,5 +194,48 @@ class TimelineRepository {
     );
 
     return registrarEvento(event);
+  }
+
+  Future<void> _registrarEventoNegocioUnico({
+    required String expedienteId,
+    required TimelineEventType tipo,
+    required String titulo,
+    String? descripcion,
+    required String referenciaId,
+    DateTime? fecha,
+  }) async {
+    final yaExiste = await _existeEventoPorReferencia(
+      expedienteId: expedienteId,
+      tipo: tipo,
+      referenciaId: referenciaId,
+    );
+    if (yaExiste) {
+      return;
+    }
+
+    await _registrar(
+      expedienteId: expedienteId,
+      tipo: tipo,
+      titulo: titulo,
+      descripcion: descripcion,
+      referenciaId: referenciaId,
+      fecha: fecha,
+    );
+  }
+
+  Future<bool> _existeEventoPorReferencia({
+    required String expedienteId,
+    required TimelineEventType tipo,
+    required String referenciaId,
+  }) async {
+    final eventos = await _dao.obtenerPorExpediente(expedienteId);
+
+    for (final evento in eventos) {
+      if (evento.tipo == tipo.name && evento.referenciaId == referenciaId) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }
