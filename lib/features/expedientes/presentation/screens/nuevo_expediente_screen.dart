@@ -5,6 +5,7 @@ import '../../../../core/shortcuts/app_shortcuts.dart';
 import '../../../../database/database_provider.dart';
 import '../../../clientes/data/cliente_repository.dart';
 import '../../../clientes/domain/cliente.dart';
+import '../../data/expediente_repository.dart';
 
 class NuevoExpedienteScreen extends ConsumerStatefulWidget {
   const NuevoExpedienteScreen({super.key});
@@ -139,9 +140,11 @@ class _NuevoExpedienteScreenState
                       return;
                     }
 
-                    final db = ref.read(databaseProvider);
+                    final expedienteRepository = ref.read(
+                      expedienteRepositoryProvider,
+                    );
 
-                    await db.crearExpediente(
+                    await expedienteRepository.crearExpediente(
                       codigo: _codigoController.text.trim(),
                       nombre: _nombreController.text.trim(),
                       clienteId: _clienteSeleccionadoId,

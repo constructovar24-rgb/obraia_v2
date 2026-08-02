@@ -58,6 +58,21 @@ class TimelineRepository {
     );
   }
 
+  Future<void> registrarExpedienteActualizado({
+    required String expedienteId,
+    required String titulo,
+    String? descripcion,
+    DateTime? fecha,
+  }) {
+    return _registrar(
+      expedienteId: expedienteId,
+      tipo: TimelineEventType.expedienteActualizado,
+      titulo: titulo,
+      descripcion: descripcion,
+      fecha: fecha,
+    );
+  }
+
   Future<void> registrarPresupuestoCreado({
     required String expedienteId,
     required String presupuestoId,
