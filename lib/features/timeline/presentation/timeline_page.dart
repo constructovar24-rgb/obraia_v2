@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../domain/timeline_event.dart';
 import 'providers/timeline_providers.dart';
 
 class TimelinePage extends ConsumerWidget {
@@ -20,27 +19,70 @@ class TimelinePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final eventosAsync = ref.watch(_eventosProvider);
+    final scope = _scope;
+    final eventosAsync = ref.watch(timelineFilteredEventsProvider(scope));
+    final filtroSeleccionado = ref.watch(timelineSelectedFilterProvider(scope));
+    final filtros = ref.watch(timelineFilterOptionsProvider);
 
     return eventosAsync.when(
       data: (eventos) {
-        if (eventos.isEmpty) {
-          return const Center(
-            child: Text('Todavia no hay eventos.'),
-          );
-        }
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    ChoiceChip(
+                      label: const Text('Todos'),
+                      selected: filtroSeleccionado == null,
+                      onSelected: (_) {
+                        ref
+                            .read(timelineSelectedFilterProvider(scope).notifier)
+                            .state = null;
+                      },
+                    ),
+                    ...filtros.map(
+                      (filtro) => ChoiceChip(
+                        label: Text(timelineEventTypeLabel(filtro)),
+                        selected: filtroSeleccionado == filtro,
+                        onSelected: (_) {
+                          ref
+                              .read(timelineSelectedFilterProvider(scope).notifier)
+                              .state = filtro;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              child: eventos.isEmpty
+                  ? Center(
+                      child: Text(
+                        filtroSeleccionado == null
+                            ? 'Todavia no hay eventos.'
+                            : 'No hay eventos para el filtro seleccionado.',
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: eventos.length,
+                      itemBuilder: (context, index) {
+                        final evento = eventos[index];
 
-        return ListView.builder(
-          itemCount: eventos.length,
-          itemBuilder: (context, index) {
-            final evento = eventos[index];
-
-            return ListTile(
-              title: Text(evento.titulo),
-              subtitle: Text(_formatearFecha(evento.fecha)),
-              trailing: Text(evento.tipo.name),
-            );
-          },
+                        return ListTile(
+                          title: Text(evento.titulo),
+                          subtitle: Text(_formatearFecha(evento.fecha)),
+                          trailing: Text(timelineEventTypeLabel(evento.tipo)),
+                        );
+                      },
+                    ),
+            ),
+          ],
         );
       },
       loading: () => const Center(
@@ -58,12 +100,12 @@ class TimelinePage extends ConsumerWidget {
     );
   }
 
-  ProviderListenable<AsyncValue<List<TimelineEvent>>> get _eventosProvider {
+  TimelineScope get _scope {
     if (_modo == _TimelinePageMode.global) {
-      return timelineGlobalEventsProvider;
+      return const TimelineScope.global();
     }
 
-    return timelineEventsProvider(expedienteId!);
+    return TimelineScope.porExpediente(expedienteId!);
   }
 
   String _formatearFecha(DateTime fecha) {
