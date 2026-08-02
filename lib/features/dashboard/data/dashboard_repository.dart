@@ -25,6 +25,8 @@ final dashboardRepositoryProvider = Provider<DashboardRepository>((ref) {
 });
 
 class DashboardRepository {
+  static const int _backlogComercialAntiguedadDias = 60;
+
   DashboardRepository({
     required this.expedienteRepository,
     required this.presupuestoRepository,
@@ -82,6 +84,28 @@ class DashboardRepository {
         );
         final hoy = DateTime(now.year, now.month, now.day);
         final limiteVencimientoProximo = hoy.add(const Duration(days: 7));
+
+        var presupuestosBacklogComercialConteo = 0;
+        var presupuestosBacklogComercialImporte = 0.0;
+
+        for (final presupuesto in presupuestos!) {
+          if (presupuestosConFactura.contains(presupuesto.id)) {
+            continue;
+          }
+
+          final fechaPresupuesto = DateTime(
+            presupuesto.fecha.year,
+            presupuesto.fecha.month,
+            presupuesto.fecha.day,
+          );
+          final antiguedadDias = hoy.difference(fechaPresupuesto).inDays;
+
+          if (antiguedadDias >= _backlogComercialAntiguedadDias) {
+            presupuestosBacklogComercialConteo += 1;
+            presupuestosBacklogComercialImporte += presupuesto.importeTotal;
+          }
+        }
+
         final totalFacturadoEsteMes = facturas!
             .where(
               (factura) =>
@@ -193,6 +217,10 @@ class DashboardRepository {
             coberturaCobroPorcentaje: coberturaCobroPorcentaje,
             conversionPresupuestosFacturasPorcentaje:
                 conversionPresupuestosFacturasPorcentaje,
+            presupuestosBacklogComercialConteo:
+              presupuestosBacklogComercialConteo,
+            presupuestosBacklogComercialImporte:
+              presupuestosBacklogComercialImporte,
           ),
         );
       }

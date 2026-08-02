@@ -232,6 +232,18 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             : StatusType.success,
         icon: Icons.request_quote_outlined,
       ),
+        _AttentionItem.amount(
+        title: 'Backlog comercial',
+        description:
+          '${resumen.presupuestosBacklogComercialConteo} presupuestos sin facturar con antigüedad de 60 días o más.',
+        amount: resumen.presupuestosBacklogComercialImporte,
+        statusLabel:
+          resumen.presupuestosBacklogComercialConteo > 0 ? 'Seguimiento' : 'Controlado',
+        statusType: resumen.presupuestosBacklogComercialConteo > 0
+          ? StatusType.warning
+          : StatusType.success,
+        icon: Icons.work_history_outlined,
+        ),
     ];
 
     return items;
