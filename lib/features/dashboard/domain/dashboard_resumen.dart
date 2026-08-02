@@ -12,6 +12,7 @@ class DashboardResumen {
     required this.totalFacturado,
     required this.totalCobrado,
     required this.totalCobradoEsteMes,
+    required this.totalFacturadoEsteMes,
     required this.pendienteTotal,
   });
 
@@ -27,6 +28,7 @@ class DashboardResumen {
   final double totalFacturado;
   final double totalCobrado;
   final double totalCobradoEsteMes;
+  final double totalFacturadoEsteMes;
   final double pendienteTotal;
 
   bool get isEmpty {

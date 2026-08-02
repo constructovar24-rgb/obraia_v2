@@ -58,6 +58,7 @@ class DashboardRepository {
           0,
           (sum, presupuesto) => sum + presupuesto.importeTotal,
         );
+        final now = DateTime.now();
 
         final presupuestosConFactura = facturas!
             .where((factura) {
@@ -78,6 +79,13 @@ class DashboardRepository {
           0,
           (sum, factura) => sum + factura.total,
         );
+        final totalFacturadoEsteMes = facturas!
+            .where(
+              (factura) =>
+                  factura.fecha.year == now.year &&
+                  factura.fecha.month == now.month,
+            )
+            .fold<double>(0, (sum, factura) => sum + factura.total);
 
         final cobradoPorFactura = <String, double>{};
         for (final cobro in cobros!) {
@@ -116,8 +124,6 @@ class DashboardRepository {
           0,
           (sum, cobro) => sum + cobro.importe,
         );
-
-        final now = DateTime.now();
         final totalCobradoEsteMes = cobros!
             .where(
               (cobro) =>
@@ -142,6 +148,7 @@ class DashboardRepository {
             totalFacturado: totalFacturado,
             totalCobrado: totalCobrado,
             totalCobradoEsteMes: totalCobradoEsteMes,
+            totalFacturadoEsteMes: totalFacturadoEsteMes,
             pendienteTotal: pendienteTotal,
           ),
         );
