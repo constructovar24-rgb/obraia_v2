@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../core/shortcuts/app_shortcuts.dart';
 import '../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../features/facturas/presentation/screens/facturas_screen.dart';
+import '../features/timeline/presentation/timeline_page.dart';
 import 'presupuesto_menu_screen.dart';
 import '../features/expedientes/presentation/screens/expedientes_screen.dart';
 import '../features/clientes/presentation/screens/clientes_screen.dart';
@@ -13,6 +14,20 @@ import '../features/configuracion/presentation/screens/empresa_configuracion_scr
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
+  void _abrirTimelineGlobal(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => Scaffold(
+          appBar: AppBar(
+            title: Text('Notificaciones'),
+          ),
+          body: TimelinePage.global(),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppShortcutScope(
@@ -21,6 +36,13 @@ class HomeScreen extends StatelessWidget {
         appBar: AppBar(
           title: const Text('OBRA IA'),
           centerTitle: true,
+          actions: [
+            IconButton(
+              tooltip: 'Notificaciones',
+              icon: const Icon(Icons.notifications_none),
+              onPressed: () => _abrirTimelineGlobal(context),
+            ),
+          ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(20),
