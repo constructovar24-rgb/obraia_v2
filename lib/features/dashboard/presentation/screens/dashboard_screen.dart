@@ -191,6 +191,48 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return items;
   }
 
+  List<_AttentionItem> _buildCriticalInsights(DashboardResumen resumen) {
+    final items = <_AttentionItem>[
+      _AttentionItem.amount(
+        title: 'Facturas vencidas',
+        description:
+            '${resumen.facturasVencidasConteo} facturas con vencimiento superado y saldo pendiente.',
+        amount: resumen.facturasVencidasImporte,
+        statusLabel: resumen.facturasVencidasConteo > 0 ? 'Critico' : 'Controlado',
+        statusType: resumen.facturasVencidasConteo > 0
+            ? StatusType.error
+            : StatusType.success,
+        icon: Icons.warning_amber_outlined,
+      ),
+      _AttentionItem.count(
+        title: 'Vencen en 7 días',
+        description:
+            'Facturas pendientes de cobro con vencimiento en la próxima semana.',
+        count: resumen.facturasVencenProximos7Dias,
+        statusLabel:
+            resumen.facturasVencenProximos7Dias > 0 ? 'Seguimiento' : 'Sin riesgo',
+        statusType: resumen.facturasVencenProximos7Dias > 0
+            ? StatusType.warning
+            : StatusType.success,
+        icon: Icons.event_available_outlined,
+      ),
+      _AttentionItem.count(
+        title: 'Presupuestos pendientes de facturar',
+        description:
+            'Presupuestos que aún no se han convertido en factura.',
+        count: resumen.presupuestosPendientesFacturar,
+        statusLabel:
+            resumen.presupuestosPendientesFacturar > 0 ? 'Acción' : 'Al día',
+        statusType: resumen.presupuestosPendientesFacturar > 0
+            ? StatusType.info
+            : StatusType.success,
+        icon: Icons.request_quote_outlined,
+      ),
+    ];
+
+    return items;
+  }
+
   double _cardWidth(double maxWidth, {required int columns}) {
     final spacing = AppSpacing.sm * (columns - 1);
     return (maxWidth - spacing) / columns;
@@ -237,6 +279,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             }
 
             final attentionItems = _buildAttentionItems(resumen);
+            final criticalInsights = _buildCriticalInsights(resumen);
 
             return LayoutBuilder(
               builder: (context, constraints) {
@@ -418,6 +461,23 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                     ],
                                   ],
                                 ),
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        AppSection(
+                          title: 'Insights críticos',
+                          subtitle:
+                              'Alertas clave para actuar en vencimientos y conversión de presupuestos.',
+                          child: Column(
+                            children: [
+                              for (var index = 0;
+                                  index < criticalInsights.length;
+                                  index++) ...[
+                                _AttentionCard(item: criticalInsights[index]),
+                                if (index < criticalInsights.length - 1)
+                                  const SizedBox(height: AppSpacing.sm),
+                              ],
+                            ],
+                          ),
                         ),
                         const SizedBox(height: AppSpacing.md),
                         AppSection(

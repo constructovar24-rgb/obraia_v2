@@ -6,6 +6,7 @@ import '../../cobros/domain/cobro.dart' as cobro_domain;
 import '../../cobros/domain/factura_estado_economico.dart';
 import '../../expedientes/domain/expediente.dart' as expediente_domain;
 import '../../facturas/domain/factura.dart' as factura_domain;
+import '../../facturas/domain/estado_factura.dart';
 import '../../presupuestos/domain/presupuesto.dart' as presupuesto_domain;
 import '../../cobros/data/cobro_repository.dart';
 import '../../expedientes/data/expediente_repository.dart';
@@ -79,6 +80,8 @@ class DashboardRepository {
           0,
           (sum, factura) => sum + factura.total,
         );
+        final hoy = DateTime(now.year, now.month, now.day);
+        final limiteVencimientoProximo = hoy.add(const Duration(days: 7));
         final totalFacturadoEsteMes = facturas!
             .where(
               (factura) =>
@@ -99,13 +102,40 @@ class DashboardRepository {
         var facturasPendientesCobro = 0;
         var facturasParcialmenteCobradas = 0;
         var facturasCobradas = 0;
+        var facturasVencidasConteo = 0;
+        var facturasVencidasImporte = 0.0;
+        var facturasVencenProximos7Dias = 0;
 
         for (final factura in facturas!) {
           final totalCobradoFactura = cobradoPorFactura[factura.id] ?? 0;
+          final pendienteFactura = (factura.total - totalCobradoFactura)
+              .clamp(0, double.infinity)
+              .toDouble();
           final estadoEconomico = calcularEstadoEconomicoFactura(
             totalFactura: factura.total,
             totalCobrado: totalCobradoFactura,
           );
+
+          final facturaNoAnulada = factura.estado != EstadoFactura.anulada;
+          const epsilon = 0.000001;
+          final tienePendiente = pendienteFactura > epsilon;
+          final fechaVencimiento = DateTime(
+            factura.fechaVencimiento.year,
+            factura.fechaVencimiento.month,
+            factura.fechaVencimiento.day,
+          );
+
+          if (facturaNoAnulada && tienePendiente && fechaVencimiento.isBefore(hoy)) {
+            facturasVencidasConteo += 1;
+            facturasVencidasImporte += pendienteFactura;
+          }
+
+          if (facturaNoAnulada &&
+              tienePendiente &&
+              !fechaVencimiento.isBefore(hoy) &&
+              !fechaVencimiento.isAfter(limiteVencimientoProximo)) {
+            facturasVencenProximos7Dias += 1;
+          }
 
           switch (estadoEconomico) {
             case EstadoEconomicoFactura.pendiente:
@@ -150,6 +180,9 @@ class DashboardRepository {
             totalCobradoEsteMes: totalCobradoEsteMes,
             totalFacturadoEsteMes: totalFacturadoEsteMes,
             pendienteTotal: pendienteTotal,
+            facturasVencidasConteo: facturasVencidasConteo,
+            facturasVencidasImporte: facturasVencidasImporte,
+            facturasVencenProximos7Dias: facturasVencenProximos7Dias,
           ),
         );
       }
