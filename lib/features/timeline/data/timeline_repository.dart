@@ -13,6 +13,21 @@ class TimelineRepository {
     return _dao.insertar(event.toCompanion());
   }
 
+  Future<List<TimelineEvent>> obtenerEventosGlobales({
+    int limit = TimelineEventsDao.defaultGlobalLimit,
+  }) async {
+    final rows = await _dao.obtenerRecientesGlobales(limit: limit);
+    return rows.map((row) => row.toDomain()).toList();
+  }
+
+  Stream<List<TimelineEvent>> observarEventosGlobales({
+    int limit = TimelineEventsDao.defaultGlobalLimit,
+  }) {
+    return _dao.observarRecientesGlobales(limit: limit).map(
+      (rows) => rows.map((row) => row.toDomain()).toList(),
+    );
+  }
+
   Future<List<TimelineEvent>> obtenerEventos(String expedienteId) async {
     final rows = await _dao.obtenerPorExpediente(expedienteId);
     return rows.map((row) => row.toDomain()).toList();

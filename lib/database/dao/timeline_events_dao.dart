@@ -10,8 +10,28 @@ class TimelineEventsDao extends DatabaseAccessor<AppDatabase>
     with _$TimelineEventsDaoMixin {
   TimelineEventsDao(super.db);
 
+  static const int defaultGlobalLimit = 100;
+
   Future<void> insertar(TimelineEventsCompanion event) async {
     await into(timelineEvents).insert(event);
+  }
+
+  Future<List<TimelineEvent>> obtenerRecientesGlobales({
+    int limit = defaultGlobalLimit,
+  }) {
+    return (select(timelineEvents)
+          ..orderBy([(t) => OrderingTerm.desc(t.fecha)])
+          ..limit(limit))
+        .get();
+  }
+
+  Stream<List<TimelineEvent>> observarRecientesGlobales({
+    int limit = defaultGlobalLimit,
+  }) {
+    return (select(timelineEvents)
+          ..orderBy([(t) => OrderingTerm.desc(t.fecha)])
+          ..limit(limit))
+        .watch();
   }
 
   Future<List<TimelineEvent>> obtenerPorExpediente(
