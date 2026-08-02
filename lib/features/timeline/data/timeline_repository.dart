@@ -148,7 +148,7 @@ class TimelineRepository {
     String? descripcion,
     DateTime? fecha,
   }) {
-    return _registrar(
+    return _registrarEventoNegocioUnico(
       expedienteId: expedienteId,
       tipo: TimelineEventType.cobroRegistrado,
       titulo: titulo,
