@@ -14,6 +14,10 @@ import 'tables/empresa_configuracion.dart';
 import 'tables/facturas.dart';
 import 'tables/factura_lineas.dart';
 import 'tables/cobros.dart';
+import 'tables/compras.dart';
+import 'tables/proveedores.dart';
+import 'tables/certificaciones.dart';
+import 'tables/documentos.dart';
 import 'tables/timeline_events.dart';
 import 'dao/expedientes_dao.dart';
 import 'dao/clientes_dao.dart';
@@ -23,6 +27,10 @@ import 'dao/empresa_configuracion_dao.dart';
 import 'dao/facturas_dao.dart';
 import 'dao/factura_lineas_dao.dart';
 import 'dao/cobros_dao.dart';
+import 'dao/compras_dao.dart';
+import 'dao/proveedores_dao.dart';
+import 'dao/certificaciones_dao.dart';
+import 'dao/documentos_dao.dart';
 import 'dao/timeline_events_dao.dart';
 
 part 'app_database.g.dart';
@@ -37,6 +45,10 @@ part 'app_database.g.dart';
     Facturas,
     FacturaLineas,
     Cobros,
+    Compras,
+    Proveedores,
+    Certificaciones,
+    Documentos,
     TimelineEvents,
   ],
   daos: [
@@ -48,6 +60,10 @@ part 'app_database.g.dart';
     FacturasDao,
     FacturaLineasDao,
     CobrosDao,
+    ComprasDao,
+    ProveedoresDao,
+    CertificacionesDao,
+    DocumentosDao,
     TimelineEventsDao,
   ],
 )
@@ -55,7 +71,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 12;
+  int get schemaVersion => 16;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -165,6 +181,22 @@ class AppDatabase extends _$AppDatabase {
 
           if (from < 12) {
             await m.createTable(timelineEvents);
+          }
+
+          if (from < 13) {
+            await m.createTable(compras);
+          }
+
+          if (from < 14) {
+            await m.createTable(proveedores);
+          }
+
+          if (from < 15) {
+            await m.createTable(certificaciones);
+          }
+
+          if (from < 16) {
+            await m.createTable(documentos);
           }
         },
       );

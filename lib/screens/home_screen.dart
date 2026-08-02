@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../core/shortcuts/app_shortcuts.dart';
 import '../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../features/facturas/presentation/screens/facturas_screen.dart';
 import 'presupuesto_menu_screen.dart';
 import '../features/expedientes/presentation/screens/expedientes_screen.dart';
 import '../features/clientes/presentation/screens/clientes_screen.dart';
+import '../features/proveedores/presentation/screens/proveedores_screen.dart';
 import '../features/search/presentation/screens/search_screen.dart';
 import '../features/configuracion/presentation/screens/empresa_configuracion_screen.dart';
 
@@ -13,136 +15,151 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('OBRA IA'),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Bienvenido',
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
+    return AppShortcutScope(
+      onBack: () => Navigator.maybePop(context),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('OBRA IA'),
+          centerTitle: true,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Bienvenido',
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              '¿Qué quieres hacer hoy?',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 16,
+              const SizedBox(height: 8),
+              const Text(
+                '¿Qué quieres hacer hoy?',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 16,
+                ),
               ),
-            ),
-            const SizedBox(height: 30),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 15,
-                mainAxisSpacing: 15,
-                children: [
-                  _HomeButton(
-                    icon: Icons.folder_copy,
-                    titulo: 'Expedientes',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const ExpedientesScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  _HomeButton(
-                    icon: Icons.calculate,
-                    titulo: 'Presupuestos',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const PresupuestoMenuScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  _HomeButton(
-                    icon: Icons.people,
-                    titulo: 'Clientes',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const ClientesScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  _HomeButton(
-                    icon: Icons.manage_search,
-                    titulo: 'Búsqueda global',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const SearchScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  _HomeButton(
-                    icon: Icons.receipt_long,
-                    titulo: 'Facturas',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const FacturasScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  _HomeButton(
-                    icon: Icons.home_repair_service,
-                    titulo: 'Obras',
-                    onTap: () {},
-                  ),
-                  _HomeButton(
-                    icon: Icons.attach_money,
-                    titulo: 'Base de precios',
-                    onTap: () {},
-                  ),
-                  _HomeButton(
-                    icon: Icons.smart_toy,
-                    titulo: 'Dashboard',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const DashboardScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  _HomeButton(
-                    icon: Icons.settings,
-                    titulo: 'Configuración',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const EmpresaConfiguracionScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                ],
+              const SizedBox(height: 30),
+              Expanded(
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 15,
+                  mainAxisSpacing: 15,
+                  children: [
+                    _HomeButton(
+                      icon: Icons.folder_copy,
+                      titulo: 'Expedientes',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const ExpedientesScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    _HomeButton(
+                      icon: Icons.calculate,
+                      titulo: 'Presupuestos',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const PresupuestoMenuScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    _HomeButton(
+                      icon: Icons.people,
+                      titulo: 'Clientes',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const ClientesScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    _HomeButton(
+                      icon: Icons.local_shipping,
+                      titulo: 'Proveedores',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const ProveedoresScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    _HomeButton(
+                      icon: Icons.manage_search,
+                      titulo: 'Búsqueda global',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const SearchScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    _HomeButton(
+                      icon: Icons.receipt_long,
+                      titulo: 'Facturas',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const FacturasScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    _HomeButton(
+                      icon: Icons.home_repair_service,
+                      titulo: 'Obras',
+                      onTap: () {},
+                    ),
+                    _HomeButton(
+                      icon: Icons.attach_money,
+                      titulo: 'Base de precios',
+                      onTap: () {},
+                    ),
+                    _HomeButton(
+                      icon: Icons.smart_toy,
+                      titulo: 'Dashboard',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const DashboardScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    _HomeButton(
+                      icon: Icons.settings,
+                      titulo: 'Configuración',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const EmpresaConfiguracionScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

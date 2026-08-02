@@ -1,10 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/shortcuts/app_shortcuts.dart';
+import '../../../../core/ui/app_spacing.dart';
+import '../../../../core/ui/app_typography.dart';
+import '../../../../core/widgets/app_card.dart';
+import '../../../../core/widgets/app_empty_state.dart';
+import '../../../../core/widgets/app_error_state.dart';
+import '../../../../core/widgets/app_loading.dart';
+import '../../../../core/widgets/app_primary_button.dart';
 import '../../../../core/widgets/app_page_header.dart';
 import '../../../../core/widgets/entity_summary_card.dart';
 import '../../../../core/widgets/status_chip.dart';
+import '../../../certificaciones/domain/certificacion.dart';
+import '../../../certificaciones/presentation/providers/certificacion_providers.dart';
+import '../../../certificaciones/presentation/screens/nueva_certificacion_screen.dart';
+import '../../../certificaciones/presentation/screens/editar_certificacion_screen.dart';
+import '../../../documentos/domain/documento.dart';
+import '../../../documentos/presentation/providers/documento_providers.dart';
+import '../../../documentos/presentation/screens/editar_documento_screen.dart';
+import '../../../documentos/presentation/screens/nuevo_documento_screen.dart';
 import '../../../facturas/presentation/widgets/facturas_tab.dart';
+import '../../../compras/presentation/widgets/compras_tab.dart';
 import '../../../timeline/presentation/timeline_page.dart';
 import 'cliente_tab.dart';
 import 'datos_generales_screen.dart';
@@ -29,6 +46,7 @@ class ExpedienteDetailScreen extends StatelessWidget {
     Tab(text: 'Cliente'),
     Tab(text: 'Presupuestos'),
     Tab(text: 'Certificaciones'),
+    Tab(text: 'Compras'),
     Tab(text: 'Facturas'),
     Tab(text: 'Timeline'),
     Tab(text: 'Documentos'),
@@ -86,15 +104,360 @@ class ExpedienteDetailScreen extends StatelessWidget {
               ),
               ClienteTab(expedienteId: id),
               PresupuestosTab(expedienteId: id),
-              const Center(child: Text('En desarrollo')),
+              _CertificacionesTab(expedienteId: id),
+              ComprasTab(expedienteId: id),
               FacturasTab(expedienteId: id),
               TimelinePage(expedienteId: id),
-              const Center(child: Text('En desarrollo')),
+              _DocumentosTab(expedienteId: id),
               const Center(child: Text('En desarrollo')),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _CertificacionesTab extends ConsumerWidget {
+  const _CertificacionesTab({
+    required this.expedienteId,
+  });
+
+  final String expedienteId;
+
+  String _formatearFecha(DateTime fecha) {
+    final day = fecha.day.toString().padLeft(2, '0');
+    final month = fecha.month.toString().padLeft(2, '0');
+    final year = fecha.year.toString();
+    return '$day/$month/$year';
+  }
+
+  String _formatearEstado(CertificacionEstado estado) {
+    switch (estado) {
+      case CertificacionEstado.borrador:
+        return 'Borrador';
+      case CertificacionEstado.emitida:
+        return 'Emitida';
+      case CertificacionEstado.facturada:
+        return 'Facturada';
+    }
+  }
+
+  String _formatearImporte(double importe) {
+    return '${importe.toStringAsFixed(2)} €';
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = AppTypography.textTheme(colorScheme);
+    final certificacionesAsync = ref.watch(
+      certificacionesPorExpedienteProvider(expedienteId),
+    );
+
+    void abrirNuevaCertificacion() {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => NuevaCertificacionScreen(
+            expedienteId: expedienteId,
+          ),
+        ),
+      );
+    }
+
+    return certificacionesAsync.when(
+      loading: () => const AppLoading(
+        message: 'Cargando certificaciones...',
+      ),
+      error: (error, stackTrace) => AppErrorState(
+        message: 'ERROR:\n\n$error',
+      ),
+      data: (certificaciones) {
+        if (certificaciones.isEmpty) {
+          return AppEmptyState(
+            icon: Icons.assignment_turned_in_outlined,
+            title: 'Todavía no hay certificaciones',
+            subtitle:
+                'Crea la primera certificación para empezar a gestionar avances del expediente.',
+            actionLabel: 'Nueva certificación',
+            onAction: abrirNuevaCertificacion,
+          );
+        }
+
+        return Padding(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Column(
+            children: [
+              AppCard(
+                padding: const EdgeInsets.all(AppSpacing.xl),
+                highlighted: true,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 52,
+                      height: 52,
+                      decoration: BoxDecoration(
+                        color: colorScheme.primaryContainer,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.assignment_turned_in_outlined,
+                        color: colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Certificaciones',
+                            style: textTheme.headlineMedium,
+                          ),
+                          const SizedBox(height: AppSpacing.xs),
+                          Text(
+                            'Consulta y edita cada certificación asociada al expediente.',
+                            style: textTheme.bodyMedium,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    AppPrimaryButton(
+                      label: 'Nueva certificación',
+                      icon: Icons.add,
+                      onPressed: abrirNuevaCertificacion,
+                      expand: false,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Expanded(
+                child: ListView.separated(
+                  itemCount: certificaciones.length,
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: AppSpacing.sm),
+                  itemBuilder: (context, index) {
+                    final certificacion = certificaciones[index];
+
+                    return AppCard(
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.all(AppSpacing.md),
+                        leading: CircleAvatar(
+                          backgroundColor: colorScheme.primaryContainer,
+                          foregroundColor: colorScheme.onPrimaryContainer,
+                          child: const Icon(Icons.assignment_turned_in_outlined),
+                        ),
+                        title: Text(
+                          certificacion.codigo,
+                          style: textTheme.titleMedium,
+                        ),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: AppSpacing.xs),
+                          child: Text(
+                            'Estado: ${_formatearEstado(certificacion.estado)}\n'
+                            'Importe: ${_formatearImporte(certificacion.importeTotal)}\n'
+                            'Fecha: ${_formatearFecha(certificacion.fecha)}',
+                            style: textTheme.bodyMedium,
+                          ),
+                        ),
+                        isThreeLine: true,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => EditarCertificacionScreen(
+                                certificacion: certificacion,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _DocumentosTab extends ConsumerWidget {
+  const _DocumentosTab({
+    required this.expedienteId,
+  });
+
+  final String expedienteId;
+
+  String _formatearFecha(DateTime fecha) {
+    final day = fecha.day.toString().padLeft(2, '0');
+    final month = fecha.month.toString().padLeft(2, '0');
+    final year = fecha.year.toString();
+    return '$day/$month/$year';
+  }
+
+  String _formatearTipo(DocumentoTipo tipo) {
+    switch (tipo) {
+      case DocumentoTipo.contrato:
+        return 'Contrato';
+      case DocumentoTipo.licencia:
+        return 'Licencia';
+      case DocumentoTipo.plano:
+        return 'Plano';
+      case DocumentoTipo.fotografia:
+        return 'Fotografía';
+      case DocumentoTipo.factura:
+        return 'Factura';
+      case DocumentoTipo.presupuesto:
+        return 'Presupuesto';
+      case DocumentoTipo.otro:
+        return 'Otro';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = AppTypography.textTheme(colorScheme);
+    final documentosAsync = ref.watch(
+      documentosPorExpedienteProvider(expedienteId),
+    );
+
+    void abrirNuevoDocumento() {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => NuevoDocumentoScreen(
+            expedienteId: expedienteId,
+          ),
+        ),
+      );
+    }
+
+    return documentosAsync.when(
+      loading: () => const AppLoading(
+        message: 'Cargando documentos...',
+      ),
+      error: (error, stackTrace) => AppErrorState(
+        message: 'ERROR:\n\n$error',
+      ),
+      data: (documentos) {
+        if (documentos.isEmpty) {
+          return AppEmptyState(
+            icon: Icons.insert_drive_file_outlined,
+            title: 'Todavía no hay documentos',
+            subtitle:
+                'Añade el primer documento para tenerlo disponible en el expediente.',
+            actionLabel: 'Nuevo documento',
+            onAction: abrirNuevoDocumento,
+          );
+        }
+
+        return Padding(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Column(
+            children: [
+              AppCard(
+                padding: const EdgeInsets.all(AppSpacing.xl),
+                highlighted: true,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 52,
+                      height: 52,
+                      decoration: BoxDecoration(
+                        color: colorScheme.primaryContainer,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.insert_drive_file_outlined,
+                        color: colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Documentos',
+                            style: textTheme.headlineMedium,
+                          ),
+                          const SizedBox(height: AppSpacing.xs),
+                          Text(
+                            'Consulta y edita cada documento asociado al expediente.',
+                            style: textTheme.bodyMedium,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    AppPrimaryButton(
+                      label: 'Nuevo documento',
+                      icon: Icons.add,
+                      onPressed: abrirNuevoDocumento,
+                      expand: false,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Expanded(
+                child: ListView.separated(
+                  itemCount: documentos.length,
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: AppSpacing.sm),
+                  itemBuilder: (context, index) {
+                    final documento = documentos[index];
+
+                    return AppCard(
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.all(AppSpacing.md),
+                        leading: CircleAvatar(
+                          backgroundColor: colorScheme.primaryContainer,
+                          foregroundColor: colorScheme.onPrimaryContainer,
+                          child: const Icon(Icons.insert_drive_file_outlined),
+                        ),
+                        title: Text(
+                          documento.titulo,
+                          style: textTheme.titleMedium,
+                        ),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: AppSpacing.xs),
+                          child: Text(
+                            'Tipo: ${_formatearTipo(documento.tipo)}\n'
+                            'Archivo: ${documento.nombreArchivo}\n'
+                            'Fecha: ${_formatearFecha(documento.fecha)}',
+                            style: textTheme.bodyMedium,
+                          ),
+                        ),
+                        isThreeLine: true,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => EditarDocumentoScreen(
+                                documento: documento,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

@@ -40,9 +40,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final normalizedQuery = _query.trim();
 
     return AppShortcutScope(
-      onBack: () {
-        Navigator.maybePop(context);
-      },
+      onBack: () => Navigator.maybePop(context),
       onFind: () {
         _searchFocusNode.requestFocus();
       },

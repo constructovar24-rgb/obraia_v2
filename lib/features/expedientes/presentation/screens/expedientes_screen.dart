@@ -3,6 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/shortcuts/app_shortcuts.dart';
 import '../../../../core/widgets/app_page_header.dart';
+import '../../../../core/widgets/app_card.dart';
+import '../../../../core/widgets/app_empty_state.dart';
+import '../../../../core/widgets/app_error_state.dart';
+import '../../../../core/widgets/app_loading.dart';
+import '../../../../core/widgets/app_primary_button.dart';
+import '../../../../core/ui/app_spacing.dart';
+import '../../../../core/ui/app_typography.dart';
 import '../../../../database/database_provider.dart';
 import '../../domain/expediente.dart' as expediente_domain;
 import '../../data/expediente_repository.dart';
@@ -49,6 +56,9 @@ class _ExpedientesScreenState extends ConsumerState<ExpedientesScreen> {
   @override
   Widget build(BuildContext context) {
     debugPrint('******** BUILD EXPEDIENTES ********');
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = AppTypography.textTheme(colorScheme);
+
     return AppShortcutScope(
       onBack: () {
         Navigator.maybePop(context);
@@ -62,28 +72,18 @@ class _ExpedientesScreenState extends ConsumerState<ExpedientesScreen> {
           title: 'Expedientes',
           showBackButton: true,
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: _abrirNuevoExpediente,
-          child: const Icon(Icons.add),
-        ),
         body: StreamBuilder(
           stream: _expedientesStream,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: SelectableText(
-                    'ERROR:\n\n${snapshot.error}',
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                ),
+              return AppErrorState(
+                message: 'ERROR:\n\n${snapshot.error}',
               );
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
+              return const AppLoading(
+                message: 'Cargando expedientes...',
               );
             }
 
@@ -101,76 +101,200 @@ class _ExpedientesScreenState extends ConsumerState<ExpedientesScreen> {
                         cliente.contains(query);
                   }).toList();
 
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: TextField(
-                    focusNode: _searchFocusNode,
-                    controller: _searchController,
-                    decoration: const InputDecoration(
-                      labelText: 'Buscar expedientes',
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(),
-                    ),
-                    onChanged: (_) => setState(() {}),
-                  ),
-                ),
-                expedientesFiltrados.isEmpty
-                    ? const Expanded(
-                        child: Center(
-                          child: Text(
-                            'No hay expedientes que coincidan',
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ),
-                      )
-                    : Expanded(
-                        child: ListView.builder(
-                          itemCount: expedientesFiltrados.length,
-                          itemBuilder: (context, index) {
-                            final expediente = expedientesFiltrados[index];
-
-                            return Card(
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
-                              child: ListTile(
-                                leading: const CircleAvatar(
-                                  child: Icon(Icons.folder),
-                                ),
-                                title: Text(
-                                  expediente.nombre,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                final isWide = constraints.maxWidth >= 900;
+                final horizontalPadding = isWide ? AppSpacing.xl : AppSpacing.md;
+                final content = Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        horizontalPadding,
+                        AppSpacing.md,
+                        horizontalPadding,
+                        AppSpacing.sm,
+                      ),
+                      child: AppCard(
+                        padding: const EdgeInsets.all(AppSpacing.xl),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 52,
+                                  height: 52,
+                                  decoration: BoxDecoration(
+                                    color: colorScheme.primaryContainer,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.folder_copy_outlined,
+                                    color: colorScheme.onPrimaryContainer,
                                   ),
                                 ),
-                                subtitle: Text(
-                                  expediente.clienteNombre?.isNotEmpty == true
-                                      ? '${expediente.codigo} · ${expediente.clienteNombre}'
-                                      : expediente.codigo,
-                                ),
-                                trailing: const Icon(Icons.chevron_right),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => ExpedienteDetailScreen(
-                                        id: expediente.id,
-                                        codigo: expediente.codigo,
-                                        nombre: expediente.nombre,
-                                        clienteNombre: expediente.clienteNombre,
+                                const SizedBox(width: AppSpacing.md),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Expedientes',
+                                        style: textTheme.headlineMedium,
                                       ),
+                                      const SizedBox(height: AppSpacing.xs),
+                                      Text(
+                                        'Consulta, filtra y accede a cada expediente desde una vista más clara.',
+                                        style: textTheme.bodyMedium,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: AppSpacing.lg),
+                            if (isWide)
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: TextField(
+                                      focusNode: _searchFocusNode,
+                                      controller: _searchController,
+                                      decoration: const InputDecoration(
+                                        labelText: 'Buscar expedientes',
+                                        prefixIcon: Icon(Icons.search),
+                                        border: OutlineInputBorder(),
+                                      ),
+                                      onChanged: (_) => setState(() {}),
+                                    ),
+                                  ),
+                                  const SizedBox(width: AppSpacing.md),
+                                  AppPrimaryButton(
+                                    label: 'Nuevo expediente',
+                                    icon: Icons.add,
+                                    onPressed: _abrirNuevoExpediente,
+                                    expand: false,
+                                  ),
+                                ],
+                              )
+                            else ...[
+                              TextField(
+                                focusNode: _searchFocusNode,
+                                controller: _searchController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Buscar expedientes',
+                                  prefixIcon: Icon(Icons.search),
+                                  border: OutlineInputBorder(),
+                                ),
+                                onChanged: (_) => setState(() {}),
+                              ),
+                              const SizedBox(height: AppSpacing.md),
+                              AppPrimaryButton(
+                                label: 'Nuevo expediente',
+                                icon: Icons.add,
+                                onPressed: _abrirNuevoExpediente,
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(
+                          horizontalPadding,
+                          AppSpacing.sm,
+                          horizontalPadding,
+                          AppSpacing.lg,
+                        ),
+                        child: expedientesFiltrados.isEmpty
+                            ? query.isEmpty
+                                ? AppEmptyState(
+                                    icon: Icons.folder_outlined,
+                                    title: 'Todavía no hay expedientes',
+                                    message:
+                                        'Crea el primero para empezar a trabajar.',
+                                    actionLabel: 'Nuevo expediente',
+                                    onAction: _abrirNuevoExpediente,
+                                  )
+                                : AppEmptyState(
+                                    icon: Icons.search_off,
+                                    title:
+                                        'No hay expedientes que coincidan',
+                                    message:
+                                        'Prueba con otro código, nombre o cliente.',
+                                  )
+                            : ListView.separated(
+                                itemCount: expedientesFiltrados.length,
+                                separatorBuilder: (context, index) =>
+                                    const SizedBox(height: AppSpacing.sm),
+                                itemBuilder: (context, index) {
+                                  final expediente = expedientesFiltrados[index];
+
+                                  return AppCard(
+                                    padding: EdgeInsets.zero,
+                                    child: ListTile(
+                                      contentPadding: const EdgeInsets.all(
+                                        AppSpacing.md,
+                                      ),
+                                      leading: CircleAvatar(
+                                        backgroundColor:
+                                            colorScheme.primaryContainer,
+                                        foregroundColor:
+                                            colorScheme.onPrimaryContainer,
+                                        child: const Icon(Icons.folder),
+                                      ),
+                                      title: Text(
+                                        expediente.nombre,
+                                        style: textTheme.titleMedium,
+                                      ),
+                                      subtitle: Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: AppSpacing.xs,
+                                        ),
+                                        child: Text(
+                                          expediente.clienteNombre?.isNotEmpty ==
+                                                  true
+                                              ? '${expediente.codigo} · ${expediente.clienteNombre}'
+                                              : expediente.codigo,
+                                          style: textTheme.bodyMedium,
+                                        ),
+                                      ),
+                                      trailing: const Icon(
+                                        Icons.chevron_right,
+                                      ),
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                ExpedienteDetailScreen(
+                                              id: expediente.id,
+                                              codigo: expediente.codigo,
+                                              nombre: expediente.nombre,
+                                              clienteNombre:
+                                                  expediente.clienteNombre,
+                                            ),
+                                          ),
+                                        );
+                                      },
                                     ),
                                   );
                                 },
                               ),
-                            );
-                          },
-                        ),
                       ),
-              ],
+                    ),
+                  ],
+                );
+
+                return Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 1180),
+                    child: content,
+                  ),
+                );
+              },
             );
           },
         ),

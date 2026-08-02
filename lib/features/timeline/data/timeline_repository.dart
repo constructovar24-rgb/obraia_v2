@@ -94,6 +94,23 @@ class TimelineRepository {
     );
   }
 
+  Future<void> registrarCompraRegistrada({
+    required String expedienteId,
+    required String compraId,
+    required String titulo,
+    String? descripcion,
+    DateTime? fecha,
+  }) {
+    return _registrar(
+      expedienteId: expedienteId,
+      tipo: TimelineEventType.compraRegistrada,
+      titulo: titulo,
+      descripcion: descripcion,
+      referenciaId: compraId,
+      fecha: fecha,
+    );
+  }
+
   Future<void> _registrar({
     required String expedienteId,
     required TimelineEventType tipo,

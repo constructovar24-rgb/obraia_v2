@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/shortcuts/app_shortcuts.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../../../../core/widgets/loading_view.dart';
 import '../../../../core/widgets/money_text.dart';
@@ -26,118 +27,121 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-      ),
-      body: StreamBuilder<DashboardResumen>(
-        stream: _stream,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: SelectableText(
-                  'ERROR:\n\n${snapshot.error}',
-                  style: const TextStyle(color: Colors.red),
+    return AppShortcutScope(
+      onBack: () => Navigator.maybePop(context),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Dashboard'),
+        ),
+        body: StreamBuilder<DashboardResumen>(
+          stream: _stream,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: SelectableText(
+                    'ERROR:\n\n${snapshot.error}',
+                    style: const TextStyle(color: Colors.red),
+                  ),
                 ),
-              ),
+              );
+            }
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const LoadingView(message: 'Cargando resumen...');
+            }
+
+            final resumen = snapshot.data;
+            if (resumen == null || resumen.isEmpty) {
+              return const EmptyState(
+                message: 'Todavia no hay datos para mostrar en el dashboard.',
+              );
+            }
+
+            return ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                _SectionCard(
+                  title: 'Expedientes',
+                  children: [
+                    _CountRow(
+                      label: 'Total',
+                      value: resumen.numeroExpedientes,
+                      emphasize: true,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                _SectionCard(
+                  title: 'Presupuestos',
+                  children: [
+                    _CountRow(
+                      label: 'Total',
+                      value: resumen.numeroPresupuestos,
+                    ),
+                    const SizedBox(height: 8),
+                    _CountRow(
+                      label: 'Pendientes de facturar',
+                      value: resumen.presupuestosPendientesFacturar,
+                    ),
+                    const SizedBox(height: 8),
+                    _CountRow(
+                      label: 'Facturados',
+                      value: resumen.presupuestosFacturados,
+                    ),
+                    const SizedBox(height: 8),
+                    _AmountRow(
+                      label: 'Total presupuestado',
+                      value: resumen.totalPresupuestado,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                _SectionCard(
+                  title: 'Facturas',
+                  children: [
+                    _CountRow(
+                      label: 'Pendientes de cobro',
+                      value: resumen.facturasPendientesCobro,
+                    ),
+                    const SizedBox(height: 8),
+                    _CountRow(
+                      label: 'Parcialmente cobradas',
+                      value: resumen.facturasParcialmenteCobradas,
+                    ),
+                    const SizedBox(height: 8),
+                    _CountRow(
+                      label: 'Cobradas',
+                      value: resumen.facturasCobradas,
+                    ),
+                    const SizedBox(height: 8),
+                    _AmountRow(
+                      label: 'Total facturado',
+                      value: resumen.totalFacturado,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                _SectionCard(
+                  title: 'Cobros',
+                  children: [
+                    _AmountRow(
+                      label: 'Total cobrado este mes',
+                      value: resumen.totalCobradoEsteMes,
+                    ),
+                    const SizedBox(height: 8),
+                    _AmountRow(
+                      label: 'Pendiente total',
+                      value: resumen.pendienteTotal,
+                      emphasize: true,
+                    ),
+                  ],
+                ),
+              ],
             );
-          }
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const LoadingView(message: 'Cargando resumen...');
-          }
-
-          final resumen = snapshot.data;
-          if (resumen == null || resumen.isEmpty) {
-            return const EmptyState(
-              message: 'Todavia no hay datos para mostrar en el dashboard.',
-            );
-          }
-
-          return ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              _SectionCard(
-                title: 'Expedientes',
-                children: [
-                  _CountRow(
-                    label: 'Total',
-                    value: resumen.numeroExpedientes,
-                    emphasize: true,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              _SectionCard(
-                title: 'Presupuestos',
-                children: [
-                  _CountRow(
-                    label: 'Total',
-                    value: resumen.numeroPresupuestos,
-                  ),
-                  const SizedBox(height: 8),
-                  _CountRow(
-                    label: 'Pendientes de facturar',
-                    value: resumen.presupuestosPendientesFacturar,
-                  ),
-                  const SizedBox(height: 8),
-                  _CountRow(
-                    label: 'Facturados',
-                    value: resumen.presupuestosFacturados,
-                  ),
-                  const SizedBox(height: 8),
-                  _AmountRow(
-                    label: 'Total presupuestado',
-                    value: resumen.totalPresupuestado,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              _SectionCard(
-                title: 'Facturas',
-                children: [
-                  _CountRow(
-                    label: 'Pendientes de cobro',
-                    value: resumen.facturasPendientesCobro,
-                  ),
-                  const SizedBox(height: 8),
-                  _CountRow(
-                    label: 'Parcialmente cobradas',
-                    value: resumen.facturasParcialmenteCobradas,
-                  ),
-                  const SizedBox(height: 8),
-                  _CountRow(
-                    label: 'Cobradas',
-                    value: resumen.facturasCobradas,
-                  ),
-                  const SizedBox(height: 8),
-                  _AmountRow(
-                    label: 'Total facturado',
-                    value: resumen.totalFacturado,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              _SectionCard(
-                title: 'Cobros',
-                children: [
-                  _AmountRow(
-                    label: 'Total cobrado este mes',
-                    value: resumen.totalCobradoEsteMes,
-                  ),
-                  const SizedBox(height: 8),
-                  _AmountRow(
-                    label: 'Pendiente total',
-                    value: resumen.pendienteTotal,
-                    emphasize: true,
-                  ),
-                ],
-              ),
-            ],
-          );
-        },
+          },
+        ),
       ),
     );
   }

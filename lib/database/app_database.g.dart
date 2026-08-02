@@ -5326,6 +5326,3370 @@ class CobrosCompanion extends UpdateCompanion<Cobro> {
   }
 }
 
+class $ComprasTable extends Compras with TableInfo<$ComprasTable, Compra> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ComprasTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _expedienteIdMeta = const VerificationMeta(
+    'expedienteId',
+  );
+  @override
+  late final GeneratedColumn<String> expedienteId = GeneratedColumn<String>(
+    'expediente_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES expedientes (id)',
+    ),
+  );
+  static const VerificationMeta _proveedorIdMeta = const VerificationMeta(
+    'proveedorId',
+  );
+  @override
+  late final GeneratedColumn<String> proveedorId = GeneratedColumn<String>(
+    'proveedor_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _proveedorNombreMeta = const VerificationMeta(
+    'proveedorNombre',
+  );
+  @override
+  late final GeneratedColumn<String> proveedorNombre = GeneratedColumn<String>(
+    'proveedor_nombre',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _fechaMeta = const VerificationMeta('fecha');
+  @override
+  late final GeneratedColumn<DateTime> fecha = GeneratedColumn<DateTime>(
+    'fecha',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _numeroFacturaMeta = const VerificationMeta(
+    'numeroFactura',
+  );
+  @override
+  late final GeneratedColumn<String> numeroFactura = GeneratedColumn<String>(
+    'numero_factura',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _conceptoMeta = const VerificationMeta(
+    'concepto',
+  );
+  @override
+  late final GeneratedColumn<String> concepto = GeneratedColumn<String>(
+    'concepto',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _baseImponibleMeta = const VerificationMeta(
+    'baseImponible',
+  );
+  @override
+  late final GeneratedColumn<double> baseImponible = GeneratedColumn<double>(
+    'base_imponible',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _ivaPorcentajeMeta = const VerificationMeta(
+    'ivaPorcentaje',
+  );
+  @override
+  late final GeneratedColumn<double> ivaPorcentaje = GeneratedColumn<double>(
+    'iva_porcentaje',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(21),
+  );
+  static const VerificationMeta _importeTotalMeta = const VerificationMeta(
+    'importeTotal',
+  );
+  @override
+  late final GeneratedColumn<double> importeTotal = GeneratedColumn<double>(
+    'importe_total',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _estadoMeta = const VerificationMeta('estado');
+  @override
+  late final GeneratedColumn<String> estado = GeneratedColumn<String>(
+    'estado',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _observacionesMeta = const VerificationMeta(
+    'observaciones',
+  );
+  @override
+  late final GeneratedColumn<String> observaciones = GeneratedColumn<String>(
+    'observaciones',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _eliminadoMeta = const VerificationMeta(
+    'eliminado',
+  );
+  @override
+  late final GeneratedColumn<bool> eliminado = GeneratedColumn<bool>(
+    'eliminado',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("eliminado" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _fechaCreacionMeta = const VerificationMeta(
+    'fechaCreacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaCreacion =
+      GeneratedColumn<DateTime>(
+        'fecha_creacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+        defaultValue: currentDateAndTime,
+      );
+  static const VerificationMeta _fechaModificacionMeta = const VerificationMeta(
+    'fechaModificacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaModificacion =
+      GeneratedColumn<DateTime>(
+        'fecha_modificacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+        defaultValue: currentDateAndTime,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    expedienteId,
+    proveedorId,
+    proveedorNombre,
+    fecha,
+    numeroFactura,
+    concepto,
+    baseImponible,
+    ivaPorcentaje,
+    importeTotal,
+    estado,
+    observaciones,
+    eliminado,
+    fechaCreacion,
+    fechaModificacion,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'compras';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Compra> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('expediente_id')) {
+      context.handle(
+        _expedienteIdMeta,
+        expedienteId.isAcceptableOrUnknown(
+          data['expediente_id']!,
+          _expedienteIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_expedienteIdMeta);
+    }
+    if (data.containsKey('proveedor_id')) {
+      context.handle(
+        _proveedorIdMeta,
+        proveedorId.isAcceptableOrUnknown(
+          data['proveedor_id']!,
+          _proveedorIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('proveedor_nombre')) {
+      context.handle(
+        _proveedorNombreMeta,
+        proveedorNombre.isAcceptableOrUnknown(
+          data['proveedor_nombre']!,
+          _proveedorNombreMeta,
+        ),
+      );
+    }
+    if (data.containsKey('fecha')) {
+      context.handle(
+        _fechaMeta,
+        fecha.isAcceptableOrUnknown(data['fecha']!, _fechaMeta),
+      );
+    }
+    if (data.containsKey('numero_factura')) {
+      context.handle(
+        _numeroFacturaMeta,
+        numeroFactura.isAcceptableOrUnknown(
+          data['numero_factura']!,
+          _numeroFacturaMeta,
+        ),
+      );
+    }
+    if (data.containsKey('concepto')) {
+      context.handle(
+        _conceptoMeta,
+        concepto.isAcceptableOrUnknown(data['concepto']!, _conceptoMeta),
+      );
+    }
+    if (data.containsKey('base_imponible')) {
+      context.handle(
+        _baseImponibleMeta,
+        baseImponible.isAcceptableOrUnknown(
+          data['base_imponible']!,
+          _baseImponibleMeta,
+        ),
+      );
+    }
+    if (data.containsKey('iva_porcentaje')) {
+      context.handle(
+        _ivaPorcentajeMeta,
+        ivaPorcentaje.isAcceptableOrUnknown(
+          data['iva_porcentaje']!,
+          _ivaPorcentajeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('importe_total')) {
+      context.handle(
+        _importeTotalMeta,
+        importeTotal.isAcceptableOrUnknown(
+          data['importe_total']!,
+          _importeTotalMeta,
+        ),
+      );
+    }
+    if (data.containsKey('estado')) {
+      context.handle(
+        _estadoMeta,
+        estado.isAcceptableOrUnknown(data['estado']!, _estadoMeta),
+      );
+    }
+    if (data.containsKey('observaciones')) {
+      context.handle(
+        _observacionesMeta,
+        observaciones.isAcceptableOrUnknown(
+          data['observaciones']!,
+          _observacionesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('eliminado')) {
+      context.handle(
+        _eliminadoMeta,
+        eliminado.isAcceptableOrUnknown(data['eliminado']!, _eliminadoMeta),
+      );
+    }
+    if (data.containsKey('fecha_creacion')) {
+      context.handle(
+        _fechaCreacionMeta,
+        fechaCreacion.isAcceptableOrUnknown(
+          data['fecha_creacion']!,
+          _fechaCreacionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('fecha_modificacion')) {
+      context.handle(
+        _fechaModificacionMeta,
+        fechaModificacion.isAcceptableOrUnknown(
+          data['fecha_modificacion']!,
+          _fechaModificacionMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Compra map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Compra(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      expedienteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}expediente_id'],
+      )!,
+      proveedorId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}proveedor_id'],
+      ),
+      proveedorNombre: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}proveedor_nombre'],
+      )!,
+      fecha: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha'],
+      )!,
+      numeroFactura: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}numero_factura'],
+      ),
+      concepto: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}concepto'],
+      )!,
+      baseImponible: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}base_imponible'],
+      )!,
+      ivaPorcentaje: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}iva_porcentaje'],
+      )!,
+      importeTotal: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}importe_total'],
+      )!,
+      estado: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}estado'],
+      )!,
+      observaciones: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}observaciones'],
+      ),
+      eliminado: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}eliminado'],
+      )!,
+      fechaCreacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_creacion'],
+      )!,
+      fechaModificacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_modificacion'],
+      )!,
+    );
+  }
+
+  @override
+  $ComprasTable createAlias(String alias) {
+    return $ComprasTable(attachedDatabase, alias);
+  }
+}
+
+class Compra extends DataClass implements Insertable<Compra> {
+  final String id;
+  final String expedienteId;
+  final String? proveedorId;
+  final String proveedorNombre;
+  final DateTime fecha;
+  final String? numeroFactura;
+  final String concepto;
+  final double baseImponible;
+  final double ivaPorcentaje;
+  final double importeTotal;
+  final String estado;
+  final String? observaciones;
+  final bool eliminado;
+  final DateTime fechaCreacion;
+  final DateTime fechaModificacion;
+  const Compra({
+    required this.id,
+    required this.expedienteId,
+    this.proveedorId,
+    required this.proveedorNombre,
+    required this.fecha,
+    this.numeroFactura,
+    required this.concepto,
+    required this.baseImponible,
+    required this.ivaPorcentaje,
+    required this.importeTotal,
+    required this.estado,
+    this.observaciones,
+    required this.eliminado,
+    required this.fechaCreacion,
+    required this.fechaModificacion,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['expediente_id'] = Variable<String>(expedienteId);
+    if (!nullToAbsent || proveedorId != null) {
+      map['proveedor_id'] = Variable<String>(proveedorId);
+    }
+    map['proveedor_nombre'] = Variable<String>(proveedorNombre);
+    map['fecha'] = Variable<DateTime>(fecha);
+    if (!nullToAbsent || numeroFactura != null) {
+      map['numero_factura'] = Variable<String>(numeroFactura);
+    }
+    map['concepto'] = Variable<String>(concepto);
+    map['base_imponible'] = Variable<double>(baseImponible);
+    map['iva_porcentaje'] = Variable<double>(ivaPorcentaje);
+    map['importe_total'] = Variable<double>(importeTotal);
+    map['estado'] = Variable<String>(estado);
+    if (!nullToAbsent || observaciones != null) {
+      map['observaciones'] = Variable<String>(observaciones);
+    }
+    map['eliminado'] = Variable<bool>(eliminado);
+    map['fecha_creacion'] = Variable<DateTime>(fechaCreacion);
+    map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion);
+    return map;
+  }
+
+  ComprasCompanion toCompanion(bool nullToAbsent) {
+    return ComprasCompanion(
+      id: Value(id),
+      expedienteId: Value(expedienteId),
+      proveedorId: proveedorId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(proveedorId),
+      proveedorNombre: Value(proveedorNombre),
+      fecha: Value(fecha),
+      numeroFactura: numeroFactura == null && nullToAbsent
+          ? const Value.absent()
+          : Value(numeroFactura),
+      concepto: Value(concepto),
+      baseImponible: Value(baseImponible),
+      ivaPorcentaje: Value(ivaPorcentaje),
+      importeTotal: Value(importeTotal),
+      estado: Value(estado),
+      observaciones: observaciones == null && nullToAbsent
+          ? const Value.absent()
+          : Value(observaciones),
+      eliminado: Value(eliminado),
+      fechaCreacion: Value(fechaCreacion),
+      fechaModificacion: Value(fechaModificacion),
+    );
+  }
+
+  factory Compra.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Compra(
+      id: serializer.fromJson<String>(json['id']),
+      expedienteId: serializer.fromJson<String>(json['expedienteId']),
+      proveedorId: serializer.fromJson<String?>(json['proveedorId']),
+      proveedorNombre: serializer.fromJson<String>(json['proveedorNombre']),
+      fecha: serializer.fromJson<DateTime>(json['fecha']),
+      numeroFactura: serializer.fromJson<String?>(json['numeroFactura']),
+      concepto: serializer.fromJson<String>(json['concepto']),
+      baseImponible: serializer.fromJson<double>(json['baseImponible']),
+      ivaPorcentaje: serializer.fromJson<double>(json['ivaPorcentaje']),
+      importeTotal: serializer.fromJson<double>(json['importeTotal']),
+      estado: serializer.fromJson<String>(json['estado']),
+      observaciones: serializer.fromJson<String?>(json['observaciones']),
+      eliminado: serializer.fromJson<bool>(json['eliminado']),
+      fechaCreacion: serializer.fromJson<DateTime>(json['fechaCreacion']),
+      fechaModificacion: serializer.fromJson<DateTime>(
+        json['fechaModificacion'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'expedienteId': serializer.toJson<String>(expedienteId),
+      'proveedorId': serializer.toJson<String?>(proveedorId),
+      'proveedorNombre': serializer.toJson<String>(proveedorNombre),
+      'fecha': serializer.toJson<DateTime>(fecha),
+      'numeroFactura': serializer.toJson<String?>(numeroFactura),
+      'concepto': serializer.toJson<String>(concepto),
+      'baseImponible': serializer.toJson<double>(baseImponible),
+      'ivaPorcentaje': serializer.toJson<double>(ivaPorcentaje),
+      'importeTotal': serializer.toJson<double>(importeTotal),
+      'estado': serializer.toJson<String>(estado),
+      'observaciones': serializer.toJson<String?>(observaciones),
+      'eliminado': serializer.toJson<bool>(eliminado),
+      'fechaCreacion': serializer.toJson<DateTime>(fechaCreacion),
+      'fechaModificacion': serializer.toJson<DateTime>(fechaModificacion),
+    };
+  }
+
+  Compra copyWith({
+    String? id,
+    String? expedienteId,
+    Value<String?> proveedorId = const Value.absent(),
+    String? proveedorNombre,
+    DateTime? fecha,
+    Value<String?> numeroFactura = const Value.absent(),
+    String? concepto,
+    double? baseImponible,
+    double? ivaPorcentaje,
+    double? importeTotal,
+    String? estado,
+    Value<String?> observaciones = const Value.absent(),
+    bool? eliminado,
+    DateTime? fechaCreacion,
+    DateTime? fechaModificacion,
+  }) => Compra(
+    id: id ?? this.id,
+    expedienteId: expedienteId ?? this.expedienteId,
+    proveedorId: proveedorId.present ? proveedorId.value : this.proveedorId,
+    proveedorNombre: proveedorNombre ?? this.proveedorNombre,
+    fecha: fecha ?? this.fecha,
+    numeroFactura: numeroFactura.present
+        ? numeroFactura.value
+        : this.numeroFactura,
+    concepto: concepto ?? this.concepto,
+    baseImponible: baseImponible ?? this.baseImponible,
+    ivaPorcentaje: ivaPorcentaje ?? this.ivaPorcentaje,
+    importeTotal: importeTotal ?? this.importeTotal,
+    estado: estado ?? this.estado,
+    observaciones: observaciones.present
+        ? observaciones.value
+        : this.observaciones,
+    eliminado: eliminado ?? this.eliminado,
+    fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+    fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+  );
+  Compra copyWithCompanion(ComprasCompanion data) {
+    return Compra(
+      id: data.id.present ? data.id.value : this.id,
+      expedienteId: data.expedienteId.present
+          ? data.expedienteId.value
+          : this.expedienteId,
+      proveedorId: data.proveedorId.present
+          ? data.proveedorId.value
+          : this.proveedorId,
+      proveedorNombre: data.proveedorNombre.present
+          ? data.proveedorNombre.value
+          : this.proveedorNombre,
+      fecha: data.fecha.present ? data.fecha.value : this.fecha,
+      numeroFactura: data.numeroFactura.present
+          ? data.numeroFactura.value
+          : this.numeroFactura,
+      concepto: data.concepto.present ? data.concepto.value : this.concepto,
+      baseImponible: data.baseImponible.present
+          ? data.baseImponible.value
+          : this.baseImponible,
+      ivaPorcentaje: data.ivaPorcentaje.present
+          ? data.ivaPorcentaje.value
+          : this.ivaPorcentaje,
+      importeTotal: data.importeTotal.present
+          ? data.importeTotal.value
+          : this.importeTotal,
+      estado: data.estado.present ? data.estado.value : this.estado,
+      observaciones: data.observaciones.present
+          ? data.observaciones.value
+          : this.observaciones,
+      eliminado: data.eliminado.present ? data.eliminado.value : this.eliminado,
+      fechaCreacion: data.fechaCreacion.present
+          ? data.fechaCreacion.value
+          : this.fechaCreacion,
+      fechaModificacion: data.fechaModificacion.present
+          ? data.fechaModificacion.value
+          : this.fechaModificacion,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Compra(')
+          ..write('id: $id, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('proveedorId: $proveedorId, ')
+          ..write('proveedorNombre: $proveedorNombre, ')
+          ..write('fecha: $fecha, ')
+          ..write('numeroFactura: $numeroFactura, ')
+          ..write('concepto: $concepto, ')
+          ..write('baseImponible: $baseImponible, ')
+          ..write('ivaPorcentaje: $ivaPorcentaje, ')
+          ..write('importeTotal: $importeTotal, ')
+          ..write('estado: $estado, ')
+          ..write('observaciones: $observaciones, ')
+          ..write('eliminado: $eliminado, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    expedienteId,
+    proveedorId,
+    proveedorNombre,
+    fecha,
+    numeroFactura,
+    concepto,
+    baseImponible,
+    ivaPorcentaje,
+    importeTotal,
+    estado,
+    observaciones,
+    eliminado,
+    fechaCreacion,
+    fechaModificacion,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Compra &&
+          other.id == this.id &&
+          other.expedienteId == this.expedienteId &&
+          other.proveedorId == this.proveedorId &&
+          other.proveedorNombre == this.proveedorNombre &&
+          other.fecha == this.fecha &&
+          other.numeroFactura == this.numeroFactura &&
+          other.concepto == this.concepto &&
+          other.baseImponible == this.baseImponible &&
+          other.ivaPorcentaje == this.ivaPorcentaje &&
+          other.importeTotal == this.importeTotal &&
+          other.estado == this.estado &&
+          other.observaciones == this.observaciones &&
+          other.eliminado == this.eliminado &&
+          other.fechaCreacion == this.fechaCreacion &&
+          other.fechaModificacion == this.fechaModificacion);
+}
+
+class ComprasCompanion extends UpdateCompanion<Compra> {
+  final Value<String> id;
+  final Value<String> expedienteId;
+  final Value<String?> proveedorId;
+  final Value<String> proveedorNombre;
+  final Value<DateTime> fecha;
+  final Value<String?> numeroFactura;
+  final Value<String> concepto;
+  final Value<double> baseImponible;
+  final Value<double> ivaPorcentaje;
+  final Value<double> importeTotal;
+  final Value<String> estado;
+  final Value<String?> observaciones;
+  final Value<bool> eliminado;
+  final Value<DateTime> fechaCreacion;
+  final Value<DateTime> fechaModificacion;
+  final Value<int> rowid;
+  const ComprasCompanion({
+    this.id = const Value.absent(),
+    this.expedienteId = const Value.absent(),
+    this.proveedorId = const Value.absent(),
+    this.proveedorNombre = const Value.absent(),
+    this.fecha = const Value.absent(),
+    this.numeroFactura = const Value.absent(),
+    this.concepto = const Value.absent(),
+    this.baseImponible = const Value.absent(),
+    this.ivaPorcentaje = const Value.absent(),
+    this.importeTotal = const Value.absent(),
+    this.estado = const Value.absent(),
+    this.observaciones = const Value.absent(),
+    this.eliminado = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.fechaModificacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ComprasCompanion.insert({
+    required String id,
+    required String expedienteId,
+    this.proveedorId = const Value.absent(),
+    this.proveedorNombre = const Value.absent(),
+    this.fecha = const Value.absent(),
+    this.numeroFactura = const Value.absent(),
+    this.concepto = const Value.absent(),
+    this.baseImponible = const Value.absent(),
+    this.ivaPorcentaje = const Value.absent(),
+    this.importeTotal = const Value.absent(),
+    this.estado = const Value.absent(),
+    this.observaciones = const Value.absent(),
+    this.eliminado = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.fechaModificacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       expedienteId = Value(expedienteId);
+  static Insertable<Compra> custom({
+    Expression<String>? id,
+    Expression<String>? expedienteId,
+    Expression<String>? proveedorId,
+    Expression<String>? proveedorNombre,
+    Expression<DateTime>? fecha,
+    Expression<String>? numeroFactura,
+    Expression<String>? concepto,
+    Expression<double>? baseImponible,
+    Expression<double>? ivaPorcentaje,
+    Expression<double>? importeTotal,
+    Expression<String>? estado,
+    Expression<String>? observaciones,
+    Expression<bool>? eliminado,
+    Expression<DateTime>? fechaCreacion,
+    Expression<DateTime>? fechaModificacion,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (expedienteId != null) 'expediente_id': expedienteId,
+      if (proveedorId != null) 'proveedor_id': proveedorId,
+      if (proveedorNombre != null) 'proveedor_nombre': proveedorNombre,
+      if (fecha != null) 'fecha': fecha,
+      if (numeroFactura != null) 'numero_factura': numeroFactura,
+      if (concepto != null) 'concepto': concepto,
+      if (baseImponible != null) 'base_imponible': baseImponible,
+      if (ivaPorcentaje != null) 'iva_porcentaje': ivaPorcentaje,
+      if (importeTotal != null) 'importe_total': importeTotal,
+      if (estado != null) 'estado': estado,
+      if (observaciones != null) 'observaciones': observaciones,
+      if (eliminado != null) 'eliminado': eliminado,
+      if (fechaCreacion != null) 'fecha_creacion': fechaCreacion,
+      if (fechaModificacion != null) 'fecha_modificacion': fechaModificacion,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ComprasCompanion copyWith({
+    Value<String>? id,
+    Value<String>? expedienteId,
+    Value<String?>? proveedorId,
+    Value<String>? proveedorNombre,
+    Value<DateTime>? fecha,
+    Value<String?>? numeroFactura,
+    Value<String>? concepto,
+    Value<double>? baseImponible,
+    Value<double>? ivaPorcentaje,
+    Value<double>? importeTotal,
+    Value<String>? estado,
+    Value<String?>? observaciones,
+    Value<bool>? eliminado,
+    Value<DateTime>? fechaCreacion,
+    Value<DateTime>? fechaModificacion,
+    Value<int>? rowid,
+  }) {
+    return ComprasCompanion(
+      id: id ?? this.id,
+      expedienteId: expedienteId ?? this.expedienteId,
+      proveedorId: proveedorId ?? this.proveedorId,
+      proveedorNombre: proveedorNombre ?? this.proveedorNombre,
+      fecha: fecha ?? this.fecha,
+      numeroFactura: numeroFactura ?? this.numeroFactura,
+      concepto: concepto ?? this.concepto,
+      baseImponible: baseImponible ?? this.baseImponible,
+      ivaPorcentaje: ivaPorcentaje ?? this.ivaPorcentaje,
+      importeTotal: importeTotal ?? this.importeTotal,
+      estado: estado ?? this.estado,
+      observaciones: observaciones ?? this.observaciones,
+      eliminado: eliminado ?? this.eliminado,
+      fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+      fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (expedienteId.present) {
+      map['expediente_id'] = Variable<String>(expedienteId.value);
+    }
+    if (proveedorId.present) {
+      map['proveedor_id'] = Variable<String>(proveedorId.value);
+    }
+    if (proveedorNombre.present) {
+      map['proveedor_nombre'] = Variable<String>(proveedorNombre.value);
+    }
+    if (fecha.present) {
+      map['fecha'] = Variable<DateTime>(fecha.value);
+    }
+    if (numeroFactura.present) {
+      map['numero_factura'] = Variable<String>(numeroFactura.value);
+    }
+    if (concepto.present) {
+      map['concepto'] = Variable<String>(concepto.value);
+    }
+    if (baseImponible.present) {
+      map['base_imponible'] = Variable<double>(baseImponible.value);
+    }
+    if (ivaPorcentaje.present) {
+      map['iva_porcentaje'] = Variable<double>(ivaPorcentaje.value);
+    }
+    if (importeTotal.present) {
+      map['importe_total'] = Variable<double>(importeTotal.value);
+    }
+    if (estado.present) {
+      map['estado'] = Variable<String>(estado.value);
+    }
+    if (observaciones.present) {
+      map['observaciones'] = Variable<String>(observaciones.value);
+    }
+    if (eliminado.present) {
+      map['eliminado'] = Variable<bool>(eliminado.value);
+    }
+    if (fechaCreacion.present) {
+      map['fecha_creacion'] = Variable<DateTime>(fechaCreacion.value);
+    }
+    if (fechaModificacion.present) {
+      map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ComprasCompanion(')
+          ..write('id: $id, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('proveedorId: $proveedorId, ')
+          ..write('proveedorNombre: $proveedorNombre, ')
+          ..write('fecha: $fecha, ')
+          ..write('numeroFactura: $numeroFactura, ')
+          ..write('concepto: $concepto, ')
+          ..write('baseImponible: $baseImponible, ')
+          ..write('ivaPorcentaje: $ivaPorcentaje, ')
+          ..write('importeTotal: $importeTotal, ')
+          ..write('estado: $estado, ')
+          ..write('observaciones: $observaciones, ')
+          ..write('eliminado: $eliminado, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ProveedoresTable extends Proveedores
+    with TableInfo<$ProveedoresTable, Proveedore> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProveedoresTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nombreMeta = const VerificationMeta('nombre');
+  @override
+  late final GeneratedColumn<String> nombre = GeneratedColumn<String>(
+    'nombre',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _personaContactoMeta = const VerificationMeta(
+    'personaContacto',
+  );
+  @override
+  late final GeneratedColumn<String> personaContacto = GeneratedColumn<String>(
+    'persona_contacto',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nifMeta = const VerificationMeta('nif');
+  @override
+  late final GeneratedColumn<String> nif = GeneratedColumn<String>(
+    'nif',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _telefonoMeta = const VerificationMeta(
+    'telefono',
+  );
+  @override
+  late final GeneratedColumn<String> telefono = GeneratedColumn<String>(
+    'telefono',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _emailMeta = const VerificationMeta('email');
+  @override
+  late final GeneratedColumn<String> email = GeneratedColumn<String>(
+    'email',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _direccionMeta = const VerificationMeta(
+    'direccion',
+  );
+  @override
+  late final GeneratedColumn<String> direccion = GeneratedColumn<String>(
+    'direccion',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _poblacionMeta = const VerificationMeta(
+    'poblacion',
+  );
+  @override
+  late final GeneratedColumn<String> poblacion = GeneratedColumn<String>(
+    'poblacion',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _provinciaMeta = const VerificationMeta(
+    'provincia',
+  );
+  @override
+  late final GeneratedColumn<String> provincia = GeneratedColumn<String>(
+    'provincia',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _codigoPostalMeta = const VerificationMeta(
+    'codigoPostal',
+  );
+  @override
+  late final GeneratedColumn<String> codigoPostal = GeneratedColumn<String>(
+    'codigo_postal',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _paisMeta = const VerificationMeta('pais');
+  @override
+  late final GeneratedColumn<String> pais = GeneratedColumn<String>(
+    'pais',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('España'),
+  );
+  static const VerificationMeta _observacionesMeta = const VerificationMeta(
+    'observaciones',
+  );
+  @override
+  late final GeneratedColumn<String> observaciones = GeneratedColumn<String>(
+    'observaciones',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _eliminadoMeta = const VerificationMeta(
+    'eliminado',
+  );
+  @override
+  late final GeneratedColumn<bool> eliminado = GeneratedColumn<bool>(
+    'eliminado',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("eliminado" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _fechaCreacionMeta = const VerificationMeta(
+    'fechaCreacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaCreacion =
+      GeneratedColumn<DateTime>(
+        'fecha_creacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+        defaultValue: currentDateAndTime,
+      );
+  static const VerificationMeta _fechaModificacionMeta = const VerificationMeta(
+    'fechaModificacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaModificacion =
+      GeneratedColumn<DateTime>(
+        'fecha_modificacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+        defaultValue: currentDateAndTime,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    nombre,
+    personaContacto,
+    nif,
+    telefono,
+    email,
+    direccion,
+    poblacion,
+    provincia,
+    codigoPostal,
+    pais,
+    observaciones,
+    eliminado,
+    fechaCreacion,
+    fechaModificacion,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'proveedores';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Proveedore> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('nombre')) {
+      context.handle(
+        _nombreMeta,
+        nombre.isAcceptableOrUnknown(data['nombre']!, _nombreMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nombreMeta);
+    }
+    if (data.containsKey('persona_contacto')) {
+      context.handle(
+        _personaContactoMeta,
+        personaContacto.isAcceptableOrUnknown(
+          data['persona_contacto']!,
+          _personaContactoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('nif')) {
+      context.handle(
+        _nifMeta,
+        nif.isAcceptableOrUnknown(data['nif']!, _nifMeta),
+      );
+    }
+    if (data.containsKey('telefono')) {
+      context.handle(
+        _telefonoMeta,
+        telefono.isAcceptableOrUnknown(data['telefono']!, _telefonoMeta),
+      );
+    }
+    if (data.containsKey('email')) {
+      context.handle(
+        _emailMeta,
+        email.isAcceptableOrUnknown(data['email']!, _emailMeta),
+      );
+    }
+    if (data.containsKey('direccion')) {
+      context.handle(
+        _direccionMeta,
+        direccion.isAcceptableOrUnknown(data['direccion']!, _direccionMeta),
+      );
+    }
+    if (data.containsKey('poblacion')) {
+      context.handle(
+        _poblacionMeta,
+        poblacion.isAcceptableOrUnknown(data['poblacion']!, _poblacionMeta),
+      );
+    }
+    if (data.containsKey('provincia')) {
+      context.handle(
+        _provinciaMeta,
+        provincia.isAcceptableOrUnknown(data['provincia']!, _provinciaMeta),
+      );
+    }
+    if (data.containsKey('codigo_postal')) {
+      context.handle(
+        _codigoPostalMeta,
+        codigoPostal.isAcceptableOrUnknown(
+          data['codigo_postal']!,
+          _codigoPostalMeta,
+        ),
+      );
+    }
+    if (data.containsKey('pais')) {
+      context.handle(
+        _paisMeta,
+        pais.isAcceptableOrUnknown(data['pais']!, _paisMeta),
+      );
+    }
+    if (data.containsKey('observaciones')) {
+      context.handle(
+        _observacionesMeta,
+        observaciones.isAcceptableOrUnknown(
+          data['observaciones']!,
+          _observacionesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('eliminado')) {
+      context.handle(
+        _eliminadoMeta,
+        eliminado.isAcceptableOrUnknown(data['eliminado']!, _eliminadoMeta),
+      );
+    }
+    if (data.containsKey('fecha_creacion')) {
+      context.handle(
+        _fechaCreacionMeta,
+        fechaCreacion.isAcceptableOrUnknown(
+          data['fecha_creacion']!,
+          _fechaCreacionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('fecha_modificacion')) {
+      context.handle(
+        _fechaModificacionMeta,
+        fechaModificacion.isAcceptableOrUnknown(
+          data['fecha_modificacion']!,
+          _fechaModificacionMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Proveedore map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Proveedore(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      nombre: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}nombre'],
+      )!,
+      personaContacto: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}persona_contacto'],
+      ),
+      nif: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}nif'],
+      )!,
+      telefono: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}telefono'],
+      )!,
+      email: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}email'],
+      )!,
+      direccion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}direccion'],
+      )!,
+      poblacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}poblacion'],
+      )!,
+      provincia: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}provincia'],
+      )!,
+      codigoPostal: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}codigo_postal'],
+      )!,
+      pais: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}pais'],
+      )!,
+      observaciones: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}observaciones'],
+      )!,
+      eliminado: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}eliminado'],
+      )!,
+      fechaCreacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_creacion'],
+      )!,
+      fechaModificacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_modificacion'],
+      )!,
+    );
+  }
+
+  @override
+  $ProveedoresTable createAlias(String alias) {
+    return $ProveedoresTable(attachedDatabase, alias);
+  }
+}
+
+class Proveedore extends DataClass implements Insertable<Proveedore> {
+  final String id;
+  final String nombre;
+  final String? personaContacto;
+  final String nif;
+  final String telefono;
+  final String email;
+  final String direccion;
+  final String poblacion;
+  final String provincia;
+  final String codigoPostal;
+  final String pais;
+  final String observaciones;
+  final bool eliminado;
+  final DateTime fechaCreacion;
+  final DateTime fechaModificacion;
+  const Proveedore({
+    required this.id,
+    required this.nombre,
+    this.personaContacto,
+    required this.nif,
+    required this.telefono,
+    required this.email,
+    required this.direccion,
+    required this.poblacion,
+    required this.provincia,
+    required this.codigoPostal,
+    required this.pais,
+    required this.observaciones,
+    required this.eliminado,
+    required this.fechaCreacion,
+    required this.fechaModificacion,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['nombre'] = Variable<String>(nombre);
+    if (!nullToAbsent || personaContacto != null) {
+      map['persona_contacto'] = Variable<String>(personaContacto);
+    }
+    map['nif'] = Variable<String>(nif);
+    map['telefono'] = Variable<String>(telefono);
+    map['email'] = Variable<String>(email);
+    map['direccion'] = Variable<String>(direccion);
+    map['poblacion'] = Variable<String>(poblacion);
+    map['provincia'] = Variable<String>(provincia);
+    map['codigo_postal'] = Variable<String>(codigoPostal);
+    map['pais'] = Variable<String>(pais);
+    map['observaciones'] = Variable<String>(observaciones);
+    map['eliminado'] = Variable<bool>(eliminado);
+    map['fecha_creacion'] = Variable<DateTime>(fechaCreacion);
+    map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion);
+    return map;
+  }
+
+  ProveedoresCompanion toCompanion(bool nullToAbsent) {
+    return ProveedoresCompanion(
+      id: Value(id),
+      nombre: Value(nombre),
+      personaContacto: personaContacto == null && nullToAbsent
+          ? const Value.absent()
+          : Value(personaContacto),
+      nif: Value(nif),
+      telefono: Value(telefono),
+      email: Value(email),
+      direccion: Value(direccion),
+      poblacion: Value(poblacion),
+      provincia: Value(provincia),
+      codigoPostal: Value(codigoPostal),
+      pais: Value(pais),
+      observaciones: Value(observaciones),
+      eliminado: Value(eliminado),
+      fechaCreacion: Value(fechaCreacion),
+      fechaModificacion: Value(fechaModificacion),
+    );
+  }
+
+  factory Proveedore.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Proveedore(
+      id: serializer.fromJson<String>(json['id']),
+      nombre: serializer.fromJson<String>(json['nombre']),
+      personaContacto: serializer.fromJson<String?>(json['personaContacto']),
+      nif: serializer.fromJson<String>(json['nif']),
+      telefono: serializer.fromJson<String>(json['telefono']),
+      email: serializer.fromJson<String>(json['email']),
+      direccion: serializer.fromJson<String>(json['direccion']),
+      poblacion: serializer.fromJson<String>(json['poblacion']),
+      provincia: serializer.fromJson<String>(json['provincia']),
+      codigoPostal: serializer.fromJson<String>(json['codigoPostal']),
+      pais: serializer.fromJson<String>(json['pais']),
+      observaciones: serializer.fromJson<String>(json['observaciones']),
+      eliminado: serializer.fromJson<bool>(json['eliminado']),
+      fechaCreacion: serializer.fromJson<DateTime>(json['fechaCreacion']),
+      fechaModificacion: serializer.fromJson<DateTime>(
+        json['fechaModificacion'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'nombre': serializer.toJson<String>(nombre),
+      'personaContacto': serializer.toJson<String?>(personaContacto),
+      'nif': serializer.toJson<String>(nif),
+      'telefono': serializer.toJson<String>(telefono),
+      'email': serializer.toJson<String>(email),
+      'direccion': serializer.toJson<String>(direccion),
+      'poblacion': serializer.toJson<String>(poblacion),
+      'provincia': serializer.toJson<String>(provincia),
+      'codigoPostal': serializer.toJson<String>(codigoPostal),
+      'pais': serializer.toJson<String>(pais),
+      'observaciones': serializer.toJson<String>(observaciones),
+      'eliminado': serializer.toJson<bool>(eliminado),
+      'fechaCreacion': serializer.toJson<DateTime>(fechaCreacion),
+      'fechaModificacion': serializer.toJson<DateTime>(fechaModificacion),
+    };
+  }
+
+  Proveedore copyWith({
+    String? id,
+    String? nombre,
+    Value<String?> personaContacto = const Value.absent(),
+    String? nif,
+    String? telefono,
+    String? email,
+    String? direccion,
+    String? poblacion,
+    String? provincia,
+    String? codigoPostal,
+    String? pais,
+    String? observaciones,
+    bool? eliminado,
+    DateTime? fechaCreacion,
+    DateTime? fechaModificacion,
+  }) => Proveedore(
+    id: id ?? this.id,
+    nombre: nombre ?? this.nombre,
+    personaContacto: personaContacto.present
+        ? personaContacto.value
+        : this.personaContacto,
+    nif: nif ?? this.nif,
+    telefono: telefono ?? this.telefono,
+    email: email ?? this.email,
+    direccion: direccion ?? this.direccion,
+    poblacion: poblacion ?? this.poblacion,
+    provincia: provincia ?? this.provincia,
+    codigoPostal: codigoPostal ?? this.codigoPostal,
+    pais: pais ?? this.pais,
+    observaciones: observaciones ?? this.observaciones,
+    eliminado: eliminado ?? this.eliminado,
+    fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+    fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+  );
+  Proveedore copyWithCompanion(ProveedoresCompanion data) {
+    return Proveedore(
+      id: data.id.present ? data.id.value : this.id,
+      nombre: data.nombre.present ? data.nombre.value : this.nombre,
+      personaContacto: data.personaContacto.present
+          ? data.personaContacto.value
+          : this.personaContacto,
+      nif: data.nif.present ? data.nif.value : this.nif,
+      telefono: data.telefono.present ? data.telefono.value : this.telefono,
+      email: data.email.present ? data.email.value : this.email,
+      direccion: data.direccion.present ? data.direccion.value : this.direccion,
+      poblacion: data.poblacion.present ? data.poblacion.value : this.poblacion,
+      provincia: data.provincia.present ? data.provincia.value : this.provincia,
+      codigoPostal: data.codigoPostal.present
+          ? data.codigoPostal.value
+          : this.codigoPostal,
+      pais: data.pais.present ? data.pais.value : this.pais,
+      observaciones: data.observaciones.present
+          ? data.observaciones.value
+          : this.observaciones,
+      eliminado: data.eliminado.present ? data.eliminado.value : this.eliminado,
+      fechaCreacion: data.fechaCreacion.present
+          ? data.fechaCreacion.value
+          : this.fechaCreacion,
+      fechaModificacion: data.fechaModificacion.present
+          ? data.fechaModificacion.value
+          : this.fechaModificacion,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Proveedore(')
+          ..write('id: $id, ')
+          ..write('nombre: $nombre, ')
+          ..write('personaContacto: $personaContacto, ')
+          ..write('nif: $nif, ')
+          ..write('telefono: $telefono, ')
+          ..write('email: $email, ')
+          ..write('direccion: $direccion, ')
+          ..write('poblacion: $poblacion, ')
+          ..write('provincia: $provincia, ')
+          ..write('codigoPostal: $codigoPostal, ')
+          ..write('pais: $pais, ')
+          ..write('observaciones: $observaciones, ')
+          ..write('eliminado: $eliminado, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    nombre,
+    personaContacto,
+    nif,
+    telefono,
+    email,
+    direccion,
+    poblacion,
+    provincia,
+    codigoPostal,
+    pais,
+    observaciones,
+    eliminado,
+    fechaCreacion,
+    fechaModificacion,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Proveedore &&
+          other.id == this.id &&
+          other.nombre == this.nombre &&
+          other.personaContacto == this.personaContacto &&
+          other.nif == this.nif &&
+          other.telefono == this.telefono &&
+          other.email == this.email &&
+          other.direccion == this.direccion &&
+          other.poblacion == this.poblacion &&
+          other.provincia == this.provincia &&
+          other.codigoPostal == this.codigoPostal &&
+          other.pais == this.pais &&
+          other.observaciones == this.observaciones &&
+          other.eliminado == this.eliminado &&
+          other.fechaCreacion == this.fechaCreacion &&
+          other.fechaModificacion == this.fechaModificacion);
+}
+
+class ProveedoresCompanion extends UpdateCompanion<Proveedore> {
+  final Value<String> id;
+  final Value<String> nombre;
+  final Value<String?> personaContacto;
+  final Value<String> nif;
+  final Value<String> telefono;
+  final Value<String> email;
+  final Value<String> direccion;
+  final Value<String> poblacion;
+  final Value<String> provincia;
+  final Value<String> codigoPostal;
+  final Value<String> pais;
+  final Value<String> observaciones;
+  final Value<bool> eliminado;
+  final Value<DateTime> fechaCreacion;
+  final Value<DateTime> fechaModificacion;
+  final Value<int> rowid;
+  const ProveedoresCompanion({
+    this.id = const Value.absent(),
+    this.nombre = const Value.absent(),
+    this.personaContacto = const Value.absent(),
+    this.nif = const Value.absent(),
+    this.telefono = const Value.absent(),
+    this.email = const Value.absent(),
+    this.direccion = const Value.absent(),
+    this.poblacion = const Value.absent(),
+    this.provincia = const Value.absent(),
+    this.codigoPostal = const Value.absent(),
+    this.pais = const Value.absent(),
+    this.observaciones = const Value.absent(),
+    this.eliminado = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.fechaModificacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProveedoresCompanion.insert({
+    required String id,
+    required String nombre,
+    this.personaContacto = const Value.absent(),
+    this.nif = const Value.absent(),
+    this.telefono = const Value.absent(),
+    this.email = const Value.absent(),
+    this.direccion = const Value.absent(),
+    this.poblacion = const Value.absent(),
+    this.provincia = const Value.absent(),
+    this.codigoPostal = const Value.absent(),
+    this.pais = const Value.absent(),
+    this.observaciones = const Value.absent(),
+    this.eliminado = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.fechaModificacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       nombre = Value(nombre);
+  static Insertable<Proveedore> custom({
+    Expression<String>? id,
+    Expression<String>? nombre,
+    Expression<String>? personaContacto,
+    Expression<String>? nif,
+    Expression<String>? telefono,
+    Expression<String>? email,
+    Expression<String>? direccion,
+    Expression<String>? poblacion,
+    Expression<String>? provincia,
+    Expression<String>? codigoPostal,
+    Expression<String>? pais,
+    Expression<String>? observaciones,
+    Expression<bool>? eliminado,
+    Expression<DateTime>? fechaCreacion,
+    Expression<DateTime>? fechaModificacion,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (nombre != null) 'nombre': nombre,
+      if (personaContacto != null) 'persona_contacto': personaContacto,
+      if (nif != null) 'nif': nif,
+      if (telefono != null) 'telefono': telefono,
+      if (email != null) 'email': email,
+      if (direccion != null) 'direccion': direccion,
+      if (poblacion != null) 'poblacion': poblacion,
+      if (provincia != null) 'provincia': provincia,
+      if (codigoPostal != null) 'codigo_postal': codigoPostal,
+      if (pais != null) 'pais': pais,
+      if (observaciones != null) 'observaciones': observaciones,
+      if (eliminado != null) 'eliminado': eliminado,
+      if (fechaCreacion != null) 'fecha_creacion': fechaCreacion,
+      if (fechaModificacion != null) 'fecha_modificacion': fechaModificacion,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProveedoresCompanion copyWith({
+    Value<String>? id,
+    Value<String>? nombre,
+    Value<String?>? personaContacto,
+    Value<String>? nif,
+    Value<String>? telefono,
+    Value<String>? email,
+    Value<String>? direccion,
+    Value<String>? poblacion,
+    Value<String>? provincia,
+    Value<String>? codigoPostal,
+    Value<String>? pais,
+    Value<String>? observaciones,
+    Value<bool>? eliminado,
+    Value<DateTime>? fechaCreacion,
+    Value<DateTime>? fechaModificacion,
+    Value<int>? rowid,
+  }) {
+    return ProveedoresCompanion(
+      id: id ?? this.id,
+      nombre: nombre ?? this.nombre,
+      personaContacto: personaContacto ?? this.personaContacto,
+      nif: nif ?? this.nif,
+      telefono: telefono ?? this.telefono,
+      email: email ?? this.email,
+      direccion: direccion ?? this.direccion,
+      poblacion: poblacion ?? this.poblacion,
+      provincia: provincia ?? this.provincia,
+      codigoPostal: codigoPostal ?? this.codigoPostal,
+      pais: pais ?? this.pais,
+      observaciones: observaciones ?? this.observaciones,
+      eliminado: eliminado ?? this.eliminado,
+      fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+      fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (nombre.present) {
+      map['nombre'] = Variable<String>(nombre.value);
+    }
+    if (personaContacto.present) {
+      map['persona_contacto'] = Variable<String>(personaContacto.value);
+    }
+    if (nif.present) {
+      map['nif'] = Variable<String>(nif.value);
+    }
+    if (telefono.present) {
+      map['telefono'] = Variable<String>(telefono.value);
+    }
+    if (email.present) {
+      map['email'] = Variable<String>(email.value);
+    }
+    if (direccion.present) {
+      map['direccion'] = Variable<String>(direccion.value);
+    }
+    if (poblacion.present) {
+      map['poblacion'] = Variable<String>(poblacion.value);
+    }
+    if (provincia.present) {
+      map['provincia'] = Variable<String>(provincia.value);
+    }
+    if (codigoPostal.present) {
+      map['codigo_postal'] = Variable<String>(codigoPostal.value);
+    }
+    if (pais.present) {
+      map['pais'] = Variable<String>(pais.value);
+    }
+    if (observaciones.present) {
+      map['observaciones'] = Variable<String>(observaciones.value);
+    }
+    if (eliminado.present) {
+      map['eliminado'] = Variable<bool>(eliminado.value);
+    }
+    if (fechaCreacion.present) {
+      map['fecha_creacion'] = Variable<DateTime>(fechaCreacion.value);
+    }
+    if (fechaModificacion.present) {
+      map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProveedoresCompanion(')
+          ..write('id: $id, ')
+          ..write('nombre: $nombre, ')
+          ..write('personaContacto: $personaContacto, ')
+          ..write('nif: $nif, ')
+          ..write('telefono: $telefono, ')
+          ..write('email: $email, ')
+          ..write('direccion: $direccion, ')
+          ..write('poblacion: $poblacion, ')
+          ..write('provincia: $provincia, ')
+          ..write('codigoPostal: $codigoPostal, ')
+          ..write('pais: $pais, ')
+          ..write('observaciones: $observaciones, ')
+          ..write('eliminado: $eliminado, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CertificacionesTable extends Certificaciones
+    with TableInfo<$CertificacionesTable, Certificacione> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CertificacionesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _expedienteIdMeta = const VerificationMeta(
+    'expedienteId',
+  );
+  @override
+  late final GeneratedColumn<String> expedienteId = GeneratedColumn<String>(
+    'expediente_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES expedientes (id)',
+    ),
+  );
+  static const VerificationMeta _presupuestoIdMeta = const VerificationMeta(
+    'presupuestoId',
+  );
+  @override
+  late final GeneratedColumn<String> presupuestoId = GeneratedColumn<String>(
+    'presupuesto_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES presupuestos (id)',
+    ),
+  );
+  static const VerificationMeta _codigoMeta = const VerificationMeta('codigo');
+  @override
+  late final GeneratedColumn<String> codigo = GeneratedColumn<String>(
+    'codigo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _fechaMeta = const VerificationMeta('fecha');
+  @override
+  late final GeneratedColumn<DateTime> fecha = GeneratedColumn<DateTime>(
+    'fecha',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _descripcionMeta = const VerificationMeta(
+    'descripcion',
+  );
+  @override
+  late final GeneratedColumn<String> descripcion = GeneratedColumn<String>(
+    'descripcion',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _baseImponibleMeta = const VerificationMeta(
+    'baseImponible',
+  );
+  @override
+  late final GeneratedColumn<double> baseImponible = GeneratedColumn<double>(
+    'base_imponible',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _ivaPorcentajeMeta = const VerificationMeta(
+    'ivaPorcentaje',
+  );
+  @override
+  late final GeneratedColumn<double> ivaPorcentaje = GeneratedColumn<double>(
+    'iva_porcentaje',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _importeTotalMeta = const VerificationMeta(
+    'importeTotal',
+  );
+  @override
+  late final GeneratedColumn<double> importeTotal = GeneratedColumn<double>(
+    'importe_total',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _estadoMeta = const VerificationMeta('estado');
+  @override
+  late final GeneratedColumn<String> estado = GeneratedColumn<String>(
+    'estado',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('borrador'),
+  );
+  static const VerificationMeta _observacionesMeta = const VerificationMeta(
+    'observaciones',
+  );
+  @override
+  late final GeneratedColumn<String> observaciones = GeneratedColumn<String>(
+    'observaciones',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _eliminadoMeta = const VerificationMeta(
+    'eliminado',
+  );
+  @override
+  late final GeneratedColumn<bool> eliminado = GeneratedColumn<bool>(
+    'eliminado',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("eliminado" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _fechaCreacionMeta = const VerificationMeta(
+    'fechaCreacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaCreacion =
+      GeneratedColumn<DateTime>(
+        'fecha_creacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+        defaultValue: currentDateAndTime,
+      );
+  static const VerificationMeta _fechaModificacionMeta = const VerificationMeta(
+    'fechaModificacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaModificacion =
+      GeneratedColumn<DateTime>(
+        'fecha_modificacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+        defaultValue: currentDateAndTime,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    expedienteId,
+    presupuestoId,
+    codigo,
+    fecha,
+    descripcion,
+    baseImponible,
+    ivaPorcentaje,
+    importeTotal,
+    estado,
+    observaciones,
+    eliminado,
+    fechaCreacion,
+    fechaModificacion,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'certificaciones';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Certificacione> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('expediente_id')) {
+      context.handle(
+        _expedienteIdMeta,
+        expedienteId.isAcceptableOrUnknown(
+          data['expediente_id']!,
+          _expedienteIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_expedienteIdMeta);
+    }
+    if (data.containsKey('presupuesto_id')) {
+      context.handle(
+        _presupuestoIdMeta,
+        presupuestoId.isAcceptableOrUnknown(
+          data['presupuesto_id']!,
+          _presupuestoIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('codigo')) {
+      context.handle(
+        _codigoMeta,
+        codigo.isAcceptableOrUnknown(data['codigo']!, _codigoMeta),
+      );
+    }
+    if (data.containsKey('fecha')) {
+      context.handle(
+        _fechaMeta,
+        fecha.isAcceptableOrUnknown(data['fecha']!, _fechaMeta),
+      );
+    }
+    if (data.containsKey('descripcion')) {
+      context.handle(
+        _descripcionMeta,
+        descripcion.isAcceptableOrUnknown(
+          data['descripcion']!,
+          _descripcionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('base_imponible')) {
+      context.handle(
+        _baseImponibleMeta,
+        baseImponible.isAcceptableOrUnknown(
+          data['base_imponible']!,
+          _baseImponibleMeta,
+        ),
+      );
+    }
+    if (data.containsKey('iva_porcentaje')) {
+      context.handle(
+        _ivaPorcentajeMeta,
+        ivaPorcentaje.isAcceptableOrUnknown(
+          data['iva_porcentaje']!,
+          _ivaPorcentajeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('importe_total')) {
+      context.handle(
+        _importeTotalMeta,
+        importeTotal.isAcceptableOrUnknown(
+          data['importe_total']!,
+          _importeTotalMeta,
+        ),
+      );
+    }
+    if (data.containsKey('estado')) {
+      context.handle(
+        _estadoMeta,
+        estado.isAcceptableOrUnknown(data['estado']!, _estadoMeta),
+      );
+    }
+    if (data.containsKey('observaciones')) {
+      context.handle(
+        _observacionesMeta,
+        observaciones.isAcceptableOrUnknown(
+          data['observaciones']!,
+          _observacionesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('eliminado')) {
+      context.handle(
+        _eliminadoMeta,
+        eliminado.isAcceptableOrUnknown(data['eliminado']!, _eliminadoMeta),
+      );
+    }
+    if (data.containsKey('fecha_creacion')) {
+      context.handle(
+        _fechaCreacionMeta,
+        fechaCreacion.isAcceptableOrUnknown(
+          data['fecha_creacion']!,
+          _fechaCreacionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('fecha_modificacion')) {
+      context.handle(
+        _fechaModificacionMeta,
+        fechaModificacion.isAcceptableOrUnknown(
+          data['fecha_modificacion']!,
+          _fechaModificacionMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Certificacione map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Certificacione(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      expedienteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}expediente_id'],
+      )!,
+      presupuestoId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}presupuesto_id'],
+      ),
+      codigo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}codigo'],
+      )!,
+      fecha: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha'],
+      )!,
+      descripcion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}descripcion'],
+      )!,
+      baseImponible: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}base_imponible'],
+      )!,
+      ivaPorcentaje: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}iva_porcentaje'],
+      )!,
+      importeTotal: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}importe_total'],
+      )!,
+      estado: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}estado'],
+      )!,
+      observaciones: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}observaciones'],
+      ),
+      eliminado: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}eliminado'],
+      )!,
+      fechaCreacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_creacion'],
+      )!,
+      fechaModificacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_modificacion'],
+      )!,
+    );
+  }
+
+  @override
+  $CertificacionesTable createAlias(String alias) {
+    return $CertificacionesTable(attachedDatabase, alias);
+  }
+}
+
+class Certificacione extends DataClass implements Insertable<Certificacione> {
+  final String id;
+  final String expedienteId;
+  final String? presupuestoId;
+  final String codigo;
+  final DateTime fecha;
+  final String descripcion;
+  final double baseImponible;
+  final double ivaPorcentaje;
+  final double importeTotal;
+  final String estado;
+  final String? observaciones;
+  final bool eliminado;
+  final DateTime fechaCreacion;
+  final DateTime fechaModificacion;
+  const Certificacione({
+    required this.id,
+    required this.expedienteId,
+    this.presupuestoId,
+    required this.codigo,
+    required this.fecha,
+    required this.descripcion,
+    required this.baseImponible,
+    required this.ivaPorcentaje,
+    required this.importeTotal,
+    required this.estado,
+    this.observaciones,
+    required this.eliminado,
+    required this.fechaCreacion,
+    required this.fechaModificacion,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['expediente_id'] = Variable<String>(expedienteId);
+    if (!nullToAbsent || presupuestoId != null) {
+      map['presupuesto_id'] = Variable<String>(presupuestoId);
+    }
+    map['codigo'] = Variable<String>(codigo);
+    map['fecha'] = Variable<DateTime>(fecha);
+    map['descripcion'] = Variable<String>(descripcion);
+    map['base_imponible'] = Variable<double>(baseImponible);
+    map['iva_porcentaje'] = Variable<double>(ivaPorcentaje);
+    map['importe_total'] = Variable<double>(importeTotal);
+    map['estado'] = Variable<String>(estado);
+    if (!nullToAbsent || observaciones != null) {
+      map['observaciones'] = Variable<String>(observaciones);
+    }
+    map['eliminado'] = Variable<bool>(eliminado);
+    map['fecha_creacion'] = Variable<DateTime>(fechaCreacion);
+    map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion);
+    return map;
+  }
+
+  CertificacionesCompanion toCompanion(bool nullToAbsent) {
+    return CertificacionesCompanion(
+      id: Value(id),
+      expedienteId: Value(expedienteId),
+      presupuestoId: presupuestoId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(presupuestoId),
+      codigo: Value(codigo),
+      fecha: Value(fecha),
+      descripcion: Value(descripcion),
+      baseImponible: Value(baseImponible),
+      ivaPorcentaje: Value(ivaPorcentaje),
+      importeTotal: Value(importeTotal),
+      estado: Value(estado),
+      observaciones: observaciones == null && nullToAbsent
+          ? const Value.absent()
+          : Value(observaciones),
+      eliminado: Value(eliminado),
+      fechaCreacion: Value(fechaCreacion),
+      fechaModificacion: Value(fechaModificacion),
+    );
+  }
+
+  factory Certificacione.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Certificacione(
+      id: serializer.fromJson<String>(json['id']),
+      expedienteId: serializer.fromJson<String>(json['expedienteId']),
+      presupuestoId: serializer.fromJson<String?>(json['presupuestoId']),
+      codigo: serializer.fromJson<String>(json['codigo']),
+      fecha: serializer.fromJson<DateTime>(json['fecha']),
+      descripcion: serializer.fromJson<String>(json['descripcion']),
+      baseImponible: serializer.fromJson<double>(json['baseImponible']),
+      ivaPorcentaje: serializer.fromJson<double>(json['ivaPorcentaje']),
+      importeTotal: serializer.fromJson<double>(json['importeTotal']),
+      estado: serializer.fromJson<String>(json['estado']),
+      observaciones: serializer.fromJson<String?>(json['observaciones']),
+      eliminado: serializer.fromJson<bool>(json['eliminado']),
+      fechaCreacion: serializer.fromJson<DateTime>(json['fechaCreacion']),
+      fechaModificacion: serializer.fromJson<DateTime>(
+        json['fechaModificacion'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'expedienteId': serializer.toJson<String>(expedienteId),
+      'presupuestoId': serializer.toJson<String?>(presupuestoId),
+      'codigo': serializer.toJson<String>(codigo),
+      'fecha': serializer.toJson<DateTime>(fecha),
+      'descripcion': serializer.toJson<String>(descripcion),
+      'baseImponible': serializer.toJson<double>(baseImponible),
+      'ivaPorcentaje': serializer.toJson<double>(ivaPorcentaje),
+      'importeTotal': serializer.toJson<double>(importeTotal),
+      'estado': serializer.toJson<String>(estado),
+      'observaciones': serializer.toJson<String?>(observaciones),
+      'eliminado': serializer.toJson<bool>(eliminado),
+      'fechaCreacion': serializer.toJson<DateTime>(fechaCreacion),
+      'fechaModificacion': serializer.toJson<DateTime>(fechaModificacion),
+    };
+  }
+
+  Certificacione copyWith({
+    String? id,
+    String? expedienteId,
+    Value<String?> presupuestoId = const Value.absent(),
+    String? codigo,
+    DateTime? fecha,
+    String? descripcion,
+    double? baseImponible,
+    double? ivaPorcentaje,
+    double? importeTotal,
+    String? estado,
+    Value<String?> observaciones = const Value.absent(),
+    bool? eliminado,
+    DateTime? fechaCreacion,
+    DateTime? fechaModificacion,
+  }) => Certificacione(
+    id: id ?? this.id,
+    expedienteId: expedienteId ?? this.expedienteId,
+    presupuestoId: presupuestoId.present
+        ? presupuestoId.value
+        : this.presupuestoId,
+    codigo: codigo ?? this.codigo,
+    fecha: fecha ?? this.fecha,
+    descripcion: descripcion ?? this.descripcion,
+    baseImponible: baseImponible ?? this.baseImponible,
+    ivaPorcentaje: ivaPorcentaje ?? this.ivaPorcentaje,
+    importeTotal: importeTotal ?? this.importeTotal,
+    estado: estado ?? this.estado,
+    observaciones: observaciones.present
+        ? observaciones.value
+        : this.observaciones,
+    eliminado: eliminado ?? this.eliminado,
+    fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+    fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+  );
+  Certificacione copyWithCompanion(CertificacionesCompanion data) {
+    return Certificacione(
+      id: data.id.present ? data.id.value : this.id,
+      expedienteId: data.expedienteId.present
+          ? data.expedienteId.value
+          : this.expedienteId,
+      presupuestoId: data.presupuestoId.present
+          ? data.presupuestoId.value
+          : this.presupuestoId,
+      codigo: data.codigo.present ? data.codigo.value : this.codigo,
+      fecha: data.fecha.present ? data.fecha.value : this.fecha,
+      descripcion: data.descripcion.present
+          ? data.descripcion.value
+          : this.descripcion,
+      baseImponible: data.baseImponible.present
+          ? data.baseImponible.value
+          : this.baseImponible,
+      ivaPorcentaje: data.ivaPorcentaje.present
+          ? data.ivaPorcentaje.value
+          : this.ivaPorcentaje,
+      importeTotal: data.importeTotal.present
+          ? data.importeTotal.value
+          : this.importeTotal,
+      estado: data.estado.present ? data.estado.value : this.estado,
+      observaciones: data.observaciones.present
+          ? data.observaciones.value
+          : this.observaciones,
+      eliminado: data.eliminado.present ? data.eliminado.value : this.eliminado,
+      fechaCreacion: data.fechaCreacion.present
+          ? data.fechaCreacion.value
+          : this.fechaCreacion,
+      fechaModificacion: data.fechaModificacion.present
+          ? data.fechaModificacion.value
+          : this.fechaModificacion,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Certificacione(')
+          ..write('id: $id, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('presupuestoId: $presupuestoId, ')
+          ..write('codigo: $codigo, ')
+          ..write('fecha: $fecha, ')
+          ..write('descripcion: $descripcion, ')
+          ..write('baseImponible: $baseImponible, ')
+          ..write('ivaPorcentaje: $ivaPorcentaje, ')
+          ..write('importeTotal: $importeTotal, ')
+          ..write('estado: $estado, ')
+          ..write('observaciones: $observaciones, ')
+          ..write('eliminado: $eliminado, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    expedienteId,
+    presupuestoId,
+    codigo,
+    fecha,
+    descripcion,
+    baseImponible,
+    ivaPorcentaje,
+    importeTotal,
+    estado,
+    observaciones,
+    eliminado,
+    fechaCreacion,
+    fechaModificacion,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Certificacione &&
+          other.id == this.id &&
+          other.expedienteId == this.expedienteId &&
+          other.presupuestoId == this.presupuestoId &&
+          other.codigo == this.codigo &&
+          other.fecha == this.fecha &&
+          other.descripcion == this.descripcion &&
+          other.baseImponible == this.baseImponible &&
+          other.ivaPorcentaje == this.ivaPorcentaje &&
+          other.importeTotal == this.importeTotal &&
+          other.estado == this.estado &&
+          other.observaciones == this.observaciones &&
+          other.eliminado == this.eliminado &&
+          other.fechaCreacion == this.fechaCreacion &&
+          other.fechaModificacion == this.fechaModificacion);
+}
+
+class CertificacionesCompanion extends UpdateCompanion<Certificacione> {
+  final Value<String> id;
+  final Value<String> expedienteId;
+  final Value<String?> presupuestoId;
+  final Value<String> codigo;
+  final Value<DateTime> fecha;
+  final Value<String> descripcion;
+  final Value<double> baseImponible;
+  final Value<double> ivaPorcentaje;
+  final Value<double> importeTotal;
+  final Value<String> estado;
+  final Value<String?> observaciones;
+  final Value<bool> eliminado;
+  final Value<DateTime> fechaCreacion;
+  final Value<DateTime> fechaModificacion;
+  final Value<int> rowid;
+  const CertificacionesCompanion({
+    this.id = const Value.absent(),
+    this.expedienteId = const Value.absent(),
+    this.presupuestoId = const Value.absent(),
+    this.codigo = const Value.absent(),
+    this.fecha = const Value.absent(),
+    this.descripcion = const Value.absent(),
+    this.baseImponible = const Value.absent(),
+    this.ivaPorcentaje = const Value.absent(),
+    this.importeTotal = const Value.absent(),
+    this.estado = const Value.absent(),
+    this.observaciones = const Value.absent(),
+    this.eliminado = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.fechaModificacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CertificacionesCompanion.insert({
+    required String id,
+    required String expedienteId,
+    this.presupuestoId = const Value.absent(),
+    this.codigo = const Value.absent(),
+    this.fecha = const Value.absent(),
+    this.descripcion = const Value.absent(),
+    this.baseImponible = const Value.absent(),
+    this.ivaPorcentaje = const Value.absent(),
+    this.importeTotal = const Value.absent(),
+    this.estado = const Value.absent(),
+    this.observaciones = const Value.absent(),
+    this.eliminado = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.fechaModificacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       expedienteId = Value(expedienteId);
+  static Insertable<Certificacione> custom({
+    Expression<String>? id,
+    Expression<String>? expedienteId,
+    Expression<String>? presupuestoId,
+    Expression<String>? codigo,
+    Expression<DateTime>? fecha,
+    Expression<String>? descripcion,
+    Expression<double>? baseImponible,
+    Expression<double>? ivaPorcentaje,
+    Expression<double>? importeTotal,
+    Expression<String>? estado,
+    Expression<String>? observaciones,
+    Expression<bool>? eliminado,
+    Expression<DateTime>? fechaCreacion,
+    Expression<DateTime>? fechaModificacion,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (expedienteId != null) 'expediente_id': expedienteId,
+      if (presupuestoId != null) 'presupuesto_id': presupuestoId,
+      if (codigo != null) 'codigo': codigo,
+      if (fecha != null) 'fecha': fecha,
+      if (descripcion != null) 'descripcion': descripcion,
+      if (baseImponible != null) 'base_imponible': baseImponible,
+      if (ivaPorcentaje != null) 'iva_porcentaje': ivaPorcentaje,
+      if (importeTotal != null) 'importe_total': importeTotal,
+      if (estado != null) 'estado': estado,
+      if (observaciones != null) 'observaciones': observaciones,
+      if (eliminado != null) 'eliminado': eliminado,
+      if (fechaCreacion != null) 'fecha_creacion': fechaCreacion,
+      if (fechaModificacion != null) 'fecha_modificacion': fechaModificacion,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CertificacionesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? expedienteId,
+    Value<String?>? presupuestoId,
+    Value<String>? codigo,
+    Value<DateTime>? fecha,
+    Value<String>? descripcion,
+    Value<double>? baseImponible,
+    Value<double>? ivaPorcentaje,
+    Value<double>? importeTotal,
+    Value<String>? estado,
+    Value<String?>? observaciones,
+    Value<bool>? eliminado,
+    Value<DateTime>? fechaCreacion,
+    Value<DateTime>? fechaModificacion,
+    Value<int>? rowid,
+  }) {
+    return CertificacionesCompanion(
+      id: id ?? this.id,
+      expedienteId: expedienteId ?? this.expedienteId,
+      presupuestoId: presupuestoId ?? this.presupuestoId,
+      codigo: codigo ?? this.codigo,
+      fecha: fecha ?? this.fecha,
+      descripcion: descripcion ?? this.descripcion,
+      baseImponible: baseImponible ?? this.baseImponible,
+      ivaPorcentaje: ivaPorcentaje ?? this.ivaPorcentaje,
+      importeTotal: importeTotal ?? this.importeTotal,
+      estado: estado ?? this.estado,
+      observaciones: observaciones ?? this.observaciones,
+      eliminado: eliminado ?? this.eliminado,
+      fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+      fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (expedienteId.present) {
+      map['expediente_id'] = Variable<String>(expedienteId.value);
+    }
+    if (presupuestoId.present) {
+      map['presupuesto_id'] = Variable<String>(presupuestoId.value);
+    }
+    if (codigo.present) {
+      map['codigo'] = Variable<String>(codigo.value);
+    }
+    if (fecha.present) {
+      map['fecha'] = Variable<DateTime>(fecha.value);
+    }
+    if (descripcion.present) {
+      map['descripcion'] = Variable<String>(descripcion.value);
+    }
+    if (baseImponible.present) {
+      map['base_imponible'] = Variable<double>(baseImponible.value);
+    }
+    if (ivaPorcentaje.present) {
+      map['iva_porcentaje'] = Variable<double>(ivaPorcentaje.value);
+    }
+    if (importeTotal.present) {
+      map['importe_total'] = Variable<double>(importeTotal.value);
+    }
+    if (estado.present) {
+      map['estado'] = Variable<String>(estado.value);
+    }
+    if (observaciones.present) {
+      map['observaciones'] = Variable<String>(observaciones.value);
+    }
+    if (eliminado.present) {
+      map['eliminado'] = Variable<bool>(eliminado.value);
+    }
+    if (fechaCreacion.present) {
+      map['fecha_creacion'] = Variable<DateTime>(fechaCreacion.value);
+    }
+    if (fechaModificacion.present) {
+      map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CertificacionesCompanion(')
+          ..write('id: $id, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('presupuestoId: $presupuestoId, ')
+          ..write('codigo: $codigo, ')
+          ..write('fecha: $fecha, ')
+          ..write('descripcion: $descripcion, ')
+          ..write('baseImponible: $baseImponible, ')
+          ..write('ivaPorcentaje: $ivaPorcentaje, ')
+          ..write('importeTotal: $importeTotal, ')
+          ..write('estado: $estado, ')
+          ..write('observaciones: $observaciones, ')
+          ..write('eliminado: $eliminado, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DocumentosTable extends Documentos
+    with TableInfo<$DocumentosTable, Documento> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DocumentosTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _expedienteIdMeta = const VerificationMeta(
+    'expedienteId',
+  );
+  @override
+  late final GeneratedColumn<String> expedienteId = GeneratedColumn<String>(
+    'expediente_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES expedientes (id)',
+    ),
+  );
+  static const VerificationMeta _tituloMeta = const VerificationMeta('titulo');
+  @override
+  late final GeneratedColumn<String> titulo = GeneratedColumn<String>(
+    'titulo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nombreArchivoMeta = const VerificationMeta(
+    'nombreArchivo',
+  );
+  @override
+  late final GeneratedColumn<String> nombreArchivo = GeneratedColumn<String>(
+    'nombre_archivo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _rutaArchivoMeta = const VerificationMeta(
+    'rutaArchivo',
+  );
+  @override
+  late final GeneratedColumn<String> rutaArchivo = GeneratedColumn<String>(
+    'ruta_archivo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _mimeTypeMeta = const VerificationMeta(
+    'mimeType',
+  );
+  @override
+  late final GeneratedColumn<String> mimeType = GeneratedColumn<String>(
+    'mime_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _tamanoBytesMeta = const VerificationMeta(
+    'tamanoBytes',
+  );
+  @override
+  late final GeneratedColumn<int> tamanoBytes = GeneratedColumn<int>(
+    'tamano_bytes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fechaMeta = const VerificationMeta('fecha');
+  @override
+  late final GeneratedColumn<DateTime> fecha = GeneratedColumn<DateTime>(
+    'fecha',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _observacionesMeta = const VerificationMeta(
+    'observaciones',
+  );
+  @override
+  late final GeneratedColumn<String> observaciones = GeneratedColumn<String>(
+    'observaciones',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _tipoMeta = const VerificationMeta('tipo');
+  @override
+  late final GeneratedColumn<String> tipo = GeneratedColumn<String>(
+    'tipo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('otro'),
+  );
+  static const VerificationMeta _eliminadoMeta = const VerificationMeta(
+    'eliminado',
+  );
+  @override
+  late final GeneratedColumn<bool> eliminado = GeneratedColumn<bool>(
+    'eliminado',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("eliminado" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _fechaCreacionMeta = const VerificationMeta(
+    'fechaCreacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaCreacion =
+      GeneratedColumn<DateTime>(
+        'fecha_creacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+        defaultValue: currentDateAndTime,
+      );
+  static const VerificationMeta _fechaModificacionMeta = const VerificationMeta(
+    'fechaModificacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaModificacion =
+      GeneratedColumn<DateTime>(
+        'fecha_modificacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+        defaultValue: currentDateAndTime,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    expedienteId,
+    titulo,
+    nombreArchivo,
+    rutaArchivo,
+    mimeType,
+    tamanoBytes,
+    fecha,
+    observaciones,
+    tipo,
+    eliminado,
+    fechaCreacion,
+    fechaModificacion,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'documentos';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Documento> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('expediente_id')) {
+      context.handle(
+        _expedienteIdMeta,
+        expedienteId.isAcceptableOrUnknown(
+          data['expediente_id']!,
+          _expedienteIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_expedienteIdMeta);
+    }
+    if (data.containsKey('titulo')) {
+      context.handle(
+        _tituloMeta,
+        titulo.isAcceptableOrUnknown(data['titulo']!, _tituloMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tituloMeta);
+    }
+    if (data.containsKey('nombre_archivo')) {
+      context.handle(
+        _nombreArchivoMeta,
+        nombreArchivo.isAcceptableOrUnknown(
+          data['nombre_archivo']!,
+          _nombreArchivoMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_nombreArchivoMeta);
+    }
+    if (data.containsKey('ruta_archivo')) {
+      context.handle(
+        _rutaArchivoMeta,
+        rutaArchivo.isAcceptableOrUnknown(
+          data['ruta_archivo']!,
+          _rutaArchivoMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_rutaArchivoMeta);
+    }
+    if (data.containsKey('mime_type')) {
+      context.handle(
+        _mimeTypeMeta,
+        mimeType.isAcceptableOrUnknown(data['mime_type']!, _mimeTypeMeta),
+      );
+    }
+    if (data.containsKey('tamano_bytes')) {
+      context.handle(
+        _tamanoBytesMeta,
+        tamanoBytes.isAcceptableOrUnknown(
+          data['tamano_bytes']!,
+          _tamanoBytesMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_tamanoBytesMeta);
+    }
+    if (data.containsKey('fecha')) {
+      context.handle(
+        _fechaMeta,
+        fecha.isAcceptableOrUnknown(data['fecha']!, _fechaMeta),
+      );
+    }
+    if (data.containsKey('observaciones')) {
+      context.handle(
+        _observacionesMeta,
+        observaciones.isAcceptableOrUnknown(
+          data['observaciones']!,
+          _observacionesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('tipo')) {
+      context.handle(
+        _tipoMeta,
+        tipo.isAcceptableOrUnknown(data['tipo']!, _tipoMeta),
+      );
+    }
+    if (data.containsKey('eliminado')) {
+      context.handle(
+        _eliminadoMeta,
+        eliminado.isAcceptableOrUnknown(data['eliminado']!, _eliminadoMeta),
+      );
+    }
+    if (data.containsKey('fecha_creacion')) {
+      context.handle(
+        _fechaCreacionMeta,
+        fechaCreacion.isAcceptableOrUnknown(
+          data['fecha_creacion']!,
+          _fechaCreacionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('fecha_modificacion')) {
+      context.handle(
+        _fechaModificacionMeta,
+        fechaModificacion.isAcceptableOrUnknown(
+          data['fecha_modificacion']!,
+          _fechaModificacionMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Documento map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Documento(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      expedienteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}expediente_id'],
+      )!,
+      titulo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}titulo'],
+      )!,
+      nombreArchivo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}nombre_archivo'],
+      )!,
+      rutaArchivo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}ruta_archivo'],
+      )!,
+      mimeType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mime_type'],
+      ),
+      tamanoBytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}tamano_bytes'],
+      )!,
+      fecha: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha'],
+      )!,
+      observaciones: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}observaciones'],
+      ),
+      tipo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tipo'],
+      )!,
+      eliminado: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}eliminado'],
+      )!,
+      fechaCreacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_creacion'],
+      )!,
+      fechaModificacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_modificacion'],
+      )!,
+    );
+  }
+
+  @override
+  $DocumentosTable createAlias(String alias) {
+    return $DocumentosTable(attachedDatabase, alias);
+  }
+}
+
+class Documento extends DataClass implements Insertable<Documento> {
+  final String id;
+  final String expedienteId;
+  final String titulo;
+  final String nombreArchivo;
+  final String rutaArchivo;
+  final String? mimeType;
+  final int tamanoBytes;
+  final DateTime fecha;
+  final String? observaciones;
+  final String tipo;
+  final bool eliminado;
+  final DateTime fechaCreacion;
+  final DateTime fechaModificacion;
+  const Documento({
+    required this.id,
+    required this.expedienteId,
+    required this.titulo,
+    required this.nombreArchivo,
+    required this.rutaArchivo,
+    this.mimeType,
+    required this.tamanoBytes,
+    required this.fecha,
+    this.observaciones,
+    required this.tipo,
+    required this.eliminado,
+    required this.fechaCreacion,
+    required this.fechaModificacion,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['expediente_id'] = Variable<String>(expedienteId);
+    map['titulo'] = Variable<String>(titulo);
+    map['nombre_archivo'] = Variable<String>(nombreArchivo);
+    map['ruta_archivo'] = Variable<String>(rutaArchivo);
+    if (!nullToAbsent || mimeType != null) {
+      map['mime_type'] = Variable<String>(mimeType);
+    }
+    map['tamano_bytes'] = Variable<int>(tamanoBytes);
+    map['fecha'] = Variable<DateTime>(fecha);
+    if (!nullToAbsent || observaciones != null) {
+      map['observaciones'] = Variable<String>(observaciones);
+    }
+    map['tipo'] = Variable<String>(tipo);
+    map['eliminado'] = Variable<bool>(eliminado);
+    map['fecha_creacion'] = Variable<DateTime>(fechaCreacion);
+    map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion);
+    return map;
+  }
+
+  DocumentosCompanion toCompanion(bool nullToAbsent) {
+    return DocumentosCompanion(
+      id: Value(id),
+      expedienteId: Value(expedienteId),
+      titulo: Value(titulo),
+      nombreArchivo: Value(nombreArchivo),
+      rutaArchivo: Value(rutaArchivo),
+      mimeType: mimeType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(mimeType),
+      tamanoBytes: Value(tamanoBytes),
+      fecha: Value(fecha),
+      observaciones: observaciones == null && nullToAbsent
+          ? const Value.absent()
+          : Value(observaciones),
+      tipo: Value(tipo),
+      eliminado: Value(eliminado),
+      fechaCreacion: Value(fechaCreacion),
+      fechaModificacion: Value(fechaModificacion),
+    );
+  }
+
+  factory Documento.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Documento(
+      id: serializer.fromJson<String>(json['id']),
+      expedienteId: serializer.fromJson<String>(json['expedienteId']),
+      titulo: serializer.fromJson<String>(json['titulo']),
+      nombreArchivo: serializer.fromJson<String>(json['nombreArchivo']),
+      rutaArchivo: serializer.fromJson<String>(json['rutaArchivo']),
+      mimeType: serializer.fromJson<String?>(json['mimeType']),
+      tamanoBytes: serializer.fromJson<int>(json['tamanoBytes']),
+      fecha: serializer.fromJson<DateTime>(json['fecha']),
+      observaciones: serializer.fromJson<String?>(json['observaciones']),
+      tipo: serializer.fromJson<String>(json['tipo']),
+      eliminado: serializer.fromJson<bool>(json['eliminado']),
+      fechaCreacion: serializer.fromJson<DateTime>(json['fechaCreacion']),
+      fechaModificacion: serializer.fromJson<DateTime>(
+        json['fechaModificacion'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'expedienteId': serializer.toJson<String>(expedienteId),
+      'titulo': serializer.toJson<String>(titulo),
+      'nombreArchivo': serializer.toJson<String>(nombreArchivo),
+      'rutaArchivo': serializer.toJson<String>(rutaArchivo),
+      'mimeType': serializer.toJson<String?>(mimeType),
+      'tamanoBytes': serializer.toJson<int>(tamanoBytes),
+      'fecha': serializer.toJson<DateTime>(fecha),
+      'observaciones': serializer.toJson<String?>(observaciones),
+      'tipo': serializer.toJson<String>(tipo),
+      'eliminado': serializer.toJson<bool>(eliminado),
+      'fechaCreacion': serializer.toJson<DateTime>(fechaCreacion),
+      'fechaModificacion': serializer.toJson<DateTime>(fechaModificacion),
+    };
+  }
+
+  Documento copyWith({
+    String? id,
+    String? expedienteId,
+    String? titulo,
+    String? nombreArchivo,
+    String? rutaArchivo,
+    Value<String?> mimeType = const Value.absent(),
+    int? tamanoBytes,
+    DateTime? fecha,
+    Value<String?> observaciones = const Value.absent(),
+    String? tipo,
+    bool? eliminado,
+    DateTime? fechaCreacion,
+    DateTime? fechaModificacion,
+  }) => Documento(
+    id: id ?? this.id,
+    expedienteId: expedienteId ?? this.expedienteId,
+    titulo: titulo ?? this.titulo,
+    nombreArchivo: nombreArchivo ?? this.nombreArchivo,
+    rutaArchivo: rutaArchivo ?? this.rutaArchivo,
+    mimeType: mimeType.present ? mimeType.value : this.mimeType,
+    tamanoBytes: tamanoBytes ?? this.tamanoBytes,
+    fecha: fecha ?? this.fecha,
+    observaciones: observaciones.present
+        ? observaciones.value
+        : this.observaciones,
+    tipo: tipo ?? this.tipo,
+    eliminado: eliminado ?? this.eliminado,
+    fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+    fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+  );
+  Documento copyWithCompanion(DocumentosCompanion data) {
+    return Documento(
+      id: data.id.present ? data.id.value : this.id,
+      expedienteId: data.expedienteId.present
+          ? data.expedienteId.value
+          : this.expedienteId,
+      titulo: data.titulo.present ? data.titulo.value : this.titulo,
+      nombreArchivo: data.nombreArchivo.present
+          ? data.nombreArchivo.value
+          : this.nombreArchivo,
+      rutaArchivo: data.rutaArchivo.present
+          ? data.rutaArchivo.value
+          : this.rutaArchivo,
+      mimeType: data.mimeType.present ? data.mimeType.value : this.mimeType,
+      tamanoBytes: data.tamanoBytes.present
+          ? data.tamanoBytes.value
+          : this.tamanoBytes,
+      fecha: data.fecha.present ? data.fecha.value : this.fecha,
+      observaciones: data.observaciones.present
+          ? data.observaciones.value
+          : this.observaciones,
+      tipo: data.tipo.present ? data.tipo.value : this.tipo,
+      eliminado: data.eliminado.present ? data.eliminado.value : this.eliminado,
+      fechaCreacion: data.fechaCreacion.present
+          ? data.fechaCreacion.value
+          : this.fechaCreacion,
+      fechaModificacion: data.fechaModificacion.present
+          ? data.fechaModificacion.value
+          : this.fechaModificacion,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Documento(')
+          ..write('id: $id, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('titulo: $titulo, ')
+          ..write('nombreArchivo: $nombreArchivo, ')
+          ..write('rutaArchivo: $rutaArchivo, ')
+          ..write('mimeType: $mimeType, ')
+          ..write('tamanoBytes: $tamanoBytes, ')
+          ..write('fecha: $fecha, ')
+          ..write('observaciones: $observaciones, ')
+          ..write('tipo: $tipo, ')
+          ..write('eliminado: $eliminado, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    expedienteId,
+    titulo,
+    nombreArchivo,
+    rutaArchivo,
+    mimeType,
+    tamanoBytes,
+    fecha,
+    observaciones,
+    tipo,
+    eliminado,
+    fechaCreacion,
+    fechaModificacion,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Documento &&
+          other.id == this.id &&
+          other.expedienteId == this.expedienteId &&
+          other.titulo == this.titulo &&
+          other.nombreArchivo == this.nombreArchivo &&
+          other.rutaArchivo == this.rutaArchivo &&
+          other.mimeType == this.mimeType &&
+          other.tamanoBytes == this.tamanoBytes &&
+          other.fecha == this.fecha &&
+          other.observaciones == this.observaciones &&
+          other.tipo == this.tipo &&
+          other.eliminado == this.eliminado &&
+          other.fechaCreacion == this.fechaCreacion &&
+          other.fechaModificacion == this.fechaModificacion);
+}
+
+class DocumentosCompanion extends UpdateCompanion<Documento> {
+  final Value<String> id;
+  final Value<String> expedienteId;
+  final Value<String> titulo;
+  final Value<String> nombreArchivo;
+  final Value<String> rutaArchivo;
+  final Value<String?> mimeType;
+  final Value<int> tamanoBytes;
+  final Value<DateTime> fecha;
+  final Value<String?> observaciones;
+  final Value<String> tipo;
+  final Value<bool> eliminado;
+  final Value<DateTime> fechaCreacion;
+  final Value<DateTime> fechaModificacion;
+  final Value<int> rowid;
+  const DocumentosCompanion({
+    this.id = const Value.absent(),
+    this.expedienteId = const Value.absent(),
+    this.titulo = const Value.absent(),
+    this.nombreArchivo = const Value.absent(),
+    this.rutaArchivo = const Value.absent(),
+    this.mimeType = const Value.absent(),
+    this.tamanoBytes = const Value.absent(),
+    this.fecha = const Value.absent(),
+    this.observaciones = const Value.absent(),
+    this.tipo = const Value.absent(),
+    this.eliminado = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.fechaModificacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DocumentosCompanion.insert({
+    required String id,
+    required String expedienteId,
+    required String titulo,
+    required String nombreArchivo,
+    required String rutaArchivo,
+    this.mimeType = const Value.absent(),
+    required int tamanoBytes,
+    this.fecha = const Value.absent(),
+    this.observaciones = const Value.absent(),
+    this.tipo = const Value.absent(),
+    this.eliminado = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.fechaModificacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       expedienteId = Value(expedienteId),
+       titulo = Value(titulo),
+       nombreArchivo = Value(nombreArchivo),
+       rutaArchivo = Value(rutaArchivo),
+       tamanoBytes = Value(tamanoBytes);
+  static Insertable<Documento> custom({
+    Expression<String>? id,
+    Expression<String>? expedienteId,
+    Expression<String>? titulo,
+    Expression<String>? nombreArchivo,
+    Expression<String>? rutaArchivo,
+    Expression<String>? mimeType,
+    Expression<int>? tamanoBytes,
+    Expression<DateTime>? fecha,
+    Expression<String>? observaciones,
+    Expression<String>? tipo,
+    Expression<bool>? eliminado,
+    Expression<DateTime>? fechaCreacion,
+    Expression<DateTime>? fechaModificacion,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (expedienteId != null) 'expediente_id': expedienteId,
+      if (titulo != null) 'titulo': titulo,
+      if (nombreArchivo != null) 'nombre_archivo': nombreArchivo,
+      if (rutaArchivo != null) 'ruta_archivo': rutaArchivo,
+      if (mimeType != null) 'mime_type': mimeType,
+      if (tamanoBytes != null) 'tamano_bytes': tamanoBytes,
+      if (fecha != null) 'fecha': fecha,
+      if (observaciones != null) 'observaciones': observaciones,
+      if (tipo != null) 'tipo': tipo,
+      if (eliminado != null) 'eliminado': eliminado,
+      if (fechaCreacion != null) 'fecha_creacion': fechaCreacion,
+      if (fechaModificacion != null) 'fecha_modificacion': fechaModificacion,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DocumentosCompanion copyWith({
+    Value<String>? id,
+    Value<String>? expedienteId,
+    Value<String>? titulo,
+    Value<String>? nombreArchivo,
+    Value<String>? rutaArchivo,
+    Value<String?>? mimeType,
+    Value<int>? tamanoBytes,
+    Value<DateTime>? fecha,
+    Value<String?>? observaciones,
+    Value<String>? tipo,
+    Value<bool>? eliminado,
+    Value<DateTime>? fechaCreacion,
+    Value<DateTime>? fechaModificacion,
+    Value<int>? rowid,
+  }) {
+    return DocumentosCompanion(
+      id: id ?? this.id,
+      expedienteId: expedienteId ?? this.expedienteId,
+      titulo: titulo ?? this.titulo,
+      nombreArchivo: nombreArchivo ?? this.nombreArchivo,
+      rutaArchivo: rutaArchivo ?? this.rutaArchivo,
+      mimeType: mimeType ?? this.mimeType,
+      tamanoBytes: tamanoBytes ?? this.tamanoBytes,
+      fecha: fecha ?? this.fecha,
+      observaciones: observaciones ?? this.observaciones,
+      tipo: tipo ?? this.tipo,
+      eliminado: eliminado ?? this.eliminado,
+      fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+      fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (expedienteId.present) {
+      map['expediente_id'] = Variable<String>(expedienteId.value);
+    }
+    if (titulo.present) {
+      map['titulo'] = Variable<String>(titulo.value);
+    }
+    if (nombreArchivo.present) {
+      map['nombre_archivo'] = Variable<String>(nombreArchivo.value);
+    }
+    if (rutaArchivo.present) {
+      map['ruta_archivo'] = Variable<String>(rutaArchivo.value);
+    }
+    if (mimeType.present) {
+      map['mime_type'] = Variable<String>(mimeType.value);
+    }
+    if (tamanoBytes.present) {
+      map['tamano_bytes'] = Variable<int>(tamanoBytes.value);
+    }
+    if (fecha.present) {
+      map['fecha'] = Variable<DateTime>(fecha.value);
+    }
+    if (observaciones.present) {
+      map['observaciones'] = Variable<String>(observaciones.value);
+    }
+    if (tipo.present) {
+      map['tipo'] = Variable<String>(tipo.value);
+    }
+    if (eliminado.present) {
+      map['eliminado'] = Variable<bool>(eliminado.value);
+    }
+    if (fechaCreacion.present) {
+      map['fecha_creacion'] = Variable<DateTime>(fechaCreacion.value);
+    }
+    if (fechaModificacion.present) {
+      map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DocumentosCompanion(')
+          ..write('id: $id, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('titulo: $titulo, ')
+          ..write('nombreArchivo: $nombreArchivo, ')
+          ..write('rutaArchivo: $rutaArchivo, ')
+          ..write('mimeType: $mimeType, ')
+          ..write('tamanoBytes: $tamanoBytes, ')
+          ..write('fecha: $fecha, ')
+          ..write('observaciones: $observaciones, ')
+          ..write('tipo: $tipo, ')
+          ..write('eliminado: $eliminado, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $TimelineEventsTable extends TimelineEvents
     with TableInfo<$TimelineEventsTable, TimelineEvent> {
   @override
@@ -5865,6 +9229,12 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $FacturasTable facturas = $FacturasTable(this);
   late final $FacturaLineasTable facturaLineas = $FacturaLineasTable(this);
   late final $CobrosTable cobros = $CobrosTable(this);
+  late final $ComprasTable compras = $ComprasTable(this);
+  late final $ProveedoresTable proveedores = $ProveedoresTable(this);
+  late final $CertificacionesTable certificaciones = $CertificacionesTable(
+    this,
+  );
+  late final $DocumentosTable documentos = $DocumentosTable(this);
   late final $TimelineEventsTable timelineEvents = $TimelineEventsTable(this);
   late final ExpedientesDao expedientesDao = ExpedientesDao(
     this as AppDatabase,
@@ -5883,6 +9253,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this as AppDatabase,
   );
   late final CobrosDao cobrosDao = CobrosDao(this as AppDatabase);
+  late final ComprasDao comprasDao = ComprasDao(this as AppDatabase);
+  late final ProveedoresDao proveedoresDao = ProveedoresDao(
+    this as AppDatabase,
+  );
+  late final CertificacionesDao certificacionesDao = CertificacionesDao(
+    this as AppDatabase,
+  );
+  late final DocumentosDao documentosDao = DocumentosDao(this as AppDatabase);
   late final TimelineEventsDao timelineEventsDao = TimelineEventsDao(
     this as AppDatabase,
   );
@@ -5899,6 +9277,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     facturas,
     facturaLineas,
     cobros,
+    compras,
+    proveedores,
+    certificaciones,
+    documentos,
     timelineEvents,
   ];
 }
@@ -6612,6 +9994,63 @@ final class $$ExpedientesTableReferences
     );
   }
 
+  static MultiTypedResultKey<$ComprasTable, List<Compra>> _comprasRefsTable(
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.compras,
+    aliasName: 'expedientes__id__compras__expediente_id',
+  );
+
+  $$ComprasTableProcessedTableManager get comprasRefs {
+    final manager = $$ComprasTableTableManager(
+      $_db,
+      $_db.compras,
+    ).filter((f) => f.expedienteId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_comprasRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$CertificacionesTable, List<Certificacione>>
+  _certificacionesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.certificaciones,
+    aliasName: 'expedientes__id__certificaciones__expediente_id',
+  );
+
+  $$CertificacionesTableProcessedTableManager get certificacionesRefs {
+    final manager = $$CertificacionesTableTableManager(
+      $_db,
+      $_db.certificaciones,
+    ).filter((f) => f.expedienteId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _certificacionesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$DocumentosTable, List<Documento>>
+  _documentosRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.documentos,
+    aliasName: 'expedientes__id__documentos__expediente_id',
+  );
+
+  $$DocumentosTableProcessedTableManager get documentosRefs {
+    final manager = $$DocumentosTableTableManager(
+      $_db,
+      $_db.documentos,
+    ).filter((f) => f.expedienteId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_documentosRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
   static MultiTypedResultKey<$TimelineEventsTable, List<TimelineEvent>>
   _timelineEventsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.timelineEvents,
@@ -6744,6 +10183,81 @@ class $$ExpedientesTableFilterComposer
           }) => $$PresupuestosTableFilterComposer(
             $db: $db,
             $table: $db.presupuestos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> comprasRefs(
+    Expression<bool> Function($$ComprasTableFilterComposer f) f,
+  ) {
+    final $$ComprasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.compras,
+      getReferencedColumn: (t) => t.expedienteId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ComprasTableFilterComposer(
+            $db: $db,
+            $table: $db.compras,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> certificacionesRefs(
+    Expression<bool> Function($$CertificacionesTableFilterComposer f) f,
+  ) {
+    final $$CertificacionesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.certificaciones,
+      getReferencedColumn: (t) => t.expedienteId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CertificacionesTableFilterComposer(
+            $db: $db,
+            $table: $db.certificaciones,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> documentosRefs(
+    Expression<bool> Function($$DocumentosTableFilterComposer f) f,
+  ) {
+    final $$DocumentosTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.documentos,
+      getReferencedColumn: (t) => t.expedienteId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DocumentosTableFilterComposer(
+            $db: $db,
+            $table: $db.documentos,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -6979,6 +10493,81 @@ class $$ExpedientesTableAnnotationComposer
     return f(composer);
   }
 
+  Expression<T> comprasRefs<T extends Object>(
+    Expression<T> Function($$ComprasTableAnnotationComposer a) f,
+  ) {
+    final $$ComprasTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.compras,
+      getReferencedColumn: (t) => t.expedienteId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ComprasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.compras,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> certificacionesRefs<T extends Object>(
+    Expression<T> Function($$CertificacionesTableAnnotationComposer a) f,
+  ) {
+    final $$CertificacionesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.certificaciones,
+      getReferencedColumn: (t) => t.expedienteId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CertificacionesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.certificaciones,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> documentosRefs<T extends Object>(
+    Expression<T> Function($$DocumentosTableAnnotationComposer a) f,
+  ) {
+    final $$DocumentosTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.documentos,
+      getReferencedColumn: (t) => t.expedienteId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DocumentosTableAnnotationComposer(
+            $db: $db,
+            $table: $db.documentos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
   Expression<T> timelineEventsRefs<T extends Object>(
     Expression<T> Function($$TimelineEventsTableAnnotationComposer a) f,
   ) {
@@ -7021,6 +10610,9 @@ class $$ExpedientesTableTableManager
           PrefetchHooks Function({
             bool clienteId,
             bool presupuestosRefs,
+            bool comprasRefs,
+            bool certificacionesRefs,
+            bool documentosRefs,
             bool timelineEventsRefs,
           })
         > {
@@ -7115,12 +10707,18 @@ class $$ExpedientesTableTableManager
               ({
                 clienteId = false,
                 presupuestosRefs = false,
+                comprasRefs = false,
+                certificacionesRefs = false,
+                documentosRefs = false,
                 timelineEventsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (presupuestosRefs) db.presupuestos,
+                    if (comprasRefs) db.compras,
+                    if (certificacionesRefs) db.certificaciones,
+                    if (documentosRefs) db.documentos,
                     if (timelineEventsRefs) db.timelineEvents,
                   ],
                   addJoins:
@@ -7180,6 +10778,69 @@ class $$ExpedientesTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (comprasRefs)
+                        await $_getPrefetchedData<
+                          Expediente,
+                          $ExpedientesTable,
+                          Compra
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ExpedientesTableReferences
+                              ._comprasRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ExpedientesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).comprasRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.expedienteId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (certificacionesRefs)
+                        await $_getPrefetchedData<
+                          Expediente,
+                          $ExpedientesTable,
+                          Certificacione
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ExpedientesTableReferences
+                              ._certificacionesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ExpedientesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).certificacionesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.expedienteId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (documentosRefs)
+                        await $_getPrefetchedData<
+                          Expediente,
+                          $ExpedientesTable,
+                          Documento
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ExpedientesTableReferences
+                              ._documentosRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ExpedientesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).documentosRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.expedienteId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                       if (timelineEventsRefs)
                         await $_getPrefetchedData<
                           Expediente,
@@ -7224,6 +10885,9 @@ typedef $$ExpedientesTableProcessedTableManager =
       PrefetchHooks Function({
         bool clienteId,
         bool presupuestosRefs,
+        bool comprasRefs,
+        bool certificacionesRefs,
+        bool documentosRefs,
         bool timelineEventsRefs,
       })
     >;
@@ -7319,6 +10983,26 @@ final class $$PresupuestosTableReferences
     );
 
     final cache = $_typedResult.readTableOrNull(_facturasRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$CertificacionesTable, List<Certificacione>>
+  _certificacionesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.certificaciones,
+    aliasName: 'presupuestos__id__certificaciones__presupuesto_id',
+  );
+
+  $$CertificacionesTableProcessedTableManager get certificacionesRefs {
+    final manager = $$CertificacionesTableTableManager(
+      $_db,
+      $_db.certificaciones,
+    ).filter((f) => f.presupuestoId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _certificacionesRefsTable($_db),
+    );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -7453,6 +11137,31 @@ class $$PresupuestosTableFilterComposer
           }) => $$FacturasTableFilterComposer(
             $db: $db,
             $table: $db.facturas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> certificacionesRefs(
+    Expression<bool> Function($$CertificacionesTableFilterComposer f) f,
+  ) {
+    final $$CertificacionesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.certificaciones,
+      getReferencedColumn: (t) => t.presupuestoId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CertificacionesTableFilterComposer(
+            $db: $db,
+            $table: $db.certificaciones,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -7676,6 +11385,31 @@ class $$PresupuestosTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> certificacionesRefs<T extends Object>(
+    Expression<T> Function($$CertificacionesTableAnnotationComposer a) f,
+  ) {
+    final $$CertificacionesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.certificaciones,
+      getReferencedColumn: (t) => t.presupuestoId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CertificacionesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.certificaciones,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$PresupuestosTableTableManager
@@ -7695,6 +11429,7 @@ class $$PresupuestosTableTableManager
             bool expedienteId,
             bool lineasPresupuestoRefs,
             bool facturasRefs,
+            bool certificacionesRefs,
           })
         > {
   $$PresupuestosTableTableManager(_$AppDatabase db, $PresupuestosTable table)
@@ -7781,12 +11516,14 @@ class $$PresupuestosTableTableManager
                 expedienteId = false,
                 lineasPresupuestoRefs = false,
                 facturasRefs = false,
+                certificacionesRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (lineasPresupuestoRefs) db.lineasPresupuesto,
                     if (facturasRefs) db.facturas,
+                    if (certificacionesRefs) db.certificaciones,
                   ],
                   addJoins:
                       <
@@ -7866,6 +11603,27 @@ class $$PresupuestosTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (certificacionesRefs)
+                        await $_getPrefetchedData<
+                          Presupuesto,
+                          $PresupuestosTable,
+                          Certificacione
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PresupuestosTableReferences
+                              ._certificacionesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PresupuestosTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).certificacionesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.presupuestoId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -7890,6 +11648,7 @@ typedef $$PresupuestosTableProcessedTableManager =
         bool expedienteId,
         bool lineasPresupuestoRefs,
         bool facturasRefs,
+        bool certificacionesRefs,
       })
     >;
 typedef $$LineasPresupuestoTableCreateCompanionBuilder =
@@ -10108,6 +13867,2014 @@ typedef $$CobrosTableProcessedTableManager =
       Cobro,
       PrefetchHooks Function({bool facturaId})
     >;
+typedef $$ComprasTableCreateCompanionBuilder =
+    ComprasCompanion Function({
+      required String id,
+      required String expedienteId,
+      Value<String?> proveedorId,
+      Value<String> proveedorNombre,
+      Value<DateTime> fecha,
+      Value<String?> numeroFactura,
+      Value<String> concepto,
+      Value<double> baseImponible,
+      Value<double> ivaPorcentaje,
+      Value<double> importeTotal,
+      Value<String> estado,
+      Value<String?> observaciones,
+      Value<bool> eliminado,
+      Value<DateTime> fechaCreacion,
+      Value<DateTime> fechaModificacion,
+      Value<int> rowid,
+    });
+typedef $$ComprasTableUpdateCompanionBuilder =
+    ComprasCompanion Function({
+      Value<String> id,
+      Value<String> expedienteId,
+      Value<String?> proveedorId,
+      Value<String> proveedorNombre,
+      Value<DateTime> fecha,
+      Value<String?> numeroFactura,
+      Value<String> concepto,
+      Value<double> baseImponible,
+      Value<double> ivaPorcentaje,
+      Value<double> importeTotal,
+      Value<String> estado,
+      Value<String?> observaciones,
+      Value<bool> eliminado,
+      Value<DateTime> fechaCreacion,
+      Value<DateTime> fechaModificacion,
+      Value<int> rowid,
+    });
+
+final class $$ComprasTableReferences
+    extends BaseReferences<_$AppDatabase, $ComprasTable, Compra> {
+  $$ComprasTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $ExpedientesTable _expedienteIdTable(_$AppDatabase db) =>
+      db.expedientes.createAlias('compras__expediente_id__expedientes__id');
+
+  $$ExpedientesTableProcessedTableManager get expedienteId {
+    final $_column = $_itemColumn<String>('expediente_id')!;
+
+    final manager = $$ExpedientesTableTableManager(
+      $_db,
+      $_db.expedientes,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_expedienteIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ComprasTableFilterComposer
+    extends Composer<_$AppDatabase, $ComprasTable> {
+  $$ComprasTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get proveedorId => $composableBuilder(
+    column: $table.proveedorId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get proveedorNombre => $composableBuilder(
+    column: $table.proveedorNombre,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fecha => $composableBuilder(
+    column: $table.fecha,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get numeroFactura => $composableBuilder(
+    column: $table.numeroFactura,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get concepto => $composableBuilder(
+    column: $table.concepto,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get baseImponible => $composableBuilder(
+    column: $table.baseImponible,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get ivaPorcentaje => $composableBuilder(
+    column: $table.ivaPorcentaje,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get importeTotal => $composableBuilder(
+    column: $table.importeTotal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get estado => $composableBuilder(
+    column: $table.estado,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get eliminado => $composableBuilder(
+    column: $table.eliminado,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ExpedientesTableFilterComposer get expedienteId {
+    final $$ExpedientesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.expedienteId,
+      referencedTable: $db.expedientes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExpedientesTableFilterComposer(
+            $db: $db,
+            $table: $db.expedientes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ComprasTableOrderingComposer
+    extends Composer<_$AppDatabase, $ComprasTable> {
+  $$ComprasTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get proveedorId => $composableBuilder(
+    column: $table.proveedorId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get proveedorNombre => $composableBuilder(
+    column: $table.proveedorNombre,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fecha => $composableBuilder(
+    column: $table.fecha,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get numeroFactura => $composableBuilder(
+    column: $table.numeroFactura,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get concepto => $composableBuilder(
+    column: $table.concepto,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get baseImponible => $composableBuilder(
+    column: $table.baseImponible,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get ivaPorcentaje => $composableBuilder(
+    column: $table.ivaPorcentaje,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get importeTotal => $composableBuilder(
+    column: $table.importeTotal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get estado => $composableBuilder(
+    column: $table.estado,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get eliminado => $composableBuilder(
+    column: $table.eliminado,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ExpedientesTableOrderingComposer get expedienteId {
+    final $$ExpedientesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.expedienteId,
+      referencedTable: $db.expedientes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExpedientesTableOrderingComposer(
+            $db: $db,
+            $table: $db.expedientes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ComprasTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ComprasTable> {
+  $$ComprasTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get proveedorId => $composableBuilder(
+    column: $table.proveedorId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get proveedorNombre => $composableBuilder(
+    column: $table.proveedorNombre,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fecha =>
+      $composableBuilder(column: $table.fecha, builder: (column) => column);
+
+  GeneratedColumn<String> get numeroFactura => $composableBuilder(
+    column: $table.numeroFactura,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get concepto =>
+      $composableBuilder(column: $table.concepto, builder: (column) => column);
+
+  GeneratedColumn<double> get baseImponible => $composableBuilder(
+    column: $table.baseImponible,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get ivaPorcentaje => $composableBuilder(
+    column: $table.ivaPorcentaje,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get importeTotal => $composableBuilder(
+    column: $table.importeTotal,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get estado =>
+      $composableBuilder(column: $table.estado, builder: (column) => column);
+
+  GeneratedColumn<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get eliminado =>
+      $composableBuilder(column: $table.eliminado, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => column,
+  );
+
+  $$ExpedientesTableAnnotationComposer get expedienteId {
+    final $$ExpedientesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.expedienteId,
+      referencedTable: $db.expedientes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExpedientesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.expedientes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ComprasTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ComprasTable,
+          Compra,
+          $$ComprasTableFilterComposer,
+          $$ComprasTableOrderingComposer,
+          $$ComprasTableAnnotationComposer,
+          $$ComprasTableCreateCompanionBuilder,
+          $$ComprasTableUpdateCompanionBuilder,
+          (Compra, $$ComprasTableReferences),
+          Compra,
+          PrefetchHooks Function({bool expedienteId})
+        > {
+  $$ComprasTableTableManager(_$AppDatabase db, $ComprasTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ComprasTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ComprasTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ComprasTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> expedienteId = const Value.absent(),
+                Value<String?> proveedorId = const Value.absent(),
+                Value<String> proveedorNombre = const Value.absent(),
+                Value<DateTime> fecha = const Value.absent(),
+                Value<String?> numeroFactura = const Value.absent(),
+                Value<String> concepto = const Value.absent(),
+                Value<double> baseImponible = const Value.absent(),
+                Value<double> ivaPorcentaje = const Value.absent(),
+                Value<double> importeTotal = const Value.absent(),
+                Value<String> estado = const Value.absent(),
+                Value<String?> observaciones = const Value.absent(),
+                Value<bool> eliminado = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<DateTime> fechaModificacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ComprasCompanion(
+                id: id,
+                expedienteId: expedienteId,
+                proveedorId: proveedorId,
+                proveedorNombre: proveedorNombre,
+                fecha: fecha,
+                numeroFactura: numeroFactura,
+                concepto: concepto,
+                baseImponible: baseImponible,
+                ivaPorcentaje: ivaPorcentaje,
+                importeTotal: importeTotal,
+                estado: estado,
+                observaciones: observaciones,
+                eliminado: eliminado,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String expedienteId,
+                Value<String?> proveedorId = const Value.absent(),
+                Value<String> proveedorNombre = const Value.absent(),
+                Value<DateTime> fecha = const Value.absent(),
+                Value<String?> numeroFactura = const Value.absent(),
+                Value<String> concepto = const Value.absent(),
+                Value<double> baseImponible = const Value.absent(),
+                Value<double> ivaPorcentaje = const Value.absent(),
+                Value<double> importeTotal = const Value.absent(),
+                Value<String> estado = const Value.absent(),
+                Value<String?> observaciones = const Value.absent(),
+                Value<bool> eliminado = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<DateTime> fechaModificacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ComprasCompanion.insert(
+                id: id,
+                expedienteId: expedienteId,
+                proveedorId: proveedorId,
+                proveedorNombre: proveedorNombre,
+                fecha: fecha,
+                numeroFactura: numeroFactura,
+                concepto: concepto,
+                baseImponible: baseImponible,
+                ivaPorcentaje: ivaPorcentaje,
+                importeTotal: importeTotal,
+                estado: estado,
+                observaciones: observaciones,
+                eliminado: eliminado,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ComprasTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({expedienteId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (expedienteId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.expedienteId,
+                                referencedTable: $$ComprasTableReferences
+                                    ._expedienteIdTable(db),
+                                referencedColumn: $$ComprasTableReferences
+                                    ._expedienteIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ComprasTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ComprasTable,
+      Compra,
+      $$ComprasTableFilterComposer,
+      $$ComprasTableOrderingComposer,
+      $$ComprasTableAnnotationComposer,
+      $$ComprasTableCreateCompanionBuilder,
+      $$ComprasTableUpdateCompanionBuilder,
+      (Compra, $$ComprasTableReferences),
+      Compra,
+      PrefetchHooks Function({bool expedienteId})
+    >;
+typedef $$ProveedoresTableCreateCompanionBuilder =
+    ProveedoresCompanion Function({
+      required String id,
+      required String nombre,
+      Value<String?> personaContacto,
+      Value<String> nif,
+      Value<String> telefono,
+      Value<String> email,
+      Value<String> direccion,
+      Value<String> poblacion,
+      Value<String> provincia,
+      Value<String> codigoPostal,
+      Value<String> pais,
+      Value<String> observaciones,
+      Value<bool> eliminado,
+      Value<DateTime> fechaCreacion,
+      Value<DateTime> fechaModificacion,
+      Value<int> rowid,
+    });
+typedef $$ProveedoresTableUpdateCompanionBuilder =
+    ProveedoresCompanion Function({
+      Value<String> id,
+      Value<String> nombre,
+      Value<String?> personaContacto,
+      Value<String> nif,
+      Value<String> telefono,
+      Value<String> email,
+      Value<String> direccion,
+      Value<String> poblacion,
+      Value<String> provincia,
+      Value<String> codigoPostal,
+      Value<String> pais,
+      Value<String> observaciones,
+      Value<bool> eliminado,
+      Value<DateTime> fechaCreacion,
+      Value<DateTime> fechaModificacion,
+      Value<int> rowid,
+    });
+
+class $$ProveedoresTableFilterComposer
+    extends Composer<_$AppDatabase, $ProveedoresTable> {
+  $$ProveedoresTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nombre => $composableBuilder(
+    column: $table.nombre,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get personaContacto => $composableBuilder(
+    column: $table.personaContacto,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nif => $composableBuilder(
+    column: $table.nif,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get telefono => $composableBuilder(
+    column: $table.telefono,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get email => $composableBuilder(
+    column: $table.email,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get direccion => $composableBuilder(
+    column: $table.direccion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get poblacion => $composableBuilder(
+    column: $table.poblacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get provincia => $composableBuilder(
+    column: $table.provincia,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get codigoPostal => $composableBuilder(
+    column: $table.codigoPostal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get pais => $composableBuilder(
+    column: $table.pais,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get eliminado => $composableBuilder(
+    column: $table.eliminado,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProveedoresTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProveedoresTable> {
+  $$ProveedoresTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nombre => $composableBuilder(
+    column: $table.nombre,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get personaContacto => $composableBuilder(
+    column: $table.personaContacto,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nif => $composableBuilder(
+    column: $table.nif,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get telefono => $composableBuilder(
+    column: $table.telefono,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get email => $composableBuilder(
+    column: $table.email,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get direccion => $composableBuilder(
+    column: $table.direccion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get poblacion => $composableBuilder(
+    column: $table.poblacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get provincia => $composableBuilder(
+    column: $table.provincia,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get codigoPostal => $composableBuilder(
+    column: $table.codigoPostal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get pais => $composableBuilder(
+    column: $table.pais,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get eliminado => $composableBuilder(
+    column: $table.eliminado,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProveedoresTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProveedoresTable> {
+  $$ProveedoresTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get nombre =>
+      $composableBuilder(column: $table.nombre, builder: (column) => column);
+
+  GeneratedColumn<String> get personaContacto => $composableBuilder(
+    column: $table.personaContacto,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get nif =>
+      $composableBuilder(column: $table.nif, builder: (column) => column);
+
+  GeneratedColumn<String> get telefono =>
+      $composableBuilder(column: $table.telefono, builder: (column) => column);
+
+  GeneratedColumn<String> get email =>
+      $composableBuilder(column: $table.email, builder: (column) => column);
+
+  GeneratedColumn<String> get direccion =>
+      $composableBuilder(column: $table.direccion, builder: (column) => column);
+
+  GeneratedColumn<String> get poblacion =>
+      $composableBuilder(column: $table.poblacion, builder: (column) => column);
+
+  GeneratedColumn<String> get provincia =>
+      $composableBuilder(column: $table.provincia, builder: (column) => column);
+
+  GeneratedColumn<String> get codigoPostal => $composableBuilder(
+    column: $table.codigoPostal,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get pais =>
+      $composableBuilder(column: $table.pais, builder: (column) => column);
+
+  GeneratedColumn<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get eliminado =>
+      $composableBuilder(column: $table.eliminado, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => column,
+  );
+}
+
+class $$ProveedoresTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProveedoresTable,
+          Proveedore,
+          $$ProveedoresTableFilterComposer,
+          $$ProveedoresTableOrderingComposer,
+          $$ProveedoresTableAnnotationComposer,
+          $$ProveedoresTableCreateCompanionBuilder,
+          $$ProveedoresTableUpdateCompanionBuilder,
+          (
+            Proveedore,
+            BaseReferences<_$AppDatabase, $ProveedoresTable, Proveedore>,
+          ),
+          Proveedore,
+          PrefetchHooks Function()
+        > {
+  $$ProveedoresTableTableManager(_$AppDatabase db, $ProveedoresTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProveedoresTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProveedoresTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ProveedoresTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> nombre = const Value.absent(),
+                Value<String?> personaContacto = const Value.absent(),
+                Value<String> nif = const Value.absent(),
+                Value<String> telefono = const Value.absent(),
+                Value<String> email = const Value.absent(),
+                Value<String> direccion = const Value.absent(),
+                Value<String> poblacion = const Value.absent(),
+                Value<String> provincia = const Value.absent(),
+                Value<String> codigoPostal = const Value.absent(),
+                Value<String> pais = const Value.absent(),
+                Value<String> observaciones = const Value.absent(),
+                Value<bool> eliminado = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<DateTime> fechaModificacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProveedoresCompanion(
+                id: id,
+                nombre: nombre,
+                personaContacto: personaContacto,
+                nif: nif,
+                telefono: telefono,
+                email: email,
+                direccion: direccion,
+                poblacion: poblacion,
+                provincia: provincia,
+                codigoPostal: codigoPostal,
+                pais: pais,
+                observaciones: observaciones,
+                eliminado: eliminado,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String nombre,
+                Value<String?> personaContacto = const Value.absent(),
+                Value<String> nif = const Value.absent(),
+                Value<String> telefono = const Value.absent(),
+                Value<String> email = const Value.absent(),
+                Value<String> direccion = const Value.absent(),
+                Value<String> poblacion = const Value.absent(),
+                Value<String> provincia = const Value.absent(),
+                Value<String> codigoPostal = const Value.absent(),
+                Value<String> pais = const Value.absent(),
+                Value<String> observaciones = const Value.absent(),
+                Value<bool> eliminado = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<DateTime> fechaModificacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProveedoresCompanion.insert(
+                id: id,
+                nombre: nombre,
+                personaContacto: personaContacto,
+                nif: nif,
+                telefono: telefono,
+                email: email,
+                direccion: direccion,
+                poblacion: poblacion,
+                provincia: provincia,
+                codigoPostal: codigoPostal,
+                pais: pais,
+                observaciones: observaciones,
+                eliminado: eliminado,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProveedoresTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProveedoresTable,
+      Proveedore,
+      $$ProveedoresTableFilterComposer,
+      $$ProveedoresTableOrderingComposer,
+      $$ProveedoresTableAnnotationComposer,
+      $$ProveedoresTableCreateCompanionBuilder,
+      $$ProveedoresTableUpdateCompanionBuilder,
+      (
+        Proveedore,
+        BaseReferences<_$AppDatabase, $ProveedoresTable, Proveedore>,
+      ),
+      Proveedore,
+      PrefetchHooks Function()
+    >;
+typedef $$CertificacionesTableCreateCompanionBuilder =
+    CertificacionesCompanion Function({
+      required String id,
+      required String expedienteId,
+      Value<String?> presupuestoId,
+      Value<String> codigo,
+      Value<DateTime> fecha,
+      Value<String> descripcion,
+      Value<double> baseImponible,
+      Value<double> ivaPorcentaje,
+      Value<double> importeTotal,
+      Value<String> estado,
+      Value<String?> observaciones,
+      Value<bool> eliminado,
+      Value<DateTime> fechaCreacion,
+      Value<DateTime> fechaModificacion,
+      Value<int> rowid,
+    });
+typedef $$CertificacionesTableUpdateCompanionBuilder =
+    CertificacionesCompanion Function({
+      Value<String> id,
+      Value<String> expedienteId,
+      Value<String?> presupuestoId,
+      Value<String> codigo,
+      Value<DateTime> fecha,
+      Value<String> descripcion,
+      Value<double> baseImponible,
+      Value<double> ivaPorcentaje,
+      Value<double> importeTotal,
+      Value<String> estado,
+      Value<String?> observaciones,
+      Value<bool> eliminado,
+      Value<DateTime> fechaCreacion,
+      Value<DateTime> fechaModificacion,
+      Value<int> rowid,
+    });
+
+final class $$CertificacionesTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $CertificacionesTable, Certificacione> {
+  $$CertificacionesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ExpedientesTable _expedienteIdTable(_$AppDatabase db) => db
+      .expedientes
+      .createAlias('certificaciones__expediente_id__expedientes__id');
+
+  $$ExpedientesTableProcessedTableManager get expedienteId {
+    final $_column = $_itemColumn<String>('expediente_id')!;
+
+    final manager = $$ExpedientesTableTableManager(
+      $_db,
+      $_db.expedientes,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_expedienteIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $PresupuestosTable _presupuestoIdTable(_$AppDatabase db) => db
+      .presupuestos
+      .createAlias('certificaciones__presupuesto_id__presupuestos__id');
+
+  $$PresupuestosTableProcessedTableManager? get presupuestoId {
+    final $_column = $_itemColumn<String>('presupuesto_id');
+    if ($_column == null) return null;
+    final manager = $$PresupuestosTableTableManager(
+      $_db,
+      $_db.presupuestos,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_presupuestoIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$CertificacionesTableFilterComposer
+    extends Composer<_$AppDatabase, $CertificacionesTable> {
+  $$CertificacionesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get codigo => $composableBuilder(
+    column: $table.codigo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fecha => $composableBuilder(
+    column: $table.fecha,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get descripcion => $composableBuilder(
+    column: $table.descripcion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get baseImponible => $composableBuilder(
+    column: $table.baseImponible,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get ivaPorcentaje => $composableBuilder(
+    column: $table.ivaPorcentaje,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get importeTotal => $composableBuilder(
+    column: $table.importeTotal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get estado => $composableBuilder(
+    column: $table.estado,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get eliminado => $composableBuilder(
+    column: $table.eliminado,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ExpedientesTableFilterComposer get expedienteId {
+    final $$ExpedientesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.expedienteId,
+      referencedTable: $db.expedientes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExpedientesTableFilterComposer(
+            $db: $db,
+            $table: $db.expedientes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PresupuestosTableFilterComposer get presupuestoId {
+    final $$PresupuestosTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.presupuestoId,
+      referencedTable: $db.presupuestos,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PresupuestosTableFilterComposer(
+            $db: $db,
+            $table: $db.presupuestos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CertificacionesTableOrderingComposer
+    extends Composer<_$AppDatabase, $CertificacionesTable> {
+  $$CertificacionesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get codigo => $composableBuilder(
+    column: $table.codigo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fecha => $composableBuilder(
+    column: $table.fecha,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get descripcion => $composableBuilder(
+    column: $table.descripcion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get baseImponible => $composableBuilder(
+    column: $table.baseImponible,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get ivaPorcentaje => $composableBuilder(
+    column: $table.ivaPorcentaje,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get importeTotal => $composableBuilder(
+    column: $table.importeTotal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get estado => $composableBuilder(
+    column: $table.estado,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get eliminado => $composableBuilder(
+    column: $table.eliminado,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ExpedientesTableOrderingComposer get expedienteId {
+    final $$ExpedientesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.expedienteId,
+      referencedTable: $db.expedientes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExpedientesTableOrderingComposer(
+            $db: $db,
+            $table: $db.expedientes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PresupuestosTableOrderingComposer get presupuestoId {
+    final $$PresupuestosTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.presupuestoId,
+      referencedTable: $db.presupuestos,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PresupuestosTableOrderingComposer(
+            $db: $db,
+            $table: $db.presupuestos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CertificacionesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CertificacionesTable> {
+  $$CertificacionesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get codigo =>
+      $composableBuilder(column: $table.codigo, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get fecha =>
+      $composableBuilder(column: $table.fecha, builder: (column) => column);
+
+  GeneratedColumn<String> get descripcion => $composableBuilder(
+    column: $table.descripcion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get baseImponible => $composableBuilder(
+    column: $table.baseImponible,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get ivaPorcentaje => $composableBuilder(
+    column: $table.ivaPorcentaje,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get importeTotal => $composableBuilder(
+    column: $table.importeTotal,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get estado =>
+      $composableBuilder(column: $table.estado, builder: (column) => column);
+
+  GeneratedColumn<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get eliminado =>
+      $composableBuilder(column: $table.eliminado, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => column,
+  );
+
+  $$ExpedientesTableAnnotationComposer get expedienteId {
+    final $$ExpedientesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.expedienteId,
+      referencedTable: $db.expedientes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExpedientesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.expedientes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PresupuestosTableAnnotationComposer get presupuestoId {
+    final $$PresupuestosTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.presupuestoId,
+      referencedTable: $db.presupuestos,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PresupuestosTableAnnotationComposer(
+            $db: $db,
+            $table: $db.presupuestos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CertificacionesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CertificacionesTable,
+          Certificacione,
+          $$CertificacionesTableFilterComposer,
+          $$CertificacionesTableOrderingComposer,
+          $$CertificacionesTableAnnotationComposer,
+          $$CertificacionesTableCreateCompanionBuilder,
+          $$CertificacionesTableUpdateCompanionBuilder,
+          (Certificacione, $$CertificacionesTableReferences),
+          Certificacione,
+          PrefetchHooks Function({bool expedienteId, bool presupuestoId})
+        > {
+  $$CertificacionesTableTableManager(
+    _$AppDatabase db,
+    $CertificacionesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CertificacionesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CertificacionesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CertificacionesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> expedienteId = const Value.absent(),
+                Value<String?> presupuestoId = const Value.absent(),
+                Value<String> codigo = const Value.absent(),
+                Value<DateTime> fecha = const Value.absent(),
+                Value<String> descripcion = const Value.absent(),
+                Value<double> baseImponible = const Value.absent(),
+                Value<double> ivaPorcentaje = const Value.absent(),
+                Value<double> importeTotal = const Value.absent(),
+                Value<String> estado = const Value.absent(),
+                Value<String?> observaciones = const Value.absent(),
+                Value<bool> eliminado = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<DateTime> fechaModificacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CertificacionesCompanion(
+                id: id,
+                expedienteId: expedienteId,
+                presupuestoId: presupuestoId,
+                codigo: codigo,
+                fecha: fecha,
+                descripcion: descripcion,
+                baseImponible: baseImponible,
+                ivaPorcentaje: ivaPorcentaje,
+                importeTotal: importeTotal,
+                estado: estado,
+                observaciones: observaciones,
+                eliminado: eliminado,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String expedienteId,
+                Value<String?> presupuestoId = const Value.absent(),
+                Value<String> codigo = const Value.absent(),
+                Value<DateTime> fecha = const Value.absent(),
+                Value<String> descripcion = const Value.absent(),
+                Value<double> baseImponible = const Value.absent(),
+                Value<double> ivaPorcentaje = const Value.absent(),
+                Value<double> importeTotal = const Value.absent(),
+                Value<String> estado = const Value.absent(),
+                Value<String?> observaciones = const Value.absent(),
+                Value<bool> eliminado = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<DateTime> fechaModificacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CertificacionesCompanion.insert(
+                id: id,
+                expedienteId: expedienteId,
+                presupuestoId: presupuestoId,
+                codigo: codigo,
+                fecha: fecha,
+                descripcion: descripcion,
+                baseImponible: baseImponible,
+                ivaPorcentaje: ivaPorcentaje,
+                importeTotal: importeTotal,
+                estado: estado,
+                observaciones: observaciones,
+                eliminado: eliminado,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$CertificacionesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({expedienteId = false, presupuestoId = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (expedienteId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.expedienteId,
+                                    referencedTable:
+                                        $$CertificacionesTableReferences
+                                            ._expedienteIdTable(db),
+                                    referencedColumn:
+                                        $$CertificacionesTableReferences
+                                            ._expedienteIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+                        if (presupuestoId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.presupuestoId,
+                                    referencedTable:
+                                        $$CertificacionesTableReferences
+                                            ._presupuestoIdTable(db),
+                                    referencedColumn:
+                                        $$CertificacionesTableReferences
+                                            ._presupuestoIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$CertificacionesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CertificacionesTable,
+      Certificacione,
+      $$CertificacionesTableFilterComposer,
+      $$CertificacionesTableOrderingComposer,
+      $$CertificacionesTableAnnotationComposer,
+      $$CertificacionesTableCreateCompanionBuilder,
+      $$CertificacionesTableUpdateCompanionBuilder,
+      (Certificacione, $$CertificacionesTableReferences),
+      Certificacione,
+      PrefetchHooks Function({bool expedienteId, bool presupuestoId})
+    >;
+typedef $$DocumentosTableCreateCompanionBuilder =
+    DocumentosCompanion Function({
+      required String id,
+      required String expedienteId,
+      required String titulo,
+      required String nombreArchivo,
+      required String rutaArchivo,
+      Value<String?> mimeType,
+      required int tamanoBytes,
+      Value<DateTime> fecha,
+      Value<String?> observaciones,
+      Value<String> tipo,
+      Value<bool> eliminado,
+      Value<DateTime> fechaCreacion,
+      Value<DateTime> fechaModificacion,
+      Value<int> rowid,
+    });
+typedef $$DocumentosTableUpdateCompanionBuilder =
+    DocumentosCompanion Function({
+      Value<String> id,
+      Value<String> expedienteId,
+      Value<String> titulo,
+      Value<String> nombreArchivo,
+      Value<String> rutaArchivo,
+      Value<String?> mimeType,
+      Value<int> tamanoBytes,
+      Value<DateTime> fecha,
+      Value<String?> observaciones,
+      Value<String> tipo,
+      Value<bool> eliminado,
+      Value<DateTime> fechaCreacion,
+      Value<DateTime> fechaModificacion,
+      Value<int> rowid,
+    });
+
+final class $$DocumentosTableReferences
+    extends BaseReferences<_$AppDatabase, $DocumentosTable, Documento> {
+  $$DocumentosTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $ExpedientesTable _expedienteIdTable(_$AppDatabase db) =>
+      db.expedientes.createAlias('documentos__expediente_id__expedientes__id');
+
+  $$ExpedientesTableProcessedTableManager get expedienteId {
+    final $_column = $_itemColumn<String>('expediente_id')!;
+
+    final manager = $$ExpedientesTableTableManager(
+      $_db,
+      $_db.expedientes,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_expedienteIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$DocumentosTableFilterComposer
+    extends Composer<_$AppDatabase, $DocumentosTable> {
+  $$DocumentosTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get titulo => $composableBuilder(
+    column: $table.titulo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nombreArchivo => $composableBuilder(
+    column: $table.nombreArchivo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get rutaArchivo => $composableBuilder(
+    column: $table.rutaArchivo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get mimeType => $composableBuilder(
+    column: $table.mimeType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get tamanoBytes => $composableBuilder(
+    column: $table.tamanoBytes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fecha => $composableBuilder(
+    column: $table.fecha,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tipo => $composableBuilder(
+    column: $table.tipo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get eliminado => $composableBuilder(
+    column: $table.eliminado,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ExpedientesTableFilterComposer get expedienteId {
+    final $$ExpedientesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.expedienteId,
+      referencedTable: $db.expedientes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExpedientesTableFilterComposer(
+            $db: $db,
+            $table: $db.expedientes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$DocumentosTableOrderingComposer
+    extends Composer<_$AppDatabase, $DocumentosTable> {
+  $$DocumentosTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get titulo => $composableBuilder(
+    column: $table.titulo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nombreArchivo => $composableBuilder(
+    column: $table.nombreArchivo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get rutaArchivo => $composableBuilder(
+    column: $table.rutaArchivo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get mimeType => $composableBuilder(
+    column: $table.mimeType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get tamanoBytes => $composableBuilder(
+    column: $table.tamanoBytes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fecha => $composableBuilder(
+    column: $table.fecha,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tipo => $composableBuilder(
+    column: $table.tipo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get eliminado => $composableBuilder(
+    column: $table.eliminado,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ExpedientesTableOrderingComposer get expedienteId {
+    final $$ExpedientesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.expedienteId,
+      referencedTable: $db.expedientes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExpedientesTableOrderingComposer(
+            $db: $db,
+            $table: $db.expedientes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$DocumentosTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DocumentosTable> {
+  $$DocumentosTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get titulo =>
+      $composableBuilder(column: $table.titulo, builder: (column) => column);
+
+  GeneratedColumn<String> get nombreArchivo => $composableBuilder(
+    column: $table.nombreArchivo,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get rutaArchivo => $composableBuilder(
+    column: $table.rutaArchivo,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get mimeType =>
+      $composableBuilder(column: $table.mimeType, builder: (column) => column);
+
+  GeneratedColumn<int> get tamanoBytes => $composableBuilder(
+    column: $table.tamanoBytes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fecha =>
+      $composableBuilder(column: $table.fecha, builder: (column) => column);
+
+  GeneratedColumn<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get tipo =>
+      $composableBuilder(column: $table.tipo, builder: (column) => column);
+
+  GeneratedColumn<bool> get eliminado =>
+      $composableBuilder(column: $table.eliminado, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => column,
+  );
+
+  $$ExpedientesTableAnnotationComposer get expedienteId {
+    final $$ExpedientesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.expedienteId,
+      referencedTable: $db.expedientes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExpedientesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.expedientes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$DocumentosTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DocumentosTable,
+          Documento,
+          $$DocumentosTableFilterComposer,
+          $$DocumentosTableOrderingComposer,
+          $$DocumentosTableAnnotationComposer,
+          $$DocumentosTableCreateCompanionBuilder,
+          $$DocumentosTableUpdateCompanionBuilder,
+          (Documento, $$DocumentosTableReferences),
+          Documento,
+          PrefetchHooks Function({bool expedienteId})
+        > {
+  $$DocumentosTableTableManager(_$AppDatabase db, $DocumentosTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DocumentosTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DocumentosTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DocumentosTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> expedienteId = const Value.absent(),
+                Value<String> titulo = const Value.absent(),
+                Value<String> nombreArchivo = const Value.absent(),
+                Value<String> rutaArchivo = const Value.absent(),
+                Value<String?> mimeType = const Value.absent(),
+                Value<int> tamanoBytes = const Value.absent(),
+                Value<DateTime> fecha = const Value.absent(),
+                Value<String?> observaciones = const Value.absent(),
+                Value<String> tipo = const Value.absent(),
+                Value<bool> eliminado = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<DateTime> fechaModificacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DocumentosCompanion(
+                id: id,
+                expedienteId: expedienteId,
+                titulo: titulo,
+                nombreArchivo: nombreArchivo,
+                rutaArchivo: rutaArchivo,
+                mimeType: mimeType,
+                tamanoBytes: tamanoBytes,
+                fecha: fecha,
+                observaciones: observaciones,
+                tipo: tipo,
+                eliminado: eliminado,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String expedienteId,
+                required String titulo,
+                required String nombreArchivo,
+                required String rutaArchivo,
+                Value<String?> mimeType = const Value.absent(),
+                required int tamanoBytes,
+                Value<DateTime> fecha = const Value.absent(),
+                Value<String?> observaciones = const Value.absent(),
+                Value<String> tipo = const Value.absent(),
+                Value<bool> eliminado = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<DateTime> fechaModificacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DocumentosCompanion.insert(
+                id: id,
+                expedienteId: expedienteId,
+                titulo: titulo,
+                nombreArchivo: nombreArchivo,
+                rutaArchivo: rutaArchivo,
+                mimeType: mimeType,
+                tamanoBytes: tamanoBytes,
+                fecha: fecha,
+                observaciones: observaciones,
+                tipo: tipo,
+                eliminado: eliminado,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$DocumentosTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({expedienteId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (expedienteId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.expedienteId,
+                                referencedTable: $$DocumentosTableReferences
+                                    ._expedienteIdTable(db),
+                                referencedColumn: $$DocumentosTableReferences
+                                    ._expedienteIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$DocumentosTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DocumentosTable,
+      Documento,
+      $$DocumentosTableFilterComposer,
+      $$DocumentosTableOrderingComposer,
+      $$DocumentosTableAnnotationComposer,
+      $$DocumentosTableCreateCompanionBuilder,
+      $$DocumentosTableUpdateCompanionBuilder,
+      (Documento, $$DocumentosTableReferences),
+      Documento,
+      PrefetchHooks Function({bool expedienteId})
+    >;
 typedef $$TimelineEventsTableCreateCompanionBuilder =
     TimelineEventsCompanion Function({
       required String id,
@@ -10516,6 +16283,14 @@ class $AppDatabaseManager {
       $$FacturaLineasTableTableManager(_db, _db.facturaLineas);
   $$CobrosTableTableManager get cobros =>
       $$CobrosTableTableManager(_db, _db.cobros);
+  $$ComprasTableTableManager get compras =>
+      $$ComprasTableTableManager(_db, _db.compras);
+  $$ProveedoresTableTableManager get proveedores =>
+      $$ProveedoresTableTableManager(_db, _db.proveedores);
+  $$CertificacionesTableTableManager get certificaciones =>
+      $$CertificacionesTableTableManager(_db, _db.certificaciones);
+  $$DocumentosTableTableManager get documentos =>
+      $$DocumentosTableTableManager(_db, _db.documentos);
   $$TimelineEventsTableTableManager get timelineEvents =>
       $$TimelineEventsTableTableManager(_db, _db.timelineEvents);
 }

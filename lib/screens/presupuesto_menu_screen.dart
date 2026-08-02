@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../core/shortcuts/app_shortcuts.dart';
 import '../core/widgets/app_page_header.dart';
 import 'presupuesto_screen.dart';
 
@@ -8,48 +9,55 @@ class PresupuestoMenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const AppPageHeader(title: 'Presupuestos'),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: GridView.count(
-          crossAxisCount: 2,
-          crossAxisSpacing: 15,
-          mainAxisSpacing: 15,
-          children: [
-            _MenuCard(
-              icon: Icons.pool,
-              titulo: 'Piscinas',
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const PresupuestoScreen(),
-                  ),
-                );
-              },
-            ),
-            const _MenuCardDisabled(
-              icon: Icons.view_agenda,
-              titulo: 'Muros',
-            ),
-            const _MenuCardDisabled(
-              icon: Icons.grid_view,
-              titulo: 'Pavimentos',
-            ),
-            const _MenuCardDisabled(
-              icon: Icons.format_paint,
-              titulo: 'Pintura',
-            ),
-            const _MenuCardDisabled(
-              icon: Icons.home_work,
-              titulo: 'Reformas',
-            ),
-            const _MenuCardDisabled(
-              icon: Icons.more_horiz,
-              titulo: 'Próximamente',
-            ),
-          ],
+    return AppShortcutScope(
+      onBack: () => Navigator.maybePop(context),
+      child: Scaffold(
+        appBar: AppPageHeader(
+          title: 'Presupuestos',
+          showBackButton: true,
+          onBackPressed: () => Navigator.maybePop(context),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(20),
+          child: GridView.count(
+            crossAxisCount: 2,
+            crossAxisSpacing: 15,
+            mainAxisSpacing: 15,
+            children: [
+              _MenuCard(
+                icon: Icons.pool,
+                titulo: 'Piscinas',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const PresupuestoScreen(),
+                    ),
+                  );
+                },
+              ),
+              const _MenuCardDisabled(
+                icon: Icons.view_agenda,
+                titulo: 'Muros',
+              ),
+              const _MenuCardDisabled(
+                icon: Icons.grid_view,
+                titulo: 'Pavimentos',
+              ),
+              const _MenuCardDisabled(
+                icon: Icons.format_paint,
+                titulo: 'Pintura',
+              ),
+              const _MenuCardDisabled(
+                icon: Icons.home_work,
+                titulo: 'Reformas',
+              ),
+              const _MenuCardDisabled(
+                icon: Icons.more_horiz,
+                titulo: 'Próximamente',
+              ),
+            ],
+          ),
         ),
       ),
     );
