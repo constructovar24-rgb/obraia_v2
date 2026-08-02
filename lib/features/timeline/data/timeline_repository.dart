@@ -28,6 +28,17 @@ class TimelineRepository {
     );
   }
 
+  Future<List<TimelineEvent>> obtenerTodosLosEventosGlobales() async {
+    final rows = await _dao.obtenerTodosLosEventosGlobales();
+    return rows.map((row) => row.toDomain()).toList();
+  }
+
+  Stream<List<TimelineEvent>> observarTodosLosEventosGlobales() {
+    return _dao.observarTodosLosEventosGlobales().map(
+      (rows) => rows.map((row) => row.toDomain()).toList(),
+    );
+  }
+
   Future<List<TimelineEvent>> obtenerEventos(String expedienteId) async {
     final rows = await _dao.obtenerPorExpediente(expedienteId);
     return rows.map((row) => row.toDomain()).toList();

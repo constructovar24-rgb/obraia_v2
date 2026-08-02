@@ -34,6 +34,18 @@ class TimelineEventsDao extends DatabaseAccessor<AppDatabase>
         .watch();
   }
 
+        Future<List<TimelineEvent>> obtenerTodosLosEventosGlobales() {
+          return (select(timelineEvents)
+            ..orderBy([(t) => OrderingTerm.desc(t.fecha)]))
+          .get();
+        }
+
+        Stream<List<TimelineEvent>> observarTodosLosEventosGlobales() {
+          return (select(timelineEvents)
+            ..orderBy([(t) => OrderingTerm.desc(t.fecha)]))
+          .watch();
+        }
+
   Future<List<TimelineEvent>> obtenerPorExpediente(
     String expedienteId,
   ) {
