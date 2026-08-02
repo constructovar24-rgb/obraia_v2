@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/ui/app_spacing.dart';
+import '../../../../core/ui/app_typography.dart';
+import '../../../../core/widgets/app_section.dart';
 import '../providers/presupuesto_providers.dart';
 
 class NuevoLineaPresupuestoScreen extends ConsumerStatefulWidget {
@@ -20,24 +23,41 @@ class _NuevoLineaPresupuestoScreenState
     extends ConsumerState<NuevoLineaPresupuestoScreen> {
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = AppTypography.textTheme(colorScheme);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Nueva línea'),
       ),
-      body: LineaPresupuestoForm(
-        onSubmit: (concepto, cantidad, precioUnitario) async {
-          final repository = ref.read(lineaPresupuestoRepositoryProvider);
+      body: ListView(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        children: [
+          Text(
+            'Registra un nuevo concepto para este presupuesto.',
+            style: textTheme.bodyMedium,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          AppSection(
+            title: 'Datos de la línea',
+            subtitle: 'Completa concepto, cantidad y precio unitario.',
+            child: LineaPresupuestoForm(
+              onSubmit: (concepto, cantidad, precioUnitario) async {
+                final repository = ref.read(lineaPresupuestoRepositoryProvider);
 
-          await repository.crearLinea(
-            presupuestoId: widget.presupuestoId,
-            concepto: concepto,
-            cantidad: cantidad,
-            precioUnitario: precioUnitario,
-          );
+                await repository.crearLinea(
+                  presupuestoId: widget.presupuestoId,
+                  concepto: concepto,
+                  cantidad: cantidad,
+                  precioUnitario: precioUnitario,
+                );
 
-          if (!context.mounted) return;
-          Navigator.of(context).pop();
-        },
+                if (!context.mounted) return;
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

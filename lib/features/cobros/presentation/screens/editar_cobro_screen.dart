@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/formatters/date_formatter.dart';
 import '../../../../core/shortcuts/app_shortcuts.dart';
+import '../../../../core/ui/app_spacing.dart';
 import '../../../../core/widgets/app_page_header.dart';
+import '../../../../core/widgets/app_primary_button.dart';
+import '../../../../core/widgets/app_section.dart';
 import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/entity_summary_card.dart';
 import '../../data/cobro_repository.dart';
@@ -174,113 +177,120 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
           ],
         ),
         body: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Form(
             key: _formKey,
             child: ListView(
               children: [
-              EntitySummaryCard(
-                title: _formatearImporte(_importeController.text),
-                subtitle: _fechaController.text,
-                details: [
-                  Text(
-                    'Método: $_metodoPagoSeleccionado',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  Text(
-                    'Referencia: ${_referenciaController.text.trim().isEmpty ? '-' : _referenciaController.text.trim()}',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                readOnly: true,
-                controller: _fechaController,
-                decoration: const InputDecoration(
-                  labelText: 'Fecha',
-                  suffixIcon: Icon(Icons.calendar_today),
+                EntitySummaryCard(
+                  title: _formatearImporte(_importeController.text),
+                  subtitle: _fechaController.text,
+                  details: [
+                    Text(
+                      'Método: $_metodoPagoSeleccionado',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    Text(
+                      'Referencia: ${_referenciaController.text.trim().isEmpty ? '-' : _referenciaController.text.trim()}',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
                 ),
-                onTap: _seleccionarFecha,
-                validator: (value) => (value == null || value.trim().isEmpty)
-                    ? 'La fecha es obligatoria'
-                    : null,
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: _importeController,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                decoration: const InputDecoration(
-                  labelText: 'Importe',
-                ),
-                validator: (value) {
-                  final raw = value?.trim() ?? '';
-                  if (raw.isEmpty) {
-                    return 'El importe es obligatorio';
-                  }
-
-                  final parsed = double.tryParse(raw.replaceAll(',', '.'));
-                  if (parsed == null) {
-                    return 'Introduce un importe decimal valido';
-                  }
-
-                  if (parsed <= 0) {
-                    return 'El importe debe ser mayor que 0';
-                  }
-
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              DropdownButtonFormField<String>(
-                initialValue: _metodoPagoSeleccionado,
-                decoration: const InputDecoration(
-                  labelText: 'Metodo de pago',
-                ),
-                items: _metodosPago
-                    .map(
-                      (metodo) => DropdownMenuItem<String>(
-                        value: metodo,
-                        child: Text(metodo),
+                const SizedBox(height: AppSpacing.lg),
+                AppSection(
+                  title: 'Datos del cobro',
+                  subtitle: 'Actualiza la información del cobro y guarda los cambios.',
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      TextFormField(
+                        readOnly: true,
+                        controller: _fechaController,
+                        decoration: const InputDecoration(
+                          labelText: 'Fecha',
+                          suffixIcon: Icon(Icons.calendar_today),
+                        ),
+                        onTap: _seleccionarFecha,
+                        validator: (value) =>
+                            (value == null || value.trim().isEmpty)
+                                ? 'La fecha es obligatoria'
+                                : null,
                       ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  if (value == null) {
-                    return;
-                  }
-                  setState(() {
-                    _metodoPagoSeleccionado = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: _referenciaController,
-                decoration: const InputDecoration(
-                  labelText: 'Referencia',
+                      const SizedBox(height: AppSpacing.lg),
+                      TextFormField(
+                        controller: _importeController,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        decoration: const InputDecoration(
+                          labelText: 'Importe',
+                        ),
+                        validator: (value) {
+                          final raw = value?.trim() ?? '';
+                          if (raw.isEmpty) {
+                            return 'El importe es obligatorio';
+                          }
+
+                          final parsed = double.tryParse(raw.replaceAll(',', '.'));
+                          if (parsed == null) {
+                            return 'Introduce un importe decimal valido';
+                          }
+
+                          if (parsed <= 0) {
+                            return 'El importe debe ser mayor que 0';
+                          }
+
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      DropdownButtonFormField<String>(
+                        initialValue: _metodoPagoSeleccionado,
+                        decoration: const InputDecoration(
+                          labelText: 'Metodo de pago',
+                        ),
+                        items: _metodosPago
+                            .map(
+                              (metodo) => DropdownMenuItem<String>(
+                                value: metodo,
+                                child: Text(metodo),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (value) {
+                          if (value == null) {
+                            return;
+                          }
+                          setState(() {
+                            _metodoPagoSeleccionado = value;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      TextFormField(
+                        controller: _referenciaController,
+                        decoration: const InputDecoration(
+                          labelText: 'Referencia',
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      TextFormField(
+                        controller: _observacionesController,
+                        decoration: const InputDecoration(
+                          labelText: 'Observaciones',
+                        ),
+                        minLines: 3,
+                        maxLines: 5,
+                      ),
+                      const SizedBox(height: AppSpacing.xl),
+                      AppPrimaryButton(
+                        onPressed: _guardarCambios,
+                        icon: Icons.save,
+                        label: 'Guardar cambios',
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: _observacionesController,
-                decoration: const InputDecoration(
-                  labelText: 'Observaciones',
-                ),
-                minLines: 3,
-                maxLines: 5,
-              ),
-              const SizedBox(height: 30),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton.icon(
-                  onPressed: _guardarCambios,
-                  icon: const Icon(Icons.save),
-                  label: const Text('Guardar cambios'),
-                ),
-              ),
               ],
             ),
           ),

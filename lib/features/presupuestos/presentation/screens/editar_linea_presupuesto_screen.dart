@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/shortcuts/app_shortcuts.dart';
+import '../../../../core/ui/app_spacing.dart';
+import '../../../../core/ui/app_typography.dart';
+import '../../../../core/widgets/app_primary_button.dart';
+import '../../../../core/widgets/app_section.dart';
 import '../../domain/linea_presupuesto.dart' as linea_domain;
 import '../providers/presupuesto_providers.dart';
 import 'nuevo_linea_presupuesto_screen.dart';
@@ -41,6 +45,9 @@ class EditarLineaPresupuestoScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = AppTypography.textTheme(colorScheme);
+
     Future<void> guardarLinea(
       String concepto,
       double cantidad,
@@ -87,18 +94,30 @@ class EditarLineaPresupuestoScreen extends ConsumerWidget {
         appBar: AppBar(
           title: const Text('Editar línea'),
         ),
-        body: LineaPresupuestoForm(
-          initialConcepto: linea.concepto,
-          initialCantidad: linea.cantidad,
-          initialPrecioUnitario: linea.precioUnitario,
-          onSubmit: guardarLinea,
-          footer: SizedBox(
-            width: double.infinity,
-            child: OutlinedButton(
-              onPressed: eliminarLinea,
-              child: const Text('Eliminar línea'),
+        body: ListView(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          children: [
+            Text(
+              'Actualiza los datos de esta línea del presupuesto.',
+              style: textTheme.bodyMedium,
             ),
-          ),
+            const SizedBox(height: AppSpacing.md),
+            AppSection(
+              title: 'Datos de la línea',
+              subtitle: 'Edita concepto, cantidad y precio unitario.',
+              child: LineaPresupuestoForm(
+                initialConcepto: linea.concepto,
+                initialCantidad: linea.cantidad,
+                initialPrecioUnitario: linea.precioUnitario,
+                onSubmit: guardarLinea,
+                footer: AppPrimaryButton(
+                  onPressed: eliminarLinea,
+                  icon: Icons.delete_outline,
+                  label: 'Eliminar línea',
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

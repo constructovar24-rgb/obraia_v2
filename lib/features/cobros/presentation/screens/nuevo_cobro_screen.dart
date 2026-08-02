@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/formatters/date_formatter.dart';
 import '../../../../core/shortcuts/app_shortcuts.dart';
+import '../../../../core/ui/app_spacing.dart';
+import '../../../../core/widgets/app_primary_button.dart';
+import '../../../../core/widgets/app_section.dart';
 import '../../data/cobro_repository.dart';
 
 class NuevoCobroScreen extends ConsumerStatefulWidget {
@@ -79,140 +82,146 @@ class _NuevoCobroScreenState extends ConsumerState<NuevoCobroScreen> {
           title: const Text('Nuevo cobro'),
         ),
         body: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Form(
             key: _formKey,
             child: ListView(
               children: [
-                TextFormField(
-                  readOnly: true,
-                  controller: _fechaController,
-                  decoration: const InputDecoration(
-                    labelText: 'Fecha',
-                    suffixIcon: Icon(Icons.calendar_today),
-                  ),
-                  onTap: _seleccionarFecha,
-                  validator: (value) => (value == null || value.trim().isEmpty)
-                      ? 'La fecha es obligatoria'
-                      : null,
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _importeController,
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  decoration: const InputDecoration(
-                    labelText: 'Importe',
-                  ),
-                  validator: (value) {
-                    final raw = value?.trim() ?? '';
-                    if (raw.isEmpty) {
-                      return 'El importe es obligatorio';
-                    }
-
-                    final parsed = double.tryParse(raw.replaceAll(',', '.'));
-                    if (parsed == null) {
-                      return 'Introduce un importe decimal valido';
-                    }
-
-                    if (parsed <= 0) {
-                      return 'El importe debe ser mayor que 0';
-                    }
-
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 20),
-                DropdownButtonFormField<String>(
-                  initialValue: _metodoPagoSeleccionado,
-                  decoration: const InputDecoration(
-                    labelText: 'Metodo de pago',
-                  ),
-                  items: _metodosPago
-                      .map(
-                        (metodo) => DropdownMenuItem<String>(
-                          value: metodo,
-                          child: Text(metodo),
+                AppSection(
+                  title: 'Datos del cobro',
+                  subtitle: 'Registra la información del cobro para esta factura.',
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      TextFormField(
+                        readOnly: true,
+                        controller: _fechaController,
+                        decoration: const InputDecoration(
+                          labelText: 'Fecha',
+                          suffixIcon: Icon(Icons.calendar_today),
                         ),
-                      )
-                      .toList(),
-                  onChanged: (value) {
-                    if (value == null) {
-                      return;
-                    }
-                    setState(() {
-                      _metodoPagoSeleccionado = value;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _referenciaController,
-                  decoration: const InputDecoration(
-                    labelText: 'Referencia',
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _observacionesController,
-                  decoration: const InputDecoration(
-                    labelText: 'Observaciones',
-                  ),
-                  minLines: 3,
-                  maxLines: 5,
-                ),
-                const SizedBox(height: 30),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton.icon(
-                    onPressed: () async {
-                      if (!_formKey.currentState!.validate()) {
-                        return;
-                      }
+                        onTap: _seleccionarFecha,
+                        validator: (value) => (value == null || value.trim().isEmpty)
+                            ? 'La fecha es obligatoria'
+                            : null,
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      TextFormField(
+                        controller: _importeController,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        decoration: const InputDecoration(
+                          labelText: 'Importe',
+                        ),
+                        validator: (value) {
+                          final raw = value?.trim() ?? '';
+                          if (raw.isEmpty) {
+                            return 'El importe es obligatorio';
+                          }
 
-                      final repository = ref.read(cobroRepositoryProvider);
-                      final fecha = DateTime(
-                        _fechaSeleccionada.year,
-                        _fechaSeleccionada.month,
-                        _fechaSeleccionada.day,
-                      );
-                      final importe =
-                          double.tryParse(_importeController.text.trim().replaceAll(',', '.')) ??
-                              0.0;
+                          final parsed = double.tryParse(raw.replaceAll(',', '.'));
+                          if (parsed == null) {
+                            return 'Introduce un importe decimal valido';
+                          }
 
-                      try {
-                        await repository.crearCobro(
-                          facturaId: widget.facturaId,
-                          fecha: fecha,
-                          importe: importe,
-                          metodoPago: _metodoPagoSeleccionado,
-                          referencia: _referenciaController.text.trim(),
-                          observaciones: _observacionesController.text.trim(),
-                        );
-                      } on CobroSuperaPendienteException {
-                        if (!context.mounted) {
-                          return;
-                        }
+                          if (parsed <= 0) {
+                            return 'El importe debe ser mayor que 0';
+                          }
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'El importe supera el pendiente de la factura.',
-                            ),
-                          ),
-                        );
-                        return;
-                      }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      DropdownButtonFormField<String>(
+                        initialValue: _metodoPagoSeleccionado,
+                        decoration: const InputDecoration(
+                          labelText: 'Metodo de pago',
+                        ),
+                        items: _metodosPago
+                            .map(
+                              (metodo) => DropdownMenuItem<String>(
+                                value: metodo,
+                                child: Text(metodo),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (value) {
+                          if (value == null) {
+                            return;
+                          }
+                          setState(() {
+                            _metodoPagoSeleccionado = value;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      TextFormField(
+                        controller: _referenciaController,
+                        decoration: const InputDecoration(
+                          labelText: 'Referencia',
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      TextFormField(
+                        controller: _observacionesController,
+                        decoration: const InputDecoration(
+                          labelText: 'Observaciones',
+                        ),
+                        minLines: 3,
+                        maxLines: 5,
+                      ),
+                      const SizedBox(height: AppSpacing.xl),
+                      AppPrimaryButton(
+                        onPressed: () async {
+                          if (!_formKey.currentState!.validate()) {
+                            return;
+                          }
 
-                      if (!context.mounted) {
-                        return;
-                      }
+                          final repository = ref.read(cobroRepositoryProvider);
+                          final fecha = DateTime(
+                            _fechaSeleccionada.year,
+                            _fechaSeleccionada.month,
+                            _fechaSeleccionada.day,
+                          );
+                          final importe =
+                              double.tryParse(_importeController.text.trim().replaceAll(',', '.')) ??
+                                  0.0;
 
-                      Navigator.of(context).pop();
-                    },
-                    icon: const Icon(Icons.save),
-                    label: const Text('Guardar'),
+                          try {
+                            await repository.crearCobro(
+                              facturaId: widget.facturaId,
+                              fecha: fecha,
+                              importe: importe,
+                              metodoPago: _metodoPagoSeleccionado,
+                              referencia: _referenciaController.text.trim(),
+                              observaciones: _observacionesController.text.trim(),
+                            );
+                          } on CobroSuperaPendienteException {
+                            if (!context.mounted) {
+                              return;
+                            }
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'El importe supera el pendiente de la factura.',
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+
+                          if (!context.mounted) {
+                            return;
+                          }
+
+                          Navigator.of(context).pop();
+                        },
+                        icon: Icons.save,
+                        label: 'Guardar',
+                      ),
+                    ],
                   ),
                 ),
               ],

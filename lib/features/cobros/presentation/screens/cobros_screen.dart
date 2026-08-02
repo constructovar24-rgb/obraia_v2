@@ -4,9 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/formatters/currency_formatter.dart';
 import '../../../../core/formatters/date_formatter.dart';
 import '../../../../core/shortcuts/app_shortcuts.dart';
+import '../../../../core/ui/app_spacing.dart';
+import '../../../../core/ui/app_typography.dart';
+import '../../../../core/widgets/app_card.dart';
+import '../../../../core/widgets/app_empty_state.dart';
+import '../../../../core/widgets/app_error_state.dart';
+import '../../../../core/widgets/app_loading.dart';
 import '../../../../core/widgets/app_page_header.dart';
-import '../../../../core/widgets/empty_state.dart';
-import '../../../../core/widgets/loading_view.dart';
+import '../../../../core/widgets/app_primary_button.dart';
 import '../../data/cobro_repository.dart';
 import '../../domain/cobro.dart' as cobro_domain;
 import 'editar_cobro_screen.dart';
@@ -39,6 +44,9 @@ class _CobrosScreenState extends ConsumerState<CobrosScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = AppTypography.textTheme(colorScheme);
+
     void abrirNuevoCobro() {
       Navigator.push(
         context,
@@ -61,40 +69,38 @@ class _CobrosScreenState extends ConsumerState<CobrosScreen> {
           stream: _stream,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: SelectableText(
-                    'ERROR:\n\n${snapshot.error}',
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                ),
+              return AppErrorState(
+                message: 'ERROR:\n\n${snapshot.error}',
               );
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const LoadingView();
+              return const AppLoading(
+                message: 'Cargando cobros...',
+              );
             }
 
             final cobros = snapshot.data ?? const [];
 
             if (cobros.isEmpty) {
-              return EmptyState(
-                message: 'Todavia no hay cobros para esta factura.',
-                action: FilledButton(
-                  onPressed: abrirNuevoCobro,
-                  child: const Text('Nuevo cobro'),
-                ),
+              return AppEmptyState(
+                icon: Icons.payments_outlined,
+                title: 'Todavía no hay cobros',
+                subtitle: 'Añade el primer cobro de esta factura.',
+                actionLabel: 'Nuevo cobro',
+                onAction: abrirNuevoCobro,
               );
             }
 
             return Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.md),
               child: Column(
                 children: [
                   Expanded(
-                    child: ListView.builder(
+                    child: ListView.separated(
                       itemCount: cobros.length,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: AppSpacing.sm),
                       itemBuilder: (context, index) {
                         final cobro = cobros[index];
 
@@ -102,15 +108,24 @@ class _CobrosScreenState extends ConsumerState<CobrosScreen> {
                             ? '-'
                             : cobro.referencia.trim();
 
-                        return Card(
-                          margin: const EdgeInsets.only(bottom: 10),
+                        return AppCard(
                           child: ListTile(
-                            leading: const Icon(Icons.payments_outlined),
+                            contentPadding: const EdgeInsets.all(AppSpacing.md),
+                            leading: CircleAvatar(
+                              backgroundColor: colorScheme.primaryContainer,
+                              foregroundColor: colorScheme.onPrimaryContainer,
+                              child: const Icon(Icons.payments_outlined),
+                            ),
                             title: Text(
                               CurrencyFormatter.format(cobro.importe),
+                              style: textTheme.titleMedium,
                             ),
-                            subtitle: Text(
-                              'Fecha: ${DateFormatter.formatDdMmYyyy(cobro.fecha)}\nMetodo: ${cobro.metodoPago}\nReferencia: $referencia',
+                            subtitle: Padding(
+                              padding: const EdgeInsets.only(top: AppSpacing.xs),
+                              child: Text(
+                                'Fecha: ${DateFormatter.formatDdMmYyyy(cobro.fecha)}\nMetodo: ${cobro.metodoPago}\nReferencia: $referencia',
+                                style: textTheme.bodyMedium,
+                              ),
                             ),
                             isThreeLine: true,
                             onTap: () {
@@ -130,9 +145,9 @@ class _CobrosScreenState extends ConsumerState<CobrosScreen> {
                   ),
                   SizedBox(
                     width: double.infinity,
-                    child: FilledButton(
+                    child: AppPrimaryButton(
                       onPressed: abrirNuevoCobro,
-                      child: const Text('Nuevo cobro'),
+                      label: 'Nuevo cobro',
                     ),
                   ),
                 ],

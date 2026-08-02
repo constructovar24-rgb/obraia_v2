@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/ui/app_spacing.dart';
+import '../../../../core/ui/app_typography.dart';
+import '../../../../core/widgets/app_card.dart';
+import '../../../../core/widgets/app_empty_state.dart';
+import '../../../../core/widgets/app_error_state.dart';
+import '../../../../core/widgets/app_loading.dart';
 import '../../../../core/widgets/app_page_header.dart';
+import '../../../../core/widgets/app_primary_button.dart';
+import '../../../../core/widgets/app_section.dart';
 import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/entity_summary_card.dart';
 import '../../../../core/widgets/status_chip.dart';
@@ -73,13 +81,16 @@ class PresupuestoDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = AppTypography.textTheme(colorScheme);
+
     return Scaffold(
       appBar: const AppPageHeader(
         showBackButton: true,
         title: 'Presupuesto',
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           EntitySummaryCard(
             title: presupuesto.codigo,
@@ -101,15 +112,7 @@ class PresupuestoDetailScreen extends StatelessWidget {
               type: _statusTypeFromEstado(presupuesto.estado),
             ),
           ),
-          const SizedBox(height: 24),
-          const Text(
-            'Líneas del presupuesto',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 18,
-            ),
-          ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.lg),
           Consumer(
             builder: (context, ref, _) {
               final repository = ref.read(lineaPresupuestoRepositoryProvider);
@@ -118,30 +121,24 @@ class PresupuestoDetailScreen extends StatelessWidget {
                 stream: repository.observarPorPresupuesto(presupuesto.id),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: SelectableText(
-                        'ERROR:\n\n${snapshot.error}',
-                        style: const TextStyle(color: Colors.red),
-                      ),
+                    return AppErrorState(
+                      message: 'ERROR:\n\n${snapshot.error}',
                     );
                   }
 
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 12),
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
+                    return const AppLoading(
+                      message: 'Cargando líneas del presupuesto...',
                     );
                   }
 
                   final lineas = snapshot.data ?? const [];
 
                   if (lineas.isEmpty) {
-                    return const Padding(
-                      padding: EdgeInsets.only(top: 4),
-                      child: Text('Todavía no hay líneas de presupuesto.'),
+                    return const AppEmptyState(
+                      icon: Icons.format_list_bulleted,
+                      title: 'Todavía no hay líneas de presupuesto',
+                      subtitle: 'Añade la primera línea para calcular el total.',
                     );
                   }
 
@@ -152,204 +149,197 @@ class PresupuestoDetailScreen extends StatelessWidget {
                   final iva = subtotal * presupuesto.ivaPorcentaje / 100;
                   final total = subtotal + iva;
 
-                  final lineasWidgets = lineas
-                      .map<Widget>(
-                        (linea) => ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(linea.concepto),
-                          subtitle: Text(
-                            '${_formatearCantidad(linea.cantidad)} × ${_formatearMoneda(linea.precioUnitario)} = ${_formatearMoneda(linea.importe)}',
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => EditarLineaPresupuestoScreen(
-                                  linea: linea,
+                  return AppSection(
+                    title: 'Líneas del presupuesto',
+                    subtitle:
+                        'Revisa cada línea y su impacto en el total del presupuesto.',
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: lineas.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: AppSpacing.sm),
+                          itemBuilder: (context, index) {
+                            final linea = lineas[index];
+
+                            return AppCard(
+                              child: ListTile(
+                                contentPadding: const EdgeInsets.all(
+                                  AppSpacing.md,
                                 ),
+                                leading: CircleAvatar(
+                                  backgroundColor: colorScheme.primaryContainer,
+                                  foregroundColor:
+                                      colorScheme.onPrimaryContainer,
+                                  child: const Icon(Icons.format_list_bulleted),
+                                ),
+                                title: Text(
+                                  linea.concepto,
+                                  style: textTheme.titleMedium,
+                                ),
+                                subtitle: Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: AppSpacing.xs,
+                                  ),
+                                  child: Text(
+                                    '${_formatearCantidad(linea.cantidad)} × ${_formatearMoneda(linea.precioUnitario)} = ${_formatearMoneda(linea.importe)}',
+                                    style: textTheme.bodyMedium,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => EditarLineaPresupuestoScreen(
+                                        linea: linea,
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
                             );
                           },
                         ),
-                      )
-                      .toList();
-
-                  lineasWidgets.addAll([
-                    const SizedBox(height: 12),
-                    const Divider(),
-                    const SizedBox(height: 8),
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Subtotal',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
+                        const SizedBox(height: AppSpacing.md),
+                        const Divider(),
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          'Subtotal',
+                          style: textTheme.titleMedium,
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        _formatearMoneda(subtotal),
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'IVA (${_formatearPorcentaje(presupuesto.ivaPorcentaje)}%)',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          _formatearMoneda(subtotal),
+                          style: textTheme.bodyLarge,
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        _formatearMoneda(iva),
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Divider(),
-                    const SizedBox(height: 12),
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'TOTAL',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 17,
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          'IVA (${_formatearPorcentaje(presupuesto.ivaPorcentaje)}%)',
+                          style: textTheme.titleMedium,
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        _formatearMoneda(total),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 18,
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          _formatearMoneda(iva),
+                          style: textTheme.bodyLarge,
                         ),
-                      ),
+                        const SizedBox(height: AppSpacing.sm),
+                        const Divider(),
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          'TOTAL',
+                          style: textTheme.titleLarge,
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          _formatearMoneda(total),
+                          style: textTheme.headlineSmall,
+                        ),
+                      ],
                     ),
-                  ]);
-
-                  return Column(
-                    children: lineasWidgets,
                   );
                 },
               );
             },
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Consumer(
             builder: (context, ref, _) {
-              return SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: () async {
-                    final facturaRepository = ref.read(
-                      facturaRepositoryProvider,
+              return AppPrimaryButton(
+                onPressed: () async {
+                  final facturaRepository = ref.read(
+                    facturaRepositoryProvider,
+                  );
+
+                  try {
+                    final facturaId = await facturaRepository
+                        .convertirDesdePresupuesto(presupuesto);
+
+                    final factura = await facturaRepository.obtenerPorId(
+                      facturaId,
                     );
 
-                    try {
-                      final facturaId = await facturaRepository
-                          .convertirDesdePresupuesto(presupuesto);
+                    if (!context.mounted) return;
 
-                      final factura = await facturaRepository.obtenerPorId(
-                        facturaId,
-                      );
-
-                      if (!context.mounted) return;
-
-                      if (factura == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'No se pudo abrir la factura convertida.',
-                            ),
-                          ),
-                        );
-                        return;
-                      }
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => EditarFacturaScreen(
-                            factura: factura,
-                          ),
-                        ),
-                      );
-                    } on PresupuestoYaConvertidoException {
-                      if (!context.mounted) return;
-
+                    if (factura == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
-                            'Este presupuesto ya fue convertido en factura.',
+                            'No se pudo abrir la factura convertida.',
                           ),
                         ),
                       );
-                    } catch (e) {
-                      if (!context.mounted) return;
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'No se pudo convertir el presupuesto: $e',
-                          ),
-                        ),
-                      );
+                      return;
                     }
-                  },
-                  child: const Text('Convertir en factura'),
-                ),
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => EditarFacturaScreen(
+                          factura: factura,
+                        ),
+                      ),
+                    );
+                  } on PresupuestoYaConvertidoException {
+                    if (!context.mounted) return;
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Este presupuesto ya fue convertido en factura.',
+                        ),
+                      ),
+                    );
+                  } catch (e) {
+                    if (!context.mounted) return;
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'No se pudo convertir el presupuesto: $e',
+                        ),
+                      ),
+                    );
+                  }
+                },
+                label: 'Convertir en factura',
+                icon: Icons.receipt_long_outlined,
               );
             },
           ),
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => PresupuestoPdfPreviewScreen(
-                      presupuesto: presupuesto,
-                    ),
+          const SizedBox(height: AppSpacing.sm),
+          AppPrimaryButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => PresupuestoPdfPreviewScreen(
+                    presupuesto: presupuesto,
                   ),
-                );
-              },
-              child: const Text('Ver PDF'),
-            ),
+                ),
+              );
+            },
+            label: 'Ver PDF',
+            icon: Icons.picture_as_pdf_outlined,
           ),
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => NuevoLineaPresupuestoScreen(
-                      presupuestoId: presupuesto.id,
-                    ),
+          const SizedBox(height: AppSpacing.sm),
+          AppPrimaryButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => NuevoLineaPresupuestoScreen(
+                    presupuestoId: presupuesto.id,
                   ),
-                );
-              },
-              child: const Text('Añadir línea'),
-            ),
+                ),
+              );
+            },
+            label: 'Añadir línea',
+            icon: Icons.add,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
           Consumer(
             builder: (context, ref, _) {
               return SizedBox(
