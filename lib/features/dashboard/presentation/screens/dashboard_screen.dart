@@ -244,6 +244,18 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           : StatusType.success,
         icon: Icons.work_history_outlined,
         ),
+        _AttentionItem.count(
+          title: 'Expedientes sin actividad',
+          description:
+              '${resumen.expedientesSinActividadConteo} expedientes sin eventos en los últimos 60 días o sin eventos registrados.',
+          count: resumen.expedientesSinActividadConteo,
+          statusLabel:
+              resumen.expedientesSinActividadConteo > 0 ? 'Seguimiento' : 'Controlado',
+          statusType: resumen.expedientesSinActividadConteo > 0
+              ? StatusType.warning
+              : StatusType.success,
+          icon: Icons.hourglass_disabled_outlined,
+        ),
     ];
 
     return items;

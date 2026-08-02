@@ -21,6 +21,7 @@ class DashboardResumen {
     required this.conversionPresupuestosFacturasPorcentaje,
     required this.presupuestosBacklogComercialConteo,
     required this.presupuestosBacklogComercialImporte,
+    required this.expedientesSinActividadConteo,
   });
 
   final int numeroExpedientes;
@@ -44,6 +45,7 @@ class DashboardResumen {
   final double conversionPresupuestosFacturasPorcentaje;
   final int presupuestosBacklogComercialConteo;
   final double presupuestosBacklogComercialImporte;
+  final int expedientesSinActividadConteo;
 
   bool get isEmpty {
     return numeroExpedientes == 0 &&
