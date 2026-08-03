@@ -19,7 +19,14 @@ class ExpedientesDao extends DatabaseAccessor<AppDatabase>
     final query = select(table).join([
       leftOuterJoin(clientes, clientes.id.equalsExp(table.clienteId)),
     ])
-      ..where(table.eliminado.equals(false))
+      ..where(
+        table.eliminado.equals(false) &
+            table.estado.equals(
+              expediente_domain.expedienteEstadoCicloToDbValue(
+                expediente_domain.ExpedienteEstadoCiclo.activo,
+              ),
+            ),
+      )
       ..orderBy([OrderingTerm.desc(table.fechaCreacion)]);
 
     return query.watch().map((rows) {
@@ -31,6 +38,9 @@ class ExpedientesDao extends DatabaseAccessor<AppDatabase>
           id: expediente.id,
           codigo: expediente.codigo,
           nombre: expediente.nombre,
+          estadoCiclo: expediente_domain.expedienteEstadoCicloFromDbValue(
+            expediente.estado,
+          ),
           clienteId: expediente.clienteId,
           clienteNombre: cliente?.nombre ?? '',
         );
@@ -60,8 +70,26 @@ class ExpedientesDao extends DatabaseAccessor<AppDatabase>
       id: expediente.id,
       codigo: expediente.codigo,
       nombre: expediente.nombre,
+      estadoCiclo: expediente_domain.expedienteEstadoCicloFromDbValue(
+        expediente.estado,
+      ),
       clienteId: expediente.clienteId,
       clienteNombre: cliente?.nombre ?? '',
+    );
+  }
+
+  Future<void> archivarExpediente(String id) async {
+    final table = attachedDatabase.expedientes;
+
+    await (update(table)..where((t) => t.id.equals(id))).write(
+      ExpedientesCompanion(
+        estado: Value(
+          expediente_domain.expedienteEstadoCicloToDbValue(
+            expediente_domain.ExpedienteEstadoCiclo.archivado,
+          ),
+        ),
+        fechaModificacion: Value(DateTime.now()),
+      ),
     );
   }
 

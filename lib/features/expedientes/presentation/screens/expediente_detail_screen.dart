@@ -10,8 +10,10 @@ import '../../../../core/widgets/app_error_state.dart';
 import '../../../../core/widgets/app_loading.dart';
 import '../../../../core/widgets/app_primary_button.dart';
 import '../../../../core/widgets/app_page_header.dart';
+import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/entity_summary_card.dart';
 import '../../../../core/widgets/status_chip.dart';
+import '../../data/expediente_repository.dart';
 import '../../../certificaciones/domain/certificacion.dart';
 import '../../../certificaciones/presentation/providers/certificacion_providers.dart';
 import '../../../certificaciones/presentation/screens/nueva_certificacion_screen.dart';
@@ -27,7 +29,7 @@ import 'cliente_tab.dart';
 import 'datos_generales_screen.dart';
 import '../../../presupuestos/presentation/widgets/presupuestos_tab.dart';
 
-class ExpedienteDetailScreen extends StatelessWidget {
+class ExpedienteDetailScreen extends ConsumerWidget {
   const ExpedienteDetailScreen({
     super.key,
     required this.id,
@@ -54,8 +56,36 @@ class ExpedienteDetailScreen extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final hasCliente = clienteNombre != null && clienteNombre!.isNotEmpty;
+    final accionGestionAsync = ref.watch(
+      expedienteGestionAccionProvider(id),
+    );
+
+    List<AppPageHeaderAction> construirAcciones() {
+      return accionGestionAsync.when(
+        loading: () => const [],
+        error: (error, stackTrace) => const [],
+        data: (accion) {
+          final tituloAccion = _tituloAccion(accion);
+
+          return [
+            AppPageHeaderAction(
+              icon: _iconoAccion(accion),
+              tooltip: tituloAccion,
+              semanticLabel: tituloAccion,
+              onPressed: () {
+                _confirmarYGestionarExpediente(
+                  context: context,
+                  ref: ref,
+                  accion: accion,
+                );
+              },
+            ),
+          ];
+        },
+      );
+    }
 
     return DefaultTabController(
       length: _tabs.length,
@@ -65,6 +95,7 @@ class ExpedienteDetailScreen extends StatelessWidget {
           appBar: AppPageHeader(
             showBackButton: true,
             title: 'Expediente',
+            actions: construirAcciones(),
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(hasCliente ? 196 : 172),
               child: Column(
@@ -115,6 +146,52 @@ class ExpedienteDetailScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  IconData _iconoAccion(ExpedienteGestionAccion accion) {
+    switch (accion) {
+      case ExpedienteGestionAccion.eliminar:
+        return Icons.delete_outline;
+      case ExpedienteGestionAccion.archivar:
+        return Icons.archive_outlined;
+    }
+  }
+
+  String _tituloAccion(ExpedienteGestionAccion accion) {
+    switch (accion) {
+      case ExpedienteGestionAccion.eliminar:
+        return 'Eliminar expediente';
+      case ExpedienteGestionAccion.archivar:
+        return 'Archivar expediente';
+    }
+  }
+
+  Future<void> _confirmarYGestionarExpediente({
+    required BuildContext context,
+    required WidgetRef ref,
+    required ExpedienteGestionAccion accion,
+  }) async {
+    final tituloAccion = _tituloAccion(accion);
+    final confirmado = await ConfirmDialog.show(
+      context,
+      title: tituloAccion,
+      message: accion == ExpedienteGestionAccion.eliminar
+          ? 'Se eliminará este expediente. Esta acción no se puede deshacer.'
+          : 'Se archivará este expediente. Podrás recuperarlo más adelante.',
+      confirmLabel: tituloAccion,
+    );
+
+    if (!confirmado) {
+      return;
+    }
+
+    await ref.read(expedienteRepositoryProvider).gestionarExpediente(id);
+
+    if (!context.mounted) {
+      return;
+    }
+
+    Navigator.maybePop(context);
   }
 }
 
