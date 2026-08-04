@@ -12,6 +12,7 @@ import '../../../clientes/domain/cliente.dart';
 import '../../../cobros/data/cobro_repository.dart';
 import '../../../cobros/domain/factura_estado_economico.dart';
 import '../../../cobros/presentation/screens/cobros_screen.dart';
+import '../../../cobros/presentation/screens/nuevo_cobro_screen.dart';
 import '../../data/factura_linea_repository.dart';
 import '../../data/factura_repository.dart';
 import '../../domain/estado_factura.dart';
@@ -329,6 +330,17 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
       return;
     }
     Navigator.of(context).pop();
+  }
+
+  Future<void> _abrirNuevoCobroDirecto() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => NuevoCobroScreen(
+          facturaId: widget.factura.id,
+        ),
+      ),
+    );
   }
 
   @override
@@ -680,6 +692,15 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
               SizedBox(
                 width: double.infinity,
                 child: FilledButton.icon(
+                  onPressed: _abrirNuevoCobroDirecto,
+                  icon: const Icon(Icons.payments_outlined),
+                  label: const Text('Registrar cobro'),
+                ),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
                   onPressed: () {
                     Navigator.push(
                       context,
