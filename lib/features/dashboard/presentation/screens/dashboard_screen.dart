@@ -877,13 +877,26 @@ class _AttentionCard extends StatelessWidget {
                 item.trailing,
                 if (item.actionLabel != null) ...[
                   const SizedBox(height: AppSpacing.sm),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: TextButton.icon(
-                      onPressed: item.onAction,
-                      icon: const Icon(Icons.arrow_forward_outlined),
-                      label: Text(item.actionLabel!),
-                    ),
+                  Builder(
+                    builder: (context) {
+                      final isEnabled = item.onAction != null;
+                      final label = isEnabled
+                          ? item.actionLabel!
+                          : '${item.actionLabel!} (Próximamente)';
+
+                      return Align(
+                        alignment: Alignment.centerLeft,
+                        child: TextButton.icon(
+                          onPressed: item.onAction,
+                          icon: Icon(
+                            isEnabled
+                                ? Icons.arrow_forward_outlined
+                                : Icons.schedule_outlined,
+                          ),
+                          label: Text(label),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ],
