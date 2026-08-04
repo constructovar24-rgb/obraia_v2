@@ -136,44 +136,47 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   List<_AttentionItem> _buildAttentionItems(DashboardResumen resumen) {
     final items = <_AttentionItem>[];
 
+    if (resumen.facturasVencidasConteo > 0) {
+      items.add(
+        _AttentionItem.amount(
+          title: 'Facturas vencidas',
+          description: 'Facturas con vencimiento superado y saldo pendiente.',
+          amount: resumen.facturasVencidasImporte,
+          statusLabel: 'Critico',
+          statusType: StatusType.error,
+          icon: Icons.warning_amber_outlined,
+          actionLabel: 'Ver facturas',
+          onAction: null,
+        ),
+      );
+    }
+
     if (resumen.pendienteTotal > 0) {
       items.add(
         _AttentionItem.amount(
           title: 'Pendiente de cobrar',
-          description:
-              'Hay importe abierto que conviene revisar y convertir en cobro cuanto antes.',
+          description: 'Importe abierto pendiente de entrada en caja.',
           amount: resumen.pendienteTotal,
           statusLabel: 'Prioridad',
           statusType: StatusType.warning,
           icon: Icons.payments_outlined,
+          actionLabel: 'Registrar cobro',
+          onAction: _abrirNuevoCobro,
         ),
       );
     }
 
-    if (resumen.presupuestosPendientesFacturar > 0) {
+    if (resumen.facturasVencenProximos7Dias > 0) {
       items.add(
         _AttentionItem.count(
-          title: 'Presupuestos pendientes de facturar',
-          description:
-              'Revisa presupuestos listos para convertirse en factura y acelerar el ciclo de cobro.',
-          count: resumen.presupuestosPendientesFacturar,
+          title: 'Vencen en 7 días',
+          description: 'Facturas pendientes con vencimiento en la próxima semana.',
+          count: resumen.facturasVencenProximos7Dias,
           statusLabel: 'Seguimiento',
-          statusType: StatusType.info,
-          icon: Icons.request_quote_outlined,
-        ),
-      );
-    }
-
-    if (resumen.facturasPendientesCobro > 0) {
-      items.add(
-        _AttentionItem.count(
-          title: 'Facturas pendientes de cobro',
-          description:
-              'Existen facturas sin cobrar que requieren seguimiento comercial o financiero.',
-          count: resumen.facturasPendientesCobro,
-          statusLabel: 'Atención',
           statusType: StatusType.warning,
-          icon: Icons.receipt_long_outlined,
+          icon: Icons.event_available_outlined,
+          actionLabel: 'Ver facturas',
+          onAction: null,
         ),
       );
     }
@@ -182,81 +185,61 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       items.add(
         _AttentionItem.count(
           title: 'Facturas parcialmente cobradas',
-          description:
-              'Hay cobros iniciados que conviene completar para cerrar pendientes abiertos.',
+          description: 'Cobros iniciados pendientes de completar.',
           count: resumen.facturasParcialmenteCobradas,
           statusLabel: 'En curso',
           statusType: StatusType.info,
           icon: Icons.timeline_outlined,
+          actionLabel: 'Ver facturas',
+          onAction: null,
         ),
       );
     }
 
-    return items;
-  }
-
-  List<_AttentionItem> _buildCriticalInsights(DashboardResumen resumen) {
-    final items = <_AttentionItem>[
-      _AttentionItem.amount(
-        title: 'Facturas vencidas',
-        description:
-            '${resumen.facturasVencidasConteo} facturas con vencimiento superado y saldo pendiente.',
-        amount: resumen.facturasVencidasImporte,
-        statusLabel: resumen.facturasVencidasConteo > 0 ? 'Critico' : 'Controlado',
-        statusType: resumen.facturasVencidasConteo > 0
-            ? StatusType.error
-            : StatusType.success,
-        icon: Icons.warning_amber_outlined,
-      ),
-      _AttentionItem.count(
-        title: 'Vencen en 7 días',
-        description:
-            'Facturas pendientes de cobro con vencimiento en la próxima semana.',
-        count: resumen.facturasVencenProximos7Dias,
-        statusLabel:
-            resumen.facturasVencenProximos7Dias > 0 ? 'Seguimiento' : 'Sin riesgo',
-        statusType: resumen.facturasVencenProximos7Dias > 0
-            ? StatusType.warning
-            : StatusType.success,
-        icon: Icons.event_available_outlined,
-      ),
-      _AttentionItem.count(
-        title: 'Presupuestos pendientes de facturar',
-        description:
-            'Presupuestos que aún no se han convertido en factura.',
-        count: resumen.presupuestosPendientesFacturar,
-        statusLabel:
-            resumen.presupuestosPendientesFacturar > 0 ? 'Acción' : 'Al día',
-        statusType: resumen.presupuestosPendientesFacturar > 0
-            ? StatusType.info
-            : StatusType.success,
-        icon: Icons.request_quote_outlined,
-      ),
-        _AttentionItem.amount(
-        title: 'Backlog comercial',
-        description:
-          '${resumen.presupuestosBacklogComercialConteo} presupuestos sin facturar con antigüedad de 60 días o más.',
-        amount: resumen.presupuestosBacklogComercialImporte,
-        statusLabel:
-          resumen.presupuestosBacklogComercialConteo > 0 ? 'Seguimiento' : 'Controlado',
-        statusType: resumen.presupuestosBacklogComercialConteo > 0
-          ? StatusType.warning
-          : StatusType.success,
-        icon: Icons.work_history_outlined,
+    if (resumen.presupuestosPendientesFacturar > 0) {
+      items.add(
+        _AttentionItem.count(
+          title: 'Presupuestos pendientes de facturar',
+          description: 'Presupuestos listos para convertir en factura.',
+          count: resumen.presupuestosPendientesFacturar,
+          statusLabel: 'Seguimiento',
+          statusType: StatusType.info,
+          icon: Icons.request_quote_outlined,
+          actionLabel: 'Ver presupuestos',
+          onAction: null,
         ),
+      );
+    }
+
+    if (resumen.presupuestosBacklogComercialConteo > 0) {
+      items.add(
+        _AttentionItem.amount(
+          title: 'Backlog comercial',
+          description: 'Presupuestos sin facturar con 60 días o más.',
+          amount: resumen.presupuestosBacklogComercialImporte,
+          statusLabel: 'Seguimiento',
+          statusType: StatusType.warning,
+          icon: Icons.work_history_outlined,
+          actionLabel: 'Ver presupuestos',
+          onAction: null,
+        ),
+      );
+    }
+
+    if (resumen.expedientesSinActividadConteo > 0) {
+      items.add(
         _AttentionItem.count(
           title: 'Expedientes sin actividad',
-          description:
-              '${resumen.expedientesSinActividadConteo} expedientes sin eventos en los últimos 60 días o sin eventos registrados.',
+          description: 'Expedientes sin eventos en los últimos 60 días.',
           count: resumen.expedientesSinActividadConteo,
-          statusLabel:
-              resumen.expedientesSinActividadConteo > 0 ? 'Seguimiento' : 'Controlado',
-          statusType: resumen.expedientesSinActividadConteo > 0
-              ? StatusType.warning
-              : StatusType.success,
+          statusLabel: 'Seguimiento',
+          statusType: StatusType.warning,
           icon: Icons.hourglass_disabled_outlined,
+          actionLabel: 'Ver expedientes',
+          onAction: null,
         ),
-    ];
+      );
+    }
 
     return items;
   }
@@ -307,8 +290,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             }
 
             final attentionItems = _buildAttentionItems(resumen);
-            final criticalInsights = _buildCriticalInsights(resumen);
-
             return LayoutBuilder(
               builder: (context, constraints) {
                 return Align(
@@ -368,67 +349,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         ),
                         const SizedBox(height: AppSpacing.md),
                         AppSection(
-                          title: 'Acciones rápidas',
-                          subtitle:
-                              'Accede a las tareas de alta más habituales sin salir del dashboard.',
-                          child: LayoutBuilder(
-                            builder: (context, sectionConstraints) {
-                              final columns = sectionConstraints.maxWidth >= 1000
-                                  ? 6
-                                  : sectionConstraints.maxWidth >= 640
-                                      ? 2
-                                      : 1;
-                              final buttonWidth = columns == 1
-                                  ? sectionConstraints.maxWidth
-                                  : _cardWidth(
-                                      sectionConstraints.maxWidth,
-                                      columns: columns,
-                                    );
-
-                              return Wrap(
-                                spacing: AppSpacing.sm,
-                                runSpacing: AppSpacing.sm,
-                                children: [
-                                  SizedBox(
-                                    width: buttonWidth,
-                                    child: AppPrimaryButton(
-                                      label: 'Nuevo expediente',
-                                      icon: Icons.folder_copy_outlined,
-                                      onPressed: _abrirNuevoExpediente,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: buttonWidth,
-                                    child: AppPrimaryButton(
-                                      label: 'Nuevo presupuesto',
-                                      icon: Icons.request_quote_outlined,
-                                      onPressed: _abrirNuevoPresupuesto,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: buttonWidth,
-                                    child: AppPrimaryButton(
-                                      label: 'Nueva factura',
-                                      icon: Icons.receipt_long_outlined,
-                                      onPressed: _abrirNuevaFactura,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: buttonWidth,
-                                    child: AppPrimaryButton(
-                                      label: 'Registrar cobro',
-                                      icon: Icons.payments_outlined,
-                                      onPressed: _abrirNuevoCobro,
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        AppSection(
-                          title: 'Qué requiere mi atención',
+                          title: 'Qué debo hacer hoy',
                           subtitle:
                               'Prioriza lo que impacta antes en facturación y cobro.',
                           child: attentionItems.isEmpty
@@ -492,19 +413,62 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         ),
                         const SizedBox(height: AppSpacing.md),
                         AppSection(
-                          title: 'Insights críticos',
+                          title: 'Acciones rápidas',
                           subtitle:
-                              'Alertas clave para actuar en vencimientos y conversión de presupuestos.',
-                          child: Column(
-                            children: [
-                              for (var index = 0;
-                                  index < criticalInsights.length;
-                                  index++) ...[
-                                _AttentionCard(item: criticalInsights[index]),
-                                if (index < criticalInsights.length - 1)
-                                  const SizedBox(height: AppSpacing.sm),
-                              ],
-                            ],
+                              'Accede a las tareas de alta más habituales sin salir del dashboard.',
+                          child: LayoutBuilder(
+                            builder: (context, sectionConstraints) {
+                              final columns = sectionConstraints.maxWidth >= 1000
+                                  ? 6
+                                  : sectionConstraints.maxWidth >= 640
+                                      ? 2
+                                      : 1;
+                              final buttonWidth = columns == 1
+                                  ? sectionConstraints.maxWidth
+                                  : _cardWidth(
+                                      sectionConstraints.maxWidth,
+                                      columns: columns,
+                                    );
+
+                              return Wrap(
+                                spacing: AppSpacing.sm,
+                                runSpacing: AppSpacing.sm,
+                                children: [
+                                  SizedBox(
+                                    width: buttonWidth,
+                                    child: AppPrimaryButton(
+                                      label: 'Nuevo expediente',
+                                      icon: Icons.folder_copy_outlined,
+                                      onPressed: _abrirNuevoExpediente,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: buttonWidth,
+                                    child: AppPrimaryButton(
+                                      label: 'Nuevo presupuesto',
+                                      icon: Icons.request_quote_outlined,
+                                      onPressed: _abrirNuevoPresupuesto,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: buttonWidth,
+                                    child: AppPrimaryButton(
+                                      label: 'Nueva factura',
+                                      icon: Icons.receipt_long_outlined,
+                                      onPressed: _abrirNuevaFactura,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: buttonWidth,
+                                    child: AppPrimaryButton(
+                                      label: 'Registrar cobro',
+                                      icon: Icons.payments_outlined,
+                                      onPressed: _abrirNuevoCobro,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
                           ),
                         ),
                         const SizedBox(height: AppSpacing.md),
@@ -911,6 +875,17 @@ class _AttentionCard extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 item.trailing,
+                if (item.actionLabel != null) ...[
+                  const SizedBox(height: AppSpacing.sm),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton.icon(
+                      onPressed: item.onAction,
+                      icon: const Icon(Icons.arrow_forward_outlined),
+                      label: Text(item.actionLabel!),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -928,6 +903,8 @@ class _AttentionItem {
     required this.statusLabel,
     required this.statusType,
     required this.icon,
+    this.actionLabel,
+    this.onAction,
   });
 
   factory _AttentionItem.amount({
@@ -937,6 +914,8 @@ class _AttentionItem {
     required String statusLabel,
     required StatusType statusType,
     required IconData icon,
+    String? actionLabel,
+    VoidCallback? onAction,
   }) {
     return _AttentionItem(
       title: title,
@@ -945,6 +924,8 @@ class _AttentionItem {
       statusLabel: statusLabel,
       statusType: statusType,
       icon: icon,
+      actionLabel: actionLabel,
+      onAction: onAction,
     );
   }
 
@@ -955,6 +936,8 @@ class _AttentionItem {
     required String statusLabel,
     required StatusType statusType,
     required IconData icon,
+    String? actionLabel,
+    VoidCallback? onAction,
   }) {
     return _AttentionItem(
       title: title,
@@ -969,6 +952,8 @@ class _AttentionItem {
       statusLabel: statusLabel,
       statusType: statusType,
       icon: icon,
+      actionLabel: actionLabel,
+      onAction: onAction,
     );
   }
 
@@ -978,6 +963,8 @@ class _AttentionItem {
   final String statusLabel;
   final StatusType statusType;
   final IconData icon;
+  final String? actionLabel;
+  final VoidCallback? onAction;
 }
 
 class _ExpedienteSelectionSheet extends StatelessWidget {
