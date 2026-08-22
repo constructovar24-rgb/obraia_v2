@@ -1,11 +1,15 @@
+import 'dart:async';
+
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:obraia_v2/database/app_database.dart';
 import 'package:obraia_v2/database/database_provider.dart';
+import 'package:obraia_v2/features/cobros/domain/factura_estado_economico.dart';
 import 'package:obraia_v2/features/facturas/domain/estado_factura.dart';
-import 'package:obraia_v2/features/facturas/domain/factura.dart' as factura_domain;
+import 'package:obraia_v2/features/facturas/domain/factura.dart'
+    as factura_domain;
 import 'package:obraia_v2/features/presupuestos/domain/presupuesto.dart'
-  as presupuesto_domain;
+    as presupuesto_domain;
 import 'package:obraia_v2/features/timeline/data/timeline_repository.dart';
 import 'package:uuid/uuid.dart';
 
@@ -29,10 +33,83 @@ class FacturaRepository {
   final TimelineRepository _timelineRepository;
 
   FacturaRepository(this.database)
-      : _timelineRepository = TimelineRepository(database.timelineEventsDao);
+    : _timelineRepository = TimelineRepository(database.timelineEventsDao);
 
   Stream<List<factura_domain.Factura>> observarFacturas() {
     return database.facturasDao.observarFacturas();
+  }
+
+  Stream<List<FacturaConEstadoEconomico>> observarFacturasConEstadoEconomico() {
+    return _observarConEstadoEconomico(observarFacturas());
+  }
+
+  Stream<List<FacturaConEstadoEconomico>> observarPorClienteConEstadoEconomico(
+    String clienteId,
+  ) {
+    return _observarConEstadoEconomico(observarPorCliente(clienteId));
+  }
+
+  Stream<List<FacturaConEstadoEconomico>>
+  observarPorExpedienteConEstadoEconomico(String expedienteId) {
+    return _observarConEstadoEconomico(observarPorExpediente(expedienteId));
+  }
+
+  Stream<List<FacturaConEstadoEconomico>> _observarConEstadoEconomico(
+    Stream<List<factura_domain.Factura>> facturasStream,
+  ) {
+    return Stream<List<FacturaConEstadoEconomico>>.multi((controller) {
+      List<factura_domain.Factura>? facturas;
+      Map<String, double>? cobradoPorFactura;
+
+      void emitirSiCompleto() {
+        final facturasActuales = facturas;
+        final cobrosActuales = cobradoPorFactura;
+        if (facturasActuales == null || cobrosActuales == null) {
+          return;
+        }
+
+        final fechaReferencia = DateTime.now();
+        controller.add(
+          facturasActuales.map((factura) {
+            final totalCobrado = cobrosActuales[factura.id] ?? 0;
+            return FacturaConEstadoEconomico(
+              factura: factura,
+              estadoEconomico: calcularResumenEconomicoFactura(
+                totalFactura: factura.total,
+                totalCobrado: totalCobrado,
+                fechaVencimiento: factura.fechaVencimiento,
+                estadoFactura: factura.estado,
+                fechaReferencia: fechaReferencia,
+              ),
+            );
+          }).toList(),
+        );
+      }
+
+      final facturasSubscription = facturasStream.listen((data) {
+        facturas = data;
+        emitirSiCompleto();
+      }, onError: controller.addError);
+      final cobrosSubscription = database.cobrosDao.observarCobros().listen((
+        cobros,
+      ) {
+        final agrupados = <String, double>{};
+        for (final cobro in cobros) {
+          agrupados.update(
+            cobro.facturaId,
+            (total) => total + cobro.importe,
+            ifAbsent: () => cobro.importe,
+          );
+        }
+        cobradoPorFactura = agrupados;
+        emitirSiCompleto();
+      }, onError: controller.addError);
+
+      controller.onCancel = () async {
+        await facturasSubscription.cancel();
+        await cobrosSubscription.cancel();
+      };
+    });
   }
 
   Stream<List<factura_domain.Factura>> observarPorCliente(String clienteId) {
@@ -309,7 +386,9 @@ class FacturaRepository {
       return null;
     }
 
-    final presupuestos = await database.presupuestosDao.observarPresupuestos().first;
+    final presupuestos = await database.presupuestosDao
+        .observarPresupuestos()
+        .first;
 
     for (final presupuesto in presupuestos) {
       if (presupuesto.id == presupuestoOrigenId) {

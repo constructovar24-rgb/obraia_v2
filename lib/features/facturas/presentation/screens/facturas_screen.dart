@@ -13,9 +13,9 @@ import '../../../../core/widgets/app_loading.dart';
 import '../../../../core/widgets/app_primary_button.dart';
 import '../../../../core/widgets/app_section.dart';
 import '../../../../core/widgets/app_page_header.dart';
+import '../../../cobros/domain/factura_estado_economico.dart';
 import '../../data/factura_repository.dart';
 import '../../domain/estado_factura.dart';
-import '../../domain/factura.dart' as factura_domain;
 import 'editar_factura_screen.dart';
 import 'nueva_factura_screen.dart';
 
@@ -27,6 +27,10 @@ enum FacturasInitialFilterType {
   anulada,
   cliente,
   expediente,
+  vencidas,
+  vencenProximos7Dias,
+  pendientesCobro,
+  parcialmenteCobradas,
 }
 
 class FacturasInitialFilter {
@@ -38,35 +42,34 @@ class FacturasInitialFilter {
   });
 
   const FacturasInitialFilter.todas({String? label})
-      : this._(
-          type: FacturasInitialFilterType.todas,
-          label: label,
-        );
+    : this._(type: FacturasInitialFilterType.todas, label: label);
 
   const FacturasInitialFilter.borrador({String? label})
-      : this._(
-          type: FacturasInitialFilterType.borrador,
-          label: label,
-        );
+    : this._(type: FacturasInitialFilterType.borrador, label: label);
 
   const FacturasInitialFilter.emitida({String? label})
-      : this._(
-          type: FacturasInitialFilterType.emitida,
-          label: label,
-        );
+    : this._(type: FacturasInitialFilterType.emitida, label: label);
 
   const FacturasInitialFilter.cobrada({String? label})
-      : this._(
-          type: FacturasInitialFilterType.cobrada,
-          label: label,
-        );
+    : this._(type: FacturasInitialFilterType.cobrada, label: label);
 
   const FacturasInitialFilter.anulada({String? label})
-      : this._(
-          type: FacturasInitialFilterType.anulada,
-          label: label,
-        );
+    : this._(type: FacturasInitialFilterType.anulada, label: label);
 
+  const FacturasInitialFilter.vencidas({String? label})
+    : this._(type: FacturasInitialFilterType.vencidas, label: label);
+
+  const FacturasInitialFilter.vencenProximos7Dias({String? label})
+    : this._(type: FacturasInitialFilterType.vencenProximos7Dias, label: label);
+
+  const FacturasInitialFilter.pendientesCobro({String? label})
+    : this._(type: FacturasInitialFilterType.pendientesCobro, label: label);
+
+  const FacturasInitialFilter.parcialmenteCobradas({String? label})
+    : this._(
+        type: FacturasInitialFilterType.parcialmenteCobradas,
+        label: label,
+      );
   const FacturasInitialFilter.cliente({
     required String clienteId,
     String? label,
@@ -92,10 +95,7 @@ class FacturasInitialFilter {
 }
 
 class FacturasScreen extends ConsumerStatefulWidget {
-  const FacturasScreen({
-    super.key,
-    this.initialFilter,
-  });
+  const FacturasScreen({super.key, this.initialFilter});
 
   final FacturasInitialFilter? initialFilter;
 
@@ -105,7 +105,7 @@ class FacturasScreen extends ConsumerStatefulWidget {
 
 class _FacturasScreenState extends ConsumerState<FacturasScreen> {
   late final FacturaRepository _repository;
-  late final Stream<List<factura_domain.Factura>> _stream;
+  late final Stream<List<FacturaConEstadoEconomico>> _stream;
 
   @override
   void initState() {
@@ -114,7 +114,7 @@ class _FacturasScreenState extends ConsumerState<FacturasScreen> {
 
     final initialFilter = widget.initialFilter;
     if (initialFilter == null) {
-      _stream = _repository.observarFacturas();
+      _stream = _repository.observarFacturasConEstadoEconomico();
       return;
     }
 
@@ -122,27 +122,31 @@ class _FacturasScreenState extends ConsumerState<FacturasScreen> {
       case FacturasInitialFilterType.cliente:
         final clienteId = initialFilter.clienteId?.trim();
         _stream = clienteId == null || clienteId.isEmpty
-            ? _repository.observarFacturas()
-            : _repository.observarPorCliente(clienteId);
+            ? _repository.observarFacturasConEstadoEconomico()
+            : _repository.observarPorClienteConEstadoEconomico(clienteId);
         break;
       case FacturasInitialFilterType.expediente:
         final expedienteId = initialFilter.expedienteId?.trim();
         _stream = expedienteId == null || expedienteId.isEmpty
-            ? _repository.observarFacturas()
-            : _repository.observarPorExpediente(expedienteId);
+            ? _repository.observarFacturasConEstadoEconomico()
+            : _repository.observarPorExpedienteConEstadoEconomico(expedienteId);
         break;
       case FacturasInitialFilterType.todas:
       case FacturasInitialFilterType.borrador:
       case FacturasInitialFilterType.emitida:
       case FacturasInitialFilterType.cobrada:
       case FacturasInitialFilterType.anulada:
-        _stream = _repository.observarFacturas();
+      case FacturasInitialFilterType.vencidas:
+      case FacturasInitialFilterType.vencenProximos7Dias:
+      case FacturasInitialFilterType.pendientesCobro:
+      case FacturasInitialFilterType.parcialmenteCobradas:
+        _stream = _repository.observarFacturasConEstadoEconomico();
         break;
     }
   }
 
-  List<factura_domain.Factura> _applyInitialFilter(
-    List<factura_domain.Factura> facturas,
+  List<FacturaConEstadoEconomico> _applyInitialFilter(
+    List<FacturaConEstadoEconomico> facturas,
   ) {
     final initialFilter = widget.initialFilter;
     if (initialFilter == null) {
@@ -151,13 +155,37 @@ class _FacturasScreenState extends ConsumerState<FacturasScreen> {
 
     switch (initialFilter.type) {
       case FacturasInitialFilterType.borrador:
-        return facturas.where((factura) => factura.estado == EstadoFactura.borrador).toList();
+        return facturas
+            .where((item) => item.factura.estado == EstadoFactura.borrador)
+            .toList();
       case FacturasInitialFilterType.emitida:
-        return facturas.where((factura) => factura.estado == EstadoFactura.emitida).toList();
+        return facturas
+            .where((item) => item.factura.estado == EstadoFactura.emitida)
+            .toList();
       case FacturasInitialFilterType.cobrada:
-        return facturas.where((factura) => factura.estado == EstadoFactura.cobrada).toList();
+        return facturas
+            .where((item) => item.factura.estado == EstadoFactura.cobrada)
+            .toList();
       case FacturasInitialFilterType.anulada:
-        return facturas.where((factura) => factura.estado == EstadoFactura.anulada).toList();
+        return facturas
+            .where((item) => item.factura.estado == EstadoFactura.anulada)
+            .toList();
+      case FacturasInitialFilterType.vencidas:
+        return facturas
+            .where((item) => item.estadoEconomico.estaVencida)
+            .toList();
+      case FacturasInitialFilterType.vencenProximos7Dias:
+        return facturas
+            .where((item) => item.estadoEconomico.venceEnProximos7Dias)
+            .toList();
+      case FacturasInitialFilterType.pendientesCobro:
+        return facturas
+            .where((item) => item.estadoEconomico.esPendienteDeCobro)
+            .toList();
+      case FacturasInitialFilterType.parcialmenteCobradas:
+        return facturas
+            .where((item) => item.estadoEconomico.esParcialmenteCobrada)
+            .toList();
       case FacturasInitialFilterType.todas:
       case FacturasInitialFilterType.cliente:
       case FacturasInitialFilterType.expediente:
@@ -191,6 +219,14 @@ class _FacturasScreenState extends ConsumerState<FacturasScreen> {
         return 'Cliente';
       case FacturasInitialFilterType.expediente:
         return 'Expediente';
+      case FacturasInitialFilterType.vencidas:
+        return 'Vencidas';
+      case FacturasInitialFilterType.vencenProximos7Dias:
+        return 'Vencen en próximos 7 días';
+      case FacturasInitialFilterType.pendientesCobro:
+        return 'Pendientes de cobro';
+      case FacturasInitialFilterType.parcialmenteCobradas:
+        return 'Parcialmente cobradas';
     }
   }
 
@@ -202,9 +238,7 @@ class _FacturasScreenState extends ConsumerState<FacturasScreen> {
     void abrirNuevaFactura() {
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (_) => const NuevaFacturaScreen(),
-        ),
+        MaterialPageRoute(builder: (_) => const NuevaFacturaScreen()),
       );
     }
 
@@ -215,19 +249,15 @@ class _FacturasScreenState extends ConsumerState<FacturasScreen> {
       onNew: abrirNuevaFactura,
       child: Scaffold(
         appBar: const AppPageHeader(title: 'Facturas'),
-        body: StreamBuilder<List<factura_domain.Factura>>(
+        body: StreamBuilder<List<FacturaConEstadoEconomico>>(
           stream: _stream,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return AppErrorState(
-                message: 'ERROR:\n\n${snapshot.error}',
-              );
+              return AppErrorState(message: 'ERROR:\n\n${snapshot.error}');
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const AppLoading(
-                message: 'Cargando facturas...',
-              );
+              return const AppLoading(message: 'Cargando facturas...');
             }
 
             final facturas = snapshot.data ?? const [];
@@ -354,7 +384,8 @@ class _FacturasScreenState extends ConsumerState<FacturasScreen> {
                               separatorBuilder: (context, index) =>
                                   const SizedBox(height: AppSpacing.sm),
                               itemBuilder: (context, index) {
-                                final factura = facturasFiltradas[index];
+                                final factura =
+                                    facturasFiltradas[index].factura;
                                 final cliente = factura.clienteNombre.isEmpty
                                     ? 'Sin cliente'
                                     : factura.clienteNombre;

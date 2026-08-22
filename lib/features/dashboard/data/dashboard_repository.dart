@@ -83,7 +83,9 @@ class DashboardRepository {
             .toSet();
 
         final presupuestosFacturados = presupuestos!
-            .where((presupuesto) => presupuestosConFactura.contains(presupuesto.id))
+            .where(
+              (presupuesto) => presupuestosConFactura.contains(presupuesto.id),
+            )
             .length;
         final presupuestosPendientesFacturar =
             numeroPresupuestos - presupuestosFacturados;
@@ -94,7 +96,6 @@ class DashboardRepository {
           (sum, factura) => sum + factura.total,
         );
         final hoy = DateTime(now.year, now.month, now.day);
-        final limiteVencimientoProximo = hoy.add(const Duration(days: 7));
         final limiteSinActividad = hoy.subtract(
           const Duration(days: _expedientesSinActividadDias),
         );
@@ -174,46 +175,30 @@ class DashboardRepository {
         var facturasVencenProximos7Dias = 0;
 
         for (final factura in facturas!) {
-          final totalCobradoFactura = cobradoPorFactura[factura.id] ?? 0;
-          final pendienteFactura = (factura.total - totalCobradoFactura)
-              .clamp(0, double.infinity)
-              .toDouble();
-          final estadoEconomico = calcularEstadoEconomicoFactura(
+          final resumenEconomico = calcularResumenEconomicoFactura(
             totalFactura: factura.total,
-            totalCobrado: totalCobradoFactura,
+            totalCobrado: cobradoPorFactura[factura.id] ?? 0,
+            fechaVencimiento: factura.fechaVencimiento,
+            estadoFactura: factura.estado,
+            fechaReferencia: now,
           );
 
-          final facturaNoAnulada = factura.estado != EstadoFactura.anulada;
-          const epsilon = 0.000001;
-          final tienePendiente = pendienteFactura > epsilon;
-          final fechaVencimiento = DateTime(
-            factura.fechaVencimiento.year,
-            factura.fechaVencimiento.month,
-            factura.fechaVencimiento.day,
-          );
-
-          if (facturaNoAnulada && tienePendiente && fechaVencimiento.isBefore(hoy)) {
+          if (resumenEconomico.estaVencida) {
             facturasVencidasConteo += 1;
-            facturasVencidasImporte += pendienteFactura;
+            facturasVencidasImporte += resumenEconomico.pendiente;
           }
-
-          if (facturaNoAnulada &&
-              tienePendiente &&
-              !fechaVencimiento.isBefore(hoy) &&
-              !fechaVencimiento.isAfter(limiteVencimientoProximo)) {
+          if (resumenEconomico.venceEnProximos7Dias) {
             facturasVencenProximos7Dias += 1;
           }
-
-          switch (estadoEconomico) {
-            case EstadoEconomicoFactura.pendiente:
-              facturasPendientesCobro += 1;
-              break;
-            case EstadoEconomicoFactura.parcialmenteCobrada:
-              facturasParcialmenteCobradas += 1;
-              break;
-            case EstadoEconomicoFactura.cobrada:
-              facturasCobradas += 1;
-              break;
+          if (resumenEconomico.esPendienteDeCobro) {
+            facturasPendientesCobro += 1;
+          }
+          if (resumenEconomico.esParcialmenteCobrada) {
+            facturasParcialmenteCobradas += 1;
+          }
+          if (factura.estado != EstadoFactura.anulada &&
+              resumenEconomico.estado == EstadoEconomicoFactura.cobrada) {
+            facturasCobradas += 1;
           }
         }
 
@@ -224,19 +209,21 @@ class DashboardRepository {
         final totalCobradoEsteMes = cobros!
             .where(
               (cobro) =>
-                  cobro.fecha.year == now.year && cobro.fecha.month == now.month,
+                  cobro.fecha.year == now.year &&
+                  cobro.fecha.month == now.month,
             )
             .fold<double>(0, (sum, cobro) => sum + cobro.importe);
 
         final coberturaCobroPorcentaje = totalFacturado == 0
-          ? 0.0
-          : (totalCobrado / totalFacturado) * 100;
+            ? 0.0
+            : (totalCobrado / totalFacturado) * 100;
         final conversionPresupuestosFacturasPorcentaje = numeroPresupuestos == 0
-          ? 0.0
-          : (presupuestosFacturados / numeroPresupuestos) * 100;
+            ? 0.0
+            : (presupuestosFacturados / numeroPresupuestos) * 100;
 
-        final pendienteTotal =
-            (totalFacturado - totalCobrado).clamp(0, double.infinity).toDouble();
+        final pendienteTotal = (totalFacturado - totalCobrado)
+            .clamp(0, double.infinity)
+            .toDouble();
 
         controller.add(
           DashboardResumen(
@@ -261,50 +248,35 @@ class DashboardRepository {
             conversionPresupuestosFacturasPorcentaje:
                 conversionPresupuestosFacturasPorcentaje,
             presupuestosBacklogComercialConteo:
-              presupuestosBacklogComercialConteo,
+                presupuestosBacklogComercialConteo,
             presupuestosBacklogComercialImporte:
-              presupuestosBacklogComercialImporte,
+                presupuestosBacklogComercialImporte,
             expedientesSinActividadConteo: expedientesSinActividadConteo,
           ),
         );
       }
 
       final subs = <StreamSubscription<dynamic>>[
-        expedienteRepository.observarExpedientes().listen(
-          (data) {
-            expedientes = data;
-            emitirSiCompleto();
-          },
-          onError: controller.addError,
-        ),
-        presupuestoRepository.observarPresupuestos().listen(
-          (data) {
-            presupuestos = data;
-            emitirSiCompleto();
-          },
-          onError: controller.addError,
-        ),
-        facturaRepository.observarFacturas().listen(
-          (data) {
-            facturas = data;
-            emitirSiCompleto();
-          },
-          onError: controller.addError,
-        ),
-        cobroRepository.observarCobros().listen(
-          (data) {
-            cobros = data;
-            emitirSiCompleto();
-          },
-          onError: controller.addError,
-        ),
-        timelineRepository.observarTodosLosEventosGlobales().listen(
-          (data) {
-            timelineEventos = data;
-            emitirSiCompleto();
-          },
-          onError: controller.addError,
-        ),
+        expedienteRepository.observarExpedientes().listen((data) {
+          expedientes = data;
+          emitirSiCompleto();
+        }, onError: controller.addError),
+        presupuestoRepository.observarPresupuestos().listen((data) {
+          presupuestos = data;
+          emitirSiCompleto();
+        }, onError: controller.addError),
+        facturaRepository.observarFacturas().listen((data) {
+          facturas = data;
+          emitirSiCompleto();
+        }, onError: controller.addError),
+        cobroRepository.observarCobros().listen((data) {
+          cobros = data;
+          emitirSiCompleto();
+        }, onError: controller.addError),
+        timelineRepository.observarTodosLosEventosGlobales().listen((data) {
+          timelineEventos = data;
+          emitirSiCompleto();
+        }, onError: controller.addError),
       ];
 
       controller.onCancel = () async {
