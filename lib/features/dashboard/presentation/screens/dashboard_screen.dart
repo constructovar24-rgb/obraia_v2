@@ -19,6 +19,7 @@ import '../../../expedientes/domain/expediente.dart' as expediente_domain;
 import '../../../expedientes/presentation/screens/nuevo_expediente_screen.dart';
 import '../../../facturas/data/factura_repository.dart';
 import '../../../facturas/domain/factura.dart' as factura_domain;
+import '../../../facturas/presentation/screens/facturas_screen.dart';
 import '../../../facturas/presentation/screens/nueva_factura_screen.dart';
 import '../../../presupuestos/presentation/screens/nuevo_presupuesto_screen.dart';
 import '../../data/dashboard_repository.dart';
@@ -77,6 +78,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       context,
       MaterialPageRoute(
         builder: (_) => const NuevaFacturaScreen(),
+      ),
+    );
+  }
+
+  Future<void> _abrirFacturas(FacturasInitialFilter initialFilter) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => FacturasScreen(initialFilter: initialFilter),
       ),
     );
   }
@@ -146,7 +156,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           statusType: StatusType.error,
           icon: Icons.warning_amber_outlined,
           actionLabel: 'Ver facturas',
-          onAction: null,
+          onAction: () => _abrirFacturas(
+            const FacturasInitialFilter.vencidas(),
+          ),
         ),
       );
     }
@@ -176,7 +188,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           statusType: StatusType.warning,
           icon: Icons.event_available_outlined,
           actionLabel: 'Ver facturas',
-          onAction: null,
+          onAction: () => _abrirFacturas(
+            const FacturasInitialFilter.vencenProximos7Dias(),
+          ),
         ),
       );
     }
@@ -191,7 +205,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           statusType: StatusType.info,
           icon: Icons.timeline_outlined,
           actionLabel: 'Ver facturas',
-          onAction: null,
+          onAction: () => _abrirFacturas(
+            const FacturasInitialFilter.parcialmenteCobradas(),
+          ),
         ),
       );
     }
