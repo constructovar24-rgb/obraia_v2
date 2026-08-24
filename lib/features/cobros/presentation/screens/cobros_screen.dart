@@ -22,10 +22,16 @@ class CobrosScreen extends ConsumerStatefulWidget {
     super.key,
     required this.facturaId,
     required this.facturaCodigo,
-  });
+  }) : mes = null;
 
-  final String facturaId;
-  final String facturaCodigo;
+  CobrosScreen.delMesActual({super.key})
+    : facturaId = null,
+      facturaCodigo = null,
+      mes = DateTime.now();
+
+  final String? facturaId;
+  final String? facturaCodigo;
+  final DateTime? mes;
 
   @override
   ConsumerState<CobrosScreen> createState() => _CobrosScreenState();
@@ -39,21 +45,27 @@ class _CobrosScreenState extends ConsumerState<CobrosScreen> {
   void initState() {
     super.initState();
     _repository = ref.read(cobroRepositoryProvider);
-    _stream = _repository.observarPorFactura(widget.facturaId);
+    final facturaId = widget.facturaId;
+    _stream = facturaId == null
+        ? _repository.observarCobrosEnMesConFactura(widget.mes!)
+        : _repository.observarPorFactura(facturaId);
   }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = AppTypography.textTheme(colorScheme);
+    final esPorFactura = widget.facturaId != null;
 
     void abrirNuevoCobro() {
+      final facturaId = widget.facturaId;
+      if (facturaId == null) {
+        return;
+      }
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => NuevoCobroScreen(
-            facturaId: widget.facturaId,
-          ),
+          builder: (_) => NuevoCobroScreen(facturaId: facturaId),
         ),
       );
     }
@@ -62,27 +74,35 @@ class _CobrosScreenState extends ConsumerState<CobrosScreen> {
       onBack: () {
         Navigator.maybePop(context);
       },
-      onNew: abrirNuevoCobro,
+      onNew: esPorFactura ? abrirNuevoCobro : null,
       child: Scaffold(
-        appBar: AppPageHeader(title: 'Cobros de ${widget.facturaCodigo}'),
+        appBar: AppPageHeader(
+          title: esPorFactura
+              ? 'Cobros de ${widget.facturaCodigo}'
+              : 'Cobros de este mes',
+        ),
         body: StreamBuilder<List<cobro_domain.Cobro>>(
           stream: _stream,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return AppErrorState(
-                message: 'ERROR:\n\n${snapshot.error}',
-              );
+              return AppErrorState(message: 'ERROR:\n\n${snapshot.error}');
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const AppLoading(
-                message: 'Cargando cobros...',
-              );
+              return const AppLoading(message: 'Cargando cobros...');
             }
 
             final cobros = snapshot.data ?? const [];
 
             if (cobros.isEmpty) {
+              if (!esPorFactura) {
+                return const AppEmptyState(
+                  icon: Icons.payments_outlined,
+                  title: 'No hay cobros este mes',
+                  subtitle:
+                      'No se han registrado movimientos en el mes actual.',
+                );
+              }
               return AppEmptyState(
                 icon: Icons.payments_outlined,
                 title: 'Todavía no hay cobros',
@@ -121,7 +141,9 @@ class _CobrosScreenState extends ConsumerState<CobrosScreen> {
                               style: textTheme.titleMedium,
                             ),
                             subtitle: Padding(
-                              padding: const EdgeInsets.only(top: AppSpacing.xs),
+                              padding: const EdgeInsets.only(
+                                top: AppSpacing.xs,
+                              ),
                               child: Text(
                                 'Fecha: ${DateFormatter.formatDdMmYyyy(cobro.fecha)}\nMetodo: ${cobro.metodoPago}\nReferencia: $referencia',
                                 style: textTheme.bodyMedium,
@@ -132,9 +154,8 @@ class _CobrosScreenState extends ConsumerState<CobrosScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => EditarCobroScreen(
-                                    cobro: cobro,
-                                  ),
+                                  builder: (_) =>
+                                      EditarCobroScreen(cobro: cobro),
                                 ),
                               );
                             },
@@ -143,13 +164,14 @@ class _CobrosScreenState extends ConsumerState<CobrosScreen> {
                       },
                     ),
                   ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: AppPrimaryButton(
-                      onPressed: abrirNuevoCobro,
-                      label: 'Nuevo cobro',
+                  if (esPorFactura)
+                    SizedBox(
+                      width: double.infinity,
+                      child: AppPrimaryButton(
+                        onPressed: abrirNuevoCobro,
+                        label: 'Nuevo cobro',
+                      ),
                     ),
-                  ),
                 ],
               ),
             );

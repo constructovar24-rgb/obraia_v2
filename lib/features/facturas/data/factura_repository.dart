@@ -39,6 +39,25 @@ class FacturaRepository {
     return database.facturasDao.observarFacturas();
   }
 
+  Stream<List<factura_domain.Factura>> observarFacturadoEnMes(DateTime mes) {
+    return observarFacturas().map(
+      (facturas) => facturas.where((factura) {
+        final estadoFacturable =
+            factura.estado == EstadoFactura.emitida ||
+            factura.estado == EstadoFactura.cobrada ||
+            factura.estado == EstadoFactura.vencida;
+        return estadoFacturable &&
+            factura.fecha.year == mes.year &&
+            factura.fecha.month == mes.month;
+      }).toList(),
+    );
+  }
+
+  Stream<List<FacturaConEstadoEconomico>>
+  observarFacturadoEnMesConEstadoEconomico(DateTime mes) {
+    return _observarConEstadoEconomico(observarFacturadoEnMes(mes));
+  }
+
   Stream<List<FacturaConEstadoEconomico>> observarFacturasConEstadoEconomico() {
     return _observarConEstadoEconomico(observarFacturas());
   }

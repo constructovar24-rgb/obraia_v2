@@ -45,7 +45,9 @@ class DashboardRepository {
       List<presupuesto_domain.Presupuesto>? presupuestosPendientesFacturar;
       List<presupuesto_domain.Presupuesto>? presupuestosBacklogComercial;
       List<factura_domain.Factura>? facturas;
+      List<factura_domain.Factura>? facturadoEsteMes;
       List<cobro_domain.Cobro>? cobros;
+      List<cobro_domain.Cobro>? cobradoEsteMes;
 
       void emitirSiCompleto() {
         if (expedientes == null ||
@@ -54,7 +56,9 @@ class DashboardRepository {
             presupuestosPendientesFacturar == null ||
             presupuestosBacklogComercial == null ||
             facturas == null ||
-            cobros == null) {
+            facturadoEsteMes == null ||
+            cobros == null ||
+            cobradoEsteMes == null) {
           return;
         }
 
@@ -88,8 +92,7 @@ class DashboardRepository {
           0,
           (sum, factura) => sum + factura.total,
         );
-        final expedientesSinActividadConteo =
-            expedientesSinActividad!.length;
+        final expedientesSinActividadConteo = expedientesSinActividad!.length;
 
         final presupuestosBacklogComercialConteo =
             presupuestosBacklogComercial!.length;
@@ -99,13 +102,10 @@ class DashboardRepository {
               (sum, presupuesto) => sum + presupuesto.importeTotal,
             );
 
-        final totalFacturadoEsteMes = facturas!
-            .where(
-              (factura) =>
-                  factura.fecha.year == now.year &&
-                  factura.fecha.month == now.month,
-            )
-            .fold<double>(0, (sum, factura) => sum + factura.total);
+        final totalFacturadoEsteMes = facturadoEsteMes!.fold<double>(
+          0,
+          (sum, factura) => sum + factura.total,
+        );
 
         final cobradoPorFactura = <String, double>{};
         for (final cobro in cobros!) {
@@ -159,13 +159,10 @@ class DashboardRepository {
           0,
           (sum, cobro) => sum + cobro.importe,
         );
-        final totalCobradoEsteMes = cobros!
-            .where(
-              (cobro) =>
-                  cobro.fecha.year == now.year &&
-                  cobro.fecha.month == now.month,
-            )
-            .fold<double>(0, (sum, cobro) => sum + cobro.importe);
+        final totalCobradoEsteMes = cobradoEsteMes!.fold<double>(
+          0,
+          (sum, cobro) => sum + cobro.importe,
+        );
 
         final coberturaCobroPorcentaje = totalFacturado == 0
             ? 0.0
@@ -178,7 +175,8 @@ class DashboardRepository {
           DashboardResumen(
             numeroExpedientes: numeroExpedientes,
             numeroPresupuestos: numeroPresupuestos,
-            presupuestosPendientesFacturar: presupuestosPendientesFacturarConteo,
+            presupuestosPendientesFacturar:
+                presupuestosPendientesFacturarConteo,
             presupuestosFacturados: presupuestosFacturados,
             totalPresupuestado: totalPresupuestado,
             numeroFacturas: numeroFacturas,
@@ -230,8 +228,18 @@ class DashboardRepository {
           facturas = data;
           emitirSiCompleto();
         }, onError: controller.addError),
+        facturaRepository.observarFacturadoEnMes(DateTime.now()).listen((data) {
+          facturadoEsteMes = data;
+          emitirSiCompleto();
+        }, onError: controller.addError),
         cobroRepository.observarCobros().listen((data) {
           cobros = data;
+          emitirSiCompleto();
+        }, onError: controller.addError),
+        cobroRepository.observarCobrosEnMesConFactura(DateTime.now()).listen((
+          data,
+        ) {
+          cobradoEsteMes = data;
           emitirSiCompleto();
         }, onError: controller.addError),
       ];

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:obraia_v2/database/app_database.dart';
@@ -29,7 +31,7 @@ class CobroRepository {
   final TimelineRepository _timelineRepository;
 
   CobroRepository(this.database)
-      : _timelineRepository = TimelineRepository(database.timelineEventsDao);
+    : _timelineRepository = TimelineRepository(database.timelineEventsDao);
 
   Stream<List<cobro_domain.Cobro>> observarPorFactura(String facturaId) {
     return database.cobrosDao.observarPorFactura(facturaId);
@@ -39,12 +41,51 @@ class CobroRepository {
     return database.cobrosDao.observarCobros();
   }
 
+  Stream<List<cobro_domain.Cobro>> observarCobrosEnMesConFactura(DateTime mes) {
+    return Stream<List<cobro_domain.Cobro>>.multi((controller) {
+      List<cobro_domain.Cobro>? cobros;
+      Set<String>? facturasExistentes;
+
+      void emitirSiCompleto() {
+        final cobrosActuales = cobros;
+        final idsFactura = facturasExistentes;
+        if (cobrosActuales == null || idsFactura == null) {
+          return;
+        }
+
+        controller.add(
+          cobrosActuales
+              .where(
+                (cobro) =>
+                    cobro.fecha.year == mes.year &&
+                    cobro.fecha.month == mes.month &&
+                    idsFactura.contains(cobro.facturaId),
+              )
+              .toList(),
+        );
+      }
+
+      final cobrosSubscription = observarCobros().listen((data) {
+        cobros = data;
+        emitirSiCompleto();
+      }, onError: controller.addError);
+      final facturasSubscription = database.facturasDao
+          .observarFacturas()
+          .listen((data) {
+            facturasExistentes = data.map((factura) => factura.id).toSet();
+            emitirSiCompleto();
+          }, onError: controller.addError);
+
+      controller.onCancel = () async {
+        await cobrosSubscription.cancel();
+        await facturasSubscription.cancel();
+      };
+    });
+  }
+
   Stream<double> observarTotalCobradoPorFactura(String facturaId) {
     return observarPorFactura(facturaId).map((cobros) {
-      return cobros.fold<double>(
-        0,
-        (sum, cobro) => sum + cobro.importe,
-      );
+      return cobros.fold<double>(0, (sum, cobro) => sum + cobro.importe);
     });
   }
 
@@ -53,10 +94,9 @@ class CobroRepository {
     required double totalFactura,
   }) {
     return observarTotalCobradoPorFactura(facturaId).map((totalCobrado) {
-      final pendiente = (totalFactura - totalCobrado).clamp(
-        0,
-        double.infinity,
-      ).toDouble();
+      final pendiente = (totalFactura - totalCobrado)
+          .clamp(0, double.infinity)
+          .toDouble();
 
       return FacturaEstadoEconomico(
         totalFactura: totalFactura,
@@ -95,10 +135,9 @@ class CobroRepository {
       (sum, cobro) => sum + cobro.importe,
     );
 
-    final pendienteActual = (factura.total - totalCobrado).clamp(
-      0,
-      double.infinity,
-    ).toDouble();
+    final pendienteActual = (factura.total - totalCobrado)
+        .clamp(0, double.infinity)
+        .toDouble();
 
     const epsilon = 0.000001;
     if (importe - pendienteActual > epsilon) {
@@ -168,7 +207,9 @@ class CobroRepository {
       return null;
     }
 
-    final presupuestos = await database.presupuestosDao.observarPresupuestos().first;
+    final presupuestos = await database.presupuestosDao
+        .observarPresupuestos()
+        .first;
 
     for (final presupuesto in presupuestos) {
       if (presupuesto.id == presupuestoOrigenId) {

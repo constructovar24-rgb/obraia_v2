@@ -13,6 +13,7 @@ import '../../../../core/widgets/app_primary_button.dart';
 import '../../../../core/widgets/app_section.dart';
 import '../../../../core/widgets/money_text.dart';
 import '../../../../core/widgets/status_chip.dart';
+import '../../../cobros/presentation/screens/cobros_screen.dart';
 import '../../../cobros/presentation/screens/nuevo_cobro_screen.dart';
 import '../../../expedientes/data/expediente_repository.dart';
 import '../../../expedientes/domain/expediente.dart' as expediente_domain;
@@ -65,15 +66,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Future<void> _abrirNuevoExpediente() async {
     await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => const NuevoExpedienteScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const NuevoExpedienteScreen()),
     );
   }
 
-  Future<void> _abrirExpedientes(
-    ExpedientesInitialFilter initialFilter,
-  ) async {
+  Future<void> _abrirExpedientes(ExpedientesInitialFilter initialFilter) async {
     await Navigator.push(
       context,
       MaterialPageRoute(
@@ -85,9 +82,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Future<void> _abrirNuevaFactura() async {
     await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => const NuevaFacturaScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const NuevaFacturaScreen()),
     );
   }
 
@@ -97,6 +92,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       MaterialPageRoute(
         builder: (_) => FacturasScreen(initialFilter: initialFilter),
       ),
+    );
+  }
+
+  Future<void> _abrirCobrosDelMesActual() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => CobrosScreen.delMesActual()),
     );
   }
 
@@ -130,9 +132,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => NuevoPresupuestoScreen(
-          expedienteId: expediente.id,
-        ),
+        builder: (_) => NuevoPresupuestoScreen(expedienteId: expediente.id),
       ),
     );
   }
@@ -143,9 +143,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       isScrollControlled: true,
       builder: (context) {
         final repository = ref.read(facturaRepositoryProvider);
-        return _FacturaSelectionSheet(
-          stream: repository.observarFacturas(),
-        );
+        return _FacturaSelectionSheet(stream: repository.observarFacturas());
       },
     );
 
@@ -156,9 +154,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => NuevoCobroScreen(
-          facturaId: factura.id,
-        ),
+        builder: (_) => NuevoCobroScreen(facturaId: factura.id),
       ),
     );
   }
@@ -176,9 +172,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           statusType: StatusType.error,
           icon: Icons.warning_amber_outlined,
           actionLabel: 'Ver facturas',
-          onAction: () => _abrirFacturas(
-            const FacturasInitialFilter.vencidas(),
-          ),
+          onAction: () =>
+              _abrirFacturas(const FacturasInitialFilter.vencidas()),
         ),
       );
     }
@@ -187,15 +182,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       items.add(
         _AttentionItem.count(
           title: 'Vencen de hoy a 7 días',
-          description: 'Facturas pendientes con vencimiento en la próxima semana.',
+          description:
+              'Facturas pendientes con vencimiento en la próxima semana.',
           count: resumen.facturasVencenProximos7Dias,
           statusLabel: 'Seguimiento',
           statusType: StatusType.warning,
           icon: Icons.event_available_outlined,
           actionLabel: 'Ver facturas',
-          onAction: () => _abrirFacturas(
-            const FacturasInitialFilter.vencenProximos7Dias(),
-          ),
+          onAction: () =>
+              _abrirFacturas(const FacturasInitialFilter.vencenProximos7Dias()),
         ),
       );
     }
@@ -262,9 +257,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           statusType: StatusType.warning,
           icon: Icons.hourglass_disabled_outlined,
           actionLabel: 'Ver expedientes',
-          onAction: () => _abrirExpedientes(
-            const ExpedientesInitialFilter.sinActividad(),
-          ),
+          onAction: () =>
+              _abrirExpedientes(const ExpedientesInitialFilter.sinActividad()),
         ),
       );
     }
@@ -286,23 +280,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       onBack: () => Navigator.maybePop(context),
       onNew: _abrirNuevoExpediente,
       child: Scaffold(
-        appBar: const AppPageHeader(
-          title: 'Dashboard',
-          showBackButton: true,
-        ),
+        appBar: const AppPageHeader(title: 'Dashboard', showBackButton: true),
         body: StreamBuilder<DashboardResumen>(
           stream: _stream,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return AppErrorState(
-                message: 'ERROR:\n\n${snapshot.error}',
-              );
+              return AppErrorState(message: 'ERROR:\n\n${snapshot.error}');
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const AppLoading(
-                message: 'Cargando dashboard...',
-              );
+              return const AppLoading(message: 'Cargando dashboard...');
             }
 
             final resumen = snapshot.data;
@@ -429,10 +416,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                 )
                               : Column(
                                   children: [
-                                    for (var index = 0;
-                                        index < attentionItems.length;
-                                        index++) ...[
-                                      _AttentionCard(item: attentionItems[index]),
+                                    for (
+                                      var index = 0;
+                                      index < attentionItems.length;
+                                      index++
+                                    ) ...[
+                                      _AttentionCard(
+                                        item: attentionItems[index],
+                                      ),
                                       if (index < attentionItems.length - 1)
                                         const SizedBox(height: AppSpacing.sm),
                                     ],
@@ -446,11 +437,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               'Accede a las tareas de alta más habituales sin salir del dashboard.',
                           child: LayoutBuilder(
                             builder: (context, sectionConstraints) {
-                              final columns = sectionConstraints.maxWidth >= 1000
+                              final columns =
+                                  sectionConstraints.maxWidth >= 1000
                                   ? 6
                                   : sectionConstraints.maxWidth >= 640
-                                      ? 2
-                                      : 1;
+                                  ? 2
+                                  : 1;
                               final buttonWidth = columns == 1
                                   ? sectionConstraints.maxWidth
                                   : _cardWidth(
@@ -506,11 +498,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               'Indicadores económicos clave para entender la tracción del mes y la caja pendiente.',
                           child: LayoutBuilder(
                             builder: (context, sectionConstraints) {
-                              final columns = sectionConstraints.maxWidth >= 1000
+                              final columns =
+                                  sectionConstraints.maxWidth >= 1000
                                   ? 4
                                   : sectionConstraints.maxWidth >= 640
-                                      ? 2
-                                      : 1;
+                                  ? 2
+                                  : 1;
                               final itemWidth = columns == 1
                                   ? sectionConstraints.maxWidth
                                   : _cardWidth(
@@ -526,7 +519,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                     width: itemWidth,
                                     child: _KpiCard(
                                       title: 'Cobrado este mes',
-                                      subtitle: 'Entrada de caja del mes actual',
+                                      subtitle:
+                                          'Entrada de caja del mes actual',
                                       value: MoneyText(
                                         resumen.totalCobradoEsteMes,
                                         style: textTheme.headlineSmall,
@@ -534,13 +528,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                       statusLabel: 'Mes actual',
                                       statusType: StatusType.info,
                                       icon: Icons.payments_outlined,
+                                      actionLabel: 'Ver cobros',
+                                      onAction: _abrirCobrosDelMesActual,
                                     ),
                                   ),
                                   SizedBox(
                                     width: itemWidth,
                                     child: _KpiCard(
                                       title: 'Facturado este mes',
-                                      subtitle: 'Volumen emitido en el mes actual',
+                                      subtitle:
+                                          'Volumen emitido en el mes actual',
                                       value: MoneyText(
                                         resumen.totalFacturadoEsteMes,
                                         style: textTheme.headlineSmall,
@@ -548,6 +545,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                       statusLabel: 'Mes actual',
                                       statusType: StatusType.info,
                                       icon: Icons.receipt_long_outlined,
+                                      actionLabel: 'Ver facturas',
+                                      onAction: () => _abrirFacturas(
+                                        const FacturasInitialFilter.facturadoEsteMes(),
+                                      ),
                                     ),
                                   ),
                                   SizedBox(
@@ -559,13 +560,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                         resumen.saldoPendienteTotal,
                                         style: textTheme.headlineSmall,
                                       ),
-                                      statusLabel: resumen.saldoPendienteTotal > 0
+                                      statusLabel:
+                                          resumen.saldoPendienteTotal > 0
                                           ? 'Seguimiento'
                                           : 'Sin pendiente',
-                                      statusType: resumen.saldoPendienteTotal > 0
+                                      statusType:
+                                          resumen.saldoPendienteTotal > 0
                                           ? StatusType.warning
                                           : StatusType.success,
-                                      icon: Icons.account_balance_wallet_outlined,
+                                      icon:
+                                          Icons.account_balance_wallet_outlined,
                                       highlighted: true,
                                       actionLabel: 'Ver facturas',
                                       onAction: () => _abrirFacturas(
@@ -607,7 +611,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                       description:
                                           'Base operativa activa del negocio.',
                                       icon: Icons.folder_copy_outlined,
-                                      statusLabel: resumen.numeroExpedientes == 0
+                                      statusLabel:
+                                          resumen.numeroExpedientes == 0
                                           ? 'Vacío'
                                           : 'Activo',
                                       statusType: resumen.numeroExpedientes == 0
@@ -624,13 +629,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                           '${resumen.presupuestosPendientesFacturar} pendientes de facturar.',
                                       icon: Icons.request_quote_outlined,
                                       statusLabel:
-                                          resumen.presupuestosPendientesFacturar > 0
-                                              ? 'Seguimiento'
-                                              : 'Al día',
+                                          resumen.presupuestosPendientesFacturar >
+                                              0
+                                          ? 'Seguimiento'
+                                          : 'Al día',
                                       statusType:
-                                          resumen.presupuestosPendientesFacturar > 0
-                                              ? StatusType.warning
-                                              : StatusType.success,
+                                          resumen.presupuestosPendientesFacturar >
+                                              0
+                                          ? StatusType.warning
+                                          : StatusType.success,
                                     ),
                                   ),
                                   SizedBox(
@@ -641,10 +648,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                       description:
                                           '${resumen.facturasPendientesCobro} pendientes y ${resumen.facturasParcialmenteCobradas} parciales.',
                                       icon: Icons.receipt_long_outlined,
-                                      statusLabel: resumen.facturasPendientesCobro > 0
+                                      statusLabel:
+                                          resumen.facturasPendientesCobro > 0
                                           ? 'Cobro pendiente'
                                           : 'Controlado',
-                                      statusType: resumen.facturasPendientesCobro > 0
+                                      statusType:
+                                          resumen.facturasPendientesCobro > 0
                                           ? StatusType.warning
                                           : StatusType.success,
                                     ),
@@ -710,28 +719,16 @@ class _KpiCard extends StatelessWidget {
                   color: colorScheme.primaryContainer,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  icon,
-                  color: colorScheme.onPrimaryContainer,
-                ),
+                child: Icon(icon, color: colorScheme.onPrimaryContainer),
               ),
               const Spacer(),
-              StatusChip(
-                label: statusLabel,
-                type: statusType,
-              ),
+              StatusChip(label: statusLabel, type: statusType),
             ],
           ),
           const SizedBox(height: AppSpacing.md),
-          Text(
-            title,
-            style: textTheme.titleMedium,
-          ),
+          Text(title, style: textTheme.titleMedium),
           const SizedBox(height: AppSpacing.xs),
-          Text(
-            subtitle,
-            style: textTheme.bodyMedium,
-          ),
+          Text(subtitle, style: textTheme.bodyMedium),
           const SizedBox(height: AppSpacing.md),
           value,
           if (actionLabel != null && onAction != null) ...[
@@ -786,33 +783,18 @@ class _EntityStateCard extends StatelessWidget {
                   color: colorScheme.primaryContainer,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  icon,
-                  color: colorScheme.onPrimaryContainer,
-                ),
+                child: Icon(icon, color: colorScheme.onPrimaryContainer),
               ),
               const Spacer(),
-              StatusChip(
-                label: statusLabel,
-                type: statusType,
-              ),
+              StatusChip(label: statusLabel, type: statusType),
             ],
           ),
           const SizedBox(height: AppSpacing.md),
-          Text(
-            title,
-            style: textTheme.titleMedium,
-          ),
+          Text(title, style: textTheme.titleMedium),
           const SizedBox(height: AppSpacing.xs),
-          Text(
-            '$value',
-            style: textTheme.headlineSmall,
-          ),
+          Text('$value', style: textTheme.headlineSmall),
           const SizedBox(height: AppSpacing.xs),
-          Text(
-            description,
-            style: textTheme.bodyMedium,
-          ),
+          Text(description, style: textTheme.bodyMedium),
         ],
       ),
     );
@@ -820,9 +802,7 @@ class _EntityStateCard extends StatelessWidget {
 }
 
 class _AttentionCard extends StatelessWidget {
-  const _AttentionCard({
-    required this.item,
-  });
+  const _AttentionCard({required this.item});
 
   final _AttentionItem item;
 
@@ -842,10 +822,7 @@ class _AttentionCard extends StatelessWidget {
               color: colorScheme.primaryContainer,
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              item.icon,
-              color: colorScheme.onPrimaryContainer,
-            ),
+            child: Icon(item.icon, color: colorScheme.onPrimaryContainer),
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(
@@ -856,23 +833,14 @@ class _AttentionCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: Text(
-                        item.title,
-                        style: textTheme.titleMedium,
-                      ),
+                      child: Text(item.title, style: textTheme.titleMedium),
                     ),
                     const SizedBox(width: AppSpacing.sm),
-                    StatusChip(
-                      label: item.statusLabel,
-                      type: item.statusType,
-                    ),
+                    StatusChip(label: item.statusLabel, type: item.statusType),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.xs),
-                Text(
-                  item.description,
-                  style: textTheme.bodyMedium,
-                ),
+                Text(item.description, style: textTheme.bodyMedium),
                 const SizedBox(height: AppSpacing.sm),
                 item.trailing,
                 if (item.actionLabel != null) ...[
@@ -957,10 +925,7 @@ class _AttentionItem {
       description: description,
       trailing: Text(
         '$count',
-        style: const TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w700,
-        ),
+        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
       ),
       statusLabel: statusLabel,
       statusType: statusType,
@@ -981,9 +946,7 @@ class _AttentionItem {
 }
 
 class _ExpedienteSelectionSheet extends StatelessWidget {
-  const _ExpedienteSelectionSheet({
-    required this.stream,
-  });
+  const _ExpedienteSelectionSheet({required this.stream});
 
   final Stream<List<expediente_domain.Expediente>> stream;
 
@@ -999,10 +962,7 @@ class _ExpedienteSelectionSheet extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Selecciona un expediente',
-                style: textTheme.headlineMedium,
-              ),
+              Text('Selecciona un expediente', style: textTheme.headlineMedium),
               const SizedBox(height: AppSpacing.xs),
               Text(
                 'El nuevo presupuesto se creará dentro del expediente elegido.',
@@ -1044,14 +1004,13 @@ class _ExpedienteSelectionSheet extends StatelessWidget {
                         final expediente = expedientes[index];
                         final cliente =
                             expediente.clienteNombre?.trim().isNotEmpty == true
-                                ? expediente.clienteNombre!.trim()
-                                : 'Sin cliente';
+                            ? expediente.clienteNombre!.trim()
+                            : 'Sin cliente';
 
                         return AppCard(
                           onTap: () => Navigator.of(context).pop(expediente),
                           child: ListTile(
-                            contentPadding:
-                                const EdgeInsets.all(AppSpacing.sm),
+                            contentPadding: const EdgeInsets.all(AppSpacing.sm),
                             leading: const Icon(Icons.folder_copy_outlined),
                             title: Text(expediente.codigo),
                             subtitle: Text(
@@ -1075,9 +1034,7 @@ class _ExpedienteSelectionSheet extends StatelessWidget {
 }
 
 class _FacturaSelectionSheet extends StatelessWidget {
-  const _FacturaSelectionSheet({
-    required this.stream,
-  });
+  const _FacturaSelectionSheet({required this.stream});
 
   final Stream<List<factura_domain.Factura>> stream;
 
@@ -1100,10 +1057,7 @@ class _FacturaSelectionSheet extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Selecciona una factura',
-                style: textTheme.headlineMedium,
-              ),
+              Text('Selecciona una factura', style: textTheme.headlineMedium),
               const SizedBox(height: AppSpacing.xs),
               Text(
                 'El cobro se registrará sobre la factura elegida.',
@@ -1121,9 +1075,7 @@ class _FacturaSelectionSheet extends StatelessWidget {
                     }
 
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const AppLoading(
-                        message: 'Cargando facturas...',
-                      );
+                      return const AppLoading(message: 'Cargando facturas...');
                     }
 
                     final facturas = snapshot.data ?? const [];
@@ -1150,10 +1102,8 @@ class _FacturaSelectionSheet extends StatelessWidget {
                         return AppCard(
                           onTap: () => Navigator.of(context).pop(factura),
                           child: ListTile(
-                            contentPadding:
-                                const EdgeInsets.all(AppSpacing.sm),
-                            leading:
-                                const Icon(Icons.receipt_long_outlined),
+                            contentPadding: const EdgeInsets.all(AppSpacing.sm),
+                            leading: const Icon(Icons.receipt_long_outlined),
                             title: Text(factura.codigo),
                             subtitle: Text(
                               'Cliente: $cliente\nFecha: ${_formatearFecha(factura.fecha)}',

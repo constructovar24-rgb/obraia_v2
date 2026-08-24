@@ -32,6 +32,7 @@ enum FacturasInitialFilterType {
   saldoPendiente,
   pendientesCobro,
   parcialmenteCobradas,
+  facturadoEsteMes,
 }
 
 class FacturasInitialFilter {
@@ -74,6 +75,9 @@ class FacturasInitialFilter {
         type: FacturasInitialFilterType.parcialmenteCobradas,
         label: label,
       );
+
+  const FacturasInitialFilter.facturadoEsteMes({String? label})
+    : this._(type: FacturasInitialFilterType.facturadoEsteMes, label: label);
   const FacturasInitialFilter.cliente({
     required String clienteId,
     String? label,
@@ -134,6 +138,11 @@ class _FacturasScreenState extends ConsumerState<FacturasScreen> {
         _stream = expedienteId == null || expedienteId.isEmpty
             ? _repository.observarFacturasConEstadoEconomico()
             : _repository.observarPorExpedienteConEstadoEconomico(expedienteId);
+        break;
+      case FacturasInitialFilterType.facturadoEsteMes:
+        _stream = _repository.observarFacturadoEnMesConEstadoEconomico(
+          DateTime.now(),
+        );
         break;
       case FacturasInitialFilterType.todas:
       case FacturasInitialFilterType.borrador:
@@ -198,6 +207,7 @@ class _FacturasScreenState extends ConsumerState<FacturasScreen> {
       case FacturasInitialFilterType.todas:
       case FacturasInitialFilterType.cliente:
       case FacturasInitialFilterType.expediente:
+      case FacturasInitialFilterType.facturadoEsteMes:
         return facturas;
     }
   }
@@ -238,6 +248,8 @@ class _FacturasScreenState extends ConsumerState<FacturasScreen> {
         return 'Pendientes de cobro';
       case FacturasInitialFilterType.parcialmenteCobradas:
         return 'Parcialmente cobradas';
+      case FacturasInitialFilterType.facturadoEsteMes:
+        return 'Facturado este mes';
     }
   }
 
