@@ -173,6 +173,7 @@ class DashboardRepository {
         var facturasVencidasConteo = 0;
         var facturasVencidasImporte = 0.0;
         var facturasVencenProximos7Dias = 0;
+        var saldoPendienteTotal = 0.0;
 
         for (final factura in facturas!) {
           final resumenEconomico = calcularResumenEconomicoFactura(
@@ -189,6 +190,9 @@ class DashboardRepository {
           }
           if (resumenEconomico.venceEnProximos7Dias) {
             facturasVencenProximos7Dias += 1;
+          }
+          if (resumenEconomico.tieneSaldoPendiente) {
+            saldoPendienteTotal += resumenEconomico.pendiente;
           }
           if (resumenEconomico.esPendienteDeCobro) {
             facturasPendientesCobro += 1;
@@ -221,10 +225,6 @@ class DashboardRepository {
             ? 0.0
             : (presupuestosFacturados / numeroPresupuestos) * 100;
 
-        final pendienteTotal = (totalFacturado - totalCobrado)
-            .clamp(0, double.infinity)
-            .toDouble();
-
         controller.add(
           DashboardResumen(
             numeroExpedientes: numeroExpedientes,
@@ -240,7 +240,7 @@ class DashboardRepository {
             totalCobrado: totalCobrado,
             totalCobradoEsteMes: totalCobradoEsteMes,
             totalFacturadoEsteMes: totalFacturadoEsteMes,
-            pendienteTotal: pendienteTotal,
+            saldoPendienteTotal: saldoPendienteTotal,
             facturasVencidasConteo: facturasVencidasConteo,
             facturasVencidasImporte: facturasVencidasImporte,
             facturasVencenProximos7Dias: facturasVencenProximos7Dias,

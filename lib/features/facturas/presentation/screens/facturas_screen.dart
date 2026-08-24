@@ -29,6 +29,7 @@ enum FacturasInitialFilterType {
   expediente,
   vencidas,
   vencenProximos7Dias,
+  saldoPendiente,
   pendientesCobro,
   parcialmenteCobradas,
 }
@@ -61,6 +62,9 @@ class FacturasInitialFilter {
 
   const FacturasInitialFilter.vencenProximos7Dias({String? label})
     : this._(type: FacturasInitialFilterType.vencenProximos7Dias, label: label);
+
+  const FacturasInitialFilter.saldoPendiente({String? label})
+    : this._(type: FacturasInitialFilterType.saldoPendiente, label: label);
 
   const FacturasInitialFilter.pendientesCobro({String? label})
     : this._(type: FacturasInitialFilterType.pendientesCobro, label: label);
@@ -138,6 +142,7 @@ class _FacturasScreenState extends ConsumerState<FacturasScreen> {
       case FacturasInitialFilterType.anulada:
       case FacturasInitialFilterType.vencidas:
       case FacturasInitialFilterType.vencenProximos7Dias:
+      case FacturasInitialFilterType.saldoPendiente:
       case FacturasInitialFilterType.pendientesCobro:
       case FacturasInitialFilterType.parcialmenteCobradas:
         _stream = _repository.observarFacturasConEstadoEconomico();
@@ -177,6 +182,10 @@ class _FacturasScreenState extends ConsumerState<FacturasScreen> {
       case FacturasInitialFilterType.vencenProximos7Dias:
         return facturas
             .where((item) => item.estadoEconomico.venceEnProximos7Dias)
+            .toList();
+      case FacturasInitialFilterType.saldoPendiente:
+        return facturas
+            .where((item) => item.estadoEconomico.tieneSaldoPendiente)
             .toList();
       case FacturasInitialFilterType.pendientesCobro:
         return facturas
@@ -223,6 +232,8 @@ class _FacturasScreenState extends ConsumerState<FacturasScreen> {
         return 'Vencidas';
       case FacturasInitialFilterType.vencenProximos7Dias:
         return 'Vencen en próximos 7 días';
+      case FacturasInitialFilterType.saldoPendiente:
+        return 'Saldo pendiente';
       case FacturasInitialFilterType.pendientesCobro:
         return 'Pendientes de cobro';
       case FacturasInitialFilterType.parcialmenteCobradas:

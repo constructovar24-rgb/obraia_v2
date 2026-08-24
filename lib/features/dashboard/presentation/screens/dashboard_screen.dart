@@ -163,17 +163,19 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       );
     }
 
-    if (resumen.pendienteTotal > 0) {
+    if (resumen.saldoPendienteTotal > 0) {
       items.add(
         _AttentionItem.amount(
-          title: 'Pendiente de cobrar',
+          title: 'Saldo pendiente total',
           description: 'Importe abierto pendiente de entrada en caja.',
-          amount: resumen.pendienteTotal,
+          amount: resumen.saldoPendienteTotal,
           statusLabel: 'Prioridad',
           statusType: StatusType.warning,
           icon: Icons.payments_outlined,
-          actionLabel: 'Registrar cobro',
-          onAction: _abrirNuevoCobro,
+          actionLabel: 'Ver facturas',
+          onAction: () => _abrirFacturas(
+            const FacturasInitialFilter.saldoPendiente(),
+          ),
         ),
       );
     }
@@ -546,16 +548,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                   SizedBox(
                                     width: itemWidth,
                                     child: _KpiCard(
-                                      title: 'Pendiente de cobrar',
+                                      title: 'Saldo pendiente total',
                                       subtitle: 'Importe actualmente abierto',
                                       value: MoneyText(
-                                        resumen.pendienteTotal,
+                                        resumen.saldoPendienteTotal,
                                         style: textTheme.headlineSmall,
                                       ),
-                                      statusLabel: resumen.pendienteTotal > 0
+                                      statusLabel: resumen.saldoPendienteTotal > 0
                                           ? 'Seguimiento'
                                           : 'Sin pendiente',
-                                      statusType: resumen.pendienteTotal > 0
+                                      statusType: resumen.saldoPendienteTotal > 0
                                           ? StatusType.warning
                                           : StatusType.success,
                                       icon: Icons.account_balance_wallet_outlined,

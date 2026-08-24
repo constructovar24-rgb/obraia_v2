@@ -13,7 +13,7 @@ class DashboardResumen {
     required this.totalCobrado,
     required this.totalCobradoEsteMes,
     required this.totalFacturadoEsteMes,
-    required this.pendienteTotal,
+    required this.saldoPendienteTotal,
     required this.facturasVencidasConteo,
     required this.facturasVencidasImporte,
     required this.facturasVencenProximos7Dias,
@@ -37,7 +37,7 @@ class DashboardResumen {
   final double totalCobrado;
   final double totalCobradoEsteMes;
   final double totalFacturadoEsteMes;
-  final double pendienteTotal;
+  final double saldoPendienteTotal;
   final int facturasVencidasConteo;
   final double facturasVencidasImporte;
   final int facturasVencenProximos7Dias;

@@ -37,6 +37,7 @@ class FacturaEstadoEconomico {
     required this.totalCobrado,
     required this.pendiente,
     required this.estado,
+    this.tieneSaldoPendiente = false,
     this.esPendienteDeCobro = false,
     this.esParcialmenteCobrada = false,
     this.estaVencida = false,
@@ -47,6 +48,7 @@ class FacturaEstadoEconomico {
   final double totalCobrado;
   final double pendiente;
   final EstadoEconomicoFactura estado;
+  final bool tieneSaldoPendiente;
   final bool esPendienteDeCobro;
   final bool esParcialmenteCobrada;
   final bool estaVencida;
@@ -96,6 +98,7 @@ FacturaEstadoEconomico calcularResumenEconomicoFactura({
     totalCobrado: totalCobrado,
     pendiente: pendiente,
     estado: estadoEconomico,
+    tieneSaldoPendiente: !estaAnulada && tienePendiente,
     esPendienteDeCobro:
         !estaAnulada &&
         estadoEconomico == EstadoEconomicoFactura.pendiente &&
