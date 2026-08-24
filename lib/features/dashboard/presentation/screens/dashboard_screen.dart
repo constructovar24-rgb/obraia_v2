@@ -16,6 +16,7 @@ import '../../../../core/widgets/status_chip.dart';
 import '../../../cobros/presentation/screens/nuevo_cobro_screen.dart';
 import '../../../expedientes/data/expediente_repository.dart';
 import '../../../expedientes/domain/expediente.dart' as expediente_domain;
+import '../../../expedientes/presentation/screens/expedientes_screen.dart';
 import '../../../expedientes/presentation/screens/nuevo_expediente_screen.dart';
 import '../../../facturas/data/factura_repository.dart';
 import '../../../facturas/domain/factura.dart' as factura_domain;
@@ -70,6 +71,17 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       context,
       MaterialPageRoute(
         builder: (_) => const NuevoExpedienteScreen(),
+      ),
+    );
+  }
+
+  Future<void> _abrirExpedientes(
+    ExpedientesInitialFilter initialFilter,
+  ) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ExpedientesScreen(initialFilter: initialFilter),
       ),
     );
   }
@@ -270,7 +282,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           statusType: StatusType.warning,
           icon: Icons.hourglass_disabled_outlined,
           actionLabel: 'Ver expedientes',
-          onAction: null,
+          onAction: () => _abrirExpedientes(
+            const ExpedientesInitialFilter.sinActividad(),
+          ),
         ),
       );
     }

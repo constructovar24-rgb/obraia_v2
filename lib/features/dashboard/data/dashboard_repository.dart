@@ -2,15 +2,12 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../database/database_provider.dart';
 import '../../cobros/domain/cobro.dart' as cobro_domain;
 import '../../cobros/domain/factura_estado_economico.dart';
 import '../../expedientes/domain/expediente.dart' as expediente_domain;
 import '../../facturas/domain/factura.dart' as factura_domain;
 import '../../facturas/domain/estado_factura.dart';
 import '../../presupuestos/domain/presupuesto.dart' as presupuesto_domain;
-import '../../timeline/data/timeline_repository.dart';
-import '../../timeline/domain/timeline_event.dart';
 import '../../cobros/data/cobro_repository.dart';
 import '../../expedientes/data/expediente_repository.dart';
 import '../../facturas/data/factura_repository.dart';
@@ -19,52 +16,45 @@ import '../../presupuestos/presentation/providers/presupuesto_providers.dart';
 import '../domain/dashboard_resumen.dart';
 
 final dashboardRepositoryProvider = Provider<DashboardRepository>((ref) {
-  final database = ref.read(databaseProvider);
-
   return DashboardRepository(
     expedienteRepository: ref.read(expedienteRepositoryProvider),
     presupuestoRepository: ref.read(presupuestoRepositoryProvider),
     facturaRepository: ref.read(facturaRepositoryProvider),
     cobroRepository: ref.read(cobroRepositoryProvider),
-    timelineRepository: TimelineRepository(database.timelineEventsDao),
   );
 });
 
 class DashboardRepository {
-  static const int _expedientesSinActividadDias = 60;
-
   DashboardRepository({
     required this.expedienteRepository,
     required this.presupuestoRepository,
     required this.facturaRepository,
     required this.cobroRepository,
-    required this.timelineRepository,
   });
 
   final ExpedienteRepository expedienteRepository;
   final PresupuestoRepository presupuestoRepository;
   final FacturaRepository facturaRepository;
   final CobroRepository cobroRepository;
-  final TimelineRepository timelineRepository;
 
   Stream<DashboardResumen> observarResumen() {
     return Stream<DashboardResumen>.multi((controller) {
       List<expediente_domain.Expediente>? expedientes;
+      List<expediente_domain.Expediente>? expedientesSinActividad;
       List<presupuesto_domain.Presupuesto>? presupuestos;
       List<presupuesto_domain.Presupuesto>? presupuestosPendientesFacturar;
       List<presupuesto_domain.Presupuesto>? presupuestosBacklogComercial;
       List<factura_domain.Factura>? facturas;
       List<cobro_domain.Cobro>? cobros;
-      List<TimelineEvent>? timelineEventos;
 
       void emitirSiCompleto() {
         if (expedientes == null ||
+            expedientesSinActividad == null ||
             presupuestos == null ||
             presupuestosPendientesFacturar == null ||
             presupuestosBacklogComercial == null ||
             facturas == null ||
-            cobros == null ||
-            timelineEventos == null) {
+            cobros == null) {
           return;
         }
 
@@ -98,39 +88,8 @@ class DashboardRepository {
           0,
           (sum, factura) => sum + factura.total,
         );
-        final hoy = DateTime(now.year, now.month, now.day);
-        final limiteSinActividad = hoy.subtract(
-          const Duration(days: _expedientesSinActividadDias),
-        );
-
-        final ultimoEventoPorExpediente = <String, DateTime>{};
-        for (final evento in timelineEventos!) {
-          final expedienteId = evento.expedienteId.trim();
-          if (expedienteId.isEmpty) {
-            continue;
-          }
-
-          final fechaEvento = DateTime(
-            evento.fecha.year,
-            evento.fecha.month,
-            evento.fecha.day,
-          );
-          final fechaActual = ultimoEventoPorExpediente[expedienteId];
-
-          if (fechaActual == null || fechaEvento.isAfter(fechaActual)) {
-            ultimoEventoPorExpediente[expedienteId] = fechaEvento;
-          }
-        }
-
-        var expedientesSinActividadConteo = 0;
-        for (final expediente in expedientes!) {
-          final ultimaFechaEvento = ultimoEventoPorExpediente[expediente.id];
-
-          if (ultimaFechaEvento == null ||
-              !ultimaFechaEvento.isAfter(limiteSinActividad)) {
-            expedientesSinActividadConteo += 1;
-          }
-        }
+        final expedientesSinActividadConteo =
+            expedientesSinActividad!.length;
 
         final presupuestosBacklogComercialConteo =
             presupuestosBacklogComercial!.length;
@@ -251,6 +210,10 @@ class DashboardRepository {
           expedientes = data;
           emitirSiCompleto();
         }, onError: controller.addError),
+        expedienteRepository.observarSinActividad().listen((data) {
+          expedientesSinActividad = data;
+          emitirSiCompleto();
+        }, onError: controller.addError),
         presupuestoRepository.observarPresupuestos().listen((data) {
           presupuestos = data;
           emitirSiCompleto();
@@ -269,10 +232,6 @@ class DashboardRepository {
         }, onError: controller.addError),
         cobroRepository.observarCobros().listen((data) {
           cobros = data;
-          emitirSiCompleto();
-        }, onError: controller.addError),
-        timelineRepository.observarTodosLosEventosGlobales().listen((data) {
-          timelineEventos = data;
           emitirSiCompleto();
         }, onError: controller.addError),
       ];
