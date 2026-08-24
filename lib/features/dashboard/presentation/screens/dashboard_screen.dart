@@ -62,10 +62,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return '$day/$month/$year';
   }
 
-  String _formatearPorcentaje(double value) {
-    return '${value.toStringAsFixed(1)}%';
-  }
-
   Future<void> _abrirNuevoExpediente() async {
     await Navigator.push(
       context,
@@ -529,58 +525,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                   SizedBox(
                                     width: itemWidth,
                                     child: _KpiCard(
-                                      title: 'Cobertura de cobro',
-                                      subtitle: 'Porcentaje cobrado sobre facturado',
-                                      value: Text(
-                                        _formatearPorcentaje(
-                                          resumen.coberturaCobroPorcentaje,
-                                        ),
-                                        style: textTheme.headlineSmall,
-                                      ),
-                                      statusLabel: 'Salud financiera',
-                                      statusType: StatusType.info,
-                                      icon: Icons.show_chart_outlined,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: itemWidth,
-                                    child: _KpiCard(
-                                      title: 'Conversión presupuesto->factura',
-                                      subtitle: 'Porcentaje de presupuestos facturados',
-                                      value: Text(
-                                        _formatearPorcentaje(
-                                          resumen
-                                              .conversionPresupuestosFacturasPorcentaje,
-                                        ),
-                                        style: textTheme.headlineSmall,
-                                      ),
-                                      statusLabel: 'Conversión',
-                                      statusType: StatusType.info,
-                                      icon: Icons.swap_horiz_outlined,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: itemWidth,
-                                    child: _KpiCard(
-                                      title: 'Saldo pendiente total',
-                                      subtitle: 'Importe actualmente abierto',
-                                      value: MoneyText(
-                                        resumen.saldoPendienteTotal,
-                                        style: textTheme.headlineSmall,
-                                      ),
-                                      statusLabel: resumen.saldoPendienteTotal > 0
-                                          ? 'Seguimiento'
-                                          : 'Sin pendiente',
-                                      statusType: resumen.saldoPendienteTotal > 0
-                                          ? StatusType.warning
-                                          : StatusType.success,
-                                      icon: Icons.account_balance_wallet_outlined,
-                                      highlighted: true,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: itemWidth,
-                                    child: _KpiCard(
                                       title: 'Cobrado este mes',
                                       subtitle: 'Entrada de caja del mes actual',
                                       value: MoneyText(
@@ -609,15 +553,24 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                   SizedBox(
                                     width: itemWidth,
                                     child: _KpiCard(
-                                      title: 'Total presupuestado',
-                                      subtitle: 'Presupuestos acumulados',
+                                      title: 'Saldo pendiente total',
+                                      subtitle: 'Importe actualmente abierto',
                                       value: MoneyText(
-                                        resumen.totalPresupuestado,
+                                        resumen.saldoPendienteTotal,
                                         style: textTheme.headlineSmall,
                                       ),
-                                      statusLabel: 'Acumulado',
-                                      statusType: StatusType.neutral,
-                                      icon: Icons.request_quote_outlined,
+                                      statusLabel: resumen.saldoPendienteTotal > 0
+                                          ? 'Seguimiento'
+                                          : 'Sin pendiente',
+                                      statusType: resumen.saldoPendienteTotal > 0
+                                          ? StatusType.warning
+                                          : StatusType.success,
+                                      icon: Icons.account_balance_wallet_outlined,
+                                      highlighted: true,
+                                      actionLabel: 'Ver facturas',
+                                      onAction: () => _abrirFacturas(
+                                        const FacturasInitialFilter.saldoPendiente(),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -723,6 +676,8 @@ class _KpiCard extends StatelessWidget {
     required this.statusType,
     required this.icon,
     this.highlighted = false,
+    this.actionLabel,
+    this.onAction,
   });
 
   final String title;
@@ -732,6 +687,8 @@ class _KpiCard extends StatelessWidget {
   final StatusType statusType;
   final IconData icon;
   final bool highlighted;
+  final String? actionLabel;
+  final VoidCallback? onAction;
 
   @override
   Widget build(BuildContext context) {
@@ -777,6 +734,17 @@ class _KpiCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           value,
+          if (actionLabel != null && onAction != null) ...[
+            const SizedBox(height: AppSpacing.sm),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton.icon(
+                onPressed: onAction,
+                icon: const Icon(Icons.arrow_forward),
+                label: Text(actionLabel!),
+              ),
+            ),
+          ],
         ],
       ),
     );
