@@ -187,27 +187,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       );
     }
 
-    if (resumen.saldoPendienteTotal > 0) {
-      items.add(
-        _AttentionItem.amount(
-          title: 'Saldo pendiente total',
-          description: 'Importe abierto pendiente de entrada en caja.',
-          amount: resumen.saldoPendienteTotal,
-          statusLabel: 'Prioridad',
-          statusType: StatusType.warning,
-          icon: Icons.payments_outlined,
-          actionLabel: 'Ver facturas',
-          onAction: () => _abrirFacturas(
-            const FacturasInitialFilter.saldoPendiente(),
-          ),
-        ),
-      );
-    }
-
     if (resumen.facturasVencenProximos7Dias > 0) {
       items.add(
         _AttentionItem.count(
-          title: 'Vencen en 7 días',
+          title: 'Vencen de hoy a 7 días',
           description: 'Facturas pendientes con vencimiento en la próxima semana.',
           count: resumen.facturasVencenProximos7Dias,
           statusLabel: 'Seguimiento',
@@ -216,23 +199,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           actionLabel: 'Ver facturas',
           onAction: () => _abrirFacturas(
             const FacturasInitialFilter.vencenProximos7Dias(),
-          ),
-        ),
-      );
-    }
-
-    if (resumen.facturasParcialmenteCobradas > 0) {
-      items.add(
-        _AttentionItem.count(
-          title: 'Facturas parcialmente cobradas',
-          description: 'Cobros iniciados pendientes de completar.',
-          count: resumen.facturasParcialmenteCobradas,
-          statusLabel: 'En curso',
-          statusType: StatusType.info,
-          icon: Icons.timeline_outlined,
-          actionLabel: 'Ver facturas',
-          onAction: () => _abrirFacturas(
-            const FacturasInitialFilter.parcialmenteCobradas(),
           ),
         ),
       );
@@ -255,11 +221,29 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       );
     }
 
+    if (resumen.facturasParcialmenteCobradas > 0) {
+      items.add(
+        _AttentionItem.count(
+          title: 'Facturas parcialmente cobradas',
+          description: 'Cobros iniciados pendientes de completar.',
+          count: resumen.facturasParcialmenteCobradas,
+          statusLabel: 'En curso',
+          statusType: StatusType.info,
+          icon: Icons.timeline_outlined,
+          actionLabel: 'Ver facturas',
+          onAction: () => _abrirFacturas(
+            const FacturasInitialFilter.parcialmenteCobradas(),
+          ),
+        ),
+      );
+    }
+
     if (resumen.presupuestosBacklogComercialConteo > 0) {
       items.add(
         _AttentionItem.amount(
           title: 'Backlog comercial',
-          description: 'Presupuestos sin facturar con 60 días o más.',
+          description:
+              'Presupuestos presentados hace 60 días o más sin factura válida.',
           amount: resumen.presupuestosBacklogComercialImporte,
           statusLabel: 'Seguimiento',
           statusType: StatusType.warning,
