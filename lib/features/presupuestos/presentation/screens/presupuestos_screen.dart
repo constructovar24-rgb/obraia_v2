@@ -12,8 +12,27 @@ import '../../domain/presupuesto.dart' as presupuesto_domain;
 import '../providers/presupuesto_providers.dart';
 import '../widgets/presupuestos_tab.dart';
 
+enum PresupuestosInitialFilterType { pendientesFacturar, backlogComercial }
+
+class PresupuestosInitialFilter {
+  const PresupuestosInitialFilter._(this.type);
+
+  const PresupuestosInitialFilter.pendientesFacturar()
+    : this._(PresupuestosInitialFilterType.pendientesFacturar);
+
+  const PresupuestosInitialFilter.backlogComercial()
+    : this._(PresupuestosInitialFilterType.backlogComercial);
+
+  final PresupuestosInitialFilterType type;
+}
+
 class PresupuestosScreen extends ConsumerStatefulWidget {
-  const PresupuestosScreen({super.key});
+  const PresupuestosScreen({
+    super.key,
+    this.initialFilter = const PresupuestosInitialFilter.pendientesFacturar(),
+  });
+
+  final PresupuestosInitialFilter initialFilter;
 
   @override
   ConsumerState<PresupuestosScreen> createState() =>
@@ -28,7 +47,41 @@ class _PresupuestosScreenState extends ConsumerState<PresupuestosScreen> {
   void initState() {
     super.initState();
     _repository = ref.read(presupuestoRepositoryProvider);
-    _stream = _repository.observarPendientesFacturar();
+    switch (widget.initialFilter.type) {
+      case PresupuestosInitialFilterType.pendientesFacturar:
+        _stream = _repository.observarPendientesFacturar();
+        break;
+      case PresupuestosInitialFilterType.backlogComercial:
+        _stream = _repository.observarBacklogComercial();
+        break;
+    }
+  }
+
+  String get _title {
+    switch (widget.initialFilter.type) {
+      case PresupuestosInitialFilterType.pendientesFacturar:
+        return 'Presupuestos pendientes de facturar';
+      case PresupuestosInitialFilterType.backlogComercial:
+        return 'Backlog comercial';
+    }
+  }
+
+  String get _emptyTitle {
+    switch (widget.initialFilter.type) {
+      case PresupuestosInitialFilterType.pendientesFacturar:
+        return 'No hay presupuestos pendientes de facturar';
+      case PresupuestosInitialFilterType.backlogComercial:
+        return 'No hay presupuestos en backlog comercial';
+    }
+  }
+
+  String get _emptySubtitle {
+    switch (widget.initialFilter.type) {
+      case PresupuestosInitialFilterType.pendientesFacturar:
+        return 'Todos los presupuestos aceptados ya tienen una factura válida asociada.';
+      case PresupuestosInitialFilterType.backlogComercial:
+        return 'No hay presupuestos presentados con 60 días o más sin una factura válida asociada.';
+    }
   }
 
   @override
@@ -36,8 +89,8 @@ class _PresupuestosScreenState extends ConsumerState<PresupuestosScreen> {
     return AppShortcutScope(
       onBack: () => Navigator.maybePop(context),
       child: Scaffold(
-        appBar: const AppPageHeader(
-          title: 'Presupuestos pendientes de facturar',
+        appBar: AppPageHeader(
+          title: _title,
           showBackButton: true,
         ),
         body: StreamBuilder<List<presupuesto_domain.Presupuesto>>(
@@ -57,11 +110,10 @@ class _PresupuestosScreenState extends ConsumerState<PresupuestosScreen> {
 
             final presupuestos = snapshot.data ?? const [];
             if (presupuestos.isEmpty) {
-              return const AppEmptyState(
+              return AppEmptyState(
                 icon: Icons.request_quote_outlined,
-                title: 'No hay presupuestos pendientes de facturar',
-                subtitle:
-                    'Todos los presupuestos aceptados ya tienen una factura válida asociada.',
+                title: _emptyTitle,
+                subtitle: _emptySubtitle,
               );
             }
 

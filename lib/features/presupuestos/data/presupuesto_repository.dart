@@ -9,6 +9,8 @@ import 'package:obraia_v2/features/timeline/data/timeline_repository.dart';
 import 'package:uuid/uuid.dart';
 
 class PresupuestoRepository {
+  static const int _backlogComercialAntiguedadDias = 60;
+
   final AppDatabase database;
   final TimelineRepository _timelineRepository;
 
@@ -26,6 +28,25 @@ class PresupuestoRepository {
   }
 
   Stream<List<presupuesto_domain.Presupuesto>> observarPendientesFacturar() {
+    return _observarSinFacturaValida(
+      (presupuesto) => _esEstadoAceptado(presupuesto.estado),
+    );
+  }
+
+  Stream<List<presupuesto_domain.Presupuesto>> observarBacklogComercial() {
+    return _observarSinFacturaValida(
+      (presupuesto) =>
+          _esEstadoPresentado(presupuesto.estado) &&
+          _tieneAntiguedadMinima(
+            presupuesto.fecha,
+            dias: _backlogComercialAntiguedadDias,
+          ),
+    );
+  }
+
+  Stream<List<presupuesto_domain.Presupuesto>> _observarSinFacturaValida(
+    bool Function(presupuesto_domain.Presupuesto presupuesto) incluir,
+  ) {
     return Stream<List<presupuesto_domain.Presupuesto>>.multi((controller) {
       List<presupuesto_domain.Presupuesto>? presupuestos;
       List<factura_domain.Factura>? facturas;
@@ -48,7 +69,7 @@ class PresupuestoRepository {
           presupuestosActuales
               .where(
                 (presupuesto) =>
-                    _esEstadoAceptado(presupuesto.estado) &&
+                    incluir(presupuesto) &&
                     !presupuestosConFacturaValida.contains(presupuesto.id),
               )
               .toList(growable: false),
@@ -145,6 +166,17 @@ class PresupuestoRepository {
 
   bool _esEstadoAceptado(String estado) {
     return estado.trim().toLowerCase() == 'aceptado';
+  }
+
+  bool _esEstadoPresentado(String estado) {
+    return estado.trim().toLowerCase() == 'presentado';
+  }
+
+  bool _tieneAntiguedadMinima(DateTime fecha, {required int dias}) {
+    final ahora = DateTime.now();
+    final hoy = DateTime(ahora.year, ahora.month, ahora.day);
+    final fechaNormalizada = DateTime(fecha.year, fecha.month, fecha.day);
+    return hoy.difference(fechaNormalizada).inDays >= dias;
   }
 
   Future<void> actualizarImporteTotal(

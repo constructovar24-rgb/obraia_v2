@@ -92,11 +92,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  Future<void> _abrirPresupuestosPendientes() async {
+  Future<void> _abrirPresupuestos(
+    PresupuestosInitialFilter initialFilter,
+  ) async {
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const PresupuestosScreen(),
+        builder: (_) => PresupuestosScreen(initialFilter: initialFilter),
       ),
     );
   }
@@ -234,7 +236,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           statusType: StatusType.info,
           icon: Icons.request_quote_outlined,
           actionLabel: 'Ver presupuestos',
-          onAction: _abrirPresupuestosPendientes,
+          onAction: () => _abrirPresupuestos(
+            const PresupuestosInitialFilter.pendientesFacturar(),
+          ),
         ),
       );
     }
@@ -249,7 +253,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           statusType: StatusType.warning,
           icon: Icons.work_history_outlined,
           actionLabel: 'Ver presupuestos',
-          onAction: null,
+          onAction: () => _abrirPresupuestos(
+            const PresupuestosInitialFilter.backlogComercial(),
+          ),
         ),
       );
     }

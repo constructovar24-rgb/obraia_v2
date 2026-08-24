@@ -31,7 +31,6 @@ final dashboardRepositoryProvider = Provider<DashboardRepository>((ref) {
 });
 
 class DashboardRepository {
-  static const int _backlogComercialAntiguedadDias = 60;
   static const int _expedientesSinActividadDias = 60;
 
   DashboardRepository({
@@ -53,6 +52,7 @@ class DashboardRepository {
       List<expediente_domain.Expediente>? expedientes;
       List<presupuesto_domain.Presupuesto>? presupuestos;
       List<presupuesto_domain.Presupuesto>? presupuestosPendientesFacturar;
+      List<presupuesto_domain.Presupuesto>? presupuestosBacklogComercial;
       List<factura_domain.Factura>? facturas;
       List<cobro_domain.Cobro>? cobros;
       List<TimelineEvent>? timelineEventos;
@@ -61,6 +61,7 @@ class DashboardRepository {
         if (expedientes == null ||
             presupuestos == null ||
             presupuestosPendientesFacturar == null ||
+            presupuestosBacklogComercial == null ||
             facturas == null ||
             cobros == null ||
             timelineEventos == null) {
@@ -131,26 +132,13 @@ class DashboardRepository {
           }
         }
 
-        var presupuestosBacklogComercialConteo = 0;
-        var presupuestosBacklogComercialImporte = 0.0;
-
-        for (final presupuesto in presupuestos!) {
-          if (presupuestosConFactura.contains(presupuesto.id)) {
-            continue;
-          }
-
-          final fechaPresupuesto = DateTime(
-            presupuesto.fecha.year,
-            presupuesto.fecha.month,
-            presupuesto.fecha.day,
-          );
-          final antiguedadDias = hoy.difference(fechaPresupuesto).inDays;
-
-          if (antiguedadDias >= _backlogComercialAntiguedadDias) {
-            presupuestosBacklogComercialConteo += 1;
-            presupuestosBacklogComercialImporte += presupuesto.importeTotal;
-          }
-        }
+        final presupuestosBacklogComercialConteo =
+            presupuestosBacklogComercial!.length;
+        final presupuestosBacklogComercialImporte =
+            presupuestosBacklogComercial!.fold<double>(
+              0,
+              (sum, presupuesto) => sum + presupuesto.importeTotal,
+            );
 
         final totalFacturadoEsteMes = facturas!
             .where(
@@ -269,6 +257,10 @@ class DashboardRepository {
         }, onError: controller.addError),
         presupuestoRepository.observarPendientesFacturar().listen((data) {
           presupuestosPendientesFacturar = data;
+          emitirSiCompleto();
+        }, onError: controller.addError),
+        presupuestoRepository.observarBacklogComercial().listen((data) {
+          presupuestosBacklogComercial = data;
           emitirSiCompleto();
         }, onError: controller.addError),
         facturaRepository.observarFacturas().listen((data) {
