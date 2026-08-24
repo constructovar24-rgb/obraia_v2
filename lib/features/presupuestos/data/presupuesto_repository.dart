@@ -1,5 +1,8 @@
 import 'package:drift/drift.dart';
 import 'package:obraia_v2/database/app_database.dart';
+import 'package:obraia_v2/features/facturas/domain/estado_factura.dart';
+import 'package:obraia_v2/features/facturas/domain/factura.dart'
+    as factura_domain;
 import 'package:obraia_v2/features/presupuestos/domain/presupuesto.dart'
     as presupuesto_domain;
 import 'package:obraia_v2/features/timeline/data/timeline_repository.dart';
@@ -20,6 +23,54 @@ class PresupuestoRepository {
 
   Stream<List<presupuesto_domain.Presupuesto>> observarPresupuestos() {
     return database.presupuestosDao.observarPresupuestos();
+  }
+
+  Stream<List<presupuesto_domain.Presupuesto>> observarPendientesFacturar() {
+    return Stream<List<presupuesto_domain.Presupuesto>>.multi((controller) {
+      List<presupuesto_domain.Presupuesto>? presupuestos;
+      List<factura_domain.Factura>? facturas;
+
+      void emitirSiCompleto() {
+        final presupuestosActuales = presupuestos;
+        final facturasActuales = facturas;
+        if (presupuestosActuales == null || facturasActuales == null) {
+          return;
+        }
+
+        final presupuestosConFacturaValida = facturasActuales
+            .where((factura) => factura.estado != EstadoFactura.anulada)
+            .map((factura) => factura.presupuestoOrigenId?.trim())
+            .whereType<String>()
+            .where((presupuestoId) => presupuestoId.isNotEmpty)
+            .toSet();
+
+        controller.add(
+          presupuestosActuales
+              .where(
+                (presupuesto) =>
+                    _esEstadoAceptado(presupuesto.estado) &&
+                    !presupuestosConFacturaValida.contains(presupuesto.id),
+              )
+              .toList(growable: false),
+        );
+      }
+
+      final presupuestosSubscription = observarPresupuestos().listen((data) {
+        presupuestos = data;
+        emitirSiCompleto();
+      }, onError: controller.addError);
+      final facturasSubscription = database.facturasDao
+          .observarFacturas()
+          .listen((data) {
+            facturas = data;
+            emitirSiCompleto();
+          }, onError: controller.addError);
+
+      controller.onCancel = () async {
+        await presupuestosSubscription.cancel();
+        await facturasSubscription.cancel();
+      };
+    });
   }
 
   Future<String> _generarCodigoPresupuesto(String expedienteId) async {

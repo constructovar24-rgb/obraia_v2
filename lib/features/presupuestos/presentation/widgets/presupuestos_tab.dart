@@ -53,17 +53,6 @@ class _PresupuestosTabState extends ConsumerState<PresupuestosTab> {
       );
     }
 
-    String formatearFecha(DateTime fecha) {
-      final day = fecha.day.toString().padLeft(2, '0');
-      final month = fecha.month.toString().padLeft(2, '0');
-      final year = fecha.year.toString();
-      return '$day/$month/$year';
-    }
-
-    String formatearImporte(double importe) {
-      return '${importe.toStringAsFixed(2)} €';
-    }
-
     return StreamBuilder<List<presupuesto_domain.Presupuesto>>(
       stream: _stream,
       builder: (context, snapshot) {
@@ -141,57 +130,76 @@ class _PresupuestosTabState extends ConsumerState<PresupuestosTab> {
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
-              Expanded(
-                child: ListView.separated(
-                  itemCount: presupuestos.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: AppSpacing.sm),
-                  itemBuilder: (context, index) {
-                    final presupuesto = presupuestos[index];
-
-                    return AppCard(
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.all(AppSpacing.md),
-                        leading: CircleAvatar(
-                          backgroundColor: colorScheme.primaryContainer,
-                          foregroundColor: colorScheme.onPrimaryContainer,
-                          child: const Icon(Icons.request_quote_outlined),
-                        ),
-                        title: Text(
-                          presupuesto.codigo,
-                          style: textTheme.titleMedium,
-                        ),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.only(top: AppSpacing.xs),
-                          child: Text(
-                            '${formatearFecha(presupuesto.fecha)}\nEstado: ${presupuesto.estado}\nImporte: ${formatearImporte(presupuesto.importeTotal)}\n${presupuesto.descripcion}',
-                            style: textTheme.bodyMedium,
-                          ),
-                        ),
-                        isThreeLine: true,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => PresupuestoDetailScreen(
-                                presupuesto: presupuesto,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: AppPrimaryButton(
-                  onPressed: abrirNuevoPresupuesto,
-                  label: 'Nuevo presupuesto',
-                ),
-              ),
+              Expanded(child: PresupuestosList(presupuestos: presupuestos)),
             ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class PresupuestosList extends StatelessWidget {
+  const PresupuestosList({
+    super.key,
+    required this.presupuestos,
+  });
+
+  final List<presupuesto_domain.Presupuesto> presupuestos;
+
+  String _formatearFecha(DateTime fecha) {
+    final day = fecha.day.toString().padLeft(2, '0');
+    final month = fecha.month.toString().padLeft(2, '0');
+    final year = fecha.year.toString();
+    return '$day/$month/$year';
+  }
+
+  String _formatearImporte(double importe) {
+    return '${importe.toStringAsFixed(2)} €';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = AppTypography.textTheme(colorScheme);
+
+    return ListView.separated(
+      itemCount: presupuestos.length,
+      separatorBuilder: (context, index) =>
+          const SizedBox(height: AppSpacing.sm),
+      itemBuilder: (context, index) {
+        final presupuesto = presupuestos[index];
+
+        return AppCard(
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(AppSpacing.md),
+            leading: CircleAvatar(
+              backgroundColor: colorScheme.primaryContainer,
+              foregroundColor: colorScheme.onPrimaryContainer,
+              child: const Icon(Icons.request_quote_outlined),
+            ),
+            title: Text(
+              presupuesto.codigo,
+              style: textTheme.titleMedium,
+            ),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: AppSpacing.xs),
+              child: Text(
+                '${_formatearFecha(presupuesto.fecha)}\nEstado: ${presupuesto.estado}\nImporte: ${_formatearImporte(presupuesto.importeTotal)}\n${presupuesto.descripcion}',
+                style: textTheme.bodyMedium,
+              ),
+            ),
+            isThreeLine: true,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => PresupuestoDetailScreen(
+                    presupuesto: presupuesto,
+                  ),
+                ),
+              );
+            },
           ),
         );
       },

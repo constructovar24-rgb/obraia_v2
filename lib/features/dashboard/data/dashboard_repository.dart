@@ -52,6 +52,7 @@ class DashboardRepository {
     return Stream<DashboardResumen>.multi((controller) {
       List<expediente_domain.Expediente>? expedientes;
       List<presupuesto_domain.Presupuesto>? presupuestos;
+      List<presupuesto_domain.Presupuesto>? presupuestosPendientesFacturar;
       List<factura_domain.Factura>? facturas;
       List<cobro_domain.Cobro>? cobros;
       List<TimelineEvent>? timelineEventos;
@@ -59,6 +60,7 @@ class DashboardRepository {
       void emitirSiCompleto() {
         if (expedientes == null ||
             presupuestos == null ||
+            presupuestosPendientesFacturar == null ||
             facturas == null ||
             cobros == null ||
             timelineEventos == null) {
@@ -87,8 +89,8 @@ class DashboardRepository {
               (presupuesto) => presupuestosConFactura.contains(presupuesto.id),
             )
             .length;
-        final presupuestosPendientesFacturar =
-            numeroPresupuestos - presupuestosFacturados;
+        final presupuestosPendientesFacturarConteo =
+            presupuestosPendientesFacturar!.length;
 
         final numeroFacturas = facturas!.length;
         final totalFacturado = facturas!.fold<double>(
@@ -229,7 +231,7 @@ class DashboardRepository {
           DashboardResumen(
             numeroExpedientes: numeroExpedientes,
             numeroPresupuestos: numeroPresupuestos,
-            presupuestosPendientesFacturar: presupuestosPendientesFacturar,
+            presupuestosPendientesFacturar: presupuestosPendientesFacturarConteo,
             presupuestosFacturados: presupuestosFacturados,
             totalPresupuestado: totalPresupuestado,
             numeroFacturas: numeroFacturas,
@@ -263,6 +265,10 @@ class DashboardRepository {
         }, onError: controller.addError),
         presupuestoRepository.observarPresupuestos().listen((data) {
           presupuestos = data;
+          emitirSiCompleto();
+        }, onError: controller.addError),
+        presupuestoRepository.observarPendientesFacturar().listen((data) {
+          presupuestosPendientesFacturar = data;
           emitirSiCompleto();
         }, onError: controller.addError),
         facturaRepository.observarFacturas().listen((data) {

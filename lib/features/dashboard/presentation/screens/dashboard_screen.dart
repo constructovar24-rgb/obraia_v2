@@ -22,6 +22,7 @@ import '../../../facturas/domain/factura.dart' as factura_domain;
 import '../../../facturas/presentation/screens/facturas_screen.dart';
 import '../../../facturas/presentation/screens/nueva_factura_screen.dart';
 import '../../../presupuestos/presentation/screens/nuevo_presupuesto_screen.dart';
+import '../../../presupuestos/presentation/screens/presupuestos_screen.dart';
 import '../../data/dashboard_repository.dart';
 import '../../domain/dashboard_resumen.dart';
 
@@ -87,6 +88,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       context,
       MaterialPageRoute(
         builder: (_) => FacturasScreen(initialFilter: initialFilter),
+      ),
+    );
+  }
+
+  Future<void> _abrirPresupuestosPendientes() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const PresupuestosScreen(),
       ),
     );
   }
@@ -224,7 +234,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           statusType: StatusType.info,
           icon: Icons.request_quote_outlined,
           actionLabel: 'Ver presupuestos',
-          onAction: null,
+          onAction: _abrirPresupuestosPendientes,
         ),
       );
     }
