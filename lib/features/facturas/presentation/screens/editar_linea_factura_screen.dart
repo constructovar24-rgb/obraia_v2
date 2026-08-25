@@ -50,15 +50,21 @@ class EditarLineaFacturaScreen extends ConsumerWidget {
     ) async {
       final repository = ref.read(facturaLineaRepositoryProvider);
 
-      await repository.actualizarLinea(
-        id: linea.id,
-        facturaId: linea.facturaId,
-        descripcion: descripcion,
-        cantidad: cantidad,
-        unidad: unidad,
-        precioUnitario: precioUnitario,
-        descuento: descuento,
-      );
+      try {
+        await repository.actualizarLinea(
+          id: linea.id,
+          facturaId: linea.facturaId,
+          descripcion: descripcion,
+          cantidad: cantidad,
+          unidad: unidad,
+          precioUnitario: precioUnitario,
+          descuento: descuento,
+        );
+      } on TotalFacturaInferiorACobrosException {
+        if (!context.mounted) return;
+        _mostrarErrorTotalCobrado(context);
+        return;
+      }
 
       if (!context.mounted) return;
       Navigator.of(context).pop();
@@ -71,10 +77,16 @@ class EditarLineaFacturaScreen extends ConsumerWidget {
       }
 
       final repository = ref.read(facturaLineaRepositoryProvider);
-      await repository.eliminarLinea(
-        linea.id,
-        linea.facturaId,
-      );
+      try {
+        await repository.eliminarLinea(
+          linea.id,
+          linea.facturaId,
+        );
+      } on TotalFacturaInferiorACobrosException {
+        if (!context.mounted) return;
+        _mostrarErrorTotalCobrado(context);
+        return;
+      }
 
       if (!context.mounted) return;
       Navigator.of(context).pop();
@@ -105,6 +117,16 @@ class EditarLineaFacturaScreen extends ConsumerWidget {
               child: const Text('Eliminar linea'),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  void _mostrarErrorTotalCobrado(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'No puedes reducir el total de la factura por debajo del importe ya cobrado.',
         ),
       ),
     );

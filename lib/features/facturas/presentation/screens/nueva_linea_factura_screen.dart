@@ -34,14 +34,26 @@ class _NuevaLineaFacturaScreenState
         ) async {
           final repository = ref.read(facturaLineaRepositoryProvider);
 
-          await repository.crearLinea(
-            facturaId: widget.facturaId,
-            descripcion: descripcion,
-            cantidad: cantidad,
-            unidad: unidad,
-            precioUnitario: precioUnitario,
-            descuento: descuento,
-          );
+          try {
+            await repository.crearLinea(
+              facturaId: widget.facturaId,
+              descripcion: descripcion,
+              cantidad: cantidad,
+              unidad: unidad,
+              precioUnitario: precioUnitario,
+              descuento: descuento,
+            );
+          } on TotalFacturaInferiorACobrosException {
+            if (!context.mounted) return;
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'No puedes reducir el total de la factura por debajo del importe ya cobrado.',
+                ),
+              ),
+            );
+            return;
+          }
 
           if (!context.mounted) return;
           Navigator.of(context).pop();
