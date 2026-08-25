@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,6 +12,7 @@ import '../../../../database/database_provider.dart';
 import '../../../clientes/data/cliente_repository.dart';
 import '../../../clientes/domain/cliente.dart';
 import '../../../cobros/data/cobro_repository.dart';
+import '../../../cobros/domain/cobro.dart' as cobro_domain;
 import '../../../cobros/domain/factura_estado_economico.dart';
 import '../../../cobros/presentation/screens/cobros_screen.dart';
 import '../../../cobros/presentation/screens/nuevo_cobro_screen.dart';
@@ -44,6 +47,18 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
   late DateTime _fechaVencimientoSeleccionada;
   late EstadoFactura _estadoSeleccionado;
   String? _clienteSeleccionadoId;
+  EstadoFactura? _estadoPersistido;
+  bool? _tieneCobros;
+  late final StreamSubscription<List<factura_domain.Factura>> _facturasSubscription;
+  late final StreamSubscription<List<cobro_domain.Cobro>> _cobrosSubscription;
+
+  bool get _puedeEliminarFactura =>
+      _estadoPersistido != null &&
+      _tieneCobros != null &&
+      facturaPuedeEliminarse(
+        estado: _estadoPersistido!,
+        tieneCobros: _tieneCobros!,
+      );
 
   @override
   void initState() {
@@ -61,10 +76,33 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
     _fechaVencimientoController.text = _formatearFecha(
       _fechaVencimientoSeleccionada,
     );
+    _facturasSubscription = ref
+        .read(facturaRepositoryProvider)
+        .observarFacturas()
+        .listen((facturas) {
+          factura_domain.Factura? persistida;
+          for (final factura in facturas) {
+            if (factura.id == widget.factura.id) {
+              persistida = factura;
+              break;
+            }
+          }
+          if (!mounted) return;
+          setState(() => _estadoPersistido = persistida?.estado);
+        });
+    _cobrosSubscription = ref
+        .read(cobroRepositoryProvider)
+        .observarPorFactura(widget.factura.id)
+        .listen((cobros) {
+          if (!mounted) return;
+          setState(() => _tieneCobros = cobros.isNotEmpty);
+        });
   }
 
   @override
   void dispose() {
+    _facturasSubscription.cancel();
+    _cobrosSubscription.cancel();
     _fechaController.dispose();
     _fechaVencimientoController.dispose();
     _observacionesController.dispose();
@@ -264,13 +302,17 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
   }
 
   Future<void> _confirmarEliminar() async {
+    if (!_puedeEliminarFactura) return;
+
     final confirmado = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: const Text('Eliminar factura'),
           content: const Text(
-            '¿Seguro que quieres eliminar esta factura? También se eliminarán sus líneas asociadas.',
+            'La factura y todas sus líneas se eliminarán definitivamente. '
+            'No existen cobros asociados que vayan a eliminarse. '
+            'Esta acción no se puede deshacer.',
           ),
           actions: [
             TextButton(
@@ -286,18 +328,36 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
       },
     );
 
-    if (confirmado != true || !mounted) {
-      return;
+    if (confirmado != true || !mounted) return;
+
+    try {
+      await ref
+          .read(facturaRepositoryProvider)
+          .eliminarFactura(widget.factura.id);
+      if (!mounted) return;
+      Navigator.of(context).pop();
+    } on FacturaNoEncontradaAlEliminarException {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('La factura ya no existe.')),
+      );
+    } on FacturaNoEliminablePorEstadoException {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Solo se pueden eliminar facturas en borrador.'),
+        ),
+      );
+    } on FacturaNoEliminableConCobrosException {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'La factura contiene cobros asociados que requieren revisión.',
+          ),
+        ),
+      );
     }
-
-    final repository = ref.read(facturaRepositoryProvider);
-    await repository.eliminarFactura(widget.factura.id);
-
-    if (!mounted) {
-      return;
-    }
-
-    Navigator.of(context).pop();
   }
 
   Future<void> _guardarCambios() async {
@@ -367,7 +427,7 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-            'No se puede anular una factura con cobros. Debe resolverse mediante devolución o abono cuando esa funcionalidad esté disponible.',
+            'No se puede anular una factura con cobros. Los cobros registrados deben corregirse o eliminarse primero si se introdujeron por error.',
           ),
         ),
       );
@@ -395,9 +455,7 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
       onSave: () {
         _guardarCambios();
       },
-      onDelete: () {
-        _confirmarEliminar();
-      },
+      onDelete: _puedeEliminarFactura ? _confirmarEliminar : null,
       child: Scaffold(
         appBar: AppPageHeader(
           showBackButton: true,
@@ -417,11 +475,12 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                 );
               },
             ),
-            AppPageHeaderAction(
-              icon: Icons.delete_outline,
-              tooltip: 'Eliminar factura',
-              onPressed: _confirmarEliminar,
-            ),
+            if (_puedeEliminarFactura)
+              AppPageHeaderAction(
+                icon: Icons.delete_outline,
+                tooltip: 'Eliminar factura',
+                onPressed: _confirmarEliminar,
+              ),
           ],
         ),
         body: Padding(
@@ -557,7 +616,8 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                   ),
                 ),
               ],
-              if (_estadoSeleccionado != EstadoFactura.anulada) ...[
+              if (_estadoPersistido == EstadoFactura.emitida ||
+                  _estadoPersistido == EstadoFactura.vencida) ...[
                 const SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,
@@ -566,6 +626,14 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                     icon: const Icon(Icons.cancel_outlined),
                     label: const Text('Anular factura'),
                   ),
+                ),
+              ],
+              if (_estadoPersistido == EstadoFactura.borrador &&
+                  _tieneCobros == true) ...[
+                const SizedBox(height: 12),
+                const Text(
+                  'Esta factura en borrador contiene cobros asociados que '
+                  'requieren revisión. No se pueden eliminar desde el borrador.',
                 ),
               ],
               const SizedBox(height: 24),

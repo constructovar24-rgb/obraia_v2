@@ -37,6 +37,35 @@ class FacturaAnulacionConCobrosException implements Exception {
   const FacturaAnulacionConCobrosException();
 }
 
+class FacturaNoEncontradaAlEliminarException implements Exception {
+  const FacturaNoEncontradaAlEliminarException({required this.facturaId});
+
+  final String facturaId;
+}
+
+class FacturaNoEliminablePorEstadoException implements Exception {
+  const FacturaNoEliminablePorEstadoException({
+    required this.facturaId,
+    required this.estado,
+  });
+
+  final String facturaId;
+  final EstadoFactura estado;
+}
+
+class FacturaNoEliminableConCobrosException implements Exception {
+  const FacturaNoEliminableConCobrosException({required this.facturaId});
+
+  final String facturaId;
+}
+
+bool facturaPuedeEliminarse({
+  required EstadoFactura estado,
+  required bool tieneCobros,
+}) {
+  return estado == EstadoFactura.borrador && !tieneCobros;
+}
+
 class FacturaRepository {
   final AppDatabase database;
   final TimelineRepository _timelineRepository;
@@ -464,7 +493,22 @@ class FacturaRepository {
 
   Future<void> eliminarFactura(String facturaId) async {
     await database.transaction(() async {
-      await database.cobrosDao.eliminarPorFactura(facturaId);
+      final factura = await database.facturasDao.obtenerPorId(facturaId);
+      if (factura == null) {
+        throw FacturaNoEncontradaAlEliminarException(facturaId: facturaId);
+      }
+      final cobros = await database.cobrosDao
+          .observarPorFactura(facturaId)
+          .first;
+      if (factura.estado != EstadoFactura.borrador) {
+        throw FacturaNoEliminablePorEstadoException(
+          facturaId: facturaId,
+          estado: factura.estado,
+        );
+      }
+      if (cobros.isNotEmpty) {
+        throw FacturaNoEliminableConCobrosException(facturaId: facturaId);
+      }
       await database.facturaLineasDao.eliminarPorFactura(facturaId);
       await database.facturasDao.eliminarFactura(facturaId);
     });

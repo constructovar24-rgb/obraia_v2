@@ -90,26 +90,49 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
   }
 
   Future<void> _confirmarEliminar() async {
+    final importe = _formatearImporte(widget.cobro.importe.toString());
     final confirmed = await ConfirmDialog.show(
       context,
       title: 'Eliminar cobro',
-      message: '¿Seguro que quieres eliminar este cobro?',
+      message: 'Se eliminará definitivamente el cobro de $importe. '
+          'Cambiarán el total cobrado y el saldo pendiente, y el estado de la '
+          'factura se recalculará automáticamente. Esta acción no se puede '
+          'deshacer.',
       confirmLabel: 'Eliminar',
       cancelLabel: 'Cancelar',
     );
 
-    if (!confirmed || !mounted) {
-      return;
+    if (!confirmed || !mounted) return;
+
+    try {
+      await ref.read(cobroRepositoryProvider).eliminarCobro(widget.cobro.id);
+      if (!mounted) return;
+      Navigator.of(context).pop();
+    } on CobroNoEncontradoException {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('El cobro ya no existe.')),
+      );
+    } on FacturaNoEncontradaException {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('La factura asociada ya no existe.')),
+      );
+    } on FacturaNoCobrableException {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Los cobros de una factura en borrador o anulada no se pueden eliminar.',
+          ),
+        ),
+      );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No se pudo eliminar el cobro: $error')),
+      );
     }
-
-    final repository = ref.read(cobroRepositoryProvider);
-    await repository.eliminarCobro(widget.cobro.id);
-
-    if (!mounted) {
-      return;
-    }
-
-    Navigator.of(context).pop();
   }
 
   String _formatearImporte(String rawValue) {
