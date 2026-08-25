@@ -66,27 +66,31 @@ class CobroRepository {
     return database.cobrosDao.observarCobros();
   }
 
+  Stream<List<cobro_domain.Cobro>> observarCobrosOperativos() {
+    return _observarCobrosOperativos(mes: null);
+  }
+
   Stream<List<cobro_domain.Cobro>> observarCobrosEnMesConFactura(DateTime mes) {
+    return _observarCobrosOperativos(mes: mes);
+  }
+
+  Stream<List<cobro_domain.Cobro>> _observarCobrosOperativos({DateTime? mes}) {
     return Stream<List<cobro_domain.Cobro>>.multi((controller) {
       List<cobro_domain.Cobro>? cobros;
-      Set<String>? facturasExistentes;
+      Set<String>? facturasOperativas;
 
       void emitirSiCompleto() {
         final cobrosActuales = cobros;
-        final idsFactura = facturasExistentes;
-        if (cobrosActuales == null || idsFactura == null) {
-          return;
-        }
+        final idsFactura = facturasOperativas;
+        if (cobrosActuales == null || idsFactura == null) return;
 
         controller.add(
-          cobrosActuales
-              .where(
-                (cobro) =>
-                    cobro.fecha.year == mes.year &&
-                    cobro.fecha.month == mes.month &&
-                    idsFactura.contains(cobro.facturaId),
-              )
-              .toList(),
+          cobrosActuales.where((cobro) {
+            return idsFactura.contains(cobro.facturaId) &&
+                (mes == null ||
+                    (cobro.fecha.year == mes.year &&
+                        cobro.fecha.month == mes.month));
+          }).toList(),
         );
       }
 
@@ -97,7 +101,10 @@ class CobroRepository {
       final facturasSubscription = database.facturasDao
           .observarFacturas()
           .listen((data) {
-            facturasExistentes = data.map((factura) => factura.id).toSet();
+            facturasOperativas = data
+                .where((factura) => estadoFacturaEsEfectiva(factura.estado))
+                .map((factura) => factura.id)
+                .toSet();
             emitirSiCompleto();
           }, onError: controller.addError);
 
@@ -179,6 +186,10 @@ class CobroRepository {
 
     final cobroId = const Uuid().v4();
 
+    final expedienteId = await _obtenerExpedienteIdDesdePresupuestoOrigen(
+      factura.presupuestoOrigenId,
+    );
+
     await database.transaction(() async {
       await database.cobrosDao.insertarCobro(
         CobrosCompanion.insert(
@@ -192,22 +203,16 @@ class CobroRepository {
         ),
       );
       await _sincronizarEstadoFactura(factura.id);
+      if (expedienteId != null && expedienteId.trim().isNotEmpty) {
+        await _timelineRepository.registrarCobroRegistrado(
+          expedienteId: expedienteId,
+          cobroId: cobroId,
+          titulo: 'Cobro registrado',
+          descripcion: factura.codigo,
+          fecha: fecha,
+        );
+      }
     });
-
-    final expedienteId = await _obtenerExpedienteIdDesdePresupuestoOrigen(
-      factura.presupuestoOrigenId,
-    );
-    if (expedienteId == null || expedienteId.trim().isEmpty) {
-      return;
-    }
-
-    await _timelineRepository.registrarCobroRegistrado(
-      expedienteId: expedienteId,
-      cobroId: cobroId,
-      titulo: 'Cobro registrado',
-      descripcion: factura.codigo,
-      fecha: fecha,
-    );
   }
 
   Future<void> actualizarCobro({
@@ -278,12 +283,27 @@ class CobroRepository {
     if (factura == null) {
       throw FacturaNoEncontradaException(facturaId: cobro.facturaId);
     }
-    if (!estadoFacturaAdmiteModificarCobros(factura.estado)) {
+    if (!estadoFacturaAdmiteEliminarCobros(factura.estado)) {
       throw FacturaNoCobrableException(facturaId: factura.id);
     }
+    final expedienteId = await _obtenerExpedienteIdDesdePresupuestoOrigen(
+      factura.presupuestoOrigenId,
+    );
+    final descripcion = _descripcionCobroEliminado(
+      cobro: cobro,
+      facturaCodigo: factura.codigo,
+    );
     await database.transaction(() async {
       await database.cobrosDao.eliminarCobro(id);
       await _sincronizarEstadoFactura(factura.id);
+      if (expedienteId != null && expedienteId.trim().isNotEmpty) {
+        await _timelineRepository.registrarCobroEliminado(
+          expedienteId: expedienteId,
+          cobroId: cobro.id,
+          titulo: 'Cobro eliminado',
+          descripcion: descripcion,
+        );
+      }
     });
   }
 
@@ -307,6 +327,20 @@ class CobroRepository {
         estadoFacturaToString(estado),
       );
     }
+  }
+
+  String _descripcionCobroEliminado({
+    required cobro_domain.Cobro cobro,
+    required String facturaCodigo,
+  }) {
+    final fecha =
+        '${cobro.fecha.day.toString().padLeft(2, '0')}/'
+        '${cobro.fecha.month.toString().padLeft(2, '0')}/${cobro.fecha.year}';
+    final referencia = cobro.referencia.trim().isEmpty
+        ? 'sin referencia'
+        : cobro.referencia.trim();
+    return 'Factura $facturaCodigo · Importe ${cobro.importe.toStringAsFixed(2)} € · '
+        'Fecha $fecha · Método ${cobro.metodoPago} · Referencia $referencia';
   }
 
   Future<String?> _obtenerExpedienteIdDesdePresupuestoOrigen(

@@ -66,6 +66,8 @@ class _CobrosScreenState extends ConsumerState<CobrosScreen> {
     final admiteModificarCobros =
         widget.facturaEstado == null ||
         estadoFacturaAdmiteModificarCobros(widget.facturaEstado!);
+    final admiteEliminarCobros =
+        widget.facturaEstado == EstadoFactura.anulada || admiteModificarCobros;
 
     void abrirNuevoCobro() {
       final facturaId = widget.facturaId;
@@ -162,13 +164,15 @@ class _CobrosScreenState extends ConsumerState<CobrosScreen> {
                               ),
                             ),
                             isThreeLine: true,
-                            onTap: admiteModificarCobros
+                            onTap: admiteEliminarCobros
                                 ? () {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (_) =>
-                                            EditarCobroScreen(cobro: cobro),
+                                        builder: (_) => EditarCobroScreen(
+                                          cobro: cobro,
+                                          facturaEstado: widget.facturaEstado,
+                                        ),
                                       ),
                                     );
                                   }

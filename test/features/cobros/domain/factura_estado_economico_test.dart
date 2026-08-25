@@ -47,6 +47,28 @@ void main() {
     });
   });
 
+  group('estadoFacturaAdmiteEliminarCobros', () {
+    test('permite saneamiento de cobros legacy de anuladas', () {
+      expect(estadoFacturaAdmiteEliminarCobros(EstadoFactura.anulada), isTrue);
+    });
+
+    test('mantiene borradores fuera de la eliminación de cobros', () {
+      expect(
+        estadoFacturaAdmiteEliminarCobros(EstadoFactura.borrador),
+        isFalse,
+      );
+    });
+
+    test('mantiene permitidas emitidas, vencidas y cobradas', () {
+      for (final estado in [
+        EstadoFactura.emitida,
+        EstadoFactura.vencida,
+        EstadoFactura.cobrada,
+      ]) {
+        expect(estadoFacturaAdmiteEliminarCobros(estado), isTrue);
+      }
+    });
+  });
   group('importeSuperaMaximoEditableCobro', () {
     test('acepta el máximo exacto y rechaza un céntimo por encima', () {
       expect(

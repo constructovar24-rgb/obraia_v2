@@ -235,7 +235,7 @@ class DashboardRepository {
           facturadoEsteMes = data;
           emitirSiCompleto();
         }, onError: controller.addError),
-        cobroRepository.observarCobros().listen((data) {
+        cobroRepository.observarCobrosOperativos().listen((data) {
           cobros = data;
           emitirSiCompleto();
         }, onError: controller.addError),

@@ -6,6 +6,11 @@ enum EstadoEconomicoFactura { pendiente, parcialmenteCobrada, cobrada }
 
 const facturaEstadoEconomicoEpsilon = 0.000001;
 
+bool estadoFacturaAdmiteEliminarCobros(EstadoFactura estado) {
+  return estadoFacturaAdmiteModificarCobros(estado) ||
+      estado == EstadoFactura.anulada;
+}
+
 bool importeSuperaMaximoEditableCobro({
   required double importe,
   required double maximoImporte,

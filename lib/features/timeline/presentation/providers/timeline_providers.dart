@@ -5,12 +5,9 @@ import '../../data/timeline_repository.dart';
 import '../../domain/timeline_event.dart';
 
 class TimelineScope {
-  const TimelineScope.global()
-      : isGlobal = true,
-        expedienteId = null;
+  const TimelineScope.global() : isGlobal = true, expedienteId = null;
 
-  const TimelineScope.porExpediente(this.expedienteId)
-      : isGlobal = false;
+  const TimelineScope.porExpediente(this.expedienteId) : isGlobal = false;
 
   final bool isGlobal;
   final String? expedienteId;
@@ -46,10 +43,8 @@ final timelineFilterOptionsProvider = Provider<List<TimelineEventType>>((ref) {
   return TimelineEventType.values;
 });
 
-final timelineSelectedFilterProvider =
-    StateProvider.autoDispose.family<TimelineEventType?, TimelineScope>(
-      (ref, scope) => null,
-    );
+final timelineSelectedFilterProvider = StateProvider.autoDispose
+    .family<TimelineEventType?, TimelineScope>((ref, scope) => null);
 
 final _timelineBaseEventsProvider =
     Provider.family<AsyncValue<List<TimelineEvent>>, TimelineScope>((
@@ -68,14 +63,14 @@ final timelineFilteredEventsProvider =
       ref,
       scope,
     ) {
-      final filtroSeleccionado = ref.watch(timelineSelectedFilterProvider(scope));
+      final filtroSeleccionado = ref.watch(
+        timelineSelectedFilterProvider(scope),
+      );
       final eventosAsync = ref.watch(_timelineBaseEventsProvider(scope));
 
       return eventosAsync.whenData(
-        (eventos) => _filtrarEventos(
-          eventos: eventos,
-          filtro: filtroSeleccionado,
-        ),
+        (eventos) =>
+            _filtrarEventos(eventos: eventos, filtro: filtroSeleccionado),
       );
     });
 
@@ -108,6 +103,10 @@ String timelineEventTypeLabel(TimelineEventType tipo) {
       return 'Factura anulada';
     case TimelineEventType.cobroRegistrado:
       return 'Cobro registrado';
+    case TimelineEventType.cobroEliminado:
+      return 'Cobro eliminado';
+    case TimelineEventType.facturaBorradorEliminada:
+      return 'Factura borrador eliminada';
     case TimelineEventType.documentoSubido:
       return 'Documento subido';
     case TimelineEventType.fotografiaAnadida:

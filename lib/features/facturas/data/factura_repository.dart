@@ -509,8 +509,19 @@ class FacturaRepository {
       if (cobros.isNotEmpty) {
         throw FacturaNoEliminableConCobrosException(facturaId: facturaId);
       }
+      final expedienteId = await _obtenerExpedienteIdDesdePresupuestoOrigen(
+        factura.presupuestoOrigenId,
+      );
       await database.facturaLineasDao.eliminarPorFactura(facturaId);
       await database.facturasDao.eliminarFactura(facturaId);
+      if (expedienteId != null && expedienteId.trim().isNotEmpty) {
+        await _timelineRepository.registrarFacturaBorradorEliminada(
+          expedienteId: expedienteId,
+          facturaId: factura.id,
+          titulo: 'Factura borrador eliminada',
+          descripcion: factura.codigo,
+        );
+      }
     });
   }
 

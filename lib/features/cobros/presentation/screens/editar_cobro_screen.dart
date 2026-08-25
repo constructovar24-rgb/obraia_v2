@@ -11,20 +11,24 @@ import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/entity_summary_card.dart';
 import '../../data/cobro_repository.dart';
 import '../../domain/cobro.dart' as cobro_domain;
+import '../../../facturas/domain/estado_factura.dart';
 
 class EditarCobroScreen extends ConsumerStatefulWidget {
   const EditarCobroScreen({
     super.key,
     required this.cobro,
+    required this.facturaEstado,
   });
 
   final cobro_domain.Cobro cobro;
+  final EstadoFactura? facturaEstado;
 
   @override
   ConsumerState<EditarCobroScreen> createState() => _EditarCobroScreenState();
 }
 
 class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
+  bool get _esFacturaAnulada => widget.facturaEstado == EstadoFactura.anulada;
   static const List<String> _metodosPago = [
     'Transferencia',
     'Efectivo',
@@ -56,7 +60,9 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
     _importeController = TextEditingController(
       text: widget.cobro.importe.toStringAsFixed(2),
     );
-    _referenciaController = TextEditingController(text: widget.cobro.referencia);
+    _referenciaController = TextEditingController(
+      text: widget.cobro.referencia,
+    );
     _observacionesController = TextEditingController(
       text: widget.cobro.observaciones,
     );
@@ -91,13 +97,18 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
 
   Future<void> _confirmarEliminar() async {
     final importe = _formatearImporte(widget.cobro.importe.toString());
+    final mensaje = _esFacturaAnulada
+        ? 'Este cobro está asociado a una factura anulada. Se está saneando '
+              'un dato histórico incoherente: el cobro de $importe se eliminará '
+              'definitivamente, la factura seguirá anulada y la operación no '
+              'puede deshacerse.'
+        : 'Se eliminará definitivamente el cobro de $importe. Cambiarán el '
+              'total cobrado y el saldo pendiente, y el estado de la factura se '
+              'recalculará automáticamente. Esta acción no se puede deshacer.';
     final confirmed = await ConfirmDialog.show(
       context,
       title: 'Eliminar cobro',
-      message: 'Se eliminará definitivamente el cobro de $importe. '
-          'Cambiarán el total cobrado y el saldo pendiente, y el estado de la '
-          'factura se recalculará automáticamente. Esta acción no se puede '
-          'deshacer.',
+      message: mensaje,
       confirmLabel: 'Eliminar',
       cancelLabel: 'Cancelar',
     );
@@ -110,9 +121,9 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
       Navigator.of(context).pop();
     } on CobroNoEncontradoException {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('El cobro ya no existe.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('El cobro ya no existe.')));
     } on FacturaNoEncontradaException {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -157,7 +168,7 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
     );
     final importe =
         double.tryParse(_importeController.text.trim().replaceAll(',', '.')) ??
-            0.0;
+        0.0;
 
     try {
       await repository.actualizarCobro(
@@ -234,9 +245,11 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
       onBack: () {
         Navigator.maybePop(context);
       },
-      onSave: () {
-        _guardarCambios();
-      },
+      onSave: _esFacturaAnulada
+          ? null
+          : () {
+              _guardarCambios();
+            },
       onDelete: () {
         _confirmarEliminar();
       },
@@ -275,7 +288,9 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
                 const SizedBox(height: AppSpacing.lg),
                 AppSection(
                   title: 'Datos del cobro',
-                  subtitle: 'Actualiza la información del cobro y guarda los cambios.',
+                  subtitle: _esFacturaAnulada
+                      ? 'Factura anulada: solo se permite revisar y eliminar este cobro legacy.'
+                      : 'Actualiza la información del cobro y guarda los cambios.',
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -286,28 +301,29 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
                           labelText: 'Fecha',
                           suffixIcon: Icon(Icons.calendar_today),
                         ),
-                        onTap: _seleccionarFecha,
+                        onTap: _esFacturaAnulada ? null : _seleccionarFecha,
                         validator: (value) =>
                             (value == null || value.trim().isEmpty)
-                                ? 'La fecha es obligatoria'
-                                : null,
+                            ? 'La fecha es obligatoria'
+                            : null,
                       ),
                       const SizedBox(height: AppSpacing.lg),
                       TextFormField(
                         controller: _importeController,
+                        enabled: !_esFacturaAnulada,
                         keyboardType: const TextInputType.numberWithOptions(
                           decimal: true,
                         ),
-                        decoration: const InputDecoration(
-                          labelText: 'Importe',
-                        ),
+                        decoration: const InputDecoration(labelText: 'Importe'),
                         validator: (value) {
                           final raw = value?.trim() ?? '';
                           if (raw.isEmpty) {
                             return 'El importe es obligatorio';
                           }
 
-                          final parsed = double.tryParse(raw.replaceAll(',', '.'));
+                          final parsed = double.tryParse(
+                            raw.replaceAll(',', '.'),
+                          );
                           if (parsed == null) {
                             return 'Introduce un importe decimal valido';
                           }
@@ -322,6 +338,14 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
                       const SizedBox(height: AppSpacing.lg),
                       DropdownButtonFormField<String>(
                         initialValue: _metodoPagoSeleccionado,
+                        onChanged: _esFacturaAnulada
+                            ? null
+                            : (value) {
+                                if (value == null) return;
+                                setState(() {
+                                  _metodoPagoSeleccionado = value;
+                                });
+                              },
                         decoration: const InputDecoration(
                           labelText: 'Metodo de pago',
                         ),
@@ -333,18 +357,11 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
                               ),
                             )
                             .toList(),
-                        onChanged: (value) {
-                          if (value == null) {
-                            return;
-                          }
-                          setState(() {
-                            _metodoPagoSeleccionado = value;
-                          });
-                        },
                       ),
                       const SizedBox(height: AppSpacing.lg),
                       TextFormField(
                         controller: _referenciaController,
+                        enabled: !_esFacturaAnulada,
                         decoration: const InputDecoration(
                           labelText: 'Referencia',
                         ),
@@ -352,6 +369,7 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
                       const SizedBox(height: AppSpacing.lg),
                       TextFormField(
                         controller: _observacionesController,
+                        enabled: !_esFacturaAnulada,
                         decoration: const InputDecoration(
                           labelText: 'Observaciones',
                         ),
@@ -359,11 +377,12 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
                         maxLines: 5,
                       ),
                       const SizedBox(height: AppSpacing.xl),
-                      AppPrimaryButton(
-                        onPressed: _guardarCambios,
-                        icon: Icons.save,
-                        label: 'Guardar cambios',
-                      ),
+                      if (!_esFacturaAnulada)
+                        AppPrimaryButton(
+                          onPressed: _guardarCambios,
+                          icon: Icons.save,
+                          label: 'Guardar cambios',
+                        ),
                     ],
                   ),
                 ),

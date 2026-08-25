@@ -23,9 +23,9 @@ class TimelineRepository {
   Stream<List<TimelineEvent>> observarEventosGlobales({
     int limit = TimelineEventsDao.defaultGlobalLimit,
   }) {
-    return _dao.observarRecientesGlobales(limit: limit).map(
-      (rows) => rows.map((row) => row.toDomain()).toList(),
-    );
+    return _dao
+        .observarRecientesGlobales(limit: limit)
+        .map((rows) => rows.map((row) => row.toDomain()).toList());
   }
 
   Future<List<TimelineEvent>> obtenerTodosLosEventosGlobales() async {
@@ -45,9 +45,9 @@ class TimelineRepository {
   }
 
   Stream<List<TimelineEvent>> observarEventos(String expedienteId) {
-    return _dao.observarPorExpediente(expedienteId).map(
-      (rows) => rows.map((row) => row.toDomain()).toList(),
-    );
+    return _dao
+        .observarPorExpediente(expedienteId)
+        .map((rows) => rows.map((row) => row.toDomain()).toList());
   }
 
   Future<void> eliminarEventos(String expedienteId) {
@@ -165,6 +165,40 @@ class TimelineRepository {
       titulo: titulo,
       descripcion: descripcion,
       referenciaId: cobroId,
+      fecha: fecha,
+    );
+  }
+
+  Future<void> registrarCobroEliminado({
+    required String expedienteId,
+    required String cobroId,
+    required String titulo,
+    String? descripcion,
+    DateTime? fecha,
+  }) {
+    return _registrarEventoNegocioUnico(
+      expedienteId: expedienteId,
+      tipo: TimelineEventType.cobroEliminado,
+      titulo: titulo,
+      descripcion: descripcion,
+      referenciaId: cobroId,
+      fecha: fecha,
+    );
+  }
+
+  Future<void> registrarFacturaBorradorEliminada({
+    required String expedienteId,
+    required String facturaId,
+    required String titulo,
+    String? descripcion,
+    DateTime? fecha,
+  }) {
+    return _registrarEventoNegocioUnico(
+      expedienteId: expedienteId,
+      tipo: TimelineEventType.facturaBorradorEliminada,
+      titulo: titulo,
+      descripcion: descripcion,
+      referenciaId: facturaId,
       fecha: fecha,
     );
   }
