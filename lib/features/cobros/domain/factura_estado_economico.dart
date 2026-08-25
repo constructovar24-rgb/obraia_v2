@@ -1,9 +1,29 @@
 import '../../facturas/domain/estado_factura.dart';
 import '../../facturas/domain/factura.dart' as factura_domain;
+import 'cobro.dart';
 
 enum EstadoEconomicoFactura { pendiente, parcialmenteCobrada, cobrada }
 
 const facturaEstadoEconomicoEpsilon = 0.000001;
+
+bool importeSuperaMaximoEditableCobro({
+  required double importe,
+  required double maximoImporte,
+}) {
+  return importe - maximoImporte > facturaEstadoEconomicoEpsilon;
+}
+
+double calcularMaximoImporteEditableCobro({
+  required double totalFactura,
+  required Iterable<Cobro> cobrosActuales,
+  required String cobroId,
+}) {
+  final otrosCobros = cobrosActuales
+      .where((cobro) => cobro.id != cobroId)
+      .fold<double>(0, (total, cobro) => total + cobro.importe);
+
+  return totalFactura - otrosCobros;
+}
 
 EstadoEconomicoFactura calcularEstadoEconomicoFactura({
   required double totalFactura,

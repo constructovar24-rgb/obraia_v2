@@ -136,14 +136,67 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
         double.tryParse(_importeController.text.trim().replaceAll(',', '.')) ??
             0.0;
 
-    await repository.actualizarCobro(
-      id: widget.cobro.id,
-      fecha: fecha,
-      importe: importe,
-      metodoPago: _metodoPagoSeleccionado,
-      referencia: _referenciaController.text.trim(),
-      observaciones: _observacionesController.text.trim(),
-    );
+    try {
+      await repository.actualizarCobro(
+        id: widget.cobro.id,
+        fecha: fecha,
+        importe: importe,
+        metodoPago: _metodoPagoSeleccionado,
+        referencia: _referenciaController.text.trim(),
+        observaciones: _observacionesController.text.trim(),
+      );
+    } on CobroSuperaPendienteException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'El importe supera el máximo permitido '
+            '(${error.pendienteActual.toStringAsFixed(2)} €).',
+          ),
+        ),
+      );
+      return;
+    } on FacturaNoCobrableException {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'El estado de la factura no permite modificar este cobro.',
+          ),
+        ),
+      );
+      return;
+    } on FacturaNoEncontradaException {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No se ha encontrado la factura del cobro.'),
+        ),
+      );
+      return;
+    } on CobroNoEncontradoException {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('El cobro ya no existe.')));
+      return;
+    } on ImporteCobroNoValidoException {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('El importe debe ser mayor que 0.')),
+      );
+      return;
+    }
 
     if (!mounted) {
       return;

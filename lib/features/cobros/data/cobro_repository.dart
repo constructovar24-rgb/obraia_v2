@@ -39,6 +39,18 @@ class FacturaNoCobrableException implements Exception {
   final String facturaId;
 }
 
+class CobroNoEncontradoException implements Exception {
+  const CobroNoEncontradoException({required this.cobroId});
+
+  final String cobroId;
+}
+
+class ImporteCobroNoValidoException implements Exception {
+  const ImporteCobroNoValidoException({required this.importe});
+
+  final double importe;
+}
+
 class CobroRepository {
   final AppDatabase database;
   final TimelineRepository _timelineRepository;
@@ -202,8 +214,48 @@ class CobroRepository {
     required String metodoPago,
     required String referencia,
     required String observaciones,
-  }) {
-    return database.cobrosDao.actualizarCobro(
+  }) async {
+    if (importe <= 0) {
+      throw ImporteCobroNoValidoException(importe: importe);
+    }
+
+    final cobroExistente = await database.cobrosDao.obtenerPorId(id);
+    if (cobroExistente == null) {
+      throw CobroNoEncontradoException(cobroId: id);
+    }
+
+    final factura = await database.facturasDao.obtenerPorId(
+      cobroExistente.facturaId,
+    );
+    if (factura == null) {
+      throw FacturaNoEncontradaException(facturaId: cobroExistente.facturaId);
+    }
+
+    if (!estadoFacturaAdmiteNuevosCobros(factura.estado)) {
+      throw FacturaNoCobrableException(facturaId: factura.id);
+    }
+
+    final cobrosActuales = await database.cobrosDao
+        .observarPorFactura(factura.id)
+        .first;
+    final maximoImporte = calcularMaximoImporteEditableCobro(
+      totalFactura: factura.total,
+      cobrosActuales: cobrosActuales,
+      cobroId: cobroExistente.id,
+    );
+
+    if (importeSuperaMaximoEditableCobro(
+      importe: importe,
+      maximoImporte: maximoImporte,
+    )) {
+      throw CobroSuperaPendienteException(
+        facturaId: factura.id,
+        importeSolicitado: importe,
+        pendienteActual: maximoImporte,
+      );
+    }
+
+    await database.cobrosDao.actualizarCobro(
       id: id,
       fecha: fecha,
       importe: importe,
