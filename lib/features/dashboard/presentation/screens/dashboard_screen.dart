@@ -20,6 +20,7 @@ import '../../../expedientes/domain/expediente.dart' as expediente_domain;
 import '../../../expedientes/presentation/screens/expedientes_screen.dart';
 import '../../../expedientes/presentation/screens/nuevo_expediente_screen.dart';
 import '../../../facturas/data/factura_repository.dart';
+import '../../../facturas/domain/estado_factura.dart';
 import '../../../facturas/domain/factura.dart' as factura_domain;
 import '../../../facturas/presentation/screens/facturas_screen.dart';
 import '../../../facturas/presentation/screens/nueva_factura_screen.dart';
@@ -1078,14 +1079,20 @@ class _FacturaSelectionSheet extends StatelessWidget {
                       return const AppLoading(message: 'Cargando facturas...');
                     }
 
-                    final facturas = snapshot.data ?? const [];
+                    final facturas = (snapshot.data ?? const [])
+                        .where(
+                          (factura) => estadoFacturaAdmiteNuevosCobros(
+                            factura.estado,
+                          ),
+                        )
+                        .toList();
 
                     if (facturas.isEmpty) {
                       return const AppEmptyState(
                         icon: Icons.receipt_long_outlined,
-                        title: 'Todavía no hay facturas',
+                        title: 'No hay facturas cobrables',
                         subtitle:
-                            'Crea una factura antes de registrar cobros desde el dashboard.',
+                            'Solo las facturas emitidas o vencidas admiten nuevos cobros.',
                       );
                     }
 

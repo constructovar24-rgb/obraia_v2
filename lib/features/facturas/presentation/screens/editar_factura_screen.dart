@@ -689,15 +689,17 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton.icon(
-                  onPressed: _abrirNuevoCobroDirecto,
-                  icon: const Icon(Icons.payments_outlined),
-                  label: const Text('Registrar cobro'),
+              if (estadoFacturaAdmiteNuevosCobros(_estadoSeleccionado)) ...[
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: _abrirNuevoCobroDirecto,
+                    icon: const Icon(Icons.payments_outlined),
+                    label: const Text('Registrar cobro'),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 12),
+                const SizedBox(height: 12),
+              ],
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
@@ -708,6 +710,7 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                         builder: (_) => CobrosScreen(
                           facturaId: widget.factura.id,
                           facturaCodigo: widget.factura.codigo,
+                          facturaEstado: _estadoSeleccionado,
                         ),
                       ),
                     );

@@ -12,6 +12,7 @@ import '../../../../core/widgets/app_error_state.dart';
 import '../../../../core/widgets/app_loading.dart';
 import '../../../../core/widgets/app_page_header.dart';
 import '../../../../core/widgets/app_primary_button.dart';
+import '../../../facturas/domain/estado_factura.dart';
 import '../../data/cobro_repository.dart';
 import '../../domain/cobro.dart' as cobro_domain;
 import 'editar_cobro_screen.dart';
@@ -22,15 +23,18 @@ class CobrosScreen extends ConsumerStatefulWidget {
     super.key,
     required this.facturaId,
     required this.facturaCodigo,
+    required this.facturaEstado,
   }) : mes = null;
 
   CobrosScreen.delMesActual({super.key})
     : facturaId = null,
       facturaCodigo = null,
+      facturaEstado = null,
       mes = DateTime.now();
 
   final String? facturaId;
   final String? facturaCodigo;
+  final EstadoFactura? facturaEstado;
   final DateTime? mes;
 
   @override
@@ -56,6 +60,8 @@ class _CobrosScreenState extends ConsumerState<CobrosScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = AppTypography.textTheme(colorScheme);
     final esPorFactura = widget.facturaId != null;
+    final admiteNuevosCobros = widget.facturaEstado != null &&
+        estadoFacturaAdmiteNuevosCobros(widget.facturaEstado!);
 
     void abrirNuevoCobro() {
       final facturaId = widget.facturaId;
@@ -74,7 +80,7 @@ class _CobrosScreenState extends ConsumerState<CobrosScreen> {
       onBack: () {
         Navigator.maybePop(context);
       },
-      onNew: esPorFactura ? abrirNuevoCobro : null,
+      onNew: admiteNuevosCobros ? abrirNuevoCobro : null,
       child: Scaffold(
         appBar: AppPageHeader(
           title: esPorFactura
@@ -106,9 +112,11 @@ class _CobrosScreenState extends ConsumerState<CobrosScreen> {
               return AppEmptyState(
                 icon: Icons.payments_outlined,
                 title: 'Todavía no hay cobros',
-                subtitle: 'Añade el primer cobro de esta factura.',
-                actionLabel: 'Nuevo cobro',
-                onAction: abrirNuevoCobro,
+                subtitle: admiteNuevosCobros
+                    ? 'Añade el primer cobro de esta factura.'
+                    : 'El estado de la factura no permite nuevos cobros.',
+                actionLabel: admiteNuevosCobros ? 'Nuevo cobro' : null,
+                onAction: admiteNuevosCobros ? abrirNuevoCobro : null,
               );
             }
 
@@ -164,7 +172,7 @@ class _CobrosScreenState extends ConsumerState<CobrosScreen> {
                       },
                     ),
                   ),
-                  if (esPorFactura)
+                  if (admiteNuevosCobros)
                     SizedBox(
                       width: double.infinity,
                       child: AppPrimaryButton(

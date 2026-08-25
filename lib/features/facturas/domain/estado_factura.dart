@@ -14,6 +14,10 @@ const estadosFactura = [
   EstadoFactura.anulada,
 ];
 
+bool estadoFacturaAdmiteNuevosCobros(EstadoFactura estado) {
+  return estado == EstadoFactura.emitida || estado == EstadoFactura.vencida;
+}
+
 EstadoFactura estadoFacturaFromString(String value) {
   switch (value.toLowerCase()) {
     case 'emitida':

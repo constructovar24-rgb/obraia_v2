@@ -6,6 +6,7 @@ import 'package:obraia_v2/database/app_database.dart';
 import 'package:obraia_v2/database/database_provider.dart';
 import 'package:obraia_v2/features/cobros/domain/cobro.dart' as cobro_domain;
 import 'package:obraia_v2/features/cobros/domain/factura_estado_economico.dart';
+import 'package:obraia_v2/features/facturas/domain/estado_factura.dart';
 import 'package:obraia_v2/features/timeline/data/timeline_repository.dart';
 import 'package:uuid/uuid.dart';
 
@@ -24,6 +25,18 @@ class CobroSuperaPendienteException implements Exception {
   final String facturaId;
   final double importeSolicitado;
   final double pendienteActual;
+}
+
+class FacturaNoEncontradaException implements Exception {
+  const FacturaNoEncontradaException({required this.facturaId});
+
+  final String facturaId;
+}
+
+class FacturaNoCobrableException implements Exception {
+  const FacturaNoCobrableException({required this.facturaId});
+
+  final String facturaId;
 }
 
 class CobroRepository {
@@ -124,7 +137,11 @@ class CobroRepository {
   }) async {
     final factura = await database.facturasDao.obtenerPorId(facturaId);
     if (factura == null) {
-      throw Exception('No se encontro la factura para registrar el cobro.');
+      throw FacturaNoEncontradaException(facturaId: facturaId);
+    }
+
+    if (!estadoFacturaAdmiteNuevosCobros(factura.estado)) {
+      throw FacturaNoCobrableException(facturaId: facturaId);
     }
 
     final cobrosActuales = await database.cobrosDao

@@ -210,6 +210,32 @@ class _NuevoCobroScreenState extends ConsumerState<NuevoCobroScreen> {
                               ),
                             );
                             return;
+                          } on FacturaNoEncontradaException {
+                            if (!context.mounted) {
+                              return;
+                            }
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'No se ha encontrado la factura del cobro.',
+                                ),
+                              ),
+                            );
+                            return;
+                          } on FacturaNoCobrableException {
+                            if (!context.mounted) {
+                              return;
+                            }
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'El estado de la factura no permite registrar nuevos cobros.',
+                                ),
+                              ),
+                            );
+                            return;
                           }
 
                           if (!context.mounted) {
