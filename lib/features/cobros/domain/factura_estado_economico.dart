@@ -99,7 +99,7 @@ FacturaEstadoEconomico calcularResumenEconomicoFactura({
     totalFactura: totalFactura,
     totalCobrado: totalCobrado,
   );
-  final estaAnulada = estadoFactura == EstadoFactura.anulada;
+  final esFacturaEfectiva = estadoFacturaEsEfectiva(estadoFactura);
   final tienePendiente = pendiente > facturaEstadoEconomicoEpsilon;
   final hoy = DateTime(
     fechaReferencia.year,
@@ -118,18 +118,19 @@ FacturaEstadoEconomico calcularResumenEconomicoFactura({
     totalCobrado: totalCobrado,
     pendiente: pendiente,
     estado: estadoEconomico,
-    tieneSaldoPendiente: !estaAnulada && tienePendiente,
+    tieneSaldoPendiente: esFacturaEfectiva && tienePendiente,
     esPendienteDeCobro:
-        !estaAnulada &&
+        esFacturaEfectiva &&
         estadoEconomico == EstadoEconomicoFactura.pendiente &&
         tienePendiente,
     esParcialmenteCobrada:
-        !estaAnulada &&
+        esFacturaEfectiva &&
         estadoEconomico == EstadoEconomicoFactura.parcialmenteCobrada &&
         tienePendiente,
-    estaVencida: !estaAnulada && tienePendiente && vencimiento.isBefore(hoy),
+    estaVencida:
+        esFacturaEfectiva && tienePendiente && vencimiento.isBefore(hoy),
     venceEnProximos7Dias:
-        !estaAnulada &&
+        esFacturaEfectiva &&
         tienePendiente &&
         !vencimiento.isBefore(hoy) &&
         !vencimiento.isAfter(limiteProximos7Dias),

@@ -87,8 +87,11 @@ class DashboardRepository {
         final presupuestosPendientesFacturarConteo =
             presupuestosPendientesFacturar!.length;
 
-        final numeroFacturas = facturas!.length;
-        final totalFacturado = facturas!.fold<double>(
+        final facturasEfectivas = facturas!
+            .where((factura) => estadoFacturaEsEfectiva(factura.estado))
+            .toList();
+        final numeroFacturas = facturasEfectivas.length;
+        final totalFacturado = facturasEfectivas.fold<double>(
           0,
           (sum, factura) => sum + factura.total,
         );
@@ -149,7 +152,7 @@ class DashboardRepository {
           if (resumenEconomico.esParcialmenteCobrada) {
             facturasParcialmenteCobradas += 1;
           }
-          if (factura.estado != EstadoFactura.anulada &&
+          if (estadoFacturaEsEfectiva(factura.estado) &&
               resumenEconomico.estado == EstadoEconomicoFactura.cobrada) {
             facturasCobradas += 1;
           }

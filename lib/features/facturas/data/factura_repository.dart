@@ -42,11 +42,7 @@ class FacturaRepository {
   Stream<List<factura_domain.Factura>> observarFacturadoEnMes(DateTime mes) {
     return observarFacturas().map(
       (facturas) => facturas.where((factura) {
-        final estadoFacturable =
-            factura.estado == EstadoFactura.emitida ||
-            factura.estado == EstadoFactura.cobrada ||
-            factura.estado == EstadoFactura.vencida;
-        return estadoFacturable &&
+        return estadoFacturaEsEfectiva(factura.estado) &&
             factura.fecha.year == mes.year &&
             factura.fecha.month == mes.month;
       }).toList(),

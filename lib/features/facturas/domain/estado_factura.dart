@@ -18,6 +18,12 @@ bool estadoFacturaAdmiteNuevosCobros(EstadoFactura estado) {
   return estado == EstadoFactura.emitida || estado == EstadoFactura.vencida;
 }
 
+bool estadoFacturaEsEfectiva(EstadoFactura estado) {
+  return estado == EstadoFactura.emitida ||
+      estado == EstadoFactura.cobrada ||
+      estado == EstadoFactura.vencida;
+}
+
 EstadoFactura estadoFacturaFromString(String value) {
   switch (value.toLowerCase()) {
     case 'emitida':
