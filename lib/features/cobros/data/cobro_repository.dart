@@ -179,17 +179,20 @@ class CobroRepository {
 
     final cobroId = const Uuid().v4();
 
-    await database.cobrosDao.insertarCobro(
-      CobrosCompanion.insert(
-        id: cobroId,
-        facturaId: facturaId,
-        fecha: Value(fecha),
-        importe: Value(importe),
-        metodoPago: Value(metodoPago),
-        referencia: Value(referencia),
-        observaciones: Value(observaciones),
-      ),
-    );
+    await database.transaction(() async {
+      await database.cobrosDao.insertarCobro(
+        CobrosCompanion.insert(
+          id: cobroId,
+          facturaId: facturaId,
+          fecha: Value(fecha),
+          importe: Value(importe),
+          metodoPago: Value(metodoPago),
+          referencia: Value(referencia),
+          observaciones: Value(observaciones),
+        ),
+      );
+      await _sincronizarEstadoFactura(factura.id);
+    });
 
     final expedienteId = await _obtenerExpedienteIdDesdePresupuestoOrigen(
       factura.presupuestoOrigenId,
@@ -231,7 +234,7 @@ class CobroRepository {
       throw FacturaNoEncontradaException(facturaId: cobroExistente.facturaId);
     }
 
-    if (!estadoFacturaAdmiteNuevosCobros(factura.estado)) {
+    if (!estadoFacturaAdmiteModificarCobros(factura.estado)) {
       throw FacturaNoCobrableException(facturaId: factura.id);
     }
 
@@ -255,18 +258,55 @@ class CobroRepository {
       );
     }
 
-    await database.cobrosDao.actualizarCobro(
-      id: id,
-      fecha: fecha,
-      importe: importe,
-      metodoPago: metodoPago,
-      referencia: referencia,
-      observaciones: observaciones,
-    );
+    await database.transaction(() async {
+      await database.cobrosDao.actualizarCobro(
+        id: id,
+        fecha: fecha,
+        importe: importe,
+        metodoPago: metodoPago,
+        referencia: referencia,
+        observaciones: observaciones,
+      );
+      await _sincronizarEstadoFactura(factura.id);
+    });
   }
 
-  Future<void> eliminarCobro(String id) {
-    return database.cobrosDao.eliminarCobro(id);
+  Future<void> eliminarCobro(String id) async {
+    final cobro = await database.cobrosDao.obtenerPorId(id);
+    if (cobro == null) throw CobroNoEncontradoException(cobroId: id);
+    final factura = await database.facturasDao.obtenerPorId(cobro.facturaId);
+    if (factura == null) {
+      throw FacturaNoEncontradaException(facturaId: cobro.facturaId);
+    }
+    if (!estadoFacturaAdmiteModificarCobros(factura.estado)) {
+      throw FacturaNoCobrableException(facturaId: factura.id);
+    }
+    await database.transaction(() async {
+      await database.cobrosDao.eliminarCobro(id);
+      await _sincronizarEstadoFactura(factura.id);
+    });
+  }
+
+  Future<void> _sincronizarEstadoFactura(String facturaId) async {
+    final factura = await database.facturasDao.obtenerPorId(facturaId);
+    if (factura == null) return;
+    final cobros = await database.cobrosDao.observarPorFactura(facturaId).first;
+    final totalCobrado = cobros.fold<double>(
+      0,
+      (suma, cobro) => suma + cobro.importe,
+    );
+    final estado = resolverEstadoDocumentalFactura(
+      estadoActual: factura.estado,
+      totalFactura: factura.total,
+      totalCobrado: totalCobrado,
+      fechaVencimiento: factura.fechaVencimiento,
+    );
+    if (estado != factura.estado) {
+      await database.facturasDao.actualizarEstado(
+        facturaId,
+        estadoFacturaToString(estado),
+      );
+    }
   }
 
   Future<String?> _obtenerExpedienteIdDesdePresupuestoOrigen(

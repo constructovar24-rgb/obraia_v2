@@ -28,6 +28,15 @@ class PresupuestoYaConvertidoException implements Exception {
   final String facturaId;
 }
 
+class FacturaEmisionException implements Exception {
+  const FacturaEmisionException(this.mensaje);
+  final String mensaje;
+}
+
+class FacturaAnulacionConCobrosException implements Exception {
+  const FacturaAnulacionConCobrosException();
+}
+
 class FacturaRepository {
   final AppDatabase database;
   final TimelineRepository _timelineRepository;
@@ -36,7 +45,10 @@ class FacturaRepository {
     : _timelineRepository = TimelineRepository(database.timelineEventsDao);
 
   Stream<List<factura_domain.Factura>> observarFacturas() {
-    return database.facturasDao.observarFacturas();
+    return database.facturasDao.observarFacturas().asyncMap((facturas) async {
+      final cambio = await _reconciliarFacturas(facturas);
+      return cambio ? database.facturasDao.observarFacturas().first : facturas;
+    });
   }
 
   Stream<List<factura_domain.Factura>> observarFacturadoEnMes(DateTime mes) {
@@ -128,16 +140,37 @@ class FacturaRepository {
   }
 
   Stream<List<factura_domain.Factura>> observarPorCliente(String clienteId) {
-    return database.facturasDao.observarPorCliente(clienteId);
+    return observarFacturas().map(
+      (facturas) =>
+          facturas.where((factura) => factura.clienteId == clienteId).toList(),
+    );
   }
 
   Stream<List<factura_domain.Factura>> observarPorExpediente(
     String expedienteId,
   ) {
-    return database.facturasDao.observarPorExpediente(expedienteId);
+    return observarFacturas().asyncMap((facturas) async {
+      final presupuestos = await database.presupuestosDao
+          .observarPresupuestos()
+          .first;
+      final ids = presupuestos
+          .where((p) => p.expedienteId == expedienteId)
+          .map((p) => p.id)
+          .toSet();
+      return facturas
+          .where(
+            (f) =>
+                f.presupuestoOrigenId != null &&
+                ids.contains(f.presupuestoOrigenId),
+          )
+          .toList();
+    });
   }
 
-  Future<factura_domain.Factura?> obtenerPorId(String facturaId) {
+  Future<factura_domain.Factura?> obtenerPorId(String facturaId) async {
+    final factura = await database.facturasDao.obtenerPorId(facturaId);
+    if (factura == null) return null;
+    await _reconciliarFactura(factura);
     return database.facturasDao.obtenerPorId(facturaId);
   }
 
@@ -187,7 +220,7 @@ class FacturaRepository {
         clienteId: clienteId,
         fecha: Value(fecha),
         fechaVencimiento: Value(fechaVencimiento),
-        estado: Value(estadoFacturaToString(estado)),
+        estado: const Value('borrador'),
         subtotal: Value(subtotal),
         iva: Value(iva),
         total: Value(total),
@@ -279,21 +312,29 @@ class FacturaRepository {
     required String facturaId,
     required double subtotal,
     required double iva,
-  }) {
+  }) async {
     final total = subtotal + iva;
-
-    return database.facturasDao.actualizarTotales(
+    await database.facturasDao.actualizarTotales(
       facturaId: facturaId,
       subtotal: subtotal,
       iva: iva,
       total: total,
     );
+    final factura = await database.facturasDao.obtenerPorId(facturaId);
+    if (factura != null) await _reconciliarFactura(factura);
   }
 
-  Future<void> actualizarEstado(String facturaId, EstadoFactura estado) {
-    return _actualizarEstadoConEvento(
-      facturaId: facturaId,
-      nuevoEstado: estado,
+  Future<void> actualizarEstado(String facturaId, EstadoFactura estado) async {
+    if (estado == EstadoFactura.emitida) {
+      await emitirFactura(facturaId);
+      return;
+    }
+    if (estado == EstadoFactura.anulada) {
+      await anularFactura(facturaId);
+      return;
+    }
+    throw StateError(
+      'El estado documental no puede seleccionarse manualmente.',
     );
   }
 
@@ -302,30 +343,123 @@ class FacturaRepository {
     required String clienteId,
     required DateTime fecha,
     required DateTime fechaVencimiento,
-    required EstadoFactura estado,
     required String observaciones,
   }) async {
     final facturaActual = await database.facturasDao.obtenerPorId(id);
 
-    await database.facturasDao.actualizarFactura(
-      id: id,
-      clienteId: clienteId,
-      fecha: fecha,
-      fechaVencimiento: fechaVencimiento,
-      estado: estadoFacturaToString(estado),
-      observaciones: observaciones,
-    );
-
-    if (_esTransicionRealAAnulada(
-      estadoAnterior: facturaActual?.estado,
-      estadoNuevo: estado,
-    )) {
-      await _registrarFacturaAnuladaSiAplica(
-        facturaId: id,
-        facturaCodigo: facturaActual?.codigo,
-        presupuestoOrigenId: facturaActual?.presupuestoOrigenId,
+    await database.transaction(() async {
+      await database.facturasDao.actualizarFactura(
+        id: id,
+        clienteId: clienteId,
+        fecha: fecha,
+        fechaVencimiento: fechaVencimiento,
+        estado: estadoFacturaToString(
+          facturaActual?.estado ?? EstadoFactura.borrador,
+        ),
+        observaciones: observaciones,
       );
-    }
+      final actualizada = await database.facturasDao.obtenerPorId(id);
+      if (actualizada != null) {
+        await _reconciliarFactura(actualizada);
+      }
+    });
+  }
+
+  Future<void> emitirFactura(String facturaId) async {
+    await database.transaction(() async {
+      final factura = await database.facturasDao.obtenerPorId(facturaId);
+      if (factura == null) {
+        throw const FacturaEmisionException('La factura no existe.');
+      }
+      final cliente = await database.clientesDao.obtenerCliente(
+        factura.clienteId,
+      );
+      final lineas = await database.facturaLineasDao.obtenerPorFactura(
+        facturaId,
+      );
+      final motivo = validarEmisionFactura(
+        estadoActual: factura.estado,
+        clienteExiste: cliente != null && !cliente.eliminado,
+        lineas: lineas.map(
+          (linea) => DatosLineaEmision(
+            cantidad: linea.cantidad,
+            precioUnitario: linea.precioUnitario,
+          ),
+        ),
+        total: factura.total,
+        fechaFactura: factura.fecha,
+        fechaVencimiento: factura.fechaVencimiento,
+      );
+      if (motivo != null) {
+        throw FacturaEmisionException(motivo);
+      }
+      final cobros = await database.cobrosDao
+          .observarPorFactura(facturaId)
+          .first;
+      final cobrado = cobros.fold<double>(
+        0,
+        (suma, cobro) => suma + cobro.importe,
+      );
+      final estado = resolverEstadoDocumentalFactura(
+        estadoActual: EstadoFactura.emitida,
+        totalFactura: factura.total,
+        totalCobrado: cobrado,
+        fechaVencimiento: factura.fechaVencimiento,
+      );
+      await database.facturasDao.actualizarEstado(
+        facturaId,
+        estadoFacturaToString(estado),
+      );
+    });
+  }
+
+  Future<void> anularFactura(String facturaId) async {
+    await database.transaction(() async {
+      final factura = await database.facturasDao.obtenerPorId(facturaId);
+      if (factura == null || factura.estado == EstadoFactura.anulada) return;
+      final cobros = await database.cobrosDao
+          .observarPorFactura(facturaId)
+          .first;
+      if (cobros.isNotEmpty) throw const FacturaAnulacionConCobrosException();
+      await _actualizarEstadoConEvento(
+        facturaId: facturaId,
+        nuevoEstado: EstadoFactura.anulada,
+      );
+    });
+  }
+
+  Future<bool> _reconciliarFacturas(
+    List<factura_domain.Factura> facturas,
+  ) async {
+    var cambio = false;
+    await database.transaction(() async {
+      for (final factura in facturas) {
+        cambio = await _reconciliarFactura(factura) || cambio;
+      }
+    });
+    return cambio;
+  }
+
+  Future<bool> _reconciliarFactura(factura_domain.Factura factura) async {
+    final cobros = await database.cobrosDao
+        .observarPorFactura(factura.id)
+        .first;
+    final cobrado = cobros.fold<double>(
+      0,
+      (suma, cobro) => suma + cobro.importe,
+    );
+    final estado = resolverEstadoDocumentalFactura(
+      estadoActual: factura.estado,
+      totalFactura: factura.total,
+      totalCobrado: cobrado,
+      fechaVencimiento: factura.fechaVencimiento,
+    );
+    if (estado == factura.estado) return false;
+    await database.facturasDao.actualizarEstado(
+      factura.id,
+      estadoFacturaToString(estado),
+    );
+    return true;
   }
 
   Future<void> eliminarFactura(String facturaId) async {

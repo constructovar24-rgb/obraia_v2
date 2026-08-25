@@ -322,7 +322,6 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
       clienteId: _clienteSeleccionadoId!,
       fecha: fecha,
       fechaVencimiento: fechaVencimiento,
-      estado: _estadoSeleccionado,
       observaciones: _observacionesController.text.trim(),
     );
 
@@ -332,6 +331,48 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
     Navigator.of(context).pop();
   }
 
+  Future<void> _emitirFactura() async {
+    try {
+      final repository = ref.read(facturaRepositoryProvider);
+      await repository.emitirFactura(widget.factura.id);
+      final emitida = await repository.obtenerPorId(widget.factura.id);
+      if (!mounted) return;
+      setState(
+        () => _estadoSeleccionado =
+            emitida?.estado ?? EstadoFactura.emitida,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Factura emitida.')),
+      );
+    } on FacturaEmisionException catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error.mensaje)),
+      );
+    }
+  }
+
+  Future<void> _anularFactura() async {
+    try {
+      await ref
+          .read(facturaRepositoryProvider)
+          .anularFactura(widget.factura.id);
+      if (!mounted) return;
+      setState(() => _estadoSeleccionado = EstadoFactura.anulada);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Factura anulada.')),
+      );
+    } on FacturaAnulacionConCobrosException {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'No se puede anular una factura con cobros. Debe resolverse mediante devolución o abono cuando esa funcionalidad esté disponible.',
+          ),
+        ),
+      );
+    }
+  }
   Future<void> _abrirNuevoCobroDirecto() async {
     await Navigator.push(
       context,
@@ -483,27 +524,9 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                     : null,
               ),
               const SizedBox(height: 20),
-              DropdownButtonFormField<EstadoFactura>(
-                initialValue: _estadoSeleccionado,
-                decoration: const InputDecoration(
-                  labelText: 'Estado',
-                ),
-                items: estadosFactura
-                    .map(
-                      (estado) => DropdownMenuItem<EstadoFactura>(
-                        value: estado,
-                        child: Text(estadoFacturaToLabel(estado)),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  if (value == null) {
-                    return;
-                  }
-                  setState(() {
-                    _estadoSeleccionado = value;
-                  });
-                },
+              InputDecorator(
+                decoration: const InputDecoration(labelText: 'Estado'),
+                child: Text(estadoFacturaToLabel(_estadoSeleccionado)),
               ),
               const SizedBox(height: 20),
               TextFormField(
@@ -523,6 +546,28 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                   label: const Text('Guardar cambios'),
                 ),
               ),
+              if (_estadoSeleccionado == EstadoFactura.borrador) ...[
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: _emitirFactura,
+                    icon: const Icon(Icons.send_outlined),
+                    label: const Text('Emitir factura'),
+                  ),
+                ),
+              ],
+              if (_estadoSeleccionado != EstadoFactura.anulada) ...[
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: _anularFactura,
+                    icon: const Icon(Icons.cancel_outlined),
+                    label: const Text('Anular factura'),
+                  ),
+                ),
+              ],
               const SizedBox(height: 24),
               const Text(
                 'Lineas de factura',

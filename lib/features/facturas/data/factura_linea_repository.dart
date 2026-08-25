@@ -98,20 +98,21 @@ class FacturaLineaRepository {
     final totales = calcularTotalesFactura([...lineas, nuevaLinea]);
     await _validarTotales(facturaId, totales);
 
-    await database.facturaLineasDao.insertarLinea(
-      FacturaLineasCompanion.insert(
-        id: nuevaLinea.id,
-        facturaId: facturaId,
-        descripcion: descripcion,
-        cantidad: cantidad,
-        unidad: Value(unidad),
-        precioUnitario: precioUnitario,
-        descuento: Value(descuento),
-        importe: Value(importe),
-      ),
-    );
-
-    await _persistirTotales(facturaId, totales);
+    await database.transaction(() async {
+      await database.facturaLineasDao.insertarLinea(
+        FacturaLineasCompanion.insert(
+          id: nuevaLinea.id,
+          facturaId: facturaId,
+          descripcion: descripcion,
+          cantidad: cantidad,
+          unidad: Value(unidad),
+          precioUnitario: precioUnitario,
+          descuento: Value(descuento),
+          importe: Value(importe),
+        ),
+      );
+      await _persistirTotales(facturaId, totales);
+    });
   }
 
   Future<void> actualizarLinea({
@@ -144,19 +145,20 @@ class FacturaLineaRepository {
     );
     await _validarTotales(facturaId, totales);
 
-    await database.facturaLineasDao.actualizarLinea(
-      id,
-      FacturaLineasCompanion(
-        descripcion: Value(descripcion),
-        cantidad: Value(cantidad),
-        unidad: Value(unidad),
-        precioUnitario: Value(precioUnitario),
-        descuento: Value(descuento),
-        importe: Value(importe),
-      ),
-    );
-
-    await _persistirTotales(facturaId, totales);
+    await database.transaction(() async {
+      await database.facturaLineasDao.actualizarLinea(
+        id,
+        FacturaLineasCompanion(
+          descripcion: Value(descripcion),
+          cantidad: Value(cantidad),
+          unidad: Value(unidad),
+          precioUnitario: Value(precioUnitario),
+          descuento: Value(descuento),
+          importe: Value(importe),
+        ),
+      );
+      await _persistirTotales(facturaId, totales);
+    });
   }
 
   Future<void> eliminarLinea(String id, String facturaId) async {
@@ -166,8 +168,10 @@ class FacturaLineaRepository {
     );
     await _validarTotales(facturaId, totales);
 
-    await database.facturaLineasDao.eliminarLinea(id);
-    await _persistirTotales(facturaId, totales);
+    await database.transaction(() async {
+      await database.facturaLineasDao.eliminarLinea(id);
+      await _persistirTotales(facturaId, totales);
+    });
   }
 
   Stream<List<factura_linea_domain.FacturaLinea>> observarPorFactura(

@@ -60,8 +60,12 @@ class _CobrosScreenState extends ConsumerState<CobrosScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = AppTypography.textTheme(colorScheme);
     final esPorFactura = widget.facturaId != null;
-    final admiteNuevosCobros = widget.facturaEstado != null &&
+    final admiteNuevosCobros =
+        widget.facturaEstado != null &&
         estadoFacturaAdmiteNuevosCobros(widget.facturaEstado!);
+    final admiteModificarCobros =
+        widget.facturaEstado == null ||
+        estadoFacturaAdmiteModificarCobros(widget.facturaEstado!);
 
     void abrirNuevoCobro() {
       final facturaId = widget.facturaId;
@@ -158,15 +162,17 @@ class _CobrosScreenState extends ConsumerState<CobrosScreen> {
                               ),
                             ),
                             isThreeLine: true,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      EditarCobroScreen(cobro: cobro),
-                                ),
-                              );
-                            },
+                            onTap: admiteModificarCobros
+                                ? () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            EditarCobroScreen(cobro: cobro),
+                                      ),
+                                    );
+                                  }
+                                : null,
                           ),
                         );
                       },

@@ -25,6 +25,7 @@ enum FacturasInitialFilterType {
   emitida,
   cobrada,
   anulada,
+  vencida,
   cliente,
   expediente,
   vencidas,
@@ -57,6 +58,9 @@ class FacturasInitialFilter {
 
   const FacturasInitialFilter.anulada({String? label})
     : this._(type: FacturasInitialFilterType.anulada, label: label);
+
+  const FacturasInitialFilter.vencida({String? label})
+    : this._(type: FacturasInitialFilterType.vencida, label: label);
 
   const FacturasInitialFilter.vencidas({String? label})
     : this._(type: FacturasInitialFilterType.vencidas, label: label);
@@ -149,6 +153,7 @@ class _FacturasScreenState extends ConsumerState<FacturasScreen> {
       case FacturasInitialFilterType.emitida:
       case FacturasInitialFilterType.cobrada:
       case FacturasInitialFilterType.anulada:
+      case FacturasInitialFilterType.vencida:
       case FacturasInitialFilterType.vencidas:
       case FacturasInitialFilterType.vencenProximos7Dias:
       case FacturasInitialFilterType.saldoPendiente:
@@ -183,6 +188,10 @@ class _FacturasScreenState extends ConsumerState<FacturasScreen> {
       case FacturasInitialFilterType.anulada:
         return facturas
             .where((item) => item.factura.estado == EstadoFactura.anulada)
+            .toList();
+      case FacturasInitialFilterType.vencida:
+        return facturas
+            .where((item) => item.factura.estado == EstadoFactura.vencida)
             .toList();
       case FacturasInitialFilterType.vencidas:
         return facturas
@@ -234,6 +243,8 @@ class _FacturasScreenState extends ConsumerState<FacturasScreen> {
         return 'Cobrada';
       case FacturasInitialFilterType.anulada:
         return 'Anulada';
+      case FacturasInitialFilterType.vencida:
+        return 'Vencida';
       case FacturasInitialFilterType.cliente:
         return 'Cliente';
       case FacturasInitialFilterType.expediente:
