@@ -8,6 +8,7 @@ import 'package:obraia_v2/features/cobros/domain/cobro.dart' as cobro_domain;
 import 'package:obraia_v2/features/cobros/domain/factura_estado_economico.dart';
 import 'package:obraia_v2/features/facturas/domain/estado_factura.dart';
 import 'package:obraia_v2/features/facturas/domain/factura_presupuesto_policy.dart';
+import 'package:obraia_v2/features/facturas/domain/factura_totales.dart';
 import 'package:obraia_v2/features/facturas/domain/factura.dart'
     as factura_domain;
 import 'package:obraia_v2/features/presupuestos/domain/presupuesto.dart'
@@ -49,6 +50,26 @@ class FacturaEmisionException implements Exception {
 
 class FacturaAnulacionConCobrosException implements Exception {
   const FacturaAnulacionConCobrosException();
+}
+
+class ActualizacionTotalesIncompatibleConCobrosException implements Exception {
+  const ActualizacionTotalesIncompatibleConCobrosException({
+    required this.facturaId,
+    required this.nuevoTotalFactura,
+    required this.totalCobrado,
+  });
+
+  final String facturaId;
+  final double nuevoTotalFactura;
+  final double totalCobrado;
+}
+
+class FacturaNoEncontradaAlActualizarTotalesException implements Exception {
+  const FacturaNoEncontradaAlActualizarTotalesException({
+    required this.facturaId,
+  });
+
+  final String facturaId;
 }
 
 class FacturaNoEncontradaAlEliminarException implements Exception {
@@ -451,15 +472,42 @@ class FacturaRepository {
     required double subtotal,
     required double iva,
   }) async {
-    final total = subtotal + iva;
-    await database.facturasDao.actualizarTotales(
-      facturaId: facturaId,
-      subtotal: subtotal,
-      iva: iva,
-      total: total,
-    );
-    final factura = await database.facturasDao.obtenerPorId(facturaId);
-    if (factura != null) await _reconciliarFactura(factura);
+    await database.transaction(() async {
+      final factura = await database.facturasDao.obtenerPorId(facturaId);
+      if (factura == null) {
+        throw FacturaNoEncontradaAlActualizarTotalesException(
+          facturaId: facturaId,
+        );
+      }
+
+      final cobros = await database.cobrosDao
+          .observarPorFactura(facturaId)
+          .first;
+      final totalCobrado = cobros.fold<double>(
+        0,
+        (suma, cobro) => suma + cobro.importe,
+      );
+      final total = subtotal + iva;
+      if (!totalFacturaCubreCobros(
+        totalFactura: total,
+        totalCobrado: totalCobrado,
+      )) {
+        throw ActualizacionTotalesIncompatibleConCobrosException(
+          facturaId: facturaId,
+          nuevoTotalFactura: total,
+          totalCobrado: totalCobrado,
+        );
+      }
+
+      await database.facturasDao.actualizarTotales(
+        facturaId: facturaId,
+        subtotal: subtotal,
+        iva: iva,
+        total: total,
+      );
+      final actualizada = await database.facturasDao.obtenerPorId(facturaId);
+      if (actualizada != null) await _reconciliarFactura(actualizada);
+    });
   }
 
   Future<void> actualizarEstado(String facturaId, EstadoFactura estado) async {

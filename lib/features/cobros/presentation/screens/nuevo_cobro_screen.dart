@@ -197,6 +197,19 @@ class _NuevoCobroScreenState extends ConsumerState<NuevoCobroScreen> {
                               referencia: _referenciaController.text.trim(),
                               observaciones: _observacionesController.text.trim(),
                             );
+                          } on ImporteCobroNoValidoException {
+                            if (!context.mounted) {
+                              return;
+                            }
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'El importe debe ser un número finito mayor que 0.',
+                                ),
+                              ),
+                            );
+                            return;
                           } on CobroSuperaPendienteException {
                             if (!context.mounted) {
                               return;

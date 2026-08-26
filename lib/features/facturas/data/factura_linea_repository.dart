@@ -25,6 +25,14 @@ class TotalFacturaInferiorACobrosException implements Exception {
   final double totalCobrado;
 }
 
+class FacturaNoEncontradaAlModificarLineasException implements Exception {
+  const FacturaNoEncontradaAlModificarLineasException({
+    required this.facturaId,
+  });
+
+  final String facturaId;
+}
+
 class FacturaLineaRepository {
   final AppDatabase database;
 
@@ -79,26 +87,35 @@ class FacturaLineaRepository {
     required double precioUnitario,
     required double descuento,
   }) async {
-    final importe = _calcularImporte(
-      cantidad: cantidad,
-      precioUnitario: precioUnitario,
-      descuento: descuento,
-    );
-    final lineas = await database.facturaLineasDao.obtenerPorFactura(facturaId);
-    final nuevaLinea = factura_linea_domain.FacturaLinea(
-      id: const Uuid().v4(),
-      facturaId: facturaId,
-      descripcion: descripcion,
-      cantidad: cantidad,
-      unidad: unidad,
-      precioUnitario: precioUnitario,
-      descuento: descuento,
-      importe: importe,
-    );
-    final totales = calcularTotalesFactura([...lineas, nuevaLinea]);
-    await _validarTotales(facturaId, totales);
-
     await database.transaction(() async {
+      final factura = await database.facturasDao.obtenerPorId(facturaId);
+      if (factura == null) {
+        throw FacturaNoEncontradaAlModificarLineasException(
+          facturaId: facturaId,
+        );
+      }
+
+      final importe = _calcularImporte(
+        cantidad: cantidad,
+        precioUnitario: precioUnitario,
+        descuento: descuento,
+      );
+      final lineas = await database.facturaLineasDao.obtenerPorFactura(
+        facturaId,
+      );
+      final nuevaLinea = factura_linea_domain.FacturaLinea(
+        id: const Uuid().v4(),
+        facturaId: facturaId,
+        descripcion: descripcion,
+        cantidad: cantidad,
+        unidad: unidad,
+        precioUnitario: precioUnitario,
+        descuento: descuento,
+        importe: importe,
+      );
+      final totales = calcularTotalesFactura([...lineas, nuevaLinea]);
+      await _validarTotales(facturaId, totales);
+
       await database.facturaLineasDao.insertarLinea(
         FacturaLineasCompanion.insert(
           id: nuevaLinea.id,
@@ -124,28 +141,37 @@ class FacturaLineaRepository {
     required double precioUnitario,
     required double descuento,
   }) async {
-    final importe = _calcularImporte(
-      cantidad: cantidad,
-      precioUnitario: precioUnitario,
-      descuento: descuento,
-    );
-    final lineas = await database.facturaLineasDao.obtenerPorFactura(facturaId);
-    final nuevaLinea = factura_linea_domain.FacturaLinea(
-      id: id,
-      facturaId: facturaId,
-      descripcion: descripcion,
-      cantidad: cantidad,
-      unidad: unidad,
-      precioUnitario: precioUnitario,
-      descuento: descuento,
-      importe: importe,
-    );
-    final totales = calcularTotalesFactura(
-      sustituirLineaPorId(lineas: lineas, nuevaLinea: nuevaLinea),
-    );
-    await _validarTotales(facturaId, totales);
-
     await database.transaction(() async {
+      final factura = await database.facturasDao.obtenerPorId(facturaId);
+      if (factura == null) {
+        throw FacturaNoEncontradaAlModificarLineasException(
+          facturaId: facturaId,
+        );
+      }
+
+      final importe = _calcularImporte(
+        cantidad: cantidad,
+        precioUnitario: precioUnitario,
+        descuento: descuento,
+      );
+      final lineas = await database.facturaLineasDao.obtenerPorFactura(
+        facturaId,
+      );
+      final nuevaLinea = factura_linea_domain.FacturaLinea(
+        id: id,
+        facturaId: facturaId,
+        descripcion: descripcion,
+        cantidad: cantidad,
+        unidad: unidad,
+        precioUnitario: precioUnitario,
+        descuento: descuento,
+        importe: importe,
+      );
+      final totales = calcularTotalesFactura(
+        sustituirLineaPorId(lineas: lineas, nuevaLinea: nuevaLinea),
+      );
+      await _validarTotales(facturaId, totales);
+
       await database.facturaLineasDao.actualizarLinea(
         id,
         FacturaLineasCompanion(
@@ -162,13 +188,22 @@ class FacturaLineaRepository {
   }
 
   Future<void> eliminarLinea(String id, String facturaId) async {
-    final lineas = await database.facturaLineasDao.obtenerPorFactura(facturaId);
-    final totales = calcularTotalesFactura(
-      eliminarLineaPorId(lineas: lineas, lineaId: id),
-    );
-    await _validarTotales(facturaId, totales);
-
     await database.transaction(() async {
+      final factura = await database.facturasDao.obtenerPorId(facturaId);
+      if (factura == null) {
+        throw FacturaNoEncontradaAlModificarLineasException(
+          facturaId: facturaId,
+        );
+      }
+
+      final lineas = await database.facturaLineasDao.obtenerPorFactura(
+        facturaId,
+      );
+      final totales = calcularTotalesFactura(
+        eliminarLineaPorId(lineas: lineas, lineaId: id),
+      );
+      await _validarTotales(facturaId, totales);
+
       await database.facturaLineasDao.eliminarLinea(id);
       await _persistirTotales(facturaId, totales);
     });
