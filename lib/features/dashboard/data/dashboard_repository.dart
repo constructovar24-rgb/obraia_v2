@@ -7,6 +7,7 @@ import '../../cobros/domain/factura_estado_economico.dart';
 import '../../expedientes/domain/expediente.dart' as expediente_domain;
 import '../../facturas/domain/factura.dart' as factura_domain;
 import '../../facturas/domain/estado_factura.dart';
+import '../../facturas/domain/factura_presupuesto_policy.dart';
 import '../../presupuestos/domain/presupuesto.dart' as presupuesto_domain;
 import '../../cobros/data/cobro_repository.dart';
 import '../../expedientes/data/expediente_repository.dart';
@@ -72,6 +73,7 @@ class DashboardRepository {
         final now = DateTime.now();
 
         final presupuestosConFactura = facturas!
+            .where(facturaBloqueaConversion)
             .where((factura) {
               final presupuestoId = factura.presupuestoOrigenId;
               return presupuestoId != null && presupuestoId.trim().isNotEmpty;

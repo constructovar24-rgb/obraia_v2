@@ -4,8 +4,10 @@ import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:obraia_v2/database/app_database.dart';
 import 'package:obraia_v2/database/database_provider.dart';
+import 'package:obraia_v2/features/cobros/domain/cobro.dart' as cobro_domain;
 import 'package:obraia_v2/features/cobros/domain/factura_estado_economico.dart';
 import 'package:obraia_v2/features/facturas/domain/estado_factura.dart';
+import 'package:obraia_v2/features/facturas/domain/factura_presupuesto_policy.dart';
 import 'package:obraia_v2/features/facturas/domain/factura.dart'
     as factura_domain;
 import 'package:obraia_v2/features/presupuestos/domain/presupuesto.dart'
@@ -26,6 +28,18 @@ class PresupuestoYaConvertidoException implements Exception {
 
   final String presupuestoId;
   final String facturaId;
+}
+
+class PresupuestoNoAceptadoException implements Exception {
+  const PresupuestoNoAceptadoException();
+}
+
+class FacturaAnuladaConCobrosLegacyException implements Exception {
+  const FacturaAnuladaConCobrosLegacyException();
+}
+
+class CreacionManualConPresupuestoOrigenException implements Exception {
+  const CreacionManualConPresupuestoOrigenException();
 }
 
 class FacturaEmisionException implements Exception {
@@ -239,6 +253,31 @@ class FacturaRepository {
     String observaciones = '',
     String? presupuestoOrigenId,
   }) async {
+    if (presupuestoOrigenId != null && presupuestoOrigenId.trim().isNotEmpty) {
+      throw const CreacionManualConPresupuestoOrigenException();
+    }
+
+    return _insertarFactura(
+      clienteId: clienteId,
+      fecha: fecha,
+      fechaVencimiento: fechaVencimiento,
+      subtotal: subtotal,
+      iva: iva,
+      total: total,
+      observaciones: observaciones,
+    );
+  }
+
+  Future<String> _insertarFactura({
+    required String clienteId,
+    required DateTime fecha,
+    required DateTime fechaVencimiento,
+    required double subtotal,
+    required double iva,
+    required double total,
+    required String observaciones,
+    String? presupuestoOrigenId,
+  }) async {
     final facturaId = const Uuid().v4();
     final codigo = await _generarCodigoFactura();
 
@@ -266,49 +305,69 @@ class FacturaRepository {
   Future<String> convertirDesdePresupuesto(
     presupuesto_domain.Presupuesto presupuesto,
   ) async {
-    final facturaExistenteId = await database.facturasDao
-        .obtenerIdPorPresupuestoOrigen(presupuesto.id);
-    if (facturaExistenteId != null) {
-      throw PresupuestoYaConvertidoException(
-        presupuestoId: presupuesto.id,
-        facturaId: facturaExistenteId,
-      );
-    }
-
-    final expediente = await database.expedientesDao.obtenerExpediente(
-      presupuesto.expedienteId,
-    );
-
-    final clienteId = expediente?.clienteId;
-    if (clienteId == null || clienteId.trim().isEmpty) {
-      throw Exception(
-        'El presupuesto no tiene cliente asociado en su expediente.',
-      );
-    }
-
-    final lineas = await database.lineasPresupuestoDao.obtenerPorPresupuesto(
-      presupuesto.id,
-    );
-
-    final subtotal = presupuesto.importeTotal;
-    final iva = subtotal * presupuesto.ivaPorcentaje / 100;
-    final total = subtotal + iva;
-    final fechaFactura = DateTime.now();
-    final fechaVencimiento = fechaFactura.add(const Duration(days: 30));
-
     late final String facturaId;
 
     await database.transaction(() async {
-      facturaId = await crearFactura(
+      final presupuestos = await database.presupuestosDao
+          .observarPresupuestos()
+          .first;
+      final presupuestoPersistido = presupuestos
+          .where((actual) => actual.id == presupuesto.id)
+          .firstOrNull;
+      if (presupuestoPersistido == null) {
+        throw Exception('El presupuesto ya no existe.');
+      }
+
+      final facturas = await database.facturasDao.observarFacturas().first;
+      final cobros = await database.cobrosDao.observarCobros().first;
+      final bloqueo = obtenerBloqueoConversionPresupuesto(
+        estadoPresupuesto: presupuestoPersistido.estado,
+        presupuestoId: presupuestoPersistido.id,
+        facturas: facturas,
+        cobros: cobros,
+      );
+      if (bloqueo == BloqueoConversionPresupuesto.presupuestoNoAceptado) {
+        throw const PresupuestoNoAceptadoException();
+      }
+      if (bloqueo == BloqueoConversionPresupuesto.facturaAnuladaConCobros) {
+        throw const FacturaAnuladaConCobrosLegacyException();
+      }
+      if (bloqueo == BloqueoConversionPresupuesto.facturaNoAnuladaExistente) {
+        final bloqueante = facturasVinculadasAPresupuesto(
+          facturas,
+          presupuestoPersistido.id,
+        ).firstWhere(facturaBloqueaConversion);
+        throw PresupuestoYaConvertidoException(
+          presupuestoId: presupuestoPersistido.id,
+          facturaId: bloqueante.id,
+        );
+      }
+
+      final lineas = await database.lineasPresupuestoDao.obtenerPorPresupuesto(
+        presupuestoPersistido.id,
+      );
+      final expediente = await database.expedientesDao.obtenerExpediente(
+        presupuestoPersistido.expedienteId,
+      );
+      final clienteId = expediente?.clienteId;
+      if (clienteId == null || clienteId.trim().isEmpty) {
+        throw Exception(
+          'El presupuesto no tiene cliente asociado en su expediente.',
+        );
+      }
+
+      final subtotal = presupuestoPersistido.importeTotal;
+      final iva = subtotal * presupuestoPersistido.ivaPorcentaje / 100;
+      final fechaFactura = DateTime.now();
+      facturaId = await _insertarFactura(
         clienteId: clienteId,
         fecha: fechaFactura,
-        fechaVencimiento: fechaVencimiento,
-        estado: EstadoFactura.borrador,
+        fechaVencimiento: fechaFactura.add(const Duration(days: 30)),
         subtotal: subtotal,
         iva: iva,
-        total: total,
-        observaciones: presupuesto.descripcion,
-        presupuestoOrigenId: presupuesto.id,
+        total: subtotal + iva,
+        observaciones: presupuestoPersistido.descripcion,
+        presupuestoOrigenId: presupuestoPersistido.id,
       );
 
       for (final linea in lineas) {
@@ -327,14 +386,64 @@ class FacturaRepository {
       }
 
       await _timelineRepository.registrarFacturaCreada(
-        expedienteId: presupuesto.expedienteId,
+        expedienteId: presupuestoPersistido.expedienteId,
         facturaId: facturaId,
         titulo: 'Factura creada',
-        descripcion: 'Generada desde presupuesto ${presupuesto.codigo}',
+        descripcion:
+            'Generada desde presupuesto ${presupuestoPersistido.codigo}',
       );
     });
 
     return facturaId;
+  }
+
+  Stream<BloqueoConversionPresupuesto?> observarBloqueoConversion(
+    String presupuestoId,
+  ) {
+    return Stream<BloqueoConversionPresupuesto?>.multi((controller) {
+      List<presupuesto_domain.Presupuesto>? presupuestos;
+      List<factura_domain.Factura>? facturas;
+      List<cobro_domain.Cobro>? cobros;
+
+      void emitirSiCompleto() {
+        if (presupuestos == null || facturas == null || cobros == null) return;
+        final presupuesto = presupuestos!
+            .where((actual) => actual.id == presupuestoId)
+            .firstOrNull;
+        if (presupuesto == null) {
+          controller.add(BloqueoConversionPresupuesto.presupuestoNoAceptado);
+          return;
+        }
+        controller.add(
+          obtenerBloqueoConversionPresupuesto(
+            estadoPresupuesto: presupuesto.estado,
+            presupuestoId: presupuestoId,
+            facturas: facturas!,
+            cobros: cobros!,
+          ),
+        );
+      }
+
+      final subs = <StreamSubscription<dynamic>>[
+        database.presupuestosDao.observarPresupuestos().listen((data) {
+          presupuestos = data;
+          emitirSiCompleto();
+        }, onError: controller.addError),
+        database.facturasDao.observarFacturas().listen((data) {
+          facturas = data;
+          emitirSiCompleto();
+        }, onError: controller.addError),
+        database.cobrosDao.observarCobros().listen((data) {
+          cobros = data;
+          emitirSiCompleto();
+        }, onError: controller.addError),
+      ];
+      controller.onCancel = () async {
+        for (final sub in subs) {
+          await sub.cancel();
+        }
+      };
+    }).distinct();
   }
 
   Future<void> actualizarTotales({

@@ -14,6 +14,7 @@ import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/entity_summary_card.dart';
 import '../../../../core/widgets/status_chip.dart';
 import '../../../facturas/data/factura_repository.dart';
+import '../../../facturas/domain/factura_presupuesto_policy.dart';
 import '../../../facturas/presentation/screens/editar_factura_screen.dart';
 import '../../domain/linea_presupuesto.dart' as linea_domain;
 import '../../domain/presupuesto.dart' as presupuesto_domain;
@@ -23,10 +24,7 @@ import 'editar_linea_presupuesto_screen.dart';
 import 'nuevo_linea_presupuesto_screen.dart';
 
 class PresupuestoDetailScreen extends StatelessWidget {
-  const PresupuestoDetailScreen({
-    super.key,
-    required this.presupuesto,
-  });
+  const PresupuestoDetailScreen({super.key, required this.presupuesto});
 
   final presupuesto_domain.Presupuesto presupuesto;
 
@@ -85,10 +83,7 @@ class PresupuestoDetailScreen extends StatelessWidget {
     final textTheme = AppTypography.textTheme(colorScheme);
 
     return Scaffold(
-      appBar: const AppPageHeader(
-        showBackButton: true,
-        title: 'Presupuesto',
-      ),
+      appBar: const AppPageHeader(showBackButton: true, title: 'Presupuesto'),
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.md),
         children: [
@@ -138,7 +133,8 @@ class PresupuestoDetailScreen extends StatelessWidget {
                     return const AppEmptyState(
                       icon: Icons.format_list_bulleted,
                       title: 'Todavía no hay líneas de presupuesto',
-                      subtitle: 'Añade la primera línea para calcular el total.',
+                      subtitle:
+                          'Añade la primera línea para calcular el total.',
                     );
                   }
 
@@ -193,9 +189,10 @@ class PresupuestoDetailScreen extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) => EditarLineaPresupuestoScreen(
-                                        linea: linea,
-                                      ),
+                                      builder: (_) =>
+                                          EditarLineaPresupuestoScreen(
+                                            linea: linea,
+                                          ),
                                     ),
                                   );
                                 },
@@ -206,10 +203,7 @@ class PresupuestoDetailScreen extends StatelessWidget {
                         const SizedBox(height: AppSpacing.md),
                         const Divider(),
                         const SizedBox(height: AppSpacing.sm),
-                        Text(
-                          'Subtotal',
-                          style: textTheme.titleMedium,
-                        ),
+                        Text('Subtotal', style: textTheme.titleMedium),
                         const SizedBox(height: AppSpacing.xs),
                         Text(
                           _formatearMoneda(subtotal),
@@ -221,17 +215,11 @@ class PresupuestoDetailScreen extends StatelessWidget {
                           style: textTheme.titleMedium,
                         ),
                         const SizedBox(height: AppSpacing.xs),
-                        Text(
-                          _formatearMoneda(iva),
-                          style: textTheme.bodyLarge,
-                        ),
+                        Text(_formatearMoneda(iva), style: textTheme.bodyLarge),
                         const SizedBox(height: AppSpacing.sm),
                         const Divider(),
                         const SizedBox(height: AppSpacing.sm),
-                        Text(
-                          'TOTAL',
-                          style: textTheme.titleLarge,
-                        ),
+                        Text('TOTAL', style: textTheme.titleLarge),
                         const SizedBox(height: AppSpacing.xs),
                         Text(
                           _formatearMoneda(total),
@@ -247,65 +235,107 @@ class PresupuestoDetailScreen extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           Consumer(
             builder: (context, ref, _) {
-              return AppPrimaryButton(
-                onPressed: () async {
-                  final facturaRepository = ref.read(
-                    facturaRepositoryProvider,
+              final facturaRepository = ref.read(facturaRepositoryProvider);
+              return StreamBuilder<BloqueoConversionPresupuesto?>(
+                stream: facturaRepository.observarBloqueoConversion(
+                  presupuesto.id,
+                ),
+                builder: (context, snapshot) {
+                  final cargando =
+                      snapshot.connectionState == ConnectionState.waiting;
+                  final bloqueo = snapshot.data;
+                  final disponible = !cargando && bloqueo == null;
+                  final explicacion = switch (bloqueo) {
+                    BloqueoConversionPresupuesto.presupuestoNoAceptado =>
+                      'Solo los presupuestos aceptados pueden convertirse.',
+                    BloqueoConversionPresupuesto.facturaNoAnuladaExistente =>
+                      'Ya existe una factura activa o en borrador.',
+                    BloqueoConversionPresupuesto.facturaAnuladaConCobros =>
+                      'Existe una factura anulada con cobros históricos pendientes de saneamiento.',
+                    null => null,
+                  };
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      AppPrimaryButton(
+                        enabled: disponible,
+                        onPressed: disponible
+                            ? () async {
+                                try {
+                                  final facturaId = await facturaRepository
+                                      .convertirDesdePresupuesto(presupuesto);
+                                  final factura = await facturaRepository
+                                      .obtenerPorId(facturaId);
+
+                                  if (!context.mounted) return;
+                                  if (factura == null) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'No se pudo abrir la factura convertida.',
+                                        ),
+                                      ),
+                                    );
+                                    return;
+                                  }
+
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          EditarFacturaScreen(factura: factura),
+                                    ),
+                                  );
+                                } on PresupuestoYaConvertidoException {
+                                  if (!context.mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Ya existe una factura activa o en borrador.',
+                                      ),
+                                    ),
+                                  );
+                                } on PresupuestoNoAceptadoException {
+                                  if (!context.mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Solo los presupuestos aceptados pueden convertirse.',
+                                      ),
+                                    ),
+                                  );
+                                } on FacturaAnuladaConCobrosLegacyException {
+                                  if (!context.mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Existe una factura anulada con cobros históricos pendientes de saneamiento.',
+                                      ),
+                                    ),
+                                  );
+                                } catch (e) {
+                                  if (!context.mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'No se pudo convertir el presupuesto: $e',
+                                      ),
+                                    ),
+                                  );
+                                }
+                              }
+                            : null,
+                        label: 'Convertir en factura',
+                        icon: Icons.receipt_long_outlined,
+                      ),
+                      if (explicacion != null) ...[
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(explicacion, style: textTheme.bodySmall),
+                      ],
+                    ],
                   );
-
-                  try {
-                    final facturaId = await facturaRepository
-                        .convertirDesdePresupuesto(presupuesto);
-
-                    final factura = await facturaRepository.obtenerPorId(
-                      facturaId,
-                    );
-
-                    if (!context.mounted) return;
-
-                    if (factura == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'No se pudo abrir la factura convertida.',
-                          ),
-                        ),
-                      );
-                      return;
-                    }
-
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => EditarFacturaScreen(
-                          factura: factura,
-                        ),
-                      ),
-                    );
-                  } on PresupuestoYaConvertidoException {
-                    if (!context.mounted) return;
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Este presupuesto ya fue convertido en factura.',
-                        ),
-                      ),
-                    );
-                  } catch (e) {
-                    if (!context.mounted) return;
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'No se pudo convertir el presupuesto: $e',
-                        ),
-                      ),
-                    );
-                  }
                 },
-                label: 'Convertir en factura',
-                icon: Icons.receipt_long_outlined,
               );
             },
           ),
@@ -315,9 +345,8 @@ class PresupuestoDetailScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => PresupuestoPdfPreviewScreen(
-                    presupuesto: presupuesto,
-                  ),
+                  builder: (_) =>
+                      PresupuestoPdfPreviewScreen(presupuesto: presupuesto),
                 ),
               );
             },
@@ -349,8 +378,7 @@ class PresupuestoDetailScreen extends StatelessWidget {
                     final confirmarEliminacion = await ConfirmDialog.show(
                       context,
                       title: 'Eliminar presupuesto',
-                      message:
-                          '¿Seguro que quieres eliminar este presupuesto?',
+                      message: '¿Seguro que quieres eliminar este presupuesto?',
                       confirmLabel: 'Eliminar',
                       cancelLabel: 'Cancelar',
                     );

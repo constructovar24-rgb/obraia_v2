@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:obraia_v2/database/app_database.dart';
-import 'package:obraia_v2/features/facturas/domain/estado_factura.dart';
+import 'package:obraia_v2/features/cobros/domain/cobro.dart' as cobro_domain;
+import 'package:obraia_v2/features/facturas/domain/factura_presupuesto_policy.dart';
 import 'package:obraia_v2/features/facturas/domain/factura.dart'
     as factura_domain;
 import 'package:obraia_v2/features/presupuestos/domain/presupuesto.dart'
@@ -15,7 +16,7 @@ class PresupuestoRepository {
   final TimelineRepository _timelineRepository;
 
   PresupuestoRepository(this.database)
-      : _timelineRepository = TimelineRepository(database.timelineEventsDao);
+    : _timelineRepository = TimelineRepository(database.timelineEventsDao);
 
   Stream<List<presupuesto_domain.Presupuesto>> observarPorExpediente(
     String expedienteId,
@@ -28,9 +29,50 @@ class PresupuestoRepository {
   }
 
   Stream<List<presupuesto_domain.Presupuesto>> observarPendientesFacturar() {
-    return _observarSinFacturaValida(
-      (presupuesto) => _esEstadoAceptado(presupuesto.estado),
-    );
+    return Stream<List<presupuesto_domain.Presupuesto>>.multi((controller) {
+      List<presupuesto_domain.Presupuesto>? presupuestos;
+      List<factura_domain.Factura>? facturas;
+      List<cobro_domain.Cobro>? cobros;
+
+      void emitirSiCompleto() {
+        if (presupuestos == null || facturas == null || cobros == null) return;
+        controller.add(
+          presupuestos!
+              .where(
+                (presupuesto) => presupuestoEstaPendienteDeFacturar(
+                  estadoPresupuesto: presupuesto.estado,
+                  presupuestoId: presupuesto.id,
+                  facturas: facturas!,
+                  cobros: cobros!,
+                ),
+              )
+              .toList(growable: false),
+        );
+      }
+
+      final presupuestosSubscription = observarPresupuestos().listen((data) {
+        presupuestos = data;
+        emitirSiCompleto();
+      }, onError: controller.addError);
+      final facturasSubscription = database.facturasDao
+          .observarFacturas()
+          .listen((data) {
+            facturas = data;
+            emitirSiCompleto();
+          }, onError: controller.addError);
+      final cobrosSubscription = database.cobrosDao.observarCobros().listen((
+        data,
+      ) {
+        cobros = data;
+        emitirSiCompleto();
+      }, onError: controller.addError);
+
+      controller.onCancel = () async {
+        await presupuestosSubscription.cancel();
+        await facturasSubscription.cancel();
+        await cobrosSubscription.cancel();
+      };
+    });
   }
 
   Stream<List<presupuesto_domain.Presupuesto>> observarBacklogComercial() {
@@ -59,7 +101,7 @@ class PresupuestoRepository {
         }
 
         final presupuestosConFacturaValida = facturasActuales
-            .where((factura) => factura.estado != EstadoFactura.anulada)
+            .where(facturaBloqueaConversion)
             .map((factura) => factura.presupuestoOrigenId?.trim())
             .whereType<String>()
             .where((presupuestoId) => presupuestoId.isNotEmpty)

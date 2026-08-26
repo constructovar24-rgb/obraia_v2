@@ -6,9 +6,11 @@ import 'package:obraia_v2/database/app_database.dart';
 import 'package:obraia_v2/database/database_provider.dart';
 import 'package:obraia_v2/features/cobros/domain/cobro.dart' as cobro_domain;
 import 'package:obraia_v2/features/facturas/domain/estado_factura.dart';
-import 'package:obraia_v2/features/facturas/domain/factura.dart' as factura_domain;
+import 'package:obraia_v2/features/facturas/domain/factura_presupuesto_policy.dart';
+import 'package:obraia_v2/features/facturas/domain/factura.dart'
+    as factura_domain;
 import 'package:obraia_v2/features/presupuestos/domain/presupuesto.dart'
-  as presupuesto_domain;
+    as presupuesto_domain;
 import 'package:obraia_v2/features/expedientes/domain/expediente.dart'
     as expediente_domain;
 import 'package:obraia_v2/features/timeline/data/timeline_repository.dart';
@@ -23,9 +25,9 @@ final expedienteRepositoryProvider = Provider<ExpedienteRepository>((ref) {
 
 final expedienteGestionAccionProvider =
     StreamProvider.family<ExpedienteGestionAccion, String>((ref, expedienteId) {
-  final repository = ref.read(expedienteRepositoryProvider);
-  return repository.observarAccionGestionExpediente(expedienteId);
-});
+      final repository = ref.read(expedienteRepositoryProvider);
+      return repository.observarAccionGestionExpediente(expedienteId);
+    });
 
 final expedienteAtencionEstadoProvider =
     StreamProvider.family<expediente_domain.ExpedienteAtencionEstado, String>((
@@ -36,10 +38,7 @@ final expedienteAtencionEstadoProvider =
       return repository.observarEstadoAtencionExpediente(expedienteId);
     });
 
-enum ExpedienteGestionAccion {
-  eliminar,
-  archivar,
-}
+enum ExpedienteGestionAccion { eliminar, archivar }
 
 class ExpedienteRepository {
   static const int _sinActividadDias = 60;
@@ -49,8 +48,8 @@ class ExpedienteRepository {
   final Uuid _uuid;
 
   ExpedienteRepository(this.database)
-      : _timelineRepository = TimelineRepository(database.timelineEventsDao),
-        _uuid = const Uuid();
+    : _timelineRepository = TimelineRepository(database.timelineEventsDao),
+      _uuid = const Uuid();
 
   Future<void> crearExpediente({
     required String codigo,
@@ -66,9 +65,7 @@ class ExpedienteRepository {
         codigo: codigo,
         nombre: nombre,
         cliente: Value(cliente ?? ''),
-        clienteId: clienteId == null
-            ? const Value.absent()
-            : Value(clienteId),
+        clienteId: clienteId == null ? const Value.absent() : Value(clienteId),
       ),
     );
 
@@ -126,8 +123,7 @@ class ExpedienteRepository {
         controller.add(
           expedientesActuales
               .where((expediente) {
-                final ultimoEvento =
-                    ultimoEventoPorExpediente[expediente.id];
+                final ultimoEvento = ultimoEventoPorExpediente[expediente.id];
                 return ultimoEvento == null ||
                     !ultimoEvento.isAfter(limiteSinActividad);
               })
@@ -214,9 +210,9 @@ class ExpedienteRepository {
   Stream<ExpedienteGestionAccion> observarAccionGestionExpediente(
     String expedienteId,
   ) {
-    return _expedienteSnapshot(expedienteId)
-        .map(_evaluarAccionGestionDesdeSnapshot)
-        .distinct();
+    return _expedienteSnapshot(
+      expedienteId,
+    ).map(_evaluarAccionGestionDesdeSnapshot).distinct();
   }
 
   Future<void> gestionarExpediente(
@@ -246,7 +242,9 @@ class ExpedienteRepository {
   }
 
   Future<bool> _tieneActividadRelacionada(String expedienteId) async {
-    if (await database.presupuestosDao.tienePresupuestoPorExpediente(expedienteId)) {
+    if (await database.presupuestosDao.tienePresupuestoPorExpediente(
+      expedienteId,
+    )) {
       return true;
     }
 
@@ -258,11 +256,15 @@ class ExpedienteRepository {
       return true;
     }
 
-    if (await database.documentosDao.tieneDocumentoPorExpediente(expedienteId)) {
+    if (await database.documentosDao.tieneDocumentoPorExpediente(
+      expedienteId,
+    )) {
       return true;
     }
 
-    if (await database.certificacionesDao.tieneCertificacionPorExpediente(expedienteId)) {
+    if (await database.certificacionesDao.tieneCertificacionPorExpediente(
+      expedienteId,
+    )) {
       return true;
     }
 
@@ -291,12 +293,14 @@ class ExpedienteRepository {
           mensajePrincipal: 'Presupuesto pendiente de aceptacion',
           detalle: presupuesto.codigo,
           indicadorPrincipal: expediente_domain
-              .ExpedienteAtencionIndicador.presupuestoPendienteAceptacion,
+              .ExpedienteAtencionIndicador
+              .presupuestoPendienteAceptacion,
         );
       }
     }
 
     final presupuestosConFactura = facturas
+        .where(facturaBloqueaConversion)
         .where((factura) {
           final presupuestoId = factura.presupuestoOrigenId;
           return presupuestoId != null && presupuestoId.trim().isNotEmpty;
@@ -312,7 +316,8 @@ class ExpedienteRepository {
           mensajePrincipal: 'Presupuesto aceptado sin factura',
           detalle: presupuesto.codigo,
           indicadorPrincipal: expediente_domain
-              .ExpedienteAtencionIndicador.presupuestoAceptadoSinFactura,
+              .ExpedienteAtencionIndicador
+              .presupuestoAceptadoSinFactura,
         );
       }
     }
@@ -333,7 +338,7 @@ class ExpedienteRepository {
 
     const epsilon = 0.000001;
     for (final factura in facturas) {
-      if (factura.estado == EstadoFactura.anulada) {
+      if (!estadoFacturaEsEfectiva(factura.estado)) {
         continue;
       }
 
@@ -347,8 +352,9 @@ class ExpedienteRepository {
           nivel: expediente_domain.ExpedienteAtencionNivel.critico,
           mensajePrincipal: 'Factura pendiente de cobro',
           detalle: factura.codigo,
-          indicadorPrincipal:
-              expediente_domain.ExpedienteAtencionIndicador.facturaPendienteCobro,
+          indicadorPrincipal: expediente_domain
+              .ExpedienteAtencionIndicador
+              .facturaPendienteCobro,
         );
       }
     }
@@ -402,7 +408,9 @@ class ExpedienteRepository {
       }
 
       final subscriptions = <StreamSubscription<dynamic>>[
-        database.presupuestosDao.observarPorExpediente(expedienteId).listen((data) {
+        database.presupuestosDao.observarPorExpediente(expedienteId).listen((
+          data,
+        ) {
           presupuestos = data;
           emitirSiCompleto();
         }),
@@ -418,16 +426,18 @@ class ExpedienteRepository {
           compras = data;
           emitirSiCompleto();
         }),
-        database.documentosDao.observarPorExpediente(expedienteId).listen((data) {
+        database.documentosDao.observarPorExpediente(expedienteId).listen((
+          data,
+        ) {
           documentos = data;
           emitirSiCompleto();
         }),
-        database.certificacionesDao
-            .observarPorExpediente(expedienteId)
-            .listen((data) {
-              certificaciones = data;
-              emitirSiCompleto();
-            }),
+        database.certificacionesDao.observarPorExpediente(expedienteId).listen((
+          data,
+        ) {
+          certificaciones = data;
+          emitirSiCompleto();
+        }),
       ];
 
       controller.onCancel = () async {
