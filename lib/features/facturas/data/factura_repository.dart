@@ -72,6 +72,22 @@ class FacturaNoEncontradaAlActualizarTotalesException implements Exception {
   final String facturaId;
 }
 
+class FacturaDocumentoCongeladoException implements Exception {
+  const FacturaDocumentoCongeladoException({
+    required this.facturaId,
+    required this.estado,
+  });
+
+  final String facturaId;
+  final EstadoFactura estado;
+}
+
+class FechaVencimientoFacturaNoValidaException implements Exception {
+  const FechaVencimientoFacturaNoValidaException({required this.facturaId});
+
+  final String facturaId;
+}
+
 class FacturaNoEncontradaAlEliminarException implements Exception {
   const FacturaNoEncontradaAlEliminarException({required this.facturaId});
 
@@ -479,6 +495,12 @@ class FacturaRepository {
           facturaId: facturaId,
         );
       }
+      if (!estadoFacturaPermiteEditarDocumento(factura.estado)) {
+        throw FacturaDocumentoCongeladoException(
+          facturaId: facturaId,
+          estado: factura.estado,
+        );
+      }
 
       final cobros = await database.cobrosDao
           .observarPorFactura(facturaId)
@@ -531,16 +553,47 @@ class FacturaRepository {
     required DateTime fechaVencimiento,
     required String observaciones,
   }) async {
-    final facturaActual = await database.facturasDao.obtenerPorId(id);
-
     await database.transaction(() async {
+      final facturaActual = await database.facturasDao.obtenerPorId(id);
+      if (facturaActual == null) {
+        throw FacturaNoEncontradaAlActualizarTotalesException(facturaId: id);
+      }
+      if (!estadoFacturaPermiteEditarVencimiento(facturaActual.estado)) {
+        throw FacturaDocumentoCongeladoException(
+          facturaId: id,
+          estado: facturaActual.estado,
+        );
+      }
+      final fechaDocumento = DateTime(
+        facturaActual.fecha.year,
+        facturaActual.fecha.month,
+        facturaActual.fecha.day,
+      );
+      final vencimiento = DateTime(
+        fechaVencimiento.year,
+        fechaVencimiento.month,
+        fechaVencimiento.day,
+      );
+      if (vencimiento.isBefore(fechaDocumento)) {
+        throw FechaVencimientoFacturaNoValidaException(facturaId: id);
+      }
+      if (!estadoFacturaPermiteEditarDocumento(facturaActual.estado) &&
+          (clienteId != facturaActual.clienteId ||
+              fecha != facturaActual.fecha ||
+              observaciones != facturaActual.observaciones)) {
+        throw FacturaDocumentoCongeladoException(
+          facturaId: id,
+          estado: facturaActual.estado,
+        );
+      }
+
       await database.facturasDao.actualizarFactura(
         id: id,
         clienteId: clienteId,
         fecha: fecha,
         fechaVencimiento: fechaVencimiento,
         estado: estadoFacturaToString(
-          facturaActual?.estado ?? EstadoFactura.borrador,
+          facturaActual.estado,
         ),
         observaciones: observaciones,
       );

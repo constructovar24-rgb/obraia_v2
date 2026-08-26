@@ -52,6 +52,17 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
   late final StreamSubscription<List<factura_domain.Factura>> _facturasSubscription;
   late final StreamSubscription<List<cobro_domain.Cobro>> _cobrosSubscription;
 
+  EstadoFactura get _estadoActual => _estadoPersistido ?? _estadoSeleccionado;
+
+  bool get _puedeEditarDocumento =>
+      estadoFacturaPermiteEditarDocumento(_estadoActual);
+
+  bool get _puedeEditarVencimiento =>
+      estadoFacturaPermiteEditarVencimiento(_estadoActual);
+
+  bool get _puedeEditarLineas =>
+      estadoFacturaPermiteEditarLineas(_estadoActual);
+
   bool get _puedeEliminarFactura =>
       _estadoPersistido != null &&
       _tieneCobros != null &&
@@ -366,29 +377,56 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
     }
 
     final repository = ref.read(facturaRepositoryProvider);
-    final fecha = DateTime(
-      _fechaSeleccionada.year,
-      _fechaSeleccionada.month,
-      _fechaSeleccionada.day,
-    );
+    final fecha = _puedeEditarDocumento
+        ? DateTime(
+            _fechaSeleccionada.year,
+            _fechaSeleccionada.month,
+            _fechaSeleccionada.day,
+          )
+        : widget.factura.fecha;
     final fechaVencimiento = DateTime(
       _fechaVencimientoSeleccionada.year,
       _fechaVencimientoSeleccionada.month,
       _fechaVencimientoSeleccionada.day,
     );
 
-    await repository.actualizarFactura(
-      id: widget.factura.id,
-      clienteId: _clienteSeleccionadoId!,
-      fecha: fecha,
-      fechaVencimiento: fechaVencimiento,
-      observaciones: _observacionesController.text.trim(),
-    );
+    try {
+      await repository.actualizarFactura(
+        id: widget.factura.id,
+        clienteId: _clienteSeleccionadoId!,
+        fecha: fecha,
+        fechaVencimiento: fechaVencimiento,
+        observaciones: _observacionesController.text.trim(),
+      );
+    } on FacturaDocumentoCongeladoException catch (error) {
+      if (!mounted) return;
+      _mostrarDocumentoCongelado(error.estado);
+      return;
+    } on FechaVencimientoFacturaNoValidaException {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'El vencimiento no puede ser anterior a la fecha de factura.',
+          ),
+        ),
+      );
+      return;
+    }
 
     if (!mounted) {
       return;
     }
     Navigator.of(context).pop();
+  }
+
+  void _mostrarDocumentoCongelado(EstadoFactura estado) {
+    final mensaje = estado == EstadoFactura.anulada
+        ? 'Una factura anulada se conserva sin modificaciones por trazabilidad.'
+        : 'Una factura emitida no puede modificarse. Para corregir su contenido, anúlala y crea una nueva factura. La fecha de vencimiento sí puede corregirse.';
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(mensaje)),
+    );
   }
 
   Future<void> _emitirFactura() async {
@@ -452,9 +490,11 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
       onBack: () {
         Navigator.maybePop(context);
       },
-      onSave: () {
-        _guardarCambios();
-      },
+      onSave: _puedeEditarVencimiento
+          ? () {
+              _guardarCambios();
+            }
+          : null,
       onDelete: _puedeEliminarFactura ? _confirmarEliminar : null,
       child: Scaffold(
         appBar: AppPageHeader(
@@ -542,11 +582,13 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                       labelText: 'Cliente',
                     ),
                     items: items,
-                    onChanged: (value) {
-                      setState(() {
-                        _clienteSeleccionadoId = value;
-                      });
-                    },
+                    onChanged: _puedeEditarDocumento
+                        ? (value) {
+                            setState(() {
+                              _clienteSeleccionadoId = value;
+                            });
+                          }
+                        : null,
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
                         return 'El cliente es obligatorio';
@@ -564,7 +606,7 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                   labelText: 'Fecha',
                   suffixIcon: Icon(Icons.calendar_today),
                 ),
-                onTap: _seleccionarFecha,
+                onTap: _puedeEditarDocumento ? _seleccionarFecha : null,
                 validator: (value) => (value == null || value.trim().isEmpty)
                     ? 'La fecha es obligatoria'
                     : null,
@@ -577,7 +619,9 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                   labelText: 'Fecha de vencimiento',
                   suffixIcon: Icon(Icons.calendar_today),
                 ),
-                onTap: _seleccionarFechaVencimiento,
+                onTap: _puedeEditarVencimiento
+                    ? _seleccionarFechaVencimiento
+                    : null,
                 validator: (value) => (value == null || value.trim().isEmpty)
                     ? 'La fecha de vencimiento es obligatoria'
                     : null,
@@ -590,21 +634,28 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
               const SizedBox(height: 20),
               TextFormField(
                 controller: _observacionesController,
+                readOnly: !_puedeEditarDocumento,
                 decoration: const InputDecoration(
                   labelText: 'Observaciones',
                 ),
                 minLines: 3,
                 maxLines: 5,
               ),
-              const SizedBox(height: 30),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton.icon(
-                  onPressed: _guardarCambios,
-                  icon: const Icon(Icons.save),
-                  label: const Text('Guardar cambios'),
+              if (_puedeEditarVencimiento) ...[
+                const SizedBox(height: 30),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: _guardarCambios,
+                    icon: const Icon(Icons.save),
+                    label: Text(
+                      _puedeEditarDocumento
+                          ? 'Guardar cambios'
+                          : 'Guardar vencimiento',
+                    ),
+                  ),
                 ),
-              ),
+              ],
               if (_estadoSeleccionado == EstadoFactura.borrador) ...[
                 const SizedBox(height: 12),
                 SizedBox(
@@ -695,16 +746,19 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                               subtitle: Text(
                                 '${_formatearCantidad(linea.cantidad)} ${linea.unidad} x ${_formatearMoneda(linea.precioUnitario)} - ${_formatearPorcentaje(linea.descuento)}% = ${_formatearMoneda(linea.importe)}',
                               ),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => EditarLineaFacturaScreen(
-                                      linea: linea,
-                                    ),
-                                  ),
-                                );
-                              },
+                              onTap: _puedeEditarLineas
+                                  ? () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              EditarLineaFacturaScreen(
+                                            linea: linea,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  : null,
                             ),
                           )
                           .toList();
@@ -783,24 +837,26 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                   );
                 },
               ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => NuevaLineaFacturaScreen(
-                          facturaId: widget.factura.id,
+              if (_puedeEditarLineas) ...[
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => NuevaLineaFacturaScreen(
+                            facturaId: widget.factura.id,
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.add),
-                  label: const Text('Nueva linea'),
+                      );
+                    },
+                    icon: const Icon(Icons.add),
+                    label: const Text('Nueva linea'),
+                  ),
                 ),
-              ),
+              ],
               const SizedBox(height: 12),
               if (estadoFacturaAdmiteNuevosCobros(_estadoSeleccionado)) ...[
                 SizedBox(

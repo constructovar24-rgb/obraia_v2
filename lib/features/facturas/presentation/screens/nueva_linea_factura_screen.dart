@@ -53,6 +53,16 @@ class _NuevaLineaFacturaScreenState
               ),
             );
             return;
+          } on FacturaNoPermiteModificarLineasException {
+            if (!context.mounted) return;
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'Las líneas de una factura emitida no pueden modificarse. Anula la factura y crea una nueva para corregirla.',
+                ),
+              ),
+            );
+            return;
           }
 
           if (!context.mounted) return;

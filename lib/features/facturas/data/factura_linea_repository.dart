@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:obraia_v2/database/app_database.dart';
 import 'package:obraia_v2/database/database_provider.dart';
 import 'package:obraia_v2/features/facturas/data/factura_repository.dart';
+import 'package:obraia_v2/features/facturas/domain/estado_factura.dart';
 import 'package:obraia_v2/features/facturas/domain/factura_linea.dart'
     as factura_linea_domain;
 import 'package:obraia_v2/features/facturas/domain/factura_totales.dart';
@@ -31,6 +32,16 @@ class FacturaNoEncontradaAlModificarLineasException implements Exception {
   });
 
   final String facturaId;
+}
+
+class FacturaNoPermiteModificarLineasException implements Exception {
+  const FacturaNoPermiteModificarLineasException({
+    required this.facturaId,
+    required this.estado,
+  });
+
+  final String facturaId;
+  final EstadoFactura estado;
 }
 
 class FacturaLineaRepository {
@@ -94,6 +105,7 @@ class FacturaLineaRepository {
           facturaId: facturaId,
         );
       }
+      _validarFacturaEditable(facturaId, factura.estado);
 
       final importe = _calcularImporte(
         cantidad: cantidad,
@@ -148,6 +160,7 @@ class FacturaLineaRepository {
           facturaId: facturaId,
         );
       }
+      _validarFacturaEditable(facturaId, factura.estado);
 
       final importe = _calcularImporte(
         cantidad: cantidad,
@@ -195,6 +208,7 @@ class FacturaLineaRepository {
           facturaId: facturaId,
         );
       }
+      _validarFacturaEditable(facturaId, factura.estado);
 
       final lineas = await database.facturaLineasDao.obtenerPorFactura(
         facturaId,
@@ -207,6 +221,15 @@ class FacturaLineaRepository {
       await database.facturaLineasDao.eliminarLinea(id);
       await _persistirTotales(facturaId, totales);
     });
+  }
+
+  void _validarFacturaEditable(String facturaId, EstadoFactura estado) {
+    if (!estadoFacturaPermiteEditarLineas(estado)) {
+      throw FacturaNoPermiteModificarLineasException(
+        facturaId: facturaId,
+        estado: estado,
+      );
+    }
   }
 
   Stream<List<factura_linea_domain.FacturaLinea>> observarPorFactura(

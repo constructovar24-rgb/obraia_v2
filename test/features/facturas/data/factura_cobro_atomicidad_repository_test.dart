@@ -249,20 +249,19 @@ void main() {
   });
 
   group('FacturaLineaRepository con Drift', () {
-    test(
-      'permite reducir por encima de cobrado y rechaza por debajo',
-      () async {
-        final (facturaId, linea) = await crearFacturaEmitida(
-          precioUnitario: 200,
-        );
-        await cobroRepository.crearCobro(
-          facturaId: facturaId,
-          fecha: DateTime(2026, 8, 26),
-          importe: 100,
-          metodoPago: 'Transferencia',
-        );
+    test('una emitida rechaza cualquier reducción de líneas', () async {
+      final (facturaId, linea) = await crearFacturaEmitida(
+        precioUnitario: 200,
+      );
+      await cobroRepository.crearCobro(
+        facturaId: facturaId,
+        fecha: DateTime(2026, 8, 26),
+        importe: 100,
+        metodoPago: 'Transferencia',
+      );
 
-        await lineaRepository.actualizarLinea(
+      await expectLater(
+        lineaRepository.actualizarLinea(
           id: linea.id,
           facturaId: facturaId,
           descripcion: linea.descripcion,
@@ -270,24 +269,13 @@ void main() {
           unidad: linea.unidad,
           precioUnitario: 100,
           descuento: 0,
-        );
-        await expectLater(
-          lineaRepository.actualizarLinea(
-            id: linea.id,
-            facturaId: facturaId,
-            descripcion: linea.descripcion,
-            cantidad: 1,
-            unidad: linea.unidad,
-            precioUnitario: 50,
-            descuento: 0,
-          ),
-          throwsA(isA<TotalFacturaInferiorACobrosException>()),
-        );
+        ),
+        throwsA(isA<FacturaNoPermiteModificarLineasException>()),
+      );
 
-        final factura = await database.facturasDao.obtenerPorId(facturaId);
-        expect(factura?.total, 121);
-      },
-    );
+      final factura = await database.facturasDao.obtenerPorId(facturaId);
+      expect(factura?.total, 242);
+    });
 
     test('cobro y reducción competidores conservan la invariante', () async {
       final (facturaId, linea) = await crearFacturaEmitida();
@@ -348,7 +336,7 @@ void main() {
           precioUnitario: 50,
           descuento: 0,
         ),
-        throwsA(isA<TotalFacturaInferiorACobrosException>()),
+        throwsA(isA<FacturaNoPermiteModificarLineasException>()),
       );
 
       final factura = await database.facturasDao.obtenerPorId(facturaId);
@@ -366,7 +354,7 @@ void main() {
     });
   });
 
-  test('actualizarTotales público no puede dejar total bajo cobros', () async {
+  test('actualizarTotales público no modifica una emitida', () async {
     final (facturaId, _) = await crearFacturaEmitida();
     await cobroRepository.crearCobro(
       facturaId: facturaId,
@@ -381,7 +369,7 @@ void main() {
         subtotal: 50,
         iva: 0,
       ),
-      throwsA(isA<ActualizacionTotalesIncompatibleConCobrosException>()),
+      throwsA(isA<FacturaDocumentoCongeladoException>()),
     );
 
     final factura = await database.facturasDao.obtenerPorId(facturaId);

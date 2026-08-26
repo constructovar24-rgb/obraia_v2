@@ -64,6 +64,10 @@ class EditarLineaFacturaScreen extends ConsumerWidget {
         if (!context.mounted) return;
         _mostrarErrorTotalCobrado(context);
         return;
+      } on FacturaNoPermiteModificarLineasException {
+        if (!context.mounted) return;
+        _mostrarErrorDocumentoCongelado(context);
+        return;
       }
 
       if (!context.mounted) return;
@@ -85,6 +89,10 @@ class EditarLineaFacturaScreen extends ConsumerWidget {
       } on TotalFacturaInferiorACobrosException {
         if (!context.mounted) return;
         _mostrarErrorTotalCobrado(context);
+        return;
+      } on FacturaNoPermiteModificarLineasException {
+        if (!context.mounted) return;
+        _mostrarErrorDocumentoCongelado(context);
         return;
       }
 
@@ -117,6 +125,16 @@ class EditarLineaFacturaScreen extends ConsumerWidget {
               child: const Text('Eliminar linea'),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  void _mostrarErrorDocumentoCongelado(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Las líneas de una factura emitida no pueden modificarse. Anula la factura y crea una nueva para corregirla.',
         ),
       ),
     );

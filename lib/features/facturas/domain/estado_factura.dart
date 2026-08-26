@@ -24,6 +24,18 @@ bool estadoFacturaAdmiteModificarCobros(EstadoFactura estado) {
       estado == EstadoFactura.cobrada;
 }
 
+bool estadoFacturaPermiteEditarDocumento(EstadoFactura estado) {
+  return estado == EstadoFactura.borrador;
+}
+
+bool estadoFacturaPermiteEditarVencimiento(EstadoFactura estado) {
+  return estado != EstadoFactura.anulada;
+}
+
+bool estadoFacturaPermiteEditarLineas(EstadoFactura estado) {
+  return estado == EstadoFactura.borrador;
+}
+
 const epsilonEstadoFactura = 0.000001;
 
 EstadoFactura resolverEstadoDocumentalFactura({
