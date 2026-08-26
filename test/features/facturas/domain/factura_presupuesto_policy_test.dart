@@ -174,6 +174,7 @@ Factura _factura(
     estado: estado,
     subtotal: 100,
     iva: 21,
+    ivaPorcentaje: 21,
     total: 121,
     observaciones: '',
     presupuestoOrigenId: presupuestoId,

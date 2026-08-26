@@ -285,8 +285,6 @@ class FacturaRepository {
     required DateTime fechaVencimiento,
     EstadoFactura estado = EstadoFactura.borrador,
     double subtotal = 0,
-    double iva = 0,
-    double total = 0,
     String observaciones = '',
     String? presupuestoOrigenId,
   }) async {
@@ -299,8 +297,7 @@ class FacturaRepository {
       fecha: fecha,
       fechaVencimiento: fechaVencimiento,
       subtotal: subtotal,
-      iva: iva,
-      total: total,
+      ivaPorcentaje: facturaIvaPorcentajeInicial,
       observaciones: observaciones,
     );
   }
@@ -310,8 +307,7 @@ class FacturaRepository {
     required DateTime fecha,
     required DateTime fechaVencimiento,
     required double subtotal,
-    required double iva,
-    required double total,
+    required double ivaPorcentaje,
     required String observaciones,
     String? presupuestoOrigenId,
   }) async {
@@ -327,8 +323,9 @@ class FacturaRepository {
         fechaVencimiento: Value(fechaVencimiento),
         estado: const Value('borrador'),
         subtotal: Value(subtotal),
-        iva: Value(iva),
-        total: Value(total),
+        iva: Value(subtotal * ivaPorcentaje / 100),
+        ivaPorcentaje: Value(ivaPorcentaje),
+        total: Value(subtotal + subtotal * ivaPorcentaje / 100),
         observaciones: Value(observaciones),
         presupuestoOrigenId: presupuestoOrigenId == null
             ? const Value.absent()
@@ -394,15 +391,13 @@ class FacturaRepository {
       }
 
       final subtotal = presupuestoPersistido.importeTotal;
-      final iva = subtotal * presupuestoPersistido.ivaPorcentaje / 100;
       final fechaFactura = DateTime.now();
       facturaId = await _insertarFactura(
         clienteId: clienteId,
         fecha: fechaFactura,
         fechaVencimiento: fechaFactura.add(const Duration(days: 30)),
         subtotal: subtotal,
-        iva: iva,
-        total: subtotal + iva,
+        ivaPorcentaje: presupuestoPersistido.ivaPorcentaje,
         observaciones: presupuestoPersistido.descripcion,
         presupuestoOrigenId: presupuestoPersistido.id,
       );
@@ -486,7 +481,6 @@ class FacturaRepository {
   Future<void> actualizarTotales({
     required String facturaId,
     required double subtotal,
-    required double iva,
   }) async {
     await database.transaction(() async {
       final factura = await database.facturasDao.obtenerPorId(facturaId);
@@ -509,6 +503,7 @@ class FacturaRepository {
         0,
         (suma, cobro) => suma + cobro.importe,
       );
+      final iva = subtotal * factura.ivaPorcentaje / 100;
       final total = subtotal + iva;
       if (!totalFacturaCubreCobros(
         totalFactura: total,

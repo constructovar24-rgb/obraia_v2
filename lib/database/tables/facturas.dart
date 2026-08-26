@@ -21,6 +21,8 @@ class Facturas extends Table {
 
   RealColumn get iva => real().withDefault(const Constant(0))();
 
+  RealColumn get ivaPorcentaje => real().withDefault(const Constant(21))();
+
   RealColumn get total => real().withDefault(const Constant(0))();
 
   TextColumn get observaciones => text().withDefault(const Constant(''))();

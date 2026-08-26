@@ -86,7 +86,6 @@ class FacturaLineaRepository {
     await facturaRepository.actualizarTotales(
       facturaId: facturaId,
       subtotal: totales.subtotal,
-      iva: totales.iva,
     );
   }
 
@@ -125,7 +124,10 @@ class FacturaLineaRepository {
         descuento: descuento,
         importe: importe,
       );
-      final totales = calcularTotalesFactura([...lineas, nuevaLinea]);
+      final totales = calcularTotalesFactura(
+        [...lineas, nuevaLinea],
+        ivaPorcentaje: factura.ivaPorcentaje,
+      );
       await _validarTotales(facturaId, totales);
 
       await database.facturaLineasDao.insertarLinea(
@@ -182,6 +184,7 @@ class FacturaLineaRepository {
       );
       final totales = calcularTotalesFactura(
         sustituirLineaPorId(lineas: lineas, nuevaLinea: nuevaLinea),
+        ivaPorcentaje: factura.ivaPorcentaje,
       );
       await _validarTotales(facturaId, totales);
 
@@ -215,6 +218,7 @@ class FacturaLineaRepository {
       );
       final totales = calcularTotalesFactura(
         eliminarLineaPorId(lineas: lineas, lineaId: id),
+        ivaPorcentaje: factura.ivaPorcentaje,
       );
       await _validarTotales(facturaId, totales);
 

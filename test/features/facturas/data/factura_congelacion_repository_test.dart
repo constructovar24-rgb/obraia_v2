@@ -105,7 +105,7 @@ void main() {
         id,
       )).last;
       await lineas.eliminarLinea(extra.id, id);
-      await facturas.actualizarTotales(facturaId: id, subtotal: 160, iva: 33.6);
+      await facturas.actualizarTotales(facturaId: id, subtotal: 160);
 
       final persistida = await database.facturasDao.obtenerPorId(id);
       expect(persistida?.clienteId, 'cliente-2');
@@ -165,7 +165,7 @@ void main() {
           throwsA(isA<FacturaNoPermiteModificarLineasException>()),
         );
         await expectLater(
-          facturas.actualizarTotales(facturaId: id, subtotal: 1, iva: 0),
+          facturas.actualizarTotales(facturaId: id, subtotal: 1),
           throwsA(isA<FacturaDocumentoCongeladoException>()),
         );
 
@@ -254,7 +254,7 @@ void main() {
         throwsA(isA<FacturaNoPermiteModificarLineasException>()),
       );
       await expectLater(
-        facturas.actualizarTotales(facturaId: id, subtotal: 1, iva: 0),
+        facturas.actualizarTotales(facturaId: id, subtotal: 1),
         throwsA(isA<FacturaDocumentoCongeladoException>()),
       );
     });

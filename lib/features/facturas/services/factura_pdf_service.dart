@@ -9,6 +9,13 @@ import '../../configuracion/domain/empresa_configuracion.dart'
 import '../domain/factura.dart';
 import '../domain/factura_linea.dart';
 
+String facturaIvaEtiqueta(double ivaPorcentaje) {
+  final valor = ivaPorcentaje == ivaPorcentaje.truncateToDouble()
+      ? ivaPorcentaje.toStringAsFixed(0)
+      : ivaPorcentaje.toStringAsFixed(2).replaceAll('.', ',');
+  return 'IVA ($valor%)';
+}
+
 class FacturaPdfService {
   static const double _titleFontSize = 20;
   static const double _generalFontSize = 10;
@@ -28,7 +35,7 @@ class FacturaPdfService {
     final subtotal = factura.subtotal;
     final ivaImporte = factura.iva;
     final total = factura.total;
-    final ivaPorcentaje = subtotal == 0 ? 21.0 : (ivaImporte * 100 / subtotal);
+    final ivaPorcentaje = factura.ivaPorcentaje;
 
     pdf.addPage(
       pw.Page(
@@ -315,7 +322,7 @@ class FacturaPdfService {
             pw.SizedBox(height: 6),
             _lineaTotal('Base imponible', _formatearMoneda(subtotal)),
             _lineaTotal(
-              'IVA (${_formatearPorcentaje(ivaPorcentaje)}%)',
+              facturaIvaEtiqueta(ivaPorcentaje),
               _formatearMoneda(ivaImporte),
             ),
             pw.Container(
@@ -392,10 +399,6 @@ class FacturaPdfService {
 
   String _formatearMoneda(double value) {
     return PdfDocumentHelper.formatearMoneda(value);
-  }
-
-  String _formatearPorcentaje(double value) {
-    return PdfDocumentHelper.formatearPorcentaje(value);
   }
 
   String _formatearCantidad(double value) {

@@ -54,7 +54,7 @@ void main() {
         lineas: [linea('a', 500), linea('b', 500)],
         nuevaLinea: linea('b', 200),
       );
-      final total = calcularTotalesFactura(simuladas).total;
+      final total = calcularTotalesFactura(simuladas, ivaPorcentaje: 21).total;
 
       expect(total, 847);
       expect(
@@ -71,7 +71,10 @@ void main() {
 
       expect(
         totalFacturaCubreCobros(
-          totalFactura: calcularTotalesFactura(simuladas).total,
+          totalFactura: calcularTotalesFactura(
+            simuladas,
+            ivaPorcentaje: 21,
+          ).total,
           totalCobrado: 800,
         ),
         isFalse,
@@ -86,7 +89,10 @@ void main() {
 
       expect(
         totalFacturaCubreCobros(
-          totalFactura: calcularTotalesFactura(simuladas).total,
+          totalFactura: calcularTotalesFactura(
+            simuladas,
+            ivaPorcentaje: 21,
+          ).total,
           totalCobrado: 900,
         ),
         isTrue,
@@ -101,7 +107,10 @@ void main() {
 
       expect(
         totalFacturaCubreCobros(
-          totalFactura: calcularTotalesFactura(simuladas).total,
+          totalFactura: calcularTotalesFactura(
+            simuladas,
+            ivaPorcentaje: 21,
+          ).total,
           totalCobrado: 800,
         ),
         isFalse,
@@ -135,7 +144,10 @@ void main() {
 
       expect(
         totalFacturaCubreCobros(
-          totalFactura: calcularTotalesFactura(simuladas).total,
+          totalFactura: calcularTotalesFactura(
+            simuladas,
+            ivaPorcentaje: 21,
+          ).total,
           totalCobrado: 800,
         ),
         isFalse,

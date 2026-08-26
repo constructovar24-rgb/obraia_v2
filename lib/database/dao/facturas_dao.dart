@@ -28,6 +28,7 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
       estado: estadoFacturaFromString(row.estado),
       subtotal: row.subtotal,
       iva: row.iva,
+      ivaPorcentaje: row.ivaPorcentaje,
       total: row.total,
       observaciones: row.observaciones,
       presupuestoOrigenId: row.presupuestoOrigenId,

@@ -10,6 +10,7 @@ class Factura {
   final EstadoFactura estado;
   final double subtotal;
   final double iva;
+  final double ivaPorcentaje;
   final double total;
   final String observaciones;
   final String? presupuestoOrigenId;
@@ -24,6 +25,7 @@ class Factura {
     required this.estado,
     required this.subtotal,
     required this.iva,
+    required this.ivaPorcentaje,
     required this.total,
     required this.observaciones,
     this.presupuestoOrigenId,

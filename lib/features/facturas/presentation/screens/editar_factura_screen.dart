@@ -735,7 +735,7 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                         0,
                         (sum, linea) => sum + linea.importe,
                       );
-                      final iva = subtotal * 21 / 100;
+                      final iva = subtotal * widget.factura.ivaPorcentaje / 100;
                       final total = subtotal + iva;
 
                       final lineasWidgets = lineas
@@ -786,11 +786,11 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                           ),
                         ),
                         const SizedBox(height: 12),
-                        const Align(
+                        Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            'IVA (21%)',
-                            style: TextStyle(
+                            'IVA (${_formatearPorcentaje(widget.factura.ivaPorcentaje)}%)',
+                            style: const TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 16,
                             ),

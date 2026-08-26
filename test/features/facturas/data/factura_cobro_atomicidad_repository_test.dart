@@ -367,7 +367,6 @@ void main() {
       facturaRepository.actualizarTotales(
         facturaId: facturaId,
         subtotal: 50,
-        iva: 0,
       ),
       throwsA(isA<FacturaDocumentoCongeladoException>()),
     );

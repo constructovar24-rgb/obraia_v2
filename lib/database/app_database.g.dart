@@ -3568,6 +3568,18 @@ class $FacturasTable extends Facturas with TableInfo<$FacturasTable, Factura> {
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _ivaPorcentajeMeta = const VerificationMeta(
+    'ivaPorcentaje',
+  );
+  @override
+  late final GeneratedColumn<double> ivaPorcentaje = GeneratedColumn<double>(
+    'iva_porcentaje',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(21),
+  );
   static const VerificationMeta _totalMeta = const VerificationMeta('total');
   @override
   late final GeneratedColumn<double> total = GeneratedColumn<double>(
@@ -3640,6 +3652,7 @@ class $FacturasTable extends Facturas with TableInfo<$FacturasTable, Factura> {
     estado,
     subtotal,
     iva,
+    ivaPorcentaje,
     total,
     observaciones,
     presupuestoOrigenId,
@@ -3708,6 +3721,15 @@ class $FacturasTable extends Facturas with TableInfo<$FacturasTable, Factura> {
       context.handle(
         _ivaMeta,
         iva.isAcceptableOrUnknown(data['iva']!, _ivaMeta),
+      );
+    }
+    if (data.containsKey('iva_porcentaje')) {
+      context.handle(
+        _ivaPorcentajeMeta,
+        ivaPorcentaje.isAcceptableOrUnknown(
+          data['iva_porcentaje']!,
+          _ivaPorcentajeMeta,
+        ),
       );
     }
     if (data.containsKey('total')) {
@@ -3793,6 +3815,10 @@ class $FacturasTable extends Facturas with TableInfo<$FacturasTable, Factura> {
         DriftSqlType.double,
         data['${effectivePrefix}iva'],
       )!,
+      ivaPorcentaje: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}iva_porcentaje'],
+      )!,
       total: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}total'],
@@ -3831,6 +3857,7 @@ class Factura extends DataClass implements Insertable<Factura> {
   final String estado;
   final double subtotal;
   final double iva;
+  final double ivaPorcentaje;
   final double total;
   final String observaciones;
   final String? presupuestoOrigenId;
@@ -3845,6 +3872,7 @@ class Factura extends DataClass implements Insertable<Factura> {
     required this.estado,
     required this.subtotal,
     required this.iva,
+    required this.ivaPorcentaje,
     required this.total,
     required this.observaciones,
     this.presupuestoOrigenId,
@@ -3862,6 +3890,7 @@ class Factura extends DataClass implements Insertable<Factura> {
     map['estado'] = Variable<String>(estado);
     map['subtotal'] = Variable<double>(subtotal);
     map['iva'] = Variable<double>(iva);
+    map['iva_porcentaje'] = Variable<double>(ivaPorcentaje);
     map['total'] = Variable<double>(total);
     map['observaciones'] = Variable<String>(observaciones);
     if (!nullToAbsent || presupuestoOrigenId != null) {
@@ -3882,6 +3911,7 @@ class Factura extends DataClass implements Insertable<Factura> {
       estado: Value(estado),
       subtotal: Value(subtotal),
       iva: Value(iva),
+      ivaPorcentaje: Value(ivaPorcentaje),
       total: Value(total),
       observaciones: Value(observaciones),
       presupuestoOrigenId: presupuestoOrigenId == null && nullToAbsent
@@ -3906,6 +3936,7 @@ class Factura extends DataClass implements Insertable<Factura> {
       estado: serializer.fromJson<String>(json['estado']),
       subtotal: serializer.fromJson<double>(json['subtotal']),
       iva: serializer.fromJson<double>(json['iva']),
+      ivaPorcentaje: serializer.fromJson<double>(json['ivaPorcentaje']),
       total: serializer.fromJson<double>(json['total']),
       observaciones: serializer.fromJson<String>(json['observaciones']),
       presupuestoOrigenId: serializer.fromJson<String?>(
@@ -3929,6 +3960,7 @@ class Factura extends DataClass implements Insertable<Factura> {
       'estado': serializer.toJson<String>(estado),
       'subtotal': serializer.toJson<double>(subtotal),
       'iva': serializer.toJson<double>(iva),
+      'ivaPorcentaje': serializer.toJson<double>(ivaPorcentaje),
       'total': serializer.toJson<double>(total),
       'observaciones': serializer.toJson<String>(observaciones),
       'presupuestoOrigenId': serializer.toJson<String?>(presupuestoOrigenId),
@@ -3946,6 +3978,7 @@ class Factura extends DataClass implements Insertable<Factura> {
     String? estado,
     double? subtotal,
     double? iva,
+    double? ivaPorcentaje,
     double? total,
     String? observaciones,
     Value<String?> presupuestoOrigenId = const Value.absent(),
@@ -3960,6 +3993,7 @@ class Factura extends DataClass implements Insertable<Factura> {
     estado: estado ?? this.estado,
     subtotal: subtotal ?? this.subtotal,
     iva: iva ?? this.iva,
+    ivaPorcentaje: ivaPorcentaje ?? this.ivaPorcentaje,
     total: total ?? this.total,
     observaciones: observaciones ?? this.observaciones,
     presupuestoOrigenId: presupuestoOrigenId.present
@@ -3980,6 +4014,9 @@ class Factura extends DataClass implements Insertable<Factura> {
       estado: data.estado.present ? data.estado.value : this.estado,
       subtotal: data.subtotal.present ? data.subtotal.value : this.subtotal,
       iva: data.iva.present ? data.iva.value : this.iva,
+      ivaPorcentaje: data.ivaPorcentaje.present
+          ? data.ivaPorcentaje.value
+          : this.ivaPorcentaje,
       total: data.total.present ? data.total.value : this.total,
       observaciones: data.observaciones.present
           ? data.observaciones.value
@@ -4007,6 +4044,7 @@ class Factura extends DataClass implements Insertable<Factura> {
           ..write('estado: $estado, ')
           ..write('subtotal: $subtotal, ')
           ..write('iva: $iva, ')
+          ..write('ivaPorcentaje: $ivaPorcentaje, ')
           ..write('total: $total, ')
           ..write('observaciones: $observaciones, ')
           ..write('presupuestoOrigenId: $presupuestoOrigenId, ')
@@ -4026,6 +4064,7 @@ class Factura extends DataClass implements Insertable<Factura> {
     estado,
     subtotal,
     iva,
+    ivaPorcentaje,
     total,
     observaciones,
     presupuestoOrigenId,
@@ -4044,6 +4083,7 @@ class Factura extends DataClass implements Insertable<Factura> {
           other.estado == this.estado &&
           other.subtotal == this.subtotal &&
           other.iva == this.iva &&
+          other.ivaPorcentaje == this.ivaPorcentaje &&
           other.total == this.total &&
           other.observaciones == this.observaciones &&
           other.presupuestoOrigenId == this.presupuestoOrigenId &&
@@ -4060,6 +4100,7 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
   final Value<String> estado;
   final Value<double> subtotal;
   final Value<double> iva;
+  final Value<double> ivaPorcentaje;
   final Value<double> total;
   final Value<String> observaciones;
   final Value<String?> presupuestoOrigenId;
@@ -4075,6 +4116,7 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
     this.estado = const Value.absent(),
     this.subtotal = const Value.absent(),
     this.iva = const Value.absent(),
+    this.ivaPorcentaje = const Value.absent(),
     this.total = const Value.absent(),
     this.observaciones = const Value.absent(),
     this.presupuestoOrigenId = const Value.absent(),
@@ -4091,6 +4133,7 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
     this.estado = const Value.absent(),
     this.subtotal = const Value.absent(),
     this.iva = const Value.absent(),
+    this.ivaPorcentaje = const Value.absent(),
     this.total = const Value.absent(),
     this.observaciones = const Value.absent(),
     this.presupuestoOrigenId = const Value.absent(),
@@ -4108,6 +4151,7 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
     Expression<String>? estado,
     Expression<double>? subtotal,
     Expression<double>? iva,
+    Expression<double>? ivaPorcentaje,
     Expression<double>? total,
     Expression<String>? observaciones,
     Expression<String>? presupuestoOrigenId,
@@ -4124,6 +4168,7 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
       if (estado != null) 'estado': estado,
       if (subtotal != null) 'subtotal': subtotal,
       if (iva != null) 'iva': iva,
+      if (ivaPorcentaje != null) 'iva_porcentaje': ivaPorcentaje,
       if (total != null) 'total': total,
       if (observaciones != null) 'observaciones': observaciones,
       if (presupuestoOrigenId != null)
@@ -4143,6 +4188,7 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
     Value<String>? estado,
     Value<double>? subtotal,
     Value<double>? iva,
+    Value<double>? ivaPorcentaje,
     Value<double>? total,
     Value<String>? observaciones,
     Value<String?>? presupuestoOrigenId,
@@ -4159,6 +4205,7 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
       estado: estado ?? this.estado,
       subtotal: subtotal ?? this.subtotal,
       iva: iva ?? this.iva,
+      ivaPorcentaje: ivaPorcentaje ?? this.ivaPorcentaje,
       total: total ?? this.total,
       observaciones: observaciones ?? this.observaciones,
       presupuestoOrigenId: presupuestoOrigenId ?? this.presupuestoOrigenId,
@@ -4195,6 +4242,9 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
     if (iva.present) {
       map['iva'] = Variable<double>(iva.value);
     }
+    if (ivaPorcentaje.present) {
+      map['iva_porcentaje'] = Variable<double>(ivaPorcentaje.value);
+    }
     if (total.present) {
       map['total'] = Variable<double>(total.value);
     }
@@ -4229,6 +4279,7 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
           ..write('estado: $estado, ')
           ..write('subtotal: $subtotal, ')
           ..write('iva: $iva, ')
+          ..write('ivaPorcentaje: $ivaPorcentaje, ')
           ..write('total: $total, ')
           ..write('observaciones: $observaciones, ')
           ..write('presupuestoOrigenId: $presupuestoOrigenId, ')
@@ -12331,6 +12382,7 @@ typedef $$FacturasTableCreateCompanionBuilder =
       Value<String> estado,
       Value<double> subtotal,
       Value<double> iva,
+      Value<double> ivaPorcentaje,
       Value<double> total,
       Value<String> observaciones,
       Value<String?> presupuestoOrigenId,
@@ -12348,6 +12400,7 @@ typedef $$FacturasTableUpdateCompanionBuilder =
       Value<String> estado,
       Value<double> subtotal,
       Value<double> iva,
+      Value<double> ivaPorcentaje,
       Value<double> total,
       Value<String> observaciones,
       Value<String?> presupuestoOrigenId,
@@ -12474,6 +12527,11 @@ class $$FacturasTableFilterComposer
 
   ColumnFilters<double> get iva => $composableBuilder(
     column: $table.iva,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get ivaPorcentaje => $composableBuilder(
+    column: $table.ivaPorcentaje,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -12638,6 +12696,11 @@ class $$FacturasTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<double> get ivaPorcentaje => $composableBuilder(
+    column: $table.ivaPorcentaje,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<double> get total => $composableBuilder(
     column: $table.total,
     builder: (column) => ColumnOrderings(column),
@@ -12736,6 +12799,11 @@ class $$FacturasTableAnnotationComposer
 
   GeneratedColumn<double> get iva =>
       $composableBuilder(column: $table.iva, builder: (column) => column);
+
+  GeneratedColumn<double> get ivaPorcentaje => $composableBuilder(
+    column: $table.ivaPorcentaje,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<double> get total =>
       $composableBuilder(column: $table.total, builder: (column) => column);
@@ -12893,6 +12961,7 @@ class $$FacturasTableTableManager
                 Value<String> estado = const Value.absent(),
                 Value<double> subtotal = const Value.absent(),
                 Value<double> iva = const Value.absent(),
+                Value<double> ivaPorcentaje = const Value.absent(),
                 Value<double> total = const Value.absent(),
                 Value<String> observaciones = const Value.absent(),
                 Value<String?> presupuestoOrigenId = const Value.absent(),
@@ -12908,6 +12977,7 @@ class $$FacturasTableTableManager
                 estado: estado,
                 subtotal: subtotal,
                 iva: iva,
+                ivaPorcentaje: ivaPorcentaje,
                 total: total,
                 observaciones: observaciones,
                 presupuestoOrigenId: presupuestoOrigenId,
@@ -12925,6 +12995,7 @@ class $$FacturasTableTableManager
                 Value<String> estado = const Value.absent(),
                 Value<double> subtotal = const Value.absent(),
                 Value<double> iva = const Value.absent(),
+                Value<double> ivaPorcentaje = const Value.absent(),
                 Value<double> total = const Value.absent(),
                 Value<String> observaciones = const Value.absent(),
                 Value<String?> presupuestoOrigenId = const Value.absent(),
@@ -12940,6 +13011,7 @@ class $$FacturasTableTableManager
                 estado: estado,
                 subtotal: subtotal,
                 iva: iva,
+                ivaPorcentaje: ivaPorcentaje,
                 total: total,
                 observaciones: observaciones,
                 presupuestoOrigenId: presupuestoOrigenId,
