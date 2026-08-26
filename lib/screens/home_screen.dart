@@ -4,7 +4,6 @@ import '../core/shortcuts/app_shortcuts.dart';
 import '../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../features/facturas/presentation/screens/facturas_screen.dart';
 import '../features/timeline/presentation/timeline_page.dart';
-import 'presupuesto_menu_screen.dart';
 import '../features/expedientes/presentation/screens/expedientes_screen.dart';
 import '../features/clientes/presentation/screens/clientes_screen.dart';
 import '../features/proveedores/presentation/screens/proveedores_screen.dart';
@@ -84,18 +83,6 @@ class HomeScreen extends StatelessWidget {
                       },
                     ),
                     _HomeButton(
-                      icon: Icons.calculate,
-                      titulo: 'Presupuestos',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const PresupuestoMenuScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    _HomeButton(
                       icon: Icons.people,
                       titulo: 'Clientes',
                       onTap: () {
@@ -142,16 +129,6 @@ class HomeScreen extends StatelessWidget {
                           ),
                         );
                       },
-                    ),
-                    _HomeButton(
-                      icon: Icons.home_repair_service,
-                      titulo: 'Obras',
-                      onTap: () {},
-                    ),
-                    _HomeButton(
-                      icon: Icons.attach_money,
-                      titulo: 'Base de precios',
-                      onTap: () {},
                     ),
                     _HomeButton(
                       icon: Icons.smart_toy,

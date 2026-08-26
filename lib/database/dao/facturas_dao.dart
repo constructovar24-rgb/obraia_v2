@@ -175,6 +175,23 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
     return row?.id;
   }
 
+  Future<bool> tieneFacturaPorExpediente(String expedienteId) async {
+    final tableFacturas = attachedDatabase.facturas;
+    final tablePresupuestos = attachedDatabase.presupuestos;
+
+    final row = await (select(tableFacturas).join([
+      innerJoin(
+        tablePresupuestos,
+        tablePresupuestos.id.equalsExp(tableFacturas.presupuestoOrigenId),
+      ),
+    ])
+      ..where(tablePresupuestos.expedienteId.equals(expedienteId))
+      ..limit(1))
+        .getSingleOrNull();
+
+    return row != null;
+  }
+
   Future<void> insertarFactura(FacturasCompanion factura) async {
     await into(facturas).insert(factura);
   }

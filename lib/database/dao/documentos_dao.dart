@@ -54,4 +54,15 @@ class DocumentosDao extends DatabaseAccessor<AppDatabase>
       ),
     );
   }
+
+  Future<bool> tieneDocumentoPorExpediente(String expedienteId) async {
+    final row = await (select(documentos)
+          ..where(
+            (t) => t.expedienteId.equals(expedienteId) & t.eliminado.equals(false),
+          )
+          ..limit(1))
+        .getSingleOrNull();
+
+    return row != null;
+  }
 }

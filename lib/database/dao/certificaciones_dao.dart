@@ -54,4 +54,15 @@ class CertificacionesDao extends DatabaseAccessor<AppDatabase>
       ),
     );
   }
+
+  Future<bool> tieneCertificacionPorExpediente(String expedienteId) async {
+    final row = await (select(certificaciones)
+          ..where(
+            (t) => t.expedienteId.equals(expedienteId) & t.eliminado.equals(false),
+          )
+          ..limit(1))
+        .getSingleOrNull();
+
+    return row != null;
+  }
 }

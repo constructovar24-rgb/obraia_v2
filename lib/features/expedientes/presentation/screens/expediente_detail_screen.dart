@@ -14,6 +14,7 @@ import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/entity_summary_card.dart';
 import '../../../../core/widgets/status_chip.dart';
 import '../../data/expediente_repository.dart';
+import '../../domain/expediente.dart' as expediente_domain;
 import '../../../certificaciones/domain/certificacion.dart';
 import '../../../certificaciones/presentation/providers/certificacion_providers.dart';
 import '../../../certificaciones/presentation/screens/nueva_certificacion_screen.dart';
@@ -44,20 +45,24 @@ class ExpedienteDetailScreen extends ConsumerWidget {
   final String? clienteNombre;
 
   static const List<Tab> _tabs = [
-    Tab(text: 'Datos generales'),
-    Tab(text: 'Cliente'),
     Tab(text: 'Presupuestos'),
-    Tab(text: 'Certificaciones'),
     Tab(text: 'Compras'),
+    Tab(text: 'Certificaciones'),
     Tab(text: 'Facturas'),
-    Tab(text: 'Timeline'),
     Tab(text: 'Documentos'),
-    Tab(text: 'Notas'),
+    Tab(text: 'Timeline'),
+    Tab(text: 'Cliente'),
+    Tab(text: 'Datos generales'),
+    // Tab(text: 'Notas'), // Oculta temporalmente hasta que deje de ser placeholder.
   ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final hasCliente = clienteNombre != null && clienteNombre!.isNotEmpty;
+    final expedienteFuture = ref.read(expedienteRepositoryProvider).obtenerExpediente(
+      id,
+    );
+    final atencionEstadoAsync = ref.watch(expedienteAtencionEstadoProvider(id));
     final accionGestionAsync = ref.watch(
       expedienteGestionAccionProvider(id),
     );
@@ -102,21 +107,28 @@ class ExpedienteDetailScreen extends ConsumerWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
-                    child: EntitySummaryCard(
-                      title: codigo,
-                      subtitle: nombre,
-                      details: hasCliente
-                          ? [
-                              Text(
-                                'Cliente: $clienteNombre',
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                            ]
-                          : null,
-                      statusWidget: const StatusChip(
-                        label: 'Sin estado',
-                        type: StatusType.neutral,
-                      ),
+                    child: FutureBuilder<expediente_domain.Expediente?>(
+                      future: expedienteFuture,
+                      builder: (context, snapshot) {
+                        final estado = snapshot.data?.estadoCiclo;
+
+                        return EntitySummaryCard(
+                          title: codigo,
+                          subtitle: nombre,
+                          details: hasCliente
+                              ? [
+                                  Text(
+                                    'Cliente: $clienteNombre',
+                                    style: Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                ]
+                              : null,
+                          statusWidget: StatusChip(
+                            label: _labelEstadoCiclo(estado),
+                            type: _tipoEstadoCiclo(estado),
+                          ),
+                        );
+                      },
                     ),
                   ),
                   const TabBar(
@@ -127,25 +139,56 @@ class ExpedienteDetailScreen extends ConsumerWidget {
               ),
             ),
           ),
-          body: TabBarView(
+          body: Column(
             children: [
-              DatosGeneralesTab(
-                id: id,
-                codigoExpediente: codigo,
+              _ExpedienteAtencionPanel(
+                estadoAsync: atencionEstadoAsync,
               ),
-              ClienteTab(expedienteId: id),
-              PresupuestosTab(expedienteId: id),
-              _CertificacionesTab(expedienteId: id),
-              ComprasTab(expedienteId: id),
-              FacturasTab(expedienteId: id),
-              TimelinePage(expedienteId: id),
-              _DocumentosTab(expedienteId: id),
-              const Center(child: Text('En desarrollo')),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    PresupuestosTab(expedienteId: id),
+                    ComprasTab(expedienteId: id),
+                    _CertificacionesTab(expedienteId: id),
+                    FacturasTab(expedienteId: id),
+                    _DocumentosTab(expedienteId: id),
+                    TimelinePage(expedienteId: id),
+                    ClienteTab(expedienteId: id),
+                    DatosGeneralesTab(
+                      id: id,
+                      codigoExpediente: codigo,
+                    ),
+                    // const Center(child: Text('En desarrollo')), // Contenido de Notas (oculto temporalmente).
+                  ],
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  String _labelEstadoCiclo(expediente_domain.ExpedienteEstadoCiclo? estado) {
+    switch (estado) {
+      case expediente_domain.ExpedienteEstadoCiclo.activo:
+        return 'Activo';
+      case expediente_domain.ExpedienteEstadoCiclo.archivado:
+        return 'Archivado';
+      case null:
+        return 'Sin estado';
+    }
+  }
+
+  StatusType _tipoEstadoCiclo(expediente_domain.ExpedienteEstadoCiclo? estado) {
+    switch (estado) {
+      case expediente_domain.ExpedienteEstadoCiclo.activo:
+        return StatusType.success;
+      case expediente_domain.ExpedienteEstadoCiclo.archivado:
+        return StatusType.neutral;
+      case null:
+        return StatusType.neutral;
+    }
   }
 
   IconData _iconoAccion(ExpedienteGestionAccion accion) {
@@ -185,13 +228,89 @@ class ExpedienteDetailScreen extends ConsumerWidget {
       return;
     }
 
-    await ref.read(expedienteRepositoryProvider).gestionarExpediente(id);
+    await ref.read(expedienteRepositoryProvider).gestionarExpediente(
+      id,
+      accion,
+    );
 
     if (!context.mounted) {
       return;
     }
 
     Navigator.maybePop(context);
+  }
+}
+
+class _ExpedienteAtencionPanel extends StatelessWidget {
+  const _ExpedienteAtencionPanel({
+    required this.estadoAsync,
+  });
+
+  final AsyncValue<expediente_domain.ExpedienteAtencionEstado> estadoAsync;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+      child: estadoAsync.when(
+        loading: () => const SizedBox(
+          height: 4,
+          child: LinearProgressIndicator(),
+        ),
+        error: (error, stackTrace) => AppCard(
+          child: Text('No se pudo cargar el panel de atencion.'),
+        ),
+        data: (estado) {
+          final theme = Theme.of(context);
+          final colorScheme = theme.colorScheme;
+
+          final (icono, color) = switch (estado.nivel) {
+            expediente_domain.ExpedienteAtencionNivel.correcto => (
+                Icons.check_circle_outline,
+                colorScheme.primary,
+              ),
+            expediente_domain.ExpedienteAtencionNivel.aviso => (
+                Icons.warning_amber_outlined,
+                colorScheme.tertiary,
+              ),
+            expediente_domain.ExpedienteAtencionNivel.critico => (
+                Icons.error_outline,
+                colorScheme.error,
+              ),
+          };
+
+          return AppCard(
+            highlighted: estado.requiereAtencion,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(icono, color: color),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        estado.mensajePrincipal,
+                        style: theme.textTheme.titleMedium,
+                      ),
+                      if (estado.detalle != null && estado.detalle!.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: AppSpacing.xs),
+                          child: Text(
+                            'Revisar: ${estado.detalle}',
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 

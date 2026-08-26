@@ -13,39 +13,15 @@ class ExpedientesDao extends DatabaseAccessor<AppDatabase>
   ExpedientesDao(super.db);
 
   Stream<List<expediente_domain.Expediente>> observarExpedientes() {
-    final table = attachedDatabase.expedientes;
-    final clientes = attachedDatabase.clientes;
+    return _observarExpedientesPorEstado(
+      expediente_domain.ExpedienteEstadoCiclo.activo,
+    );
+  }
 
-    final query = select(table).join([
-      leftOuterJoin(clientes, clientes.id.equalsExp(table.clienteId)),
-    ])
-      ..where(
-        table.eliminado.equals(false) &
-            table.estado.equals(
-              expediente_domain.expedienteEstadoCicloToDbValue(
-                expediente_domain.ExpedienteEstadoCiclo.activo,
-              ),
-            ),
-      )
-      ..orderBy([OrderingTerm.desc(table.fechaCreacion)]);
-
-    return query.watch().map((rows) {
-      return rows.map((row) {
-        final expediente = row.readTable(table);
-        final cliente = row.readTableOrNull(clientes);
-
-        return expediente_domain.Expediente(
-          id: expediente.id,
-          codigo: expediente.codigo,
-          nombre: expediente.nombre,
-          estadoCiclo: expediente_domain.expedienteEstadoCicloFromDbValue(
-            expediente.estado,
-          ),
-          clienteId: expediente.clienteId,
-          clienteNombre: cliente?.nombre ?? '',
-        );
-      }).toList();
-    });
+  Stream<List<expediente_domain.Expediente>> observarExpedientesArchivados() {
+    return _observarExpedientesPorEstado(
+      expediente_domain.ExpedienteEstadoCiclo.archivado,
+    );
   }
 
   Future<expediente_domain.Expediente?> obtenerExpediente(String id) async {
@@ -93,6 +69,21 @@ class ExpedientesDao extends DatabaseAccessor<AppDatabase>
     );
   }
 
+  Future<void> restaurarExpediente(String id) async {
+    final table = attachedDatabase.expedientes;
+
+    await (update(table)..where((t) => t.id.equals(id))).write(
+      ExpedientesCompanion(
+        estado: Value(
+          expediente_domain.expedienteEstadoCicloToDbValue(
+            expediente_domain.ExpedienteEstadoCiclo.activo,
+          ),
+        ),
+        fechaModificacion: Value(DateTime.now()),
+      ),
+    );
+  }
+
   Future<void> insertarExpediente(ExpedientesCompanion expediente) async {
     final table = attachedDatabase.expedientes;
 
@@ -122,5 +113,39 @@ class ExpedientesDao extends DatabaseAccessor<AppDatabase>
         eliminado: Value(true),
       ),
     );
+  }
+
+  Stream<List<expediente_domain.Expediente>> _observarExpedientesPorEstado(
+    expediente_domain.ExpedienteEstadoCiclo estadoCiclo,
+  ) {
+    final table = attachedDatabase.expedientes;
+    final clientes = attachedDatabase.clientes;
+    final estadoDb = expediente_domain.expedienteEstadoCicloToDbValue(
+      estadoCiclo,
+    );
+
+    final query = select(table).join([
+      leftOuterJoin(clientes, clientes.id.equalsExp(table.clienteId)),
+    ])
+      ..where(table.eliminado.equals(false) & table.estado.equals(estadoDb))
+      ..orderBy([OrderingTerm.desc(table.fechaCreacion)]);
+
+    return query.watch().map((rows) {
+      return rows.map((row) {
+        final expediente = row.readTable(table);
+        final cliente = row.readTableOrNull(clientes);
+
+        return expediente_domain.Expediente(
+          id: expediente.id,
+          codigo: expediente.codigo,
+          nombre: expediente.nombre,
+          estadoCiclo: expediente_domain.expedienteEstadoCicloFromDbValue(
+            expediente.estado,
+          ),
+          clienteId: expediente.clienteId,
+          clienteNombre: cliente?.nombre ?? '',
+        );
+      }).toList();
+    });
   }
 }

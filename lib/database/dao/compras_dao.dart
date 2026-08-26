@@ -46,4 +46,15 @@ class ComprasDao extends DatabaseAccessor<AppDatabase> with _$ComprasDaoMixin {
       ),
     );
   }
+
+  Future<bool> tieneCompraPorExpediente(String expedienteId) async {
+    final row = await (select(compras)
+          ..where(
+            (t) => t.expedienteId.equals(expedienteId) & t.eliminado.equals(false),
+          )
+          ..limit(1))
+        .getSingleOrNull();
+
+    return row != null;
+  }
 }

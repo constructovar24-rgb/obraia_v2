@@ -123,6 +123,17 @@ class PresupuestosDao extends DatabaseAccessor<AppDatabase>
     );
   }
 
+  Future<bool> tienePresupuestoPorExpediente(String expedienteId) async {
+    final row = await (select(presupuestos)
+          ..where(
+            (t) => t.expedienteId.equals(expedienteId) & t.eliminado.equals(false),
+          )
+          ..limit(1))
+        .getSingleOrNull();
+
+    return row != null;
+  }
+
   Future<bool> tieneFacturaAsociada(String presupuestoId) async {
     final tableFacturas = attachedDatabase.facturas;
 

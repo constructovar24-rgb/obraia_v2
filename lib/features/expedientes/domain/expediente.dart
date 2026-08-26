@@ -43,3 +43,33 @@ class Expediente {
     this.clienteNombre,
   });
 }
+
+enum ExpedienteAtencionNivel {
+  correcto,
+  aviso,
+  critico,
+}
+
+enum ExpedienteAtencionIndicador {
+  sinAccionesPendientes,
+  sinPresupuestos,
+  presupuestoPendienteAceptacion,
+  presupuestoAceptadoSinFactura,
+  facturaPendienteCobro,
+}
+
+class ExpedienteAtencionEstado {
+  const ExpedienteAtencionEstado({
+    required this.nivel,
+    required this.mensajePrincipal,
+    this.detalle,
+    required this.indicadorPrincipal,
+  });
+
+  final ExpedienteAtencionNivel nivel;
+  final String mensajePrincipal;
+  final String? detalle;
+  final ExpedienteAtencionIndicador indicadorPrincipal;
+
+  bool get requiereAtencion => nivel != ExpedienteAtencionNivel.correcto;
+}
