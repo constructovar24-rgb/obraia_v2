@@ -2,7 +2,7 @@
 
 ## Propósito y estado
 
-Este documento guía la fase 1 desde la auditoría inicial. Ya están implementados el snapshot SQLite consistente, el contenedor manual de formato 1, la preparación validada de una restauración en staging, el intercambio recuperable y las copias automáticas de recuperación. Todavía no existe integración con la base activa ni interfaz de usuario. La prioridad sigue siendo restaurar sin sobrescribir nunca la única copia válida.
+Este documento guía la fase 1 desde la auditoría inicial. Ya están implementados el snapshot SQLite consistente, el contenedor manual de formato 1, la preparación validada en staging, el intercambio recuperable, las copias automáticas y la integración con el ciclo de vida de la base activa. Todavía no existe interfaz de usuario. La prioridad sigue siendo restaurar sin sobrescribir nunca la única copia válida.
 
 ## Situación actual
 
@@ -10,8 +10,8 @@ Este documento guía la fase 1 desde la auditoría inicial. Ya están implementa
 
 - `AppDatabase` abre de forma diferida `obraia.sqlite` mediante `NativeDatabase`.
 - La ruta es `getApplicationDocumentsDirectory()/obraia.sqlite`. En Windows, la ubicación concreta la resuelve `path_provider`; el usuario no debe necesitar conocerla.
-- `databaseProvider`, en `lib/database/database_provider.dart`, crea un `AppDatabase` dentro del `ProviderScope` raíz.
-- El provider no registra `ref.onDispose(database.close)`. Tampoco existe un coordinador que impida operaciones, cierre la conexión, sustituya la base y reconstruya todos sus consumidores durante una restauración.
+- `DatabaseLifecycleController` es el único propietario de la instancia activa. El provider cierra la conexión al destruirse y `databaseProvider` observa al controlador para recibir únicamente instancias ya abiertas.
+- `BackupRestoreCoordinator` serializa restauraciones, prepara el backup entrante, crea y valida la recuperación, cierra la conexión, intercambia archivos y publica la instancia nueva. Si falla tras el cierre, el intercambio repone y publica la anterior cuando es recuperable.
 - La ruta completa de la base se imprime actualmente con `debugPrint`. No debe aparecer en logs de producción o de backup.
 
 ### SQLite, diario y transacciones
@@ -218,7 +218,7 @@ No hace falta cambiar el esquema para guardar “última copia”: puede mantene
 
 **Aceptación y pruebas:** backup previo validado; fallos inyectados antes y después de cada renombrado; rollback conserva datos; sidecars se apartan como unidad; no quedan handles; providers reciben la nueva instancia. Incluir pruebas Windows.
 
-**Estado:** implementados el primitivo de intercambio recuperable y el servicio de backup automático previo sobre directorios temporales. La base preparada se copia y valida primero en el volumen activo; después del cierre, la base y los sidecars existentes se apartan juntos. El backup automático crea y revalida un contenedor con nombre no sensible, conserva solo los tres más recientes y nunca elimina archivos manuales o ajenos. Trece pruebas cubren ambos servicios, incluidos fallos en cada etapa y conservación del rollback. Todavía faltan la orquestación conjunta y la integración con el propietario real de `AppDatabase` y sus providers; por ello no se usa aún sobre datos reales.
+**Estado:** integración completada y probada con archivos temporales. El coordinador bloquea restauraciones solapadas, prepara y valida la entrada, crea una recuperación validada y usa el intercambio existente para cerrar, sustituir, reabrir y publicar la instancia nueva. Si un fallo sucede tras el cierre, el rollback reabre y publica el estado anterior cuando es posible. La UI, la confirmación de usuario y las pruebas manuales Windows siguen pendientes.
 
 ### 5. Archivos asociados gestionados
 

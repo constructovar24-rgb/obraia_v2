@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
@@ -72,37 +71,44 @@ class AppDatabase extends _$AppDatabase {
 
   AppDatabase.forTesting(super.executor);
 
+  static Future<File> defaultDatabaseFile() async {
+    final directory = await getApplicationDocumentsDirectory();
+    return File(p.join(directory.path, 'obraia.sqlite'));
+  }
+
   @override
   int get schemaVersion => 17;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onCreate: (m) async {
-          await m.createAll();
-        },
-        onUpgrade: (m, from, to) async {
-          if (from < 2) {
-            await m.addColumn(expedientes, expedientes.clienteId);
-          }
+    onCreate: (m) async {
+      await m.createAll();
+    },
+    onUpgrade: (m, from, to) async {
+      if (from < 2) {
+        await m.addColumn(expedientes, expedientes.clienteId);
+      }
 
-          if (from < 3) {
-            await m.createTable(presupuestos);
-          }
+      if (from < 3) {
+        await m.createTable(presupuestos);
+      }
 
-          if (from < 4) {
-            await m.addColumn(presupuestos, presupuestos.codigo);
-            await m.addColumn(presupuestos, presupuestos.fecha);
-            await m.addColumn(presupuestos, presupuestos.descripcion);
-          }
+      if (from < 4) {
+        await m.addColumn(presupuestos, presupuestos.codigo);
+        await m.addColumn(presupuestos, presupuestos.fecha);
+        await m.addColumn(presupuestos, presupuestos.descripcion);
+      }
 
-          if (from < 5) {
-            await m.addColumn(presupuestos, presupuestos.importeTotal);
-          }
+      if (from < 5) {
+        await m.addColumn(presupuestos, presupuestos.importeTotal);
+      }
 
-          if (from < 6) {
-            await customStatement('ALTER TABLE presupuestos RENAME TO presupuestos_old');
+      if (from < 6) {
+        await customStatement(
+          'ALTER TABLE presupuestos RENAME TO presupuestos_old',
+        );
 
-            await customStatement('''
+        await customStatement('''
               CREATE TABLE presupuestos (
                 id TEXT NOT NULL PRIMARY KEY,
                 expediente_id TEXT NOT NULL REFERENCES expedientes(id),
@@ -118,7 +124,7 @@ class AppDatabase extends _$AppDatabase {
               )
             ''');
 
-            await customStatement('''
+        await customStatement('''
               INSERT INTO presupuestos (
                 id,
                 expediente_id,
@@ -157,62 +163,62 @@ class AppDatabase extends _$AppDatabase {
               FROM presupuestos_old
             ''');
 
-            await customStatement('DROP TABLE presupuestos_old');
-          }
+        await customStatement('DROP TABLE presupuestos_old');
+      }
 
-          if (from < 7) {
-            await m.createTable(lineasPresupuesto);
-          }
+      if (from < 7) {
+        await m.createTable(lineasPresupuesto);
+      }
 
-          if (from < 8) {
-            await m.addColumn(presupuestos, presupuestos.ivaPorcentaje);
-          }
+      if (from < 8) {
+        await m.addColumn(presupuestos, presupuestos.ivaPorcentaje);
+      }
 
-          if (from < 9) {
-            await m.createTable(empresaConfiguracion);
-          }
+      if (from < 9) {
+        await m.createTable(empresaConfiguracion);
+      }
 
-          if (from < 10) {
-            await m.createTable(facturas);
-            await m.createTable(facturaLineas);
-          }
+      if (from < 10) {
+        await m.createTable(facturas);
+        await m.createTable(facturaLineas);
+      }
 
-          if (from < 11) {
-            await m.createTable(cobros);
-          }
+      if (from < 11) {
+        await m.createTable(cobros);
+      }
 
-          if (from < 12) {
-            await m.createTable(timelineEvents);
-          }
+      if (from < 12) {
+        await m.createTable(timelineEvents);
+      }
 
-          if (from < 13) {
-            await m.createTable(compras);
-          }
+      if (from < 13) {
+        await m.createTable(compras);
+      }
 
-          if (from < 14) {
-            await m.createTable(proveedores);
-          }
+      if (from < 14) {
+        await m.createTable(proveedores);
+      }
 
-          if (from < 15) {
-            await m.createTable(certificaciones);
-          }
+      if (from < 15) {
+        await m.createTable(certificaciones);
+      }
 
-          if (from < 16) {
-            await m.createTable(documentos);
-          }
+      if (from < 16) {
+        await m.createTable(documentos);
+      }
 
-          if (from >= 10 && from < 17) {
-            await m.addColumn(facturas, facturas.ivaPorcentaje);
-            await customStatement('''
+      if (from >= 10 && from < 17) {
+        await m.addColumn(facturas, facturas.ivaPorcentaje);
+        await customStatement('''
               UPDATE facturas
               SET iva_porcentaje = CASE
                 WHEN subtotal != 0 THEN iva * 100 / subtotal
                 ELSE 21
               END
             ''');
-          }
-        },
-      );
+      }
+    },
+  );
 
   final _uuid = const Uuid();
 
@@ -228,9 +234,7 @@ class AppDatabase extends _$AppDatabase {
         codigo: codigo,
         nombre: nombre,
         cliente: Value(cliente ?? ''),
-        clienteId: clienteId == null
-            ? const Value.absent()
-            : Value(clienteId),
+        clienteId: clienteId == null ? const Value.absent() : Value(clienteId),
       ),
     );
   }
@@ -238,16 +242,14 @@ class AppDatabase extends _$AppDatabase {
   Stream<List<Expediente>> observarExpedientes() {
     return (select(expedientes)
           ..where((t) => t.eliminado.equals(false))
-          ..orderBy([
-            (t) => OrderingTerm.desc(t.fechaCreacion),
-          ]))
+          ..orderBy([(t) => OrderingTerm.desc(t.fechaCreacion)]))
         .watch();
   }
 
   Future<Expediente?> obtenerExpediente(String id) {
-    return (select(expedientes)
-          ..where((t) => t.id.equals(id)))
-        .getSingleOrNull();
+    return (select(
+      expedientes,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
   }
 
   Future<void> actualizarExpediente({
@@ -312,16 +314,12 @@ class AppDatabase extends _$AppDatabase {
   Stream<List<Cliente>> observarClientes() {
     return (select(clientes)
           ..where((t) => t.eliminado.equals(false))
-          ..orderBy([
-            (t) => OrderingTerm.desc(t.fechaCreacion),
-          ]))
+          ..orderBy([(t) => OrderingTerm.desc(t.fechaCreacion)]))
         .watch();
   }
 
   Future<Cliente?> obtenerCliente(String id) {
-    return (select(clientes)
-          ..where((t) => t.id.equals(id)))
-        .getSingleOrNull();
+    return (select(clientes)..where((t) => t.id.equals(id))).getSingleOrNull();
   }
 
   Future<void> actualizarCliente({
@@ -361,16 +359,6 @@ class AppDatabase extends _$AppDatabase {
 
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
-    final dir = await getApplicationDocumentsDirectory();
-
-    final file = File(
-      p.join(dir.path, 'obraia.sqlite'),
-    );
-
-    debugPrint('========================================');
-    debugPrint('BASE DE DATOS: ${file.path}');
-    debugPrint('========================================');
-
-    return NativeDatabase(file);
+    return NativeDatabase(await AppDatabase.defaultDatabaseFile());
   });
 }

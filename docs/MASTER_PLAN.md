@@ -16,7 +16,7 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 
 **Objetivo:** proteger la información empresarial antes de ampliar el producto.
 
-**Estado:** en implementación incremental. Snapshot, contenedor manual, staging para esquemas 16 y 17, intercambio recuperable con sidecars y backup automático con retención de tres copias están implementados y probados sobre archivos temporales. El siguiente incremento es controlar el ciclo de vida de `AppDatabase` y orquestar los servicios; todavía no se toca la base real.
+**Estado:** en implementación incremental. Snapshot, contenedor manual, staging para esquemas 16 y 17, intercambio recuperable, backup automático y controlador reactivo de `AppDatabase` están integrados y probados sobre archivos temporales. El siguiente incremento es la interfaz de usuario; todavía no se toca la base real.
 
 **Criterio de salida:** creación, validación y restauración de backups probadas sobre copias temporales; recuperación documentada; migraciones desde las versiones soportadas verifican integridad y conservación; ninguna prueba toca la base real.
 

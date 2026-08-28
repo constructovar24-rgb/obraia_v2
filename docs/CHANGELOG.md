@@ -19,6 +19,9 @@
 - Incorporado el backup automático de recuperación con nombre no sensible, validación completa y retención de las tres copias más recientes.
 - La retención reconoce únicamente copias automáticas gestionadas y nunca elimina backups manuales ni archivos ajenos.
 - Añadidas 4 pruebas temporales del backup automático; todavía no está conectado al ciclo de restauración real.
+- Añadido `DatabaseLifecycleController` como propietario único de la instancia activa y publicación reactiva tras una reapertura válida.
+- Añadido `BackupRestoreCoordinator`, que integra validación, staging, backup de recuperación, intercambio, rollback y reapertura sin widgets.
+- Añadidas 4 pruebas temporales de restauración completa, incluidos publicación, fallo previo, rollback y exclusión mutua.
 
 ### Expedientes
 
@@ -30,7 +33,7 @@
 
 ### Calidad y documentación
 
-- Línea base comprobada con `flutter analyze --no-pub` limpio y 129 pruebas superadas.
+- Línea base comprobada con `flutter analyze --no-pub` limpio y 133 pruebas superadas.
 - Compilación debug de Windows repetida correctamente después de integrar el contenedor de backup.
 - Toolchain Windows validada con Visual Studio Community 2026 18.9.2 y Windows SDK 10.0.26100.0.
 - Compilación debug para Windows completada correctamente con `flutter build windows --debug --no-pub`.
