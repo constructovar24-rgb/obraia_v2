@@ -38,6 +38,11 @@ final expedienteAtencionEstadoProvider =
       return repository.observarEstadoAtencionExpediente(expedienteId);
     });
 
+final expedienteProvider =
+    StreamProvider.family<expediente_domain.Expediente?, String>((ref, id) {
+      return ref.read(expedienteRepositoryProvider).observarExpediente(id);
+    });
+
 enum ExpedienteGestionAccion { eliminar, archivar }
 
 class ExpedienteRepository {
@@ -152,6 +157,42 @@ class ExpedienteRepository {
 
   Future<expediente_domain.Expediente?> obtenerExpediente(String id) {
     return database.expedientesDao.obtenerExpediente(id);
+  }
+
+  Stream<expediente_domain.Expediente?> observarExpediente(String id) {
+    return database.expedientesDao.observarExpediente(id);
+  }
+
+  Future<void> actualizarDatosPrincipales({
+    required String id,
+    required String codigo,
+    required String nombre,
+    String? clienteId,
+    String? cliente,
+  }) async {
+    await database.transaction(() async {
+      final filasActualizadas = await database.expedientesDao
+          .actualizarExpediente(
+            id,
+            ExpedientesCompanion(
+              codigo: Value(codigo),
+              nombre: Value(nombre),
+              clienteId: Value(clienteId),
+              cliente: Value(cliente ?? ''),
+              fechaModificacion: Value(DateTime.now()),
+            ),
+          );
+
+      if (filasActualizadas != 1) {
+        throw const ExpedienteNoEncontradoException();
+      }
+
+      await _timelineRepository.registrarExpedienteActualizado(
+        expedienteId: id,
+        titulo: codigo,
+        descripcion: nombre,
+      );
+    });
   }
 
   Stream<expediente_domain.ExpedienteAtencionEstado>
@@ -483,6 +524,13 @@ class ExpedienteRepository {
         actual.detalle == siguiente.detalle &&
         actual.indicadorPrincipal == siguiente.indicadorPrincipal;
   }
+}
+
+class ExpedienteNoEncontradoException implements Exception {
+  const ExpedienteNoEncontradoException();
+
+  @override
+  String toString() => 'El expediente ya no existe o no está disponible.';
 }
 
 class _ExpedienteSnapshot {

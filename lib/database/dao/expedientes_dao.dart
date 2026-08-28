@@ -25,33 +25,36 @@ class ExpedientesDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<expediente_domain.Expediente?> obtenerExpediente(String id) async {
+    return observarExpediente(id).first;
+  }
+
+  Stream<expediente_domain.Expediente?> observarExpediente(String id) {
     final table = attachedDatabase.expedientes;
     final clientes = attachedDatabase.clientes;
 
     final query = select(table).join([
       leftOuterJoin(clientes, clientes.id.equalsExp(table.clienteId)),
-    ])
-      ..where(table.id.equals(id));
+    ])..where(table.id.equals(id));
 
-    final row = await query.getSingleOrNull();
+    return query.watchSingleOrNull().map((row) {
+      if (row == null) {
+        return null;
+      }
 
-    if (row == null) {
-      return null;
-    }
+      final expediente = row.readTable(table);
+      final cliente = row.readTableOrNull(clientes);
 
-    final expediente = row.readTable(table);
-    final cliente = row.readTableOrNull(clientes);
-
-    return expediente_domain.Expediente(
-      id: expediente.id,
-      codigo: expediente.codigo,
-      nombre: expediente.nombre,
-      estadoCiclo: expediente_domain.expedienteEstadoCicloFromDbValue(
-        expediente.estado,
-      ),
-      clienteId: expediente.clienteId,
-      clienteNombre: cliente?.nombre ?? '',
-    );
+      return expediente_domain.Expediente(
+        id: expediente.id,
+        codigo: expediente.codigo,
+        nombre: expediente.nombre,
+        estadoCiclo: expediente_domain.expedienteEstadoCicloFromDbValue(
+          expediente.estado,
+        ),
+        clienteId: expediente.clienteId,
+        clienteNombre: _nombreCompletoCliente(cliente),
+      );
+    });
   }
 
   Future<void> archivarExpediente(String id) async {
@@ -90,28 +93,17 @@ class ExpedientesDao extends DatabaseAccessor<AppDatabase>
     await into(table).insert(expediente);
   }
 
-  Future<void> actualizarExpediente(
-    String id,
-    ExpedientesCompanion companion,
-  ) async {
+  Future<int> actualizarExpediente(String id, ExpedientesCompanion companion) {
     final table = attachedDatabase.expedientes;
 
-    await (update(table)
-          ..where((t) => t.id.equals(id)))
-        .write(companion);
+    return (update(table)..where((t) => t.id.equals(id))).write(companion);
   }
 
-  Future<void> eliminarLogicamente(
-    String id,
-  ) async {
+  Future<void> eliminarLogicamente(String id) async {
     final table = attachedDatabase.expedientes;
 
-    await (update(table)
-          ..where((t) => t.id.equals(id)))
-        .write(
-      const ExpedientesCompanion(
-        eliminado: Value(true),
-      ),
+    await (update(table)..where((t) => t.id.equals(id))).write(
+      const ExpedientesCompanion(eliminado: Value(true)),
     );
   }
 
@@ -124,11 +116,12 @@ class ExpedientesDao extends DatabaseAccessor<AppDatabase>
       estadoCiclo,
     );
 
-    final query = select(table).join([
-      leftOuterJoin(clientes, clientes.id.equalsExp(table.clienteId)),
-    ])
-      ..where(table.eliminado.equals(false) & table.estado.equals(estadoDb))
-      ..orderBy([OrderingTerm.desc(table.fechaCreacion)]);
+    final query =
+        select(table).join([
+            leftOuterJoin(clientes, clientes.id.equalsExp(table.clienteId)),
+          ])
+          ..where(table.eliminado.equals(false) & table.estado.equals(estadoDb))
+          ..orderBy([OrderingTerm.desc(table.fechaCreacion)]);
 
     return query.watch().map((rows) {
       return rows.map((row) {
@@ -143,9 +136,14 @@ class ExpedientesDao extends DatabaseAccessor<AppDatabase>
             expediente.estado,
           ),
           clienteId: expediente.clienteId,
-          clienteNombre: cliente?.nombre ?? '',
+          clienteNombre: _nombreCompletoCliente(cliente),
         );
       }).toList();
     });
+  }
+
+  String _nombreCompletoCliente(Cliente? cliente) {
+    if (cliente == null) return '';
+    return '${cliente.nombre} ${cliente.apellidos}'.trim();
   }
 }

@@ -28,6 +28,7 @@ import '../../../compras/presentation/widgets/compras_tab.dart';
 import '../../../timeline/presentation/timeline_page.dart';
 import 'cliente_tab.dart';
 import 'datos_generales_screen.dart';
+import 'editar_expediente_screen.dart';
 import '../../../presupuestos/presentation/widgets/presupuestos_tab.dart';
 
 class ExpedienteDetailScreen extends ConsumerWidget {
@@ -58,38 +59,54 @@ class ExpedienteDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final hasCliente = clienteNombre != null && clienteNombre!.isNotEmpty;
-    final expedienteFuture = ref.read(expedienteRepositoryProvider).obtenerExpediente(
-      id,
-    );
+    final expedienteAsync = ref.watch(expedienteProvider(id));
+    final expediente = expedienteAsync.value;
+    final codigoActual = expediente?.codigo ?? codigo;
+    final nombreActual = expediente?.nombre ?? nombre;
+    final clienteActual = expediente?.clienteNombre ?? clienteNombre;
+    final hasCliente = clienteActual != null && clienteActual.isNotEmpty;
     final atencionEstadoAsync = ref.watch(expedienteAtencionEstadoProvider(id));
-    final accionGestionAsync = ref.watch(
-      expedienteGestionAccionProvider(id),
-    );
+    final accionGestionAsync = ref.watch(expedienteGestionAccionProvider(id));
 
     List<AppPageHeaderAction> construirAcciones() {
-      return accionGestionAsync.when(
-        loading: () => const [],
-        error: (error, stackTrace) => const [],
-        data: (accion) {
-          final tituloAccion = _tituloAccion(accion);
+      final acciones = <AppPageHeaderAction>[
+        if (expediente != null)
+          AppPageHeaderAction(
+            icon: Icons.edit_outlined,
+            tooltip: 'Editar expediente',
+            semanticLabel: 'Editar expediente',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      EditarExpedienteScreen(expediente: expediente),
+                ),
+              );
+            },
+          ),
+      ];
 
-          return [
-            AppPageHeaderAction(
-              icon: _iconoAccion(accion),
-              tooltip: tituloAccion,
-              semanticLabel: tituloAccion,
-              onPressed: () {
-                _confirmarYGestionarExpediente(
-                  context: context,
-                  ref: ref,
-                  accion: accion,
-                );
-              },
-            ),
-          ];
-        },
-      );
+      final accion = accionGestionAsync.value;
+      if (accion != null) {
+        final tituloAccion = _tituloAccion(accion);
+        acciones.add(
+          AppPageHeaderAction(
+            icon: _iconoAccion(accion),
+            tooltip: tituloAccion,
+            semanticLabel: tituloAccion,
+            onPressed: () {
+              _confirmarYGestionarExpediente(
+                context: context,
+                ref: ref,
+                accion: accion,
+              );
+            },
+          ),
+        );
+      }
+
+      return acciones;
     }
 
     return DefaultTabController(
@@ -107,43 +124,31 @@ class ExpedienteDetailScreen extends ConsumerWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
-                    child: FutureBuilder<expediente_domain.Expediente?>(
-                      future: expedienteFuture,
-                      builder: (context, snapshot) {
-                        final estado = snapshot.data?.estadoCiclo;
-
-                        return EntitySummaryCard(
-                          title: codigo,
-                          subtitle: nombre,
-                          details: hasCliente
-                              ? [
-                                  Text(
-                                    'Cliente: $clienteNombre',
-                                    style: Theme.of(context).textTheme.bodyMedium,
-                                  ),
-                                ]
-                              : null,
-                          statusWidget: StatusChip(
-                            label: _labelEstadoCiclo(estado),
-                            type: _tipoEstadoCiclo(estado),
-                          ),
-                        );
-                      },
+                    child: EntitySummaryCard(
+                      title: codigoActual,
+                      subtitle: nombreActual,
+                      details: hasCliente
+                          ? [
+                              Text(
+                                'Cliente: $clienteActual',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ]
+                          : null,
+                      statusWidget: StatusChip(
+                        label: _labelEstadoCiclo(expediente?.estadoCiclo),
+                        type: _tipoEstadoCiclo(expediente?.estadoCiclo),
+                      ),
                     ),
                   ),
-                  const TabBar(
-                    isScrollable: true,
-                    tabs: _tabs,
-                  ),
+                  const TabBar(isScrollable: true, tabs: _tabs),
                 ],
               ),
             ),
           ),
           body: Column(
             children: [
-              _ExpedienteAtencionPanel(
-                estadoAsync: atencionEstadoAsync,
-              ),
+              _ExpedienteAtencionPanel(estadoAsync: atencionEstadoAsync),
               Expanded(
                 child: TabBarView(
                   children: [
@@ -154,10 +159,7 @@ class ExpedienteDetailScreen extends ConsumerWidget {
                     _DocumentosTab(expedienteId: id),
                     TimelinePage(expedienteId: id),
                     ClienteTab(expedienteId: id),
-                    DatosGeneralesTab(
-                      id: id,
-                      codigoExpediente: codigo,
-                    ),
+                    DatosGeneralesTab(id: id, codigoExpediente: codigoActual),
                     // const Center(child: Text('En desarrollo')), // Contenido de Notas (oculto temporalmente).
                   ],
                 ),
@@ -228,10 +230,9 @@ class ExpedienteDetailScreen extends ConsumerWidget {
       return;
     }
 
-    await ref.read(expedienteRepositoryProvider).gestionarExpediente(
-      id,
-      accion,
-    );
+    await ref
+        .read(expedienteRepositoryProvider)
+        .gestionarExpediente(id, accion);
 
     if (!context.mounted) {
       return;
@@ -242,9 +243,7 @@ class ExpedienteDetailScreen extends ConsumerWidget {
 }
 
 class _ExpedienteAtencionPanel extends StatelessWidget {
-  const _ExpedienteAtencionPanel({
-    required this.estadoAsync,
-  });
+  const _ExpedienteAtencionPanel({required this.estadoAsync});
 
   final AsyncValue<expediente_domain.ExpedienteAtencionEstado> estadoAsync;
 
@@ -253,30 +252,27 @@ class _ExpedienteAtencionPanel extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
       child: estadoAsync.when(
-        loading: () => const SizedBox(
-          height: 4,
-          child: LinearProgressIndicator(),
-        ),
-        error: (error, stackTrace) => AppCard(
-          child: Text('No se pudo cargar el panel de atencion.'),
-        ),
+        loading: () =>
+            const SizedBox(height: 4, child: LinearProgressIndicator()),
+        error: (error, stackTrace) =>
+            AppCard(child: Text('No se pudo cargar el panel de atencion.')),
         data: (estado) {
           final theme = Theme.of(context);
           final colorScheme = theme.colorScheme;
 
           final (icono, color) = switch (estado.nivel) {
             expediente_domain.ExpedienteAtencionNivel.correcto => (
-                Icons.check_circle_outline,
-                colorScheme.primary,
-              ),
+              Icons.check_circle_outline,
+              colorScheme.primary,
+            ),
             expediente_domain.ExpedienteAtencionNivel.aviso => (
-                Icons.warning_amber_outlined,
-                colorScheme.tertiary,
-              ),
+              Icons.warning_amber_outlined,
+              colorScheme.tertiary,
+            ),
             expediente_domain.ExpedienteAtencionNivel.critico => (
-                Icons.error_outline,
-                colorScheme.error,
-              ),
+              Icons.error_outline,
+              colorScheme.error,
+            ),
           };
 
           return AppCard(
@@ -315,9 +311,7 @@ class _ExpedienteAtencionPanel extends StatelessWidget {
 }
 
 class _CertificacionesTab extends ConsumerWidget {
-  const _CertificacionesTab({
-    required this.expedienteId,
-  });
+  const _CertificacionesTab({required this.expedienteId});
 
   final String expedienteId;
 
@@ -355,20 +349,14 @@ class _CertificacionesTab extends ConsumerWidget {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => NuevaCertificacionScreen(
-            expedienteId: expedienteId,
-          ),
+          builder: (_) => NuevaCertificacionScreen(expedienteId: expedienteId),
         ),
       );
     }
 
     return certificacionesAsync.when(
-      loading: () => const AppLoading(
-        message: 'Cargando certificaciones...',
-      ),
-      error: (error, stackTrace) => AppErrorState(
-        message: 'ERROR:\n\n$error',
-      ),
+      loading: () => const AppLoading(message: 'Cargando certificaciones...'),
+      error: (error, stackTrace) => AppErrorState(message: 'ERROR:\n\n$error'),
       data: (certificaciones) {
         if (certificaciones.isEmpty) {
           return AppEmptyState(
@@ -445,7 +433,9 @@ class _CertificacionesTab extends ConsumerWidget {
                         leading: CircleAvatar(
                           backgroundColor: colorScheme.primaryContainer,
                           foregroundColor: colorScheme.onPrimaryContainer,
-                          child: const Icon(Icons.assignment_turned_in_outlined),
+                          child: const Icon(
+                            Icons.assignment_turned_in_outlined,
+                          ),
                         ),
                         title: Text(
                           certificacion.codigo,
@@ -485,9 +475,7 @@ class _CertificacionesTab extends ConsumerWidget {
 }
 
 class _DocumentosTab extends ConsumerWidget {
-  const _DocumentosTab({
-    required this.expedienteId,
-  });
+  const _DocumentosTab({required this.expedienteId});
 
   final String expedienteId;
 
@@ -529,20 +517,14 @@ class _DocumentosTab extends ConsumerWidget {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => NuevoDocumentoScreen(
-            expedienteId: expedienteId,
-          ),
+          builder: (_) => NuevoDocumentoScreen(expedienteId: expedienteId),
         ),
       );
     }
 
     return documentosAsync.when(
-      loading: () => const AppLoading(
-        message: 'Cargando documentos...',
-      ),
-      error: (error, stackTrace) => AppErrorState(
-        message: 'ERROR:\n\n$error',
-      ),
+      loading: () => const AppLoading(message: 'Cargando documentos...'),
+      error: (error, stackTrace) => AppErrorState(message: 'ERROR:\n\n$error'),
       data: (documentos) {
         if (documentos.isEmpty) {
           return AppEmptyState(
@@ -582,10 +564,7 @@ class _DocumentosTab extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Documentos',
-                            style: textTheme.headlineMedium,
-                          ),
+                          Text('Documentos', style: textTheme.headlineMedium),
                           const SizedBox(height: AppSpacing.xs),
                           Text(
                             'Consulta y edita cada documento asociado al expediente.',
@@ -639,9 +618,8 @@ class _DocumentosTab extends ConsumerWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => EditarDocumentoScreen(
-                                documento: documento,
-                              ),
+                              builder: (_) =>
+                                  EditarDocumentoScreen(documento: documento),
                             ),
                           );
                         },
