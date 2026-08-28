@@ -2,7 +2,7 @@
 
 ## Propósito y estado
 
-Este documento guía la fase 1 desde la auditoría inicial. Ya están implementados el snapshot SQLite consistente y el contenedor manual de formato 1 con validación integral. Todavía no existe restauración ni interfaz de usuario. La prioridad sigue siendo restaurar sin sobrescribir nunca la única copia válida.
+Este documento guía la fase 1 desde la auditoría inicial. Ya están implementados el snapshot SQLite consistente, el contenedor manual de formato 1 y la preparación validada de una restauración en staging. Todavía no existe sustitución de la base activa ni interfaz de usuario. La prioridad sigue siendo restaurar sin sobrescribir nunca la única copia válida.
 
 ## Situación actual
 
@@ -42,7 +42,7 @@ Este documento guía la fase 1 desde la auditoría inicial. Ya están implementa
 
 - Dependencias directas útiles: `drift`, `path_provider`, `path`, `sqlite3`, `archive` y `crypto`. Las tres últimas se declararon directamente al implementar el contenedor de formato 1; sus versiones ya estaban resueltas en el lock.
 - No hay un selector de archivos directo (`file_selector` o equivalente) ni una API declarada para obtener la versión de la aplicación.
-- Las pruebas de repositorios usan principalmente `NativeDatabase.memory()` y cierran la conexión. La prueba de migración también usa memoria. Los incrementos de snapshot y contenedor ya disponen de diez pruebas sobre bases y archivos temporales; siguen pendientes las pruebas de sidecars, restauración y recuperación ante fallo.
+- Las pruebas de repositorios usan principalmente `NativeDatabase.memory()` y cierran la conexión. La prueba de migración también usa memoria. Snapshot, contenedor y preparación de restauración disponen de diecisiete pruebas sobre bases y archivos temporales; siguen pendientes las pruebas de sustitución, sidecars y recuperación ante fallo.
 - La compilación debug de Windows está validada. El intercambio de archivos debe probarse específicamente en Windows por sus reglas de bloqueo y renombrado.
 
 ## Alcance del backup
@@ -173,8 +173,9 @@ Mantener `Presentation → Providers → Repositories/Services → Drift/SQLite 
 
 - `lib/features/backup/domain/backup_manifest.dart`: manifiesto, versión de formato y entradas.
 - `lib/features/backup/domain/backup_result.dart`: estados y errores tipados sin detalles sensibles.
-- `lib/features/backup/data/backup_archive_service.dart`: empaquetado, extracción segura, límites y hashes.
-- `lib/features/backup/data/database_snapshot_service.dart`: `VACUUM INTO`, validación SQLite y staging; sin widgets ni Riverpod.
+- `lib/features/backup/data/backup_archive_service.dart`: empaquetado, extracción segura, límites, hashes y validación SQLite.
+- `lib/features/backup/data/database_snapshot_service.dart`: snapshot consistente mediante `VACUUM INTO`; sin widgets ni Riverpod.
+- `lib/features/backup/data/backup_restore_staging_service.dart`: copia privada, migración aislada y ciclo de vida del staging preparado.
 - `lib/features/backup/data/backup_repository.dart`: orquestación de creación, restauración y copia de recuperación con reloj y sistema de archivos inyectables.
 - `lib/features/backup/presentation/providers/backup_providers.dart`: construcción de dependencias, progreso y modo mantenimiento.
 - `lib/features/backup/presentation/screens/backup_restore_screen.dart`: UI dentro de Configuración, sin acceso directo a Drift o archivos.
@@ -191,7 +192,7 @@ No hace falta cambiar el esquema para guardar “última copia”: puede mantene
 
 **Aceptación y pruebas:** datos confirmados presentes, transacción no confirmada ausente, integridad correcta, mismo `user_version`, tablas esperadas y original intacto. Probar rutas con espacios y destino existente en Windows.
 
-**Estado:** completado. `DatabaseSnapshotService` serializa el snapshot mediante el bloqueo exclusivo de Drift. Tres pruebas con bases de archivo temporales cubren consistencia e independencia, rollback, esquema e integridad y rechazo de un destino existente. El análisis, las 109 pruebas actuales del proyecto y la compilación debug de Windows están limpios.
+**Estado:** completado. `DatabaseSnapshotService` serializa el snapshot mediante el bloqueo exclusivo de Drift. Tres pruebas con bases de archivo temporales cubren consistencia e independencia, rollback, esquema e integridad y rechazo de un destino existente. El análisis, las 116 pruebas actuales del proyecto y la compilación debug de Windows están limpios.
 
 ### 2. Backup manual con manifiesto e integridad
 
@@ -206,6 +207,8 @@ No hace falta cambiar el esquema para guardar “última copia”: puede mantene
 **Resultado:** convertir un backup en staging migrado y validado sin tocar la base activa.
 
 **Aceptación y pruebas:** rechazar hash incorrecto, ZIP truncado, formato futuro, esquema futuro, tabla ausente, FK inválida y migración fallida. Probar al menos esquemas 16 y 17 y ampliar fixtures históricos soportados.
+
+**Estado:** completado a nivel de servicio para los esquemas 16 y 17. La entrada se fija primero en un temporal privado para impedir cambios entre validación y extracción. Se conservan por separado la base extraída y la copia preparada; solo esta última se migra mediante Drift y se vuelve a validar. Siete pruebas demuestran conservación de datos e importes, limpieza explícita, rechazo de ZIP truncado, esquema futuro, tabla ausente, claves foráneas inválidas y migración fallida. No se abre ni sustituye la base activa.
 
 ### 4. Sustitución y recuperación
 

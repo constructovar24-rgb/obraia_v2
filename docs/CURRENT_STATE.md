@@ -21,7 +21,7 @@ La navegación real usa `MaterialApp`, `Navigator` y `MaterialPageRoute`. GoRout
 - La edición principal de Expedientes permite cambiar código, nombre y cliente, o quitarlo, preservando los demás campos.
 - El guardado y su evento único de Timeline son atómicos; ficha y listado se actualizan mediante streams.
 - 8 pruebas específicas de Expedientes superadas sobre SQLite en memoria.
-- Suite completa: 109 pruebas superadas.
+- Suite completa: 116 pruebas superadas.
 - `flutter analyze --no-pub`: sin incidencias.
 - `git diff --check`: sin errores en el cierre funcional; los avisos existentes corresponden a finales de línea de registradores generados.
 - Toolchain Windows instalada y validada: Flutter 3.47.1 stable, Dart 3.13.1, Visual Studio Community 2026 18.9.2 y Windows SDK 10.0.26100.0.
@@ -34,7 +34,7 @@ Con análisis, pruebas y compilación Windows superados, Expedientes queda técn
 
 ## Fase actual
 
-La fase 0 está cerrada y sincronizada con el repositorio remoto. La fase 1 dispone de snapshot SQLite consistente y de un contenedor manual `.obraia-backup` de formato 1 a nivel de servicio. El archivo incluye manifiesto versionado, inventario, tamaños y SHA-256 y solo se publica tras validar estructura, límites, esquema, tablas, integridad y claves foráneas. Diez pruebas específicas usan exclusivamente bases y archivos temporales: tres del snapshot y siete del contenedor. Todavía no existe restauración ni interfaz de usuario.
+La fase 0 está cerrada y sincronizada con el repositorio remoto. La fase 1 dispone de snapshot SQLite consistente, contenedor manual `.obraia-backup` de formato 1 y preparación de restauración en staging a nivel de servicio. Las versiones 16 y 17 se validan; una copia 16 se migra sobre un duplicado temporal y vuelve a comprobarse sin alterar el backup de origen ni la base activa. Diecisiete pruebas específicas usan exclusivamente bases y archivos temporales: tres del snapshot, siete del contenedor y siete del staging. Todavía no existe sustitución de la base activa ni interfaz de usuario.
 
 ## Deuda y riesgos prioritarios
 
@@ -46,4 +46,4 @@ La fase 0 está cerrada y sincronizada con el repositorio remoto. La fase 1 disp
 
 ## Próximo hito
 
-Implementar la apertura y validación de una copia en staging para preparar la restauración, sin sustituir todavía la base activa y manteniendo toda prueba sobre archivos temporales.
+Implementar el intercambio recuperable de la base preparada, con cierre verificable, tratamiento conjunto de sidecars y rollback ante fallos inyectados, exclusivamente sobre directorios temporales.

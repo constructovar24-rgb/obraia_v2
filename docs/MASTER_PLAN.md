@@ -16,7 +16,7 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 
 **Objetivo:** proteger la información empresarial antes de ampliar el producto.
 
-**Estado:** en implementación incremental. La auditoría y la propuesta técnica están en `BACKUP_RESTORE_DESIGN.md`. El snapshot consistente con `VACUUM INTO` y el contenedor manual de formato 1 están implementados y verificados sobre archivos temporales. El siguiente incremento es preparar y validar una copia en staging sin tocar la base activa.
+**Estado:** en implementación incremental. La auditoría y la propuesta técnica están en `BACKUP_RESTORE_DESIGN.md`. El snapshot, el contenedor manual de formato 1 y la preparación validada en staging para esquemas 16 y 17 están implementados sobre archivos temporales. El siguiente incremento es el intercambio recuperable con rollback y sidecars, todavía sin tocar datos reales.
 
 **Criterio de salida:** creación, validación y restauración de backups probadas sobre copias temporales; recuperación documentada; migraciones desde las versiones soportadas verifican integridad y conservación; ninguna prueba toca la base real.
 

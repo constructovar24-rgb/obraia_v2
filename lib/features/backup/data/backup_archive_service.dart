@@ -72,7 +72,7 @@ class BackupArchiveService {
         database: database,
         destinationPath: snapshot.path,
       );
-      _validateSqliteDatabase(
+      validateDatabaseFile(
         snapshot.path,
         maximumSchemaVersion: database.schemaVersion,
         expectedSchemaVersion: database.schemaVersion,
@@ -242,7 +242,7 @@ class BackupArchiveService {
       try {
         final databasePath = p.join(validationDirectory.path, 'obraia.sqlite');
         await File(databasePath).writeAsBytes(databaseBytes, flush: true);
-        _validateSqliteDatabase(
+        validateDatabaseFile(
           databasePath,
           maximumSchemaVersion: maximumSchemaVersion,
           expectedSchemaVersion: manifest.schemaVersion,
@@ -255,6 +255,80 @@ class BackupArchiveService {
       rethrow;
     } catch (_) {
       throw const BackupValidationException();
+    }
+  }
+
+  Future<BackupManifest> extractValidatedDatabase({
+    required String backupPath,
+    required String destinationPath,
+    required int maximumSchemaVersion,
+  }) async {
+    final destination = _validateDestination(destinationPath);
+    if (await destination.exists()) {
+      throw const BackupDestinationExistsException();
+    }
+    if (!await destination.parent.exists()) {
+      throw const BackupDestinationDirectoryMissingException();
+    }
+
+    Directory? archiveStagingDirectory;
+    var destinationCreatedByOperation = false;
+    try {
+      final source = File(backupPath);
+      if (!await source.exists()) {
+        throw const BackupValidationException();
+      }
+      final sourceLength = await source.length();
+      if (sourceLength <= 0 || sourceLength > maxArchiveBytes) {
+        throw const BackupSizeLimitException();
+      }
+      final archiveBytes = await source.readAsBytes();
+      if (archiveBytes.length != sourceLength ||
+          archiveBytes.length > maxArchiveBytes) {
+        throw const BackupValidationException();
+      }
+
+      archiveStagingDirectory = await Directory.systemTemp.createTemp(
+        'obraia-backup-input-',
+      );
+      final stableArchive = File(
+        p.join(archiveStagingDirectory.path, 'input.obraia-backup'),
+      );
+      await stableArchive.writeAsBytes(archiveBytes, flush: true);
+      final manifest = await validateBackup(
+        stableArchive.path,
+        maximumSchemaVersion: maximumSchemaVersion,
+      );
+      final archive = ZipDecoder().decodeBytes(archiveBytes);
+      final databaseBytes = archive
+          .findFile(manifest.databasePath)
+          ?.readBytes();
+      if (databaseBytes == null) {
+        throw const BackupValidationException();
+      }
+      try {
+        await destination.create(exclusive: true);
+        destinationCreatedByOperation = true;
+      } on FileSystemException {
+        if (await destination.exists()) {
+          throw const BackupDestinationExistsException();
+        }
+        rethrow;
+      }
+      await destination.writeAsBytes(databaseBytes, flush: true);
+      validateDatabaseFile(
+        destination.path,
+        maximumSchemaVersion: maximumSchemaVersion,
+        expectedSchemaVersion: manifest.schemaVersion,
+      );
+      return manifest;
+    } catch (_) {
+      if (destinationCreatedByOperation && await destination.exists()) {
+        await destination.delete();
+      }
+      rethrow;
+    } finally {
+      await _deleteDirectoryIfPresent(archiveStagingDirectory);
     }
   }
 
@@ -290,7 +364,7 @@ class BackupArchiveService {
     );
   }
 
-  void _validateSqliteDatabase(
+  void validateDatabaseFile(
     String databasePath, {
     required int maximumSchemaVersion,
     required int expectedSchemaVersion,
@@ -336,7 +410,7 @@ class BackupArchiveService {
   }
 }
 
-sealed class BackupArchiveException implements Exception {
+abstract class BackupArchiveException implements Exception {
   const BackupArchiveException(this.message);
 
   final String message;
