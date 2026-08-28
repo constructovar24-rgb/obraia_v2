@@ -6,15 +6,17 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 
 **Objetivo:** disponer de una base conocida y estable, con los cambios pendientes clasificados y el flujo de edición de Expedientes cerrado.
 
-**Estado:** técnicamente superada. Expedientes está validado con 8 pruebas específicas, análisis limpio, una suite completa de 99 pruebas y una compilación debug reproducible para Windows. Queda cerrar por separado la configuración del analizador, el lockfile y los cambios de finales de línea generados, sin mezclar sus orígenes.
+**Estado:** cerrada. Expedientes está validado con 8 pruebas específicas, análisis limpio, una suite completa de 99 pruebas y una compilación debug reproducible para Windows. Los grupos de cambios de la línea base se cerraron por separado y el repositorio quedó sincronizado.
 
 **Criterio de salida:** cambios clasificados sin mezclar orígenes; Expedientes revisado y probado; análisis y suite completa superados; compilación Windows verificada con una toolchain compatible; diff y documentación coherentes.
 
-**Transición:** cerrar ordenadamente los grupos de cambios actuales y, después, comenzar la fase 1. La compilación debug validada no equivale a una versión publicable ni a un instalador; esa preparación corresponde a la fase 7.
+**Transición:** completada hacia la fase 1. La compilación debug validada no equivale a una versión publicable ni a un instalador; esa preparación corresponde a la fase 7.
 
 ## Fase 1 — Copias de seguridad, restauración y migraciones
 
 **Objetivo:** proteger la información empresarial antes de ampliar el producto.
+
+**Estado:** iniciada en diseño. La auditoría y la propuesta técnica están en `BACKUP_RESTORE_DESIGN.md`; no se ha implementado todavía ninguna operación de backup o restauración.
 
 **Criterio de salida:** creación, validación y restauración de backups probadas sobre copias temporales; recuperación documentada; migraciones desde las versiones soportadas verifican integridad y conservación; ninguna prueba toca la base real.
 

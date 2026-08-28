@@ -32,15 +32,9 @@ Flutter está instalado en `C:\src\flutter`, aunque no está incluido globalment
 
 Con análisis, pruebas y compilación Windows superados, Expedientes queda técnicamente validado y la fase 0 cumple sus comprobaciones técnicas. Esto no acredita todavía una versión publicable ni la existencia de un instalador.
 
-## Cambios locales clasificados
+## Fase actual
 
-- **Expedientes:** cambio funcional reciente que debe conservarse y cerrarse como una unidad.
-- **Configuración persistente del agente:** cinco documentos nuevos más `AGENTS.md`; cambio documental intencional.
-- **`analysis_options.yaml`:** exclusiones del analizador para `build` y carpetas de plataforma; cambio semántico anterior, separado de Expedientes.
-- **`pubspec.lock`:** actualización anterior de dependencias transitivas; origen no atribuible con seguridad a Expedientes.
-- **Registradores Linux/macOS/Windows:** sin diferencias semánticas al ignorar espacios al final de línea; cambios pendientes únicamente por finales de línea.
-
-Todos se preservan. Los tres últimos grupos requieren una decisión de cierre independiente; no deben mezclarse automáticamente con Expedientes.
+La fase 0 está cerrada y sincronizada con el repositorio remoto. La fase 1 ha comenzado con la auditoría y el diseño técnico de backup/restauración documentados en `BACKUP_RESTORE_DESIGN.md`; todavía no existe implementación.
 
 ## Deuda y riesgos prioritarios
 
@@ -52,4 +46,4 @@ Todos se preservan. Los tres últimos grupos requieren una decisión de cierre i
 
 ## Próximo hito
 
-Cerrar de manera explícita y sin mezclar los grupos de cambios actuales. Después, comenzar la fase de backup y restauración con pruebas sobre datos aislados.
+Implementar primero una prueba aislada de snapshot SQLite consistente mediante `VACUUM INTO`, usando exclusivamente una base de archivo temporal y sin tocar datos reales.
