@@ -21,7 +21,7 @@ La navegación real usa `MaterialApp`, `Navigator` y `MaterialPageRoute`. GoRout
 - La edición principal de Expedientes permite cambiar código, nombre y cliente, o quitarlo, preservando los demás campos.
 - El guardado y su evento único de Timeline son atómicos; ficha y listado se actualizan mediante streams.
 - 8 pruebas específicas de Expedientes superadas sobre SQLite en memoria.
-- Suite completa: 102 pruebas superadas.
+- Suite completa: 109 pruebas superadas.
 - `flutter analyze --no-pub`: sin incidencias.
 - `git diff --check`: sin errores en el cierre funcional; los avisos existentes corresponden a finales de línea de registradores generados.
 - Toolchain Windows instalada y validada: Flutter 3.47.1 stable, Dart 3.13.1, Visual Studio Community 2026 18.9.2 y Windows SDK 10.0.26100.0.
@@ -34,7 +34,7 @@ Con análisis, pruebas y compilación Windows superados, Expedientes queda técn
 
 ## Fase actual
 
-La fase 0 está cerrada y sincronizada con el repositorio remoto. La fase 1 dispone de diseño técnico y de una primera implementación aislada de snapshot SQLite mediante `VACUUM INTO`. Tres pruebas sobre bases temporales demuestran consistencia, exclusión de datos revertidos, integridad, conservación del esquema y protección frente a destinos existentes. Todavía no existe contenedor de backup ni restauración.
+La fase 0 está cerrada y sincronizada con el repositorio remoto. La fase 1 dispone de snapshot SQLite consistente y de un contenedor manual `.obraia-backup` de formato 1 a nivel de servicio. El archivo incluye manifiesto versionado, inventario, tamaños y SHA-256 y solo se publica tras validar estructura, límites, esquema, tablas, integridad y claves foráneas. Diez pruebas específicas usan exclusivamente bases y archivos temporales: tres del snapshot y siete del contenedor. Todavía no existe restauración ni interfaz de usuario.
 
 ## Deuda y riesgos prioritarios
 
@@ -46,4 +46,4 @@ La fase 0 está cerrada y sincronizada con el repositorio remoto. La fase 1 disp
 
 ## Próximo hito
 
-Implementar el backup manual de formato 1 con manifiesto, inventario y verificación de integridad, manteniendo toda prueba sobre archivos temporales.
+Implementar la apertura y validación de una copia en staging para preparar la restauración, sin sustituir todavía la base activa y manteniendo toda prueba sobre archivos temporales.

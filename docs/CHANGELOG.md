@@ -7,6 +7,9 @@
 - Definida la estrategia segura de backup y restauración de SQLite.
 - Incorporado un primer servicio aislado de snapshot consistente mediante `VACUUM INTO`.
 - Añadidas 3 pruebas con bases temporales para consistencia, rollback, integridad y protección del destino.
+- Implementado el contenedor manual `.obraia-backup` de formato 1 con manifiesto versionado, inventario, tamaños y SHA-256.
+- La copia solo se publica tras reabrir y validar el archivo; se rechazan destinos existentes, corrupción, formatos futuros, rutas peligrosas, relaciones huérfanas y límites excedidos.
+- Añadidas 7 pruebas temporales del contenedor; ninguna accede a la base real.
 
 ### Expedientes
 
@@ -18,7 +21,8 @@
 
 ### Calidad y documentación
 
-- Línea base comprobada con `flutter analyze --no-pub` limpio y 102 pruebas superadas.
+- Línea base comprobada con `flutter analyze --no-pub` limpio y 109 pruebas superadas.
+- Compilación debug de Windows repetida correctamente después de integrar el contenedor de backup.
 - Toolchain Windows validada con Visual Studio Community 2026 18.9.2 y Windows SDK 10.0.26100.0.
 - Compilación debug para Windows completada correctamente con `flutter build windows --debug --no-pub`.
 - Añadidas instrucciones persistentes para agentes y actualizada la documentación de producto, arquitectura, estado y planificación.

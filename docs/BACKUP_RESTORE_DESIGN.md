@@ -2,7 +2,7 @@
 
 ## Propósito y estado
 
-Este documento inicia la fase 1 con una auditoría del repositorio y un diseño técnico. No existe todavía una función de backup o restauración. La prioridad es producir copias consistentes y verificables y restaurarlas sin sobrescribir nunca la única copia válida.
+Este documento guía la fase 1 desde la auditoría inicial. Ya están implementados el snapshot SQLite consistente y el contenedor manual de formato 1 con validación integral. Todavía no existe restauración ni interfaz de usuario. La prioridad sigue siendo restaurar sin sobrescribir nunca la única copia válida.
 
 ## Situación actual
 
@@ -40,10 +40,9 @@ Este documento inicia la fase 1 con una auditoría del repositorio y un diseño 
 
 ### Dependencias, pruebas y Windows
 
-- Dependencias directas útiles: `drift`, `path_provider` y `path`.
-- `sqlite3`, `archive` y `crypto` están resueltas transitivamente. Antes de importarlas en código futuro deberán declararse como dependencias directas.
+- Dependencias directas útiles: `drift`, `path_provider`, `path`, `sqlite3`, `archive` y `crypto`. Las tres últimas se declararon directamente al implementar el contenedor de formato 1; sus versiones ya estaban resueltas en el lock.
 - No hay un selector de archivos directo (`file_selector` o equivalente) ni una API declarada para obtener la versión de la aplicación.
-- Las pruebas de repositorios usan `NativeDatabase.memory()` y cierran la conexión. La prueba de migración también usa memoria. No existen pruebas de base en archivo temporal, sidecars, backup, restauración o recuperación ante fallo.
+- Las pruebas de repositorios usan principalmente `NativeDatabase.memory()` y cierran la conexión. La prueba de migración también usa memoria. Los incrementos de snapshot y contenedor ya disponen de diez pruebas sobre bases y archivos temporales; siguen pendientes las pruebas de sidecars, restauración y recuperación ante fallo.
 - La compilación debug de Windows está validada. El intercambio de archivos debe probarse específicamente en Windows por sus reglas de bloqueo y renombrado.
 
 ## Alcance del backup
@@ -192,13 +191,15 @@ No hace falta cambiar el esquema para guardar “última copia”: puede mantene
 
 **Aceptación y pruebas:** datos confirmados presentes, transacción no confirmada ausente, integridad correcta, mismo `user_version`, tablas esperadas y original intacto. Probar rutas con espacios y destino existente en Windows.
 
-**Estado:** completado. `DatabaseSnapshotService` serializa el snapshot mediante el bloqueo exclusivo de Drift. Tres pruebas con bases de archivo temporales cubren consistencia e independencia, rollback, esquema e integridad y rechazo de un destino existente. El análisis, las 102 pruebas del proyecto y la compilación debug de Windows están limpios.
+**Estado:** completado. `DatabaseSnapshotService` serializa el snapshot mediante el bloqueo exclusivo de Drift. Tres pruebas con bases de archivo temporales cubren consistencia e independencia, rollback, esquema e integridad y rechazo de un destino existente. El análisis, las 109 pruebas actuales del proyecto y la compilación debug de Windows están limpios.
 
 ### 2. Backup manual con manifiesto e integridad
 
 **Resultado:** contenedor de formato 1, todavía solo con SQLite.
 
 **Aceptación y pruebas:** manifiesto válido, tamaños y SHA-256 correctos, publicación posterior a la reapertura, rechazo de rutas peligrosas y límites, temporales retirados tras éxito o fallo. Añadir como directas únicamente las dependencias aprobadas.
+
+**Estado:** completado a nivel de servicio. El contenedor `.obraia-backup` incluye `manifest.json` y `database/obraia.sqlite`; se publica mediante renombrado en el volumen de destino solo después de validar formato, versión, rutas, límites, inventario, SHA-256, esquema, tablas, `quick_check` y claves foráneas. Siete pruebas temporales cubren creación y reapertura, destino existente, relaciones huérfanas, corrupción, formato futuro, límite de entradas y rutas peligrosas. Aún no hay selector de destino ni pantalla para el usuario.
 
 ### 3. Restauración validada en temporal
 
