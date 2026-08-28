@@ -369,8 +369,9 @@ class BackupArchiveService {
     required int maximumSchemaVersion,
     required int expectedSchemaVersion,
   }) {
-    final database = sqlite3.open(databasePath, mode: OpenMode.readOnly);
+    Database? database;
     try {
+      database = sqlite3.open(databasePath, mode: OpenMode.readOnly);
       final schemaVersion = database.userVersion;
       if (schemaVersion != expectedSchemaVersion) {
         throw const BackupValidationException();
@@ -398,8 +399,12 @@ class BackupArchiveService {
       if (!tables.containsAll(_expectedTables)) {
         throw const BackupValidationException();
       }
+    } on BackupArchiveException {
+      rethrow;
+    } catch (_) {
+      throw const BackupValidationException();
     } finally {
-      database.close();
+      database?.close();
     }
   }
 

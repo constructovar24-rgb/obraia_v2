@@ -13,6 +13,9 @@
 - Incorporada la preparación de restauraciones en staging, conservando separadas la copia original y la migrada.
 - Verificada la migración 16→17 con conservación de datos e importes y el rechazo de copias truncadas, esquemas futuros, tablas ausentes, relaciones rotas y migraciones fallidas.
 - Añadidas 7 pruebas temporales de preparación de restauración; todavía no se sustituye la base activa.
+- Añadido el intercambio recuperable de una base preparada, incluyendo `-wal` y `-shm`, renombrados en el volumen activo y rollback ante fallos.
+- Incorporados fallos inyectados en cada etapa; un fallo de recuperación conserva los archivos apartados para intervención posterior.
+- Añadidas 9 pruebas temporales del intercambio; el mecanismo todavía no está conectado a la base real ni a la interfaz.
 
 ### Expedientes
 
@@ -24,7 +27,7 @@
 
 ### Calidad y documentación
 
-- Línea base comprobada con `flutter analyze --no-pub` limpio y 116 pruebas superadas.
+- Línea base comprobada con `flutter analyze --no-pub` limpio y 125 pruebas superadas.
 - Compilación debug de Windows repetida correctamente después de integrar el contenedor de backup.
 - Toolchain Windows validada con Visual Studio Community 2026 18.9.2 y Windows SDK 10.0.26100.0.
 - Compilación debug para Windows completada correctamente con `flutter build windows --debug --no-pub`.
