@@ -1,34 +1,25 @@
-# ROADMAP.md
+# Roadmap operativo
 
-## Estado actual del proyecto
-El proyecto ya cuenta con una base funcional inicial con:
-- módulo Expedientes
-- módulo Clientes
-- motor de cálculo de presupuestos para piscinas
-- persistencia local con Drift
+Este documento resume el orden inmediato de ejecución. Los objetivos y criterios de salida completos están en `MASTER_PLAN.md`; no se usan estimaciones de fechas.
 
-## Roadmap por sprints
-### Sprint 1 - Base operativa
-- Consolidar expedientes y clientes.
-- Mejorar flujos básicos de alta, edición y detalle.
-- Validar la experiencia de usuario mínima.
+## Ahora — cerrar la línea base
 
-### Sprint 2 - Presupuestos y gestión
-- Ampliar el sistema de presupuestos.
-- Incorporar más partidas y lógica de negocio.
-- Preparar la base para nuevos módulos.
+- Conservar y clasificar los cambios pendientes sin mezclar sus orígenes.
+- Mantener el cierre funcional de edición de Expedientes, respaldado por 8 pruebas específicas.
+- Conseguir una compilación Windows reproducible instalando o configurando una toolchain compatible de Visual Studio/C++.
+- Cerrar la línea base únicamente cuando Git, análisis, pruebas y compilación tengan evidencia clara.
 
-### Sprint 3 - Gestión de obra
-- Añadir módulos de obras, costes y documentos.
-- Conectar datos entre expedientes, clientes y obras.
+## Después — proteger los datos
 
-### Sprint 4 - Inteligencia y automatización
-- Preparar integración con IA.
-- Mejorar asistencias y flujos automáticos.
+- Diseñar copias de seguridad verificables de la base SQLite.
+- Restaurar sobre copias temporales y comprobar integridad y conservación.
+- Consolidar pruebas de migración desde las versiones soportadas.
 
-## Próximos módulos
-- Obras
-- Costes y facturas
-- Base de precios
-- Documentación y fotografías
-- IA asistente
+## Siguientes bloques
+
+1. Consolidar `Cliente → Expediente → Presupuesto → Factura → Cobro`.
+2. Completar gestión económica y rentabilidad por obra.
+3. Desarrollar operación de obra: planificación, personal, subcontratas, materiales y documentos.
+4. Reducir deuda arquitectónica gradualmente y decidir GoRouter en una entrega independiente.
+5. Incorporar IA segura, auditable y sujeta a confirmación humana.
+6. Preparar distribución profesional para Windows.

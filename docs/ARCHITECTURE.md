@@ -1,42 +1,29 @@
-# ARCHITECTURE.md
+# Arquitectura
 
-## Organización por features
-El proyecto sigue una estructura modular por features, con carpetas separadas para cada dominio funcional.
+## Tecnologías y ejecución
 
-Ejemplo de organización:
-- lib/features/expedientes
-- lib/features/clientes
-- lib/screens
-- lib/database
-- lib/models
-- lib/engines
+OBRA IA es una aplicación Flutter/Dart con Riverpod para estado e inyección de dependencias y Drift sobre SQLite para persistencia local. Windows es la plataforma prioritaria actual. La generación documental utiliza `pdf` y `printing`.
 
-## Drift + SQLite
-La persistencia local se gestiona con Drift sobre SQLite.
+La aplicación arranca con `MaterialApp` y navega mediante `Navigator` y `MaterialPageRoute`. `go_router` está declarado como dependencia, pero no existe una implementación activa; cualquier migración debe decidirse y ejecutarse por separado.
 
-### Componentes principales
-- Tablas Drift en lib/database/tables
-- DAOs en lib/database/dao
-- Base de datos central en lib/database/app_database.dart
+## Organización
 
-## Riverpod
-Riverpod se usa para la gestión de dependencias y acceso a la base de datos desde las capas de presentación.
+- `lib/features/<módulo>/domain`: entidades y reglas de dominio.
+- `lib/features/<módulo>/data`: repositorios y acceso a datos heredado.
+- `lib/features/<módulo>/presentation`: pantallas, widgets y providers.
+- `lib/database/tables`: 13 tablas Drift.
+- `lib/database/dao`: DAOs de persistencia.
+- `lib/database/app_database.dart`: base central, migraciones y `schemaVersion` 17.
+- `lib/screens`: pantallas generales y motor heredado de presupuestos de piscinas.
 
-## Convenciones de carpetas
-- data: acceso a datos y repositorios
-- domain: entidades del dominio
-- presentation: pantallas y vistas
-- screens: pantallas generales de la aplicación
+## Dirección objetivo
 
-## Flujo de persistencia
-1. La pantalla accede al repositorio.
-2. El repositorio delega en AppDatabase.
-3. Drift ejecuta la operación sobre SQLite.
-4. Los cambios se reflejan en la UI mediante streams.
+`Presentation → Providers → Repositories → DAOs → Drift → SQLite`
 
-## Reglas de arquitectura
-- Mantener la estructura actual salvo indicación expresa.
-- Reutilizar patrones existentes antes de crear nuevos.
-- Evitar duplicar lógica.
-- Mantener compatibilidad con el código ya implementado.
-- Priorizar claridad y mantenibilidad.
+La UI no debe acceder directamente a `databaseProvider`, DAOs, Drift o SQLite. Los providers deben vivir en `presentation/providers`, y los repositorios no deben depender de Riverpod, widgets ni `BuildContext`.
+
+## Estado real y deuda conocida
+
+El código todavía contiene providers en `data/`, pantallas que construyen repositorios o acceden a `databaseProvider`, métodos heredados en `AppDatabase`, archivos grandes y varias ubicaciones para tema/UI. Estas desviaciones se corrigen solo al trabajar en el flujo afectado, sin reescrituras globales.
+
+Los streams de Drift permiten que cambios persistidos se reflejen reactivamente. Las operaciones compuestas que afecten datos y trazabilidad deben ejecutarse en transacciones. Todo cambio de esquema exige versión, migración compatible, regeneración, pruebas de conservación y documentación según `AGENTS.md`.

@@ -27,6 +27,16 @@ Antes de finalizar cada entrega, ejecutar:
 flutter analyze
 ```
 
+## Compilación Windows
+
+La toolchain Windows está validada en este equipo. Flutter 3.47.1 stable está instalado en `C:\src\flutter`, pero no se encuentra globalmente en `PATH`; esto no bloquea la compilación. Para reproducir la compilación debug sin actualizar dependencias, ejecutar desde PowerShell:
+
+```powershell
+& 'C:\src\flutter\bin\flutter.bat' build windows --debug --no-pub
+```
+
+Este comando valida la compilación local, pero no genera ni acredita un instalador o una versión publicable.
+
 ## Revisión antes de finalizar
 - Revisar que no se hayan modificado módulos no previstos.
 - Confirmar que la nueva funcionalidad sea coherente con el estilo actual.
