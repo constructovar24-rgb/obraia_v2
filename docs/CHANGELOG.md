@@ -2,6 +2,12 @@
 
 ## No publicado
 
+### Copias de seguridad
+
+- Definida la estrategia segura de backup y restauración de SQLite.
+- Incorporado un primer servicio aislado de snapshot consistente mediante `VACUUM INTO`.
+- Añadidas 3 pruebas con bases temporales para consistencia, rollback, integridad y protección del destino.
+
 ### Expedientes
 
 - Añadida la edición segura de código, nombre y cliente desde la ficha.
@@ -12,7 +18,7 @@
 
 ### Calidad y documentación
 
-- Línea base comprobada con `flutter analyze --no-pub` limpio y 99 pruebas superadas.
+- Línea base comprobada con `flutter analyze --no-pub` limpio y 102 pruebas superadas.
 - Toolchain Windows validada con Visual Studio Community 2026 18.9.2 y Windows SDK 10.0.26100.0.
 - Compilación debug para Windows completada correctamente con `flutter build windows --debug --no-pub`.
 - Añadidas instrucciones persistentes para agentes y actualizada la documentación de producto, arquitectura, estado y planificación.

@@ -21,7 +21,7 @@ La navegación real usa `MaterialApp`, `Navigator` y `MaterialPageRoute`. GoRout
 - La edición principal de Expedientes permite cambiar código, nombre y cliente, o quitarlo, preservando los demás campos.
 - El guardado y su evento único de Timeline son atómicos; ficha y listado se actualizan mediante streams.
 - 8 pruebas específicas de Expedientes superadas sobre SQLite en memoria.
-- Suite completa: 99 pruebas superadas.
+- Suite completa: 102 pruebas superadas.
 - `flutter analyze --no-pub`: sin incidencias.
 - `git diff --check`: sin errores en el cierre funcional; los avisos existentes corresponden a finales de línea de registradores generados.
 - Toolchain Windows instalada y validada: Flutter 3.47.1 stable, Dart 3.13.1, Visual Studio Community 2026 18.9.2 y Windows SDK 10.0.26100.0.
@@ -34,7 +34,7 @@ Con análisis, pruebas y compilación Windows superados, Expedientes queda técn
 
 ## Fase actual
 
-La fase 0 está cerrada y sincronizada con el repositorio remoto. La fase 1 ha comenzado con la auditoría y el diseño técnico de backup/restauración documentados en `BACKUP_RESTORE_DESIGN.md`; todavía no existe implementación.
+La fase 0 está cerrada y sincronizada con el repositorio remoto. La fase 1 dispone de diseño técnico y de una primera implementación aislada de snapshot SQLite mediante `VACUUM INTO`. Tres pruebas sobre bases temporales demuestran consistencia, exclusión de datos revertidos, integridad, conservación del esquema y protección frente a destinos existentes. Todavía no existe contenedor de backup ni restauración.
 
 ## Deuda y riesgos prioritarios
 
@@ -46,4 +46,4 @@ La fase 0 está cerrada y sincronizada con el repositorio remoto. La fase 1 ha c
 
 ## Próximo hito
 
-Implementar primero una prueba aislada de snapshot SQLite consistente mediante `VACUUM INTO`, usando exclusivamente una base de archivo temporal y sin tocar datos reales.
+Implementar el backup manual de formato 1 con manifiesto, inventario y verificación de integridad, manteniendo toda prueba sobre archivos temporales.

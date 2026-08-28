@@ -192,6 +192,8 @@ No hace falta cambiar el esquema para guardar “última copia”: puede mantene
 
 **Aceptación y pruebas:** datos confirmados presentes, transacción no confirmada ausente, integridad correcta, mismo `user_version`, tablas esperadas y original intacto. Probar rutas con espacios y destino existente en Windows.
 
+**Estado:** completado. `DatabaseSnapshotService` serializa el snapshot mediante el bloqueo exclusivo de Drift. Tres pruebas con bases de archivo temporales cubren consistencia e independencia, rollback, esquema e integridad y rechazo de un destino existente. El análisis, las 102 pruebas del proyecto y la compilación debug de Windows están limpios.
+
 ### 2. Backup manual con manifiesto e integridad
 
 **Resultado:** contenedor de formato 1, todavía solo con SQLite.
