@@ -16,6 +16,9 @@
 - Añadido el intercambio recuperable de una base preparada, incluyendo `-wal` y `-shm`, renombrados en el volumen activo y rollback ante fallos.
 - Incorporados fallos inyectados en cada etapa; un fallo de recuperación conserva los archivos apartados para intervención posterior.
 - Añadidas 9 pruebas temporales del intercambio; el mecanismo todavía no está conectado a la base real ni a la interfaz.
+- Incorporado el backup automático de recuperación con nombre no sensible, validación completa y retención de las tres copias más recientes.
+- La retención reconoce únicamente copias automáticas gestionadas y nunca elimina backups manuales ni archivos ajenos.
+- Añadidas 4 pruebas temporales del backup automático; todavía no está conectado al ciclo de restauración real.
 
 ### Expedientes
 
@@ -27,7 +30,7 @@
 
 ### Calidad y documentación
 
-- Línea base comprobada con `flutter analyze --no-pub` limpio y 125 pruebas superadas.
+- Línea base comprobada con `flutter analyze --no-pub` limpio y 129 pruebas superadas.
 - Compilación debug de Windows repetida correctamente después de integrar el contenedor de backup.
 - Toolchain Windows validada con Visual Studio Community 2026 18.9.2 y Windows SDK 10.0.26100.0.
 - Compilación debug para Windows completada correctamente con `flutter build windows --debug --no-pub`.

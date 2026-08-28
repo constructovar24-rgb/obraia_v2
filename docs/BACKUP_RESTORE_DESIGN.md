@@ -2,7 +2,7 @@
 
 ## Propósito y estado
 
-Este documento guía la fase 1 desde la auditoría inicial. Ya están implementados el snapshot SQLite consistente, el contenedor manual de formato 1 y la preparación validada de una restauración en staging. Todavía no existe sustitución de la base activa ni interfaz de usuario. La prioridad sigue siendo restaurar sin sobrescribir nunca la única copia válida.
+Este documento guía la fase 1 desde la auditoría inicial. Ya están implementados el snapshot SQLite consistente, el contenedor manual de formato 1, la preparación validada de una restauración en staging, el intercambio recuperable y las copias automáticas de recuperación. Todavía no existe integración con la base activa ni interfaz de usuario. La prioridad sigue siendo restaurar sin sobrescribir nunca la única copia válida.
 
 ## Situación actual
 
@@ -42,7 +42,7 @@ Este documento guía la fase 1 desde la auditoría inicial. Ya están implementa
 
 - Dependencias directas útiles: `drift`, `path_provider`, `path`, `sqlite3`, `archive` y `crypto`. Las tres últimas se declararon directamente al implementar el contenedor de formato 1; sus versiones ya estaban resueltas en el lock.
 - No hay un selector de archivos directo (`file_selector` o equivalente) ni una API declarada para obtener la versión de la aplicación.
-- Las pruebas de repositorios usan principalmente `NativeDatabase.memory()` y cierran la conexión. La prueba de migración también usa memoria. Snapshot, contenedor, staging e intercambio recuperable disponen de veintiséis pruebas sobre bases y archivos temporales; siguen pendientes la orquestación con backup previo y la integración con el ciclo de vida real.
+- Las pruebas de repositorios usan principalmente `NativeDatabase.memory()` y cierran la conexión. La prueba de migración también usa memoria. Snapshot, contenedor, staging, intercambio recuperable y backup automático disponen de treinta pruebas sobre bases y archivos temporales; siguen pendientes la orquestación completa y la integración con el ciclo de vida real.
 - La compilación debug de Windows está validada. El intercambio de archivos debe probarse específicamente en Windows por sus reglas de bloqueo y renombrado.
 
 ## Alcance del backup
@@ -177,6 +177,7 @@ Mantener `Presentation → Providers → Repositories/Services → Drift/SQLite 
 - `lib/features/backup/data/database_snapshot_service.dart`: snapshot consistente mediante `VACUUM INTO`; sin widgets ni Riverpod.
 - `lib/features/backup/data/backup_restore_staging_service.dart`: copia privada, migración aislada y ciclo de vida del staging preparado.
 - `lib/features/backup/data/database_file_swap_service.dart`: intercambio en el volumen activo, tratamiento conjunto de sidecars y rollback ante fallos.
+- `lib/features/backup/data/recovery_backup_service.dart`: creación validada de copias automáticas y retención limitada a las tres últimas sin eliminar copias manuales.
 - `lib/features/backup/data/backup_repository.dart`: orquestación de creación, restauración y copia de recuperación con reloj y sistema de archivos inyectables.
 - `lib/features/backup/presentation/providers/backup_providers.dart`: construcción de dependencias, progreso y modo mantenimiento.
 - `lib/features/backup/presentation/screens/backup_restore_screen.dart`: UI dentro de Configuración, sin acceso directo a Drift o archivos.
@@ -193,7 +194,7 @@ No hace falta cambiar el esquema para guardar “última copia”: puede mantene
 
 **Aceptación y pruebas:** datos confirmados presentes, transacción no confirmada ausente, integridad correcta, mismo `user_version`, tablas esperadas y original intacto. Probar rutas con espacios y destino existente en Windows.
 
-**Estado:** completado. `DatabaseSnapshotService` serializa el snapshot mediante el bloqueo exclusivo de Drift. Tres pruebas con bases de archivo temporales cubren consistencia e independencia, rollback, esquema e integridad y rechazo de un destino existente. El análisis, las 125 pruebas actuales del proyecto y la compilación debug de Windows están limpios.
+**Estado:** completado. `DatabaseSnapshotService` serializa el snapshot mediante el bloqueo exclusivo de Drift. Tres pruebas con bases de archivo temporales cubren consistencia e independencia, rollback, esquema e integridad y rechazo de un destino existente. El análisis, las 129 pruebas actuales del proyecto y la compilación debug de Windows están limpios.
 
 ### 2. Backup manual con manifiesto e integridad
 
@@ -217,7 +218,7 @@ No hace falta cambiar el esquema para guardar “última copia”: puede mantene
 
 **Aceptación y pruebas:** backup previo validado; fallos inyectados antes y después de cada renombrado; rollback conserva datos; sidecars se apartan como unidad; no quedan handles; providers reciben la nueva instancia. Incluir pruebas Windows.
 
-**Estado:** implementado el primitivo de intercambio recuperable sobre directorios temporales. La base preparada se copia y valida primero en el volumen activo; después del cierre, la base y los sidecars existentes se apartan juntos. Nueve pruebas cubren éxito, archivo preparado inválido, fallos inyectados en cada etapa, fallo de validación de la base nueva y conservación del conjunto de rollback si la recuperación tampoco puede reabrirse. Todavía faltan el backup automático previo, la retención y la integración con el propietario real de `AppDatabase` y sus providers; por ello no se usa aún sobre datos reales.
+**Estado:** implementados el primitivo de intercambio recuperable y el servicio de backup automático previo sobre directorios temporales. La base preparada se copia y valida primero en el volumen activo; después del cierre, la base y los sidecars existentes se apartan juntos. El backup automático crea y revalida un contenedor con nombre no sensible, conserva solo los tres más recientes y nunca elimina archivos manuales o ajenos. Trece pruebas cubren ambos servicios, incluidos fallos en cada etapa y conservación del rollback. Todavía faltan la orquestación conjunta y la integración con el propietario real de `AppDatabase` y sus providers; por ello no se usa aún sobre datos reales.
 
 ### 5. Archivos asociados gestionados
 

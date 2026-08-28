@@ -21,7 +21,7 @@ La navegación real usa `MaterialApp`, `Navigator` y `MaterialPageRoute`. GoRout
 - La edición principal de Expedientes permite cambiar código, nombre y cliente, o quitarlo, preservando los demás campos.
 - El guardado y su evento único de Timeline son atómicos; ficha y listado se actualizan mediante streams.
 - 8 pruebas específicas de Expedientes superadas sobre SQLite en memoria.
-- Suite completa: 125 pruebas superadas.
+- Suite completa: 129 pruebas superadas.
 - `flutter analyze --no-pub`: sin incidencias.
 - `git diff --check`: sin errores en el cierre funcional; los avisos existentes corresponden a finales de línea de registradores generados.
 - Toolchain Windows instalada y validada: Flutter 3.47.1 stable, Dart 3.13.1, Visual Studio Community 2026 18.9.2 y Windows SDK 10.0.26100.0.
@@ -34,7 +34,7 @@ Con análisis, pruebas y compilación Windows superados, Expedientes queda técn
 
 ## Fase actual
 
-La fase 0 está cerrada y sincronizada con el repositorio remoto. La fase 1 dispone de snapshot SQLite consistente, contenedor manual `.obraia-backup`, preparación de restauración para esquemas 16 y 17 y un primitivo de intercambio recuperable. Este último cierra mediante callbacks, aparta base y sidecars, activa una copia ya validada y recupera el conjunto anterior ante fallos. Veintiséis pruebas específicas usan exclusivamente bases y archivos temporales: tres del snapshot, siete del contenedor, siete del staging y nueve del intercambio. Todavía faltan el backup automático previo, el controlador real de `AppDatabase`, la retención y la interfaz; no se sustituye la base real.
+La fase 0 está cerrada y sincronizada con el repositorio remoto. La fase 1 dispone de snapshot SQLite consistente, contenedor manual `.obraia-backup`, preparación de restauración para esquemas 16 y 17, intercambio recuperable y backup automático previo. Este último genera una copia verificada, conserva las tres más recientes y no elimina copias manuales. Treinta pruebas específicas usan exclusivamente bases y archivos temporales: tres del snapshot, siete del contenedor, siete del staging, nueve del intercambio y cuatro del backup automático. Todavía faltan la orquestación conjunta, el controlador real de `AppDatabase` y la interfaz; no se sustituye la base real.
 
 ## Deuda y riesgos prioritarios
 
@@ -46,4 +46,4 @@ La fase 0 está cerrada y sincronizada con el repositorio remoto. La fase 1 disp
 
 ## Próximo hito
 
-Implementar la orquestación de restauración con backup automático previo y un propietario controlado de `AppDatabase`, manteniendo la primera integración completamente aislada de los datos reales.
+Implementar un propietario controlado de `AppDatabase` y orquestar con él el backup previo, el cierre, el intercambio y la reapertura, manteniendo la primera integración completamente aislada de los datos reales.
