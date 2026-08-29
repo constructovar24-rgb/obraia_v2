@@ -1,5 +1,6 @@
 import '../../cobros/domain/factura_estado_economico.dart';
 import 'factura_linea.dart';
+import 'redondeo_monetario.dart';
 
 const double facturaIvaPorcentajeInicial = 21.0;
 
@@ -7,18 +8,17 @@ class FacturaTotales {
   const FacturaTotales({required this.subtotal, required this.iva});
   final double subtotal;
   final double iva;
-  double get total => subtotal + iva;
+  double get total => redondearMoneda(subtotal + iva);
 }
 
 FacturaTotales calcularTotalesFactura(
   Iterable<FacturaLinea> lineas, {
   required double ivaPorcentaje,
 }) {
-  final subtotal = lineas.fold<double>(
-    0,
-    (total, linea) => total + linea.importe,
+  final subtotal = redondearMoneda(
+    lineas.fold<double>(0, (total, linea) => total + linea.importe),
   );
-  final iva = subtotal * ivaPorcentaje / 100;
+  final iva = redondearMoneda(subtotal * ivaPorcentaje / 100);
   return FacturaTotales(subtotal: subtotal, iva: iva);
 }
 

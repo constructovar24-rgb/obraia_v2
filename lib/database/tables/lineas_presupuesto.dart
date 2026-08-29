@@ -11,6 +11,8 @@ class LineasPresupuesto extends Table {
 
   RealColumn get cantidad => real()();
 
+  TextColumn get unidad => text().withDefault(const Constant('ud'))();
+
   RealColumn get precioUnitario => real()();
 
   @override

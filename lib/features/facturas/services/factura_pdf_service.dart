@@ -80,16 +80,31 @@ class FacturaPdfService {
     empresa_domain.EmpresaConfiguracion empresaConfiguracion,
     pw.MemoryImage? logo,
   ) {
+    final historica = factura.tieneInstantaneaHistorica;
     final lineasEmpresa = PdfDocumentHelper.lineasEmpresa(
-      nombreEmpresa: empresaConfiguracion.nombreEmpresa,
-      cif: empresaConfiguracion.cif,
-      direccion: empresaConfiguracion.direccion,
-      codigoPostal: empresaConfiguracion.codigoPostal,
-      poblacion: empresaConfiguracion.poblacion,
-      provincia: empresaConfiguracion.provincia,
-      telefono: empresaConfiguracion.telefono,
-      email: empresaConfiguracion.email,
-      web: empresaConfiguracion.web,
+      nombreEmpresa: historica
+          ? factura.empresaNombreHistorico
+          : empresaConfiguracion.nombreEmpresa,
+      cif: historica ? factura.empresaCifHistorico : empresaConfiguracion.cif,
+      direccion: historica
+          ? factura.empresaDireccionHistorica
+          : empresaConfiguracion.direccion,
+      codigoPostal: historica
+          ? factura.empresaCodigoPostalHistorico
+          : empresaConfiguracion.codigoPostal,
+      poblacion: historica
+          ? factura.empresaPoblacionHistorica
+          : empresaConfiguracion.poblacion,
+      provincia: historica
+          ? factura.empresaProvinciaHistorica
+          : empresaConfiguracion.provincia,
+      telefono: historica
+          ? factura.empresaTelefonoHistorico
+          : empresaConfiguracion.telefono,
+      email: historica
+          ? factura.empresaEmailHistorico
+          : empresaConfiguracion.email,
+      web: historica ? factura.empresaWebHistorica : empresaConfiguracion.web,
     );
 
     return pw.Container(
@@ -102,14 +117,12 @@ class FacturaPdfService {
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
                 if (logo != null) ...[
-                  pw.Image(
-                    logo,
-                    width: 120,
-                    fit: pw.BoxFit.contain,
-                  ),
+                  pw.Image(logo, width: 120, fit: pw.BoxFit.contain),
                   pw.SizedBox(height: 8),
                 ],
-                ...lineasEmpresa.map((lineaEmpresa) => _companyLine(lineaEmpresa)),
+                ...lineasEmpresa.map(
+                  (lineaEmpresa) => _companyLine(lineaEmpresa),
+                ),
               ],
             ),
           ),
@@ -141,13 +154,18 @@ class FacturaPdfService {
   }
 
   pw.Widget _bloqueCliente(Factura factura, cliente_domain.Cliente? cliente) {
-    final nombreCliente = cliente == null
+    final historica = factura.tieneInstantaneaHistorica;
+    final nombreCliente = historica
+        ? factura.clienteNombreHistorico
+        : cliente == null
         ? (factura.clienteNombre.trim().isEmpty
               ? 'Cliente no especificado'
               : factura.clienteNombre.trim())
         : '${cliente.nombre} ${cliente.apellidos}'.trim();
 
-    final direccion = cliente == null
+    final direccion = historica
+        ? factura.clienteDireccionHistorica
+        : cliente == null
         ? '-'
         : _lineaDireccionCliente(
             direccion: cliente.direccion,
@@ -156,15 +174,21 @@ class FacturaPdfService {
             provincia: cliente.provincia,
           );
 
-    final telefono = cliente == null || cliente.telefono.trim().isEmpty
+    final telefono = historica
+        ? factura.clienteTelefonoHistorico
+        : cliente == null || cliente.telefono.trim().isEmpty
         ? '-'
         : cliente.telefono.trim();
 
-    final email = cliente == null || cliente.email.trim().isEmpty
+    final email = historica
+        ? factura.clienteEmailHistorico
+        : cliente == null || cliente.email.trim().isEmpty
         ? '-'
         : cliente.email.trim();
 
-    final nif = cliente == null || cliente.nif.trim().isEmpty
+    final nif = historica
+        ? factura.clienteNifHistorico
+        : cliente == null || cliente.nif.trim().isEmpty
         ? '-'
         : cliente.nif.trim();
 
@@ -264,12 +288,7 @@ class FacturaPdfService {
     }
 
     return pw.TableHelper.fromTextArray(
-      headers: const [
-        'Concepto',
-        'Cantidad',
-        'Precio',
-        'Base imponible',
-      ],
+      headers: const ['Concepto', 'Cantidad', 'Precio', 'Base imponible'],
       data: lineas
           .map(
             (linea) => [
@@ -365,15 +384,9 @@ class FacturaPdfService {
     );
   }
 
-  pw.Widget _linea(
-    String etiqueta,
-    String valor, {
-    pw.TextStyle? textStyle,
-  }) {
-    final resolvedStyle = textStyle ??
-        const pw.TextStyle(
-          fontSize: _generalFontSize,
-        );
+  pw.Widget _linea(String etiqueta, String valor, {pw.TextStyle? textStyle}) {
+    final resolvedStyle =
+        textStyle ?? const pw.TextStyle(fontSize: _generalFontSize);
 
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 6),

@@ -15,9 +15,9 @@ class LineasPresupuestoDao extends DatabaseAccessor<AppDatabase>
   Future<List<linea_domain.LineaPresupuesto>> obtenerPorPresupuesto(
     String presupuestoId,
   ) async {
-    final rows = await (select(lineasPresupuesto)
-          ..where((t) => t.presupuestoId.equals(presupuestoId)))
-        .get();
+    final rows = await (select(
+      lineasPresupuesto,
+    )..where((t) => t.presupuestoId.equals(presupuestoId))).get();
 
     return rows
         .map(
@@ -26,6 +26,7 @@ class LineasPresupuestoDao extends DatabaseAccessor<AppDatabase>
             presupuestoId: row.presupuestoId,
             concepto: row.concepto,
             cantidad: row.cantidad,
+            unidad: row.unidad,
             precioUnitario: row.precioUnitario,
           ),
         )
@@ -35,27 +36,25 @@ class LineasPresupuestoDao extends DatabaseAccessor<AppDatabase>
   Stream<List<linea_domain.LineaPresupuesto>> observarPorPresupuesto(
     String presupuestoId,
   ) {
-    return (select(lineasPresupuesto)
-          ..where((t) => t.presupuestoId.equals(presupuestoId)))
-        .watch()
-        .map(
-          (rows) => rows
-              .map(
-                (row) => linea_domain.LineaPresupuesto(
-                  id: row.id,
-                  presupuestoId: row.presupuestoId,
-                  concepto: row.concepto,
-                  cantidad: row.cantidad,
-                  precioUnitario: row.precioUnitario,
-                ),
-              )
-              .toList(),
-        );
+    return (select(
+      lineasPresupuesto,
+    )..where((t) => t.presupuestoId.equals(presupuestoId))).watch().map(
+      (rows) => rows
+          .map(
+            (row) => linea_domain.LineaPresupuesto(
+              id: row.id,
+              presupuestoId: row.presupuestoId,
+              concepto: row.concepto,
+              cantidad: row.cantidad,
+              unidad: row.unidad,
+              precioUnitario: row.precioUnitario,
+            ),
+          )
+          .toList(),
+    );
   }
 
-  Future<void> insertarLinea(
-    LineasPresupuestoCompanion linea,
-  ) async {
+  Future<void> insertarLinea(LineasPresupuestoCompanion linea) async {
     await into(lineasPresupuesto).insert(linea);
   }
 
@@ -63,14 +62,12 @@ class LineasPresupuestoDao extends DatabaseAccessor<AppDatabase>
     String id,
     LineasPresupuestoCompanion linea,
   ) async {
-    await (update(lineasPresupuesto)
-          ..where((t) => t.id.equals(id)))
-        .write(linea);
+    await (update(
+      lineasPresupuesto,
+    )..where((t) => t.id.equals(id))).write(linea);
   }
 
   Future<void> eliminarLinea(String id) async {
-    await (delete(lineasPresupuesto)
-          ..where((t) => t.id.equals(id)))
-        .go();
+    await (delete(lineasPresupuesto)..where((t) => t.id.equals(id))).go();
   }
 }

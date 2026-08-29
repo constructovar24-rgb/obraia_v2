@@ -23,12 +23,12 @@ Este documento guía la fase 1 desde la auditoría inicial. Ya están implementa
 
 ### Esquema, migraciones e integridad
 
-- `schemaVersion` actual: 17.
+- `schemaVersion` actual: 18.
 - Hay 13 tablas: `clientes`, `expedientes`, `presupuestos`, `lineas_presupuesto`, `empresa_configuracion`, `facturas`, `factura_lineas`, `cobros`, `compras`, `proveedores`, `certificaciones`, `documentos` y `timeline_events`.
-- Las migraciones incrementales cubren cambios de las versiones 2 a 17. La versión 6 reconstruye `presupuestos`; la 17 añade y rellena `iva_porcentaje` en facturas sin recalcular importes históricos.
+- Las migraciones incrementales cubren cambios de las versiones 2 a 18. La versión 6 reconstruye `presupuestos`; la 17 añade y rellena `iva_porcentaje` en facturas sin recalcular importes históricos; la 18 añade la unidad de las líneas de presupuesto y la fotografía histórica de las facturas emitidas.
 - Hay relaciones declaradas entre clientes, expedientes, presupuestos, líneas, facturas, cobros, certificaciones, documentos y Timeline. No se declaran acciones `ON DELETE`. `compras.proveedorId` no es una referencia Drift.
 - La conexión no activa expresamente `PRAGMA foreign_keys = ON`. La restauración debe ejecutar `PRAGMA foreign_key_check` y no asumir que SQLite impidió previamente todos los huérfanos.
-- La compatibilidad de restauración se limita deliberadamente a los esquemas 16 y 17. La prueba de staging verifica 16→17 con conservación de cliente e importes; 17 se valida sin migración. Las versiones 1 a 15 y las futuras se rechazan, por no disponer de fixtures y cobertura suficiente para prometer su recuperación.
+- La compatibilidad de restauración se limita deliberadamente a los esquemas 16, 17 y 18. La prueba de staging verifica 16→18 con conservación de cliente e importes; 17 y 18 se validan o migran de forma aislada. Las versiones 1 a 15 y las futuras se rechazan, por no disponer de fixtures y cobertura suficiente para prometer su recuperación.
 
 ### Archivos asociados
 

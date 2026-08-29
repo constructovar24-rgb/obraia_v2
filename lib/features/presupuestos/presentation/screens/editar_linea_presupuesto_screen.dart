@@ -11,10 +11,7 @@ import '../providers/presupuesto_providers.dart';
 import 'nuevo_linea_presupuesto_screen.dart';
 
 class EditarLineaPresupuestoScreen extends ConsumerWidget {
-  const EditarLineaPresupuestoScreen({
-    super.key,
-    required this.linea,
-  });
+  const EditarLineaPresupuestoScreen({super.key, required this.linea});
 
   final linea_domain.LineaPresupuesto linea;
 
@@ -51,6 +48,7 @@ class EditarLineaPresupuestoScreen extends ConsumerWidget {
     Future<void> guardarLinea(
       String concepto,
       double cantidad,
+      String unidad,
       double precioUnitario,
     ) async {
       final repository = ref.read(lineaPresupuestoRepositoryProvider);
@@ -60,6 +58,7 @@ class EditarLineaPresupuestoScreen extends ConsumerWidget {
         presupuestoId: linea.presupuestoId,
         concepto: concepto,
         cantidad: cantidad,
+        unidad: unidad,
         precioUnitario: precioUnitario,
       );
 
@@ -74,10 +73,7 @@ class EditarLineaPresupuestoScreen extends ConsumerWidget {
       }
 
       final repository = ref.read(lineaPresupuestoRepositoryProvider);
-      await repository.eliminarLinea(
-        linea.id,
-        linea.presupuestoId,
-      );
+      await repository.eliminarLinea(linea.id, linea.presupuestoId);
 
       if (!context.mounted) return;
       Navigator.of(context).pop();
@@ -91,9 +87,7 @@ class EditarLineaPresupuestoScreen extends ConsumerWidget {
         eliminarLinea();
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Editar línea'),
-        ),
+        appBar: AppBar(title: const Text('Editar línea')),
         body: ListView(
           padding: const EdgeInsets.all(AppSpacing.md),
           children: [
@@ -108,6 +102,7 @@ class EditarLineaPresupuestoScreen extends ConsumerWidget {
               child: LineaPresupuestoForm(
                 initialConcepto: linea.concepto,
                 initialCantidad: linea.cantidad,
+                initialUnidad: linea.unidad,
                 initialPrecioUnitario: linea.precioUnitario,
                 onSubmit: guardarLinea,
                 footer: AppPrimaryButton(

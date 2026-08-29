@@ -7,10 +7,7 @@ import '../../../../core/widgets/app_section.dart';
 import '../providers/presupuesto_providers.dart';
 
 class NuevoLineaPresupuestoScreen extends ConsumerStatefulWidget {
-  const NuevoLineaPresupuestoScreen({
-    super.key,
-    required this.presupuestoId,
-  });
+  const NuevoLineaPresupuestoScreen({super.key, required this.presupuestoId});
 
   final String presupuestoId;
 
@@ -27,9 +24,7 @@ class _NuevoLineaPresupuestoScreenState
     final textTheme = AppTypography.textTheme(colorScheme);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Nueva línea'),
-      ),
+      appBar: AppBar(title: const Text('Nueva línea')),
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.md),
         children: [
@@ -42,13 +37,14 @@ class _NuevoLineaPresupuestoScreenState
             title: 'Datos de la línea',
             subtitle: 'Completa concepto, cantidad y precio unitario.',
             child: LineaPresupuestoForm(
-              onSubmit: (concepto, cantidad, precioUnitario) async {
+              onSubmit: (concepto, cantidad, unidad, precioUnitario) async {
                 final repository = ref.read(lineaPresupuestoRepositoryProvider);
 
                 await repository.crearLinea(
                   presupuestoId: widget.presupuestoId,
                   concepto: concepto,
                   cantidad: cantidad,
+                  unidad: unidad,
                   precioUnitario: precioUnitario,
                 );
 
@@ -69,15 +65,22 @@ class LineaPresupuestoForm extends StatefulWidget {
     required this.onSubmit,
     this.initialConcepto = '',
     this.initialCantidad,
+    this.initialUnidad = 'ud',
     this.initialPrecioUnitario,
     this.submitLabel = 'Guardar',
     this.footer,
   });
 
-  final Future<void> Function(String concepto, double cantidad, double precioUnitario)
-      onSubmit;
+  final Future<void> Function(
+    String concepto,
+    double cantidad,
+    String unidad,
+    double precioUnitario,
+  )
+  onSubmit;
   final String initialConcepto;
   final double? initialCantidad;
+  final String initialUnidad;
   final double? initialPrecioUnitario;
   final String submitLabel;
   final Widget? footer;
@@ -91,6 +94,7 @@ class _LineaPresupuestoFormState extends State<LineaPresupuestoForm> {
   late final TextEditingController _conceptoController;
   late final TextEditingController _cantidadController;
   late final TextEditingController _precioUnitarioController;
+  late final TextEditingController _unidadController;
 
   @override
   void initState() {
@@ -106,6 +110,7 @@ class _LineaPresupuestoFormState extends State<LineaPresupuestoForm> {
           ? _formatDecimal(widget.initialPrecioUnitario!)
           : '',
     );
+    _unidadController = TextEditingController(text: widget.initialUnidad);
   }
 
   @override
@@ -113,6 +118,7 @@ class _LineaPresupuestoFormState extends State<LineaPresupuestoForm> {
     _conceptoController.dispose();
     _cantidadController.dispose();
     _precioUnitarioController.dispose();
+    _unidadController.dispose();
     super.dispose();
   }
 
@@ -138,9 +144,7 @@ class _LineaPresupuestoFormState extends State<LineaPresupuestoForm> {
           children: [
             TextFormField(
               controller: _conceptoController,
-              decoration: const InputDecoration(
-                labelText: 'Concepto',
-              ),
+              decoration: const InputDecoration(labelText: 'Concepto'),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return 'El concepto es obligatorio';
@@ -150,13 +154,19 @@ class _LineaPresupuestoFormState extends State<LineaPresupuestoForm> {
             ),
             const SizedBox(height: 20),
             TextFormField(
+              controller: _unidadController,
+              decoration: const InputDecoration(labelText: 'Unidad'),
+              validator: (value) => value == null || value.trim().isEmpty
+                  ? 'La unidad es obligatoria'
+                  : null,
+            ),
+            const SizedBox(height: 20),
+            TextFormField(
               controller: _cantidadController,
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              decoration: const InputDecoration(
-                labelText: 'Cantidad',
-              ),
+              decoration: const InputDecoration(labelText: 'Cantidad'),
               validator: (value) {
                 final raw = value?.trim() ?? '';
                 if (raw.isEmpty) {
@@ -204,6 +214,7 @@ class _LineaPresupuestoFormState extends State<LineaPresupuestoForm> {
                   await widget.onSubmit(
                     _conceptoController.text.trim(),
                     _parseDecimal(_cantidadController.text.trim()),
+                    _unidadController.text.trim(),
                     _parseDecimal(_precioUnitarioController.text.trim()),
                   );
                 },

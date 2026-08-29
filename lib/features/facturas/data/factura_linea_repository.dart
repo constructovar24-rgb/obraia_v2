@@ -7,6 +7,7 @@ import 'package:obraia_v2/features/facturas/domain/estado_factura.dart';
 import 'package:obraia_v2/features/facturas/domain/factura_linea.dart'
     as factura_linea_domain;
 import 'package:obraia_v2/features/facturas/domain/factura_totales.dart';
+import 'package:obraia_v2/features/facturas/domain/redondeo_monetario.dart';
 import 'package:uuid/uuid.dart';
 
 final facturaLineaRepositoryProvider = Provider<FacturaLineaRepository>((ref) {
@@ -54,9 +55,11 @@ class FacturaLineaRepository {
     required double precioUnitario,
     required double descuento,
   }) {
-    final bruto = cantidad * precioUnitario;
-    final factorDescuento = (100 - descuento) / 100;
-    return bruto * factorDescuento;
+    return calcularImporteLineaFactura(
+      cantidad: cantidad,
+      precioUnitario: precioUnitario,
+      descuento: descuento,
+    );
   }
 
   Future<double> _obtenerTotalCobrado(String facturaId) async {
@@ -124,10 +127,10 @@ class FacturaLineaRepository {
         descuento: descuento,
         importe: importe,
       );
-      final totales = calcularTotalesFactura(
-        [...lineas, nuevaLinea],
-        ivaPorcentaje: factura.ivaPorcentaje,
-      );
+      final totales = calcularTotalesFactura([
+        ...lineas,
+        nuevaLinea,
+      ], ivaPorcentaje: factura.ivaPorcentaje);
       await _validarTotales(facturaId, totales);
 
       await database.facturaLineasDao.insertarLinea(

@@ -2498,6 +2498,16 @@ class $LineasPresupuestoTable extends LineasPresupuesto
     type: DriftSqlType.double,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _unidadMeta = const VerificationMeta('unidad');
+  @override
+  late final GeneratedColumn<String> unidad = GeneratedColumn<String>(
+    'unidad',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('ud'),
+  );
   static const VerificationMeta _precioUnitarioMeta = const VerificationMeta(
     'precioUnitario',
   );
@@ -2515,6 +2525,7 @@ class $LineasPresupuestoTable extends LineasPresupuesto
     presupuestoId,
     concepto,
     cantidad,
+    unidad,
     precioUnitario,
   ];
   @override
@@ -2561,6 +2572,12 @@ class $LineasPresupuestoTable extends LineasPresupuesto
     } else if (isInserting) {
       context.missing(_cantidadMeta);
     }
+    if (data.containsKey('unidad')) {
+      context.handle(
+        _unidadMeta,
+        unidad.isAcceptableOrUnknown(data['unidad']!, _unidadMeta),
+      );
+    }
     if (data.containsKey('precio_unitario')) {
       context.handle(
         _precioUnitarioMeta,
@@ -2597,6 +2614,10 @@ class $LineasPresupuestoTable extends LineasPresupuesto
         DriftSqlType.double,
         data['${effectivePrefix}cantidad'],
       )!,
+      unidad: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}unidad'],
+      )!,
       precioUnitario: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}precio_unitario'],
@@ -2616,12 +2637,14 @@ class LineasPresupuestoData extends DataClass
   final String presupuestoId;
   final String concepto;
   final double cantidad;
+  final String unidad;
   final double precioUnitario;
   const LineasPresupuestoData({
     required this.id,
     required this.presupuestoId,
     required this.concepto,
     required this.cantidad,
+    required this.unidad,
     required this.precioUnitario,
   });
   @override
@@ -2631,6 +2654,7 @@ class LineasPresupuestoData extends DataClass
     map['presupuesto_id'] = Variable<String>(presupuestoId);
     map['concepto'] = Variable<String>(concepto);
     map['cantidad'] = Variable<double>(cantidad);
+    map['unidad'] = Variable<String>(unidad);
     map['precio_unitario'] = Variable<double>(precioUnitario);
     return map;
   }
@@ -2641,6 +2665,7 @@ class LineasPresupuestoData extends DataClass
       presupuestoId: Value(presupuestoId),
       concepto: Value(concepto),
       cantidad: Value(cantidad),
+      unidad: Value(unidad),
       precioUnitario: Value(precioUnitario),
     );
   }
@@ -2655,6 +2680,7 @@ class LineasPresupuestoData extends DataClass
       presupuestoId: serializer.fromJson<String>(json['presupuestoId']),
       concepto: serializer.fromJson<String>(json['concepto']),
       cantidad: serializer.fromJson<double>(json['cantidad']),
+      unidad: serializer.fromJson<String>(json['unidad']),
       precioUnitario: serializer.fromJson<double>(json['precioUnitario']),
     );
   }
@@ -2666,6 +2692,7 @@ class LineasPresupuestoData extends DataClass
       'presupuestoId': serializer.toJson<String>(presupuestoId),
       'concepto': serializer.toJson<String>(concepto),
       'cantidad': serializer.toJson<double>(cantidad),
+      'unidad': serializer.toJson<String>(unidad),
       'precioUnitario': serializer.toJson<double>(precioUnitario),
     };
   }
@@ -2675,12 +2702,14 @@ class LineasPresupuestoData extends DataClass
     String? presupuestoId,
     String? concepto,
     double? cantidad,
+    String? unidad,
     double? precioUnitario,
   }) => LineasPresupuestoData(
     id: id ?? this.id,
     presupuestoId: presupuestoId ?? this.presupuestoId,
     concepto: concepto ?? this.concepto,
     cantidad: cantidad ?? this.cantidad,
+    unidad: unidad ?? this.unidad,
     precioUnitario: precioUnitario ?? this.precioUnitario,
   );
   LineasPresupuestoData copyWithCompanion(LineasPresupuestoCompanion data) {
@@ -2691,6 +2720,7 @@ class LineasPresupuestoData extends DataClass
           : this.presupuestoId,
       concepto: data.concepto.present ? data.concepto.value : this.concepto,
       cantidad: data.cantidad.present ? data.cantidad.value : this.cantidad,
+      unidad: data.unidad.present ? data.unidad.value : this.unidad,
       precioUnitario: data.precioUnitario.present
           ? data.precioUnitario.value
           : this.precioUnitario,
@@ -2704,14 +2734,21 @@ class LineasPresupuestoData extends DataClass
           ..write('presupuestoId: $presupuestoId, ')
           ..write('concepto: $concepto, ')
           ..write('cantidad: $cantidad, ')
+          ..write('unidad: $unidad, ')
           ..write('precioUnitario: $precioUnitario')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, presupuestoId, concepto, cantidad, precioUnitario);
+  int get hashCode => Object.hash(
+    id,
+    presupuestoId,
+    concepto,
+    cantidad,
+    unidad,
+    precioUnitario,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2720,6 +2757,7 @@ class LineasPresupuestoData extends DataClass
           other.presupuestoId == this.presupuestoId &&
           other.concepto == this.concepto &&
           other.cantidad == this.cantidad &&
+          other.unidad == this.unidad &&
           other.precioUnitario == this.precioUnitario);
 }
 
@@ -2729,6 +2767,7 @@ class LineasPresupuestoCompanion
   final Value<String> presupuestoId;
   final Value<String> concepto;
   final Value<double> cantidad;
+  final Value<String> unidad;
   final Value<double> precioUnitario;
   final Value<int> rowid;
   const LineasPresupuestoCompanion({
@@ -2736,6 +2775,7 @@ class LineasPresupuestoCompanion
     this.presupuestoId = const Value.absent(),
     this.concepto = const Value.absent(),
     this.cantidad = const Value.absent(),
+    this.unidad = const Value.absent(),
     this.precioUnitario = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -2744,6 +2784,7 @@ class LineasPresupuestoCompanion
     required String presupuestoId,
     required String concepto,
     required double cantidad,
+    this.unidad = const Value.absent(),
     required double precioUnitario,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -2756,6 +2797,7 @@ class LineasPresupuestoCompanion
     Expression<String>? presupuestoId,
     Expression<String>? concepto,
     Expression<double>? cantidad,
+    Expression<String>? unidad,
     Expression<double>? precioUnitario,
     Expression<int>? rowid,
   }) {
@@ -2764,6 +2806,7 @@ class LineasPresupuestoCompanion
       if (presupuestoId != null) 'presupuesto_id': presupuestoId,
       if (concepto != null) 'concepto': concepto,
       if (cantidad != null) 'cantidad': cantidad,
+      if (unidad != null) 'unidad': unidad,
       if (precioUnitario != null) 'precio_unitario': precioUnitario,
       if (rowid != null) 'rowid': rowid,
     });
@@ -2774,6 +2817,7 @@ class LineasPresupuestoCompanion
     Value<String>? presupuestoId,
     Value<String>? concepto,
     Value<double>? cantidad,
+    Value<String>? unidad,
     Value<double>? precioUnitario,
     Value<int>? rowid,
   }) {
@@ -2782,6 +2826,7 @@ class LineasPresupuestoCompanion
       presupuestoId: presupuestoId ?? this.presupuestoId,
       concepto: concepto ?? this.concepto,
       cantidad: cantidad ?? this.cantidad,
+      unidad: unidad ?? this.unidad,
       precioUnitario: precioUnitario ?? this.precioUnitario,
       rowid: rowid ?? this.rowid,
     );
@@ -2802,6 +2847,9 @@ class LineasPresupuestoCompanion
     if (cantidad.present) {
       map['cantidad'] = Variable<double>(cantidad.value);
     }
+    if (unidad.present) {
+      map['unidad'] = Variable<String>(unidad.value);
+    }
     if (precioUnitario.present) {
       map['precio_unitario'] = Variable<double>(precioUnitario.value);
     }
@@ -2818,6 +2866,7 @@ class LineasPresupuestoCompanion
           ..write('presupuestoId: $presupuestoId, ')
           ..write('concepto: $concepto, ')
           ..write('cantidad: $cantidad, ')
+          ..write('unidad: $unidad, ')
           ..write('precioUnitario: $precioUnitario, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -3499,6 +3548,28 @@ class $FacturasTable extends Facturas with TableInfo<$FacturasTable, Factura> {
     requiredDuringInsert: false,
     defaultValue: const Constant(''),
   );
+  static const VerificationMeta _anioNumeracionMeta = const VerificationMeta(
+    'anioNumeracion',
+  );
+  @override
+  late final GeneratedColumn<int> anioNumeracion = GeneratedColumn<int>(
+    'anio_numeracion',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _numeroLegalMeta = const VerificationMeta(
+    'numeroLegal',
+  );
+  @override
+  late final GeneratedColumn<int> numeroLegal = GeneratedColumn<int>(
+    'numero_legal',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _clienteIdMeta = const VerificationMeta(
     'clienteId',
   );
@@ -3616,6 +3687,233 @@ class $FacturasTable extends Facturas with TableInfo<$FacturasTable, Factura> {
           'REFERENCES presupuestos (id)',
         ),
       );
+  static const VerificationMeta _fechaEmisionMeta = const VerificationMeta(
+    'fechaEmision',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaEmision = GeneratedColumn<DateTime>(
+    'fecha_emision',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _clienteNombreHistoricoMeta =
+      const VerificationMeta('clienteNombreHistorico');
+  @override
+  late final GeneratedColumn<String> clienteNombreHistorico =
+      GeneratedColumn<String>(
+        'cliente_nombre_historico',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _clienteNifHistoricoMeta =
+      const VerificationMeta('clienteNifHistorico');
+  @override
+  late final GeneratedColumn<String> clienteNifHistorico =
+      GeneratedColumn<String>(
+        'cliente_nif_historico',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _clienteDireccionHistoricaMeta =
+      const VerificationMeta('clienteDireccionHistorica');
+  @override
+  late final GeneratedColumn<String> clienteDireccionHistorica =
+      GeneratedColumn<String>(
+        'cliente_direccion_historica',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _clienteTelefonoHistoricoMeta =
+      const VerificationMeta('clienteTelefonoHistorico');
+  @override
+  late final GeneratedColumn<String> clienteTelefonoHistorico =
+      GeneratedColumn<String>(
+        'cliente_telefono_historico',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _clienteEmailHistoricoMeta =
+      const VerificationMeta('clienteEmailHistorico');
+  @override
+  late final GeneratedColumn<String> clienteEmailHistorico =
+      GeneratedColumn<String>(
+        'cliente_email_historico',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _empresaNombreHistoricoMeta =
+      const VerificationMeta('empresaNombreHistorico');
+  @override
+  late final GeneratedColumn<String> empresaNombreHistorico =
+      GeneratedColumn<String>(
+        'empresa_nombre_historico',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _empresaCifHistoricoMeta =
+      const VerificationMeta('empresaCifHistorico');
+  @override
+  late final GeneratedColumn<String> empresaCifHistorico =
+      GeneratedColumn<String>(
+        'empresa_cif_historico',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _empresaDireccionHistoricaMeta =
+      const VerificationMeta('empresaDireccionHistorica');
+  @override
+  late final GeneratedColumn<String> empresaDireccionHistorica =
+      GeneratedColumn<String>(
+        'empresa_direccion_historica',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _empresaCodigoPostalHistoricoMeta =
+      const VerificationMeta('empresaCodigoPostalHistorico');
+  @override
+  late final GeneratedColumn<String> empresaCodigoPostalHistorico =
+      GeneratedColumn<String>(
+        'empresa_codigo_postal_historico',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _empresaPoblacionHistoricaMeta =
+      const VerificationMeta('empresaPoblacionHistorica');
+  @override
+  late final GeneratedColumn<String> empresaPoblacionHistorica =
+      GeneratedColumn<String>(
+        'empresa_poblacion_historica',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _empresaProvinciaHistoricaMeta =
+      const VerificationMeta('empresaProvinciaHistorica');
+  @override
+  late final GeneratedColumn<String> empresaProvinciaHistorica =
+      GeneratedColumn<String>(
+        'empresa_provincia_historica',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _empresaTelefonoHistoricoMeta =
+      const VerificationMeta('empresaTelefonoHistorico');
+  @override
+  late final GeneratedColumn<String> empresaTelefonoHistorico =
+      GeneratedColumn<String>(
+        'empresa_telefono_historico',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _empresaEmailHistoricoMeta =
+      const VerificationMeta('empresaEmailHistorico');
+  @override
+  late final GeneratedColumn<String> empresaEmailHistorico =
+      GeneratedColumn<String>(
+        'empresa_email_historico',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _empresaWebHistoricaMeta =
+      const VerificationMeta('empresaWebHistorica');
+  @override
+  late final GeneratedColumn<String> empresaWebHistorica =
+      GeneratedColumn<String>(
+        'empresa_web_historica',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _expedienteOrigenIdHistoricoMeta =
+      const VerificationMeta('expedienteOrigenIdHistorico');
+  @override
+  late final GeneratedColumn<String> expedienteOrigenIdHistorico =
+      GeneratedColumn<String>(
+        'expediente_origen_id_historico',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _expedienteCodigoHistoricoMeta =
+      const VerificationMeta('expedienteCodigoHistorico');
+  @override
+  late final GeneratedColumn<String> expedienteCodigoHistorico =
+      GeneratedColumn<String>(
+        'expediente_codigo_historico',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _expedienteNombreHistoricoMeta =
+      const VerificationMeta('expedienteNombreHistorico');
+  @override
+  late final GeneratedColumn<String> expedienteNombreHistorico =
+      GeneratedColumn<String>(
+        'expediente_nombre_historico',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _presupuestoCodigoHistoricoMeta =
+      const VerificationMeta('presupuestoCodigoHistorico');
+  @override
+  late final GeneratedColumn<String> presupuestoCodigoHistorico =
+      GeneratedColumn<String>(
+        'presupuesto_codigo_historico',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
   static const VerificationMeta _fechaCreacionMeta = const VerificationMeta(
     'fechaCreacion',
   );
@@ -3646,6 +3944,8 @@ class $FacturasTable extends Facturas with TableInfo<$FacturasTable, Factura> {
   List<GeneratedColumn> get $columns => [
     id,
     codigo,
+    anioNumeracion,
+    numeroLegal,
     clienteId,
     fecha,
     fechaVencimiento,
@@ -3656,6 +3956,25 @@ class $FacturasTable extends Facturas with TableInfo<$FacturasTable, Factura> {
     total,
     observaciones,
     presupuestoOrigenId,
+    fechaEmision,
+    clienteNombreHistorico,
+    clienteNifHistorico,
+    clienteDireccionHistorica,
+    clienteTelefonoHistorico,
+    clienteEmailHistorico,
+    empresaNombreHistorico,
+    empresaCifHistorico,
+    empresaDireccionHistorica,
+    empresaCodigoPostalHistorico,
+    empresaPoblacionHistorica,
+    empresaProvinciaHistorica,
+    empresaTelefonoHistorico,
+    empresaEmailHistorico,
+    empresaWebHistorica,
+    expedienteOrigenIdHistorico,
+    expedienteCodigoHistorico,
+    expedienteNombreHistorico,
+    presupuestoCodigoHistorico,
     fechaCreacion,
     fechaModificacion,
   ];
@@ -3680,6 +3999,24 @@ class $FacturasTable extends Facturas with TableInfo<$FacturasTable, Factura> {
       context.handle(
         _codigoMeta,
         codigo.isAcceptableOrUnknown(data['codigo']!, _codigoMeta),
+      );
+    }
+    if (data.containsKey('anio_numeracion')) {
+      context.handle(
+        _anioNumeracionMeta,
+        anioNumeracion.isAcceptableOrUnknown(
+          data['anio_numeracion']!,
+          _anioNumeracionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('numero_legal')) {
+      context.handle(
+        _numeroLegalMeta,
+        numeroLegal.isAcceptableOrUnknown(
+          data['numero_legal']!,
+          _numeroLegalMeta,
+        ),
       );
     }
     if (data.containsKey('cliente_id')) {
@@ -3756,6 +4093,177 @@ class $FacturasTable extends Facturas with TableInfo<$FacturasTable, Factura> {
         ),
       );
     }
+    if (data.containsKey('fecha_emision')) {
+      context.handle(
+        _fechaEmisionMeta,
+        fechaEmision.isAcceptableOrUnknown(
+          data['fecha_emision']!,
+          _fechaEmisionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('cliente_nombre_historico')) {
+      context.handle(
+        _clienteNombreHistoricoMeta,
+        clienteNombreHistorico.isAcceptableOrUnknown(
+          data['cliente_nombre_historico']!,
+          _clienteNombreHistoricoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('cliente_nif_historico')) {
+      context.handle(
+        _clienteNifHistoricoMeta,
+        clienteNifHistorico.isAcceptableOrUnknown(
+          data['cliente_nif_historico']!,
+          _clienteNifHistoricoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('cliente_direccion_historica')) {
+      context.handle(
+        _clienteDireccionHistoricaMeta,
+        clienteDireccionHistorica.isAcceptableOrUnknown(
+          data['cliente_direccion_historica']!,
+          _clienteDireccionHistoricaMeta,
+        ),
+      );
+    }
+    if (data.containsKey('cliente_telefono_historico')) {
+      context.handle(
+        _clienteTelefonoHistoricoMeta,
+        clienteTelefonoHistorico.isAcceptableOrUnknown(
+          data['cliente_telefono_historico']!,
+          _clienteTelefonoHistoricoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('cliente_email_historico')) {
+      context.handle(
+        _clienteEmailHistoricoMeta,
+        clienteEmailHistorico.isAcceptableOrUnknown(
+          data['cliente_email_historico']!,
+          _clienteEmailHistoricoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('empresa_nombre_historico')) {
+      context.handle(
+        _empresaNombreHistoricoMeta,
+        empresaNombreHistorico.isAcceptableOrUnknown(
+          data['empresa_nombre_historico']!,
+          _empresaNombreHistoricoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('empresa_cif_historico')) {
+      context.handle(
+        _empresaCifHistoricoMeta,
+        empresaCifHistorico.isAcceptableOrUnknown(
+          data['empresa_cif_historico']!,
+          _empresaCifHistoricoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('empresa_direccion_historica')) {
+      context.handle(
+        _empresaDireccionHistoricaMeta,
+        empresaDireccionHistorica.isAcceptableOrUnknown(
+          data['empresa_direccion_historica']!,
+          _empresaDireccionHistoricaMeta,
+        ),
+      );
+    }
+    if (data.containsKey('empresa_codigo_postal_historico')) {
+      context.handle(
+        _empresaCodigoPostalHistoricoMeta,
+        empresaCodigoPostalHistorico.isAcceptableOrUnknown(
+          data['empresa_codigo_postal_historico']!,
+          _empresaCodigoPostalHistoricoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('empresa_poblacion_historica')) {
+      context.handle(
+        _empresaPoblacionHistoricaMeta,
+        empresaPoblacionHistorica.isAcceptableOrUnknown(
+          data['empresa_poblacion_historica']!,
+          _empresaPoblacionHistoricaMeta,
+        ),
+      );
+    }
+    if (data.containsKey('empresa_provincia_historica')) {
+      context.handle(
+        _empresaProvinciaHistoricaMeta,
+        empresaProvinciaHistorica.isAcceptableOrUnknown(
+          data['empresa_provincia_historica']!,
+          _empresaProvinciaHistoricaMeta,
+        ),
+      );
+    }
+    if (data.containsKey('empresa_telefono_historico')) {
+      context.handle(
+        _empresaTelefonoHistoricoMeta,
+        empresaTelefonoHistorico.isAcceptableOrUnknown(
+          data['empresa_telefono_historico']!,
+          _empresaTelefonoHistoricoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('empresa_email_historico')) {
+      context.handle(
+        _empresaEmailHistoricoMeta,
+        empresaEmailHistorico.isAcceptableOrUnknown(
+          data['empresa_email_historico']!,
+          _empresaEmailHistoricoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('empresa_web_historica')) {
+      context.handle(
+        _empresaWebHistoricaMeta,
+        empresaWebHistorica.isAcceptableOrUnknown(
+          data['empresa_web_historica']!,
+          _empresaWebHistoricaMeta,
+        ),
+      );
+    }
+    if (data.containsKey('expediente_origen_id_historico')) {
+      context.handle(
+        _expedienteOrigenIdHistoricoMeta,
+        expedienteOrigenIdHistorico.isAcceptableOrUnknown(
+          data['expediente_origen_id_historico']!,
+          _expedienteOrigenIdHistoricoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('expediente_codigo_historico')) {
+      context.handle(
+        _expedienteCodigoHistoricoMeta,
+        expedienteCodigoHistorico.isAcceptableOrUnknown(
+          data['expediente_codigo_historico']!,
+          _expedienteCodigoHistoricoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('expediente_nombre_historico')) {
+      context.handle(
+        _expedienteNombreHistoricoMeta,
+        expedienteNombreHistorico.isAcceptableOrUnknown(
+          data['expediente_nombre_historico']!,
+          _expedienteNombreHistoricoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('presupuesto_codigo_historico')) {
+      context.handle(
+        _presupuestoCodigoHistoricoMeta,
+        presupuestoCodigoHistorico.isAcceptableOrUnknown(
+          data['presupuesto_codigo_historico']!,
+          _presupuestoCodigoHistoricoMeta,
+        ),
+      );
+    }
     if (data.containsKey('fecha_creacion')) {
       context.handle(
         _fechaCreacionMeta,
@@ -3791,6 +4299,14 @@ class $FacturasTable extends Facturas with TableInfo<$FacturasTable, Factura> {
         DriftSqlType.string,
         data['${effectivePrefix}codigo'],
       )!,
+      anioNumeracion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}anio_numeracion'],
+      ),
+      numeroLegal: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}numero_legal'],
+      ),
       clienteId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}cliente_id'],
@@ -3831,6 +4347,82 @@ class $FacturasTable extends Facturas with TableInfo<$FacturasTable, Factura> {
         DriftSqlType.string,
         data['${effectivePrefix}presupuesto_origen_id'],
       ),
+      fechaEmision: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_emision'],
+      ),
+      clienteNombreHistorico: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cliente_nombre_historico'],
+      )!,
+      clienteNifHistorico: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cliente_nif_historico'],
+      )!,
+      clienteDireccionHistorica: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cliente_direccion_historica'],
+      )!,
+      clienteTelefonoHistorico: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cliente_telefono_historico'],
+      )!,
+      clienteEmailHistorico: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cliente_email_historico'],
+      )!,
+      empresaNombreHistorico: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}empresa_nombre_historico'],
+      )!,
+      empresaCifHistorico: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}empresa_cif_historico'],
+      )!,
+      empresaDireccionHistorica: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}empresa_direccion_historica'],
+      )!,
+      empresaCodigoPostalHistorico: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}empresa_codigo_postal_historico'],
+      )!,
+      empresaPoblacionHistorica: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}empresa_poblacion_historica'],
+      )!,
+      empresaProvinciaHistorica: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}empresa_provincia_historica'],
+      )!,
+      empresaTelefonoHistorico: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}empresa_telefono_historico'],
+      )!,
+      empresaEmailHistorico: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}empresa_email_historico'],
+      )!,
+      empresaWebHistorica: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}empresa_web_historica'],
+      )!,
+      expedienteOrigenIdHistorico: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}expediente_origen_id_historico'],
+      )!,
+      expedienteCodigoHistorico: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}expediente_codigo_historico'],
+      )!,
+      expedienteNombreHistorico: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}expediente_nombre_historico'],
+      )!,
+      presupuestoCodigoHistorico: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}presupuesto_codigo_historico'],
+      )!,
       fechaCreacion: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}fecha_creacion'],
@@ -3851,6 +4443,8 @@ class $FacturasTable extends Facturas with TableInfo<$FacturasTable, Factura> {
 class Factura extends DataClass implements Insertable<Factura> {
   final String id;
   final String codigo;
+  final int? anioNumeracion;
+  final int? numeroLegal;
   final String clienteId;
   final DateTime fecha;
   final DateTime fechaVencimiento;
@@ -3861,11 +4455,32 @@ class Factura extends DataClass implements Insertable<Factura> {
   final double total;
   final String observaciones;
   final String? presupuestoOrigenId;
+  final DateTime? fechaEmision;
+  final String clienteNombreHistorico;
+  final String clienteNifHistorico;
+  final String clienteDireccionHistorica;
+  final String clienteTelefonoHistorico;
+  final String clienteEmailHistorico;
+  final String empresaNombreHistorico;
+  final String empresaCifHistorico;
+  final String empresaDireccionHistorica;
+  final String empresaCodigoPostalHistorico;
+  final String empresaPoblacionHistorica;
+  final String empresaProvinciaHistorica;
+  final String empresaTelefonoHistorico;
+  final String empresaEmailHistorico;
+  final String empresaWebHistorica;
+  final String expedienteOrigenIdHistorico;
+  final String expedienteCodigoHistorico;
+  final String expedienteNombreHistorico;
+  final String presupuestoCodigoHistorico;
   final DateTime fechaCreacion;
   final DateTime fechaModificacion;
   const Factura({
     required this.id,
     required this.codigo,
+    this.anioNumeracion,
+    this.numeroLegal,
     required this.clienteId,
     required this.fecha,
     required this.fechaVencimiento,
@@ -3876,6 +4491,25 @@ class Factura extends DataClass implements Insertable<Factura> {
     required this.total,
     required this.observaciones,
     this.presupuestoOrigenId,
+    this.fechaEmision,
+    required this.clienteNombreHistorico,
+    required this.clienteNifHistorico,
+    required this.clienteDireccionHistorica,
+    required this.clienteTelefonoHistorico,
+    required this.clienteEmailHistorico,
+    required this.empresaNombreHistorico,
+    required this.empresaCifHistorico,
+    required this.empresaDireccionHistorica,
+    required this.empresaCodigoPostalHistorico,
+    required this.empresaPoblacionHistorica,
+    required this.empresaProvinciaHistorica,
+    required this.empresaTelefonoHistorico,
+    required this.empresaEmailHistorico,
+    required this.empresaWebHistorica,
+    required this.expedienteOrigenIdHistorico,
+    required this.expedienteCodigoHistorico,
+    required this.expedienteNombreHistorico,
+    required this.presupuestoCodigoHistorico,
     required this.fechaCreacion,
     required this.fechaModificacion,
   });
@@ -3884,6 +4518,12 @@ class Factura extends DataClass implements Insertable<Factura> {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['codigo'] = Variable<String>(codigo);
+    if (!nullToAbsent || anioNumeracion != null) {
+      map['anio_numeracion'] = Variable<int>(anioNumeracion);
+    }
+    if (!nullToAbsent || numeroLegal != null) {
+      map['numero_legal'] = Variable<int>(numeroLegal);
+    }
     map['cliente_id'] = Variable<String>(clienteId);
     map['fecha'] = Variable<DateTime>(fecha);
     map['fecha_vencimiento'] = Variable<DateTime>(fechaVencimiento);
@@ -3896,6 +4536,49 @@ class Factura extends DataClass implements Insertable<Factura> {
     if (!nullToAbsent || presupuestoOrigenId != null) {
       map['presupuesto_origen_id'] = Variable<String>(presupuestoOrigenId);
     }
+    if (!nullToAbsent || fechaEmision != null) {
+      map['fecha_emision'] = Variable<DateTime>(fechaEmision);
+    }
+    map['cliente_nombre_historico'] = Variable<String>(clienteNombreHistorico);
+    map['cliente_nif_historico'] = Variable<String>(clienteNifHistorico);
+    map['cliente_direccion_historica'] = Variable<String>(
+      clienteDireccionHistorica,
+    );
+    map['cliente_telefono_historico'] = Variable<String>(
+      clienteTelefonoHistorico,
+    );
+    map['cliente_email_historico'] = Variable<String>(clienteEmailHistorico);
+    map['empresa_nombre_historico'] = Variable<String>(empresaNombreHistorico);
+    map['empresa_cif_historico'] = Variable<String>(empresaCifHistorico);
+    map['empresa_direccion_historica'] = Variable<String>(
+      empresaDireccionHistorica,
+    );
+    map['empresa_codigo_postal_historico'] = Variable<String>(
+      empresaCodigoPostalHistorico,
+    );
+    map['empresa_poblacion_historica'] = Variable<String>(
+      empresaPoblacionHistorica,
+    );
+    map['empresa_provincia_historica'] = Variable<String>(
+      empresaProvinciaHistorica,
+    );
+    map['empresa_telefono_historico'] = Variable<String>(
+      empresaTelefonoHistorico,
+    );
+    map['empresa_email_historico'] = Variable<String>(empresaEmailHistorico);
+    map['empresa_web_historica'] = Variable<String>(empresaWebHistorica);
+    map['expediente_origen_id_historico'] = Variable<String>(
+      expedienteOrigenIdHistorico,
+    );
+    map['expediente_codigo_historico'] = Variable<String>(
+      expedienteCodigoHistorico,
+    );
+    map['expediente_nombre_historico'] = Variable<String>(
+      expedienteNombreHistorico,
+    );
+    map['presupuesto_codigo_historico'] = Variable<String>(
+      presupuestoCodigoHistorico,
+    );
     map['fecha_creacion'] = Variable<DateTime>(fechaCreacion);
     map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion);
     return map;
@@ -3905,6 +4588,12 @@ class Factura extends DataClass implements Insertable<Factura> {
     return FacturasCompanion(
       id: Value(id),
       codigo: Value(codigo),
+      anioNumeracion: anioNumeracion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(anioNumeracion),
+      numeroLegal: numeroLegal == null && nullToAbsent
+          ? const Value.absent()
+          : Value(numeroLegal),
       clienteId: Value(clienteId),
       fecha: Value(fecha),
       fechaVencimiento: Value(fechaVencimiento),
@@ -3917,6 +4606,27 @@ class Factura extends DataClass implements Insertable<Factura> {
       presupuestoOrigenId: presupuestoOrigenId == null && nullToAbsent
           ? const Value.absent()
           : Value(presupuestoOrigenId),
+      fechaEmision: fechaEmision == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fechaEmision),
+      clienteNombreHistorico: Value(clienteNombreHistorico),
+      clienteNifHistorico: Value(clienteNifHistorico),
+      clienteDireccionHistorica: Value(clienteDireccionHistorica),
+      clienteTelefonoHistorico: Value(clienteTelefonoHistorico),
+      clienteEmailHistorico: Value(clienteEmailHistorico),
+      empresaNombreHistorico: Value(empresaNombreHistorico),
+      empresaCifHistorico: Value(empresaCifHistorico),
+      empresaDireccionHistorica: Value(empresaDireccionHistorica),
+      empresaCodigoPostalHistorico: Value(empresaCodigoPostalHistorico),
+      empresaPoblacionHistorica: Value(empresaPoblacionHistorica),
+      empresaProvinciaHistorica: Value(empresaProvinciaHistorica),
+      empresaTelefonoHistorico: Value(empresaTelefonoHistorico),
+      empresaEmailHistorico: Value(empresaEmailHistorico),
+      empresaWebHistorica: Value(empresaWebHistorica),
+      expedienteOrigenIdHistorico: Value(expedienteOrigenIdHistorico),
+      expedienteCodigoHistorico: Value(expedienteCodigoHistorico),
+      expedienteNombreHistorico: Value(expedienteNombreHistorico),
+      presupuestoCodigoHistorico: Value(presupuestoCodigoHistorico),
       fechaCreacion: Value(fechaCreacion),
       fechaModificacion: Value(fechaModificacion),
     );
@@ -3930,6 +4640,8 @@ class Factura extends DataClass implements Insertable<Factura> {
     return Factura(
       id: serializer.fromJson<String>(json['id']),
       codigo: serializer.fromJson<String>(json['codigo']),
+      anioNumeracion: serializer.fromJson<int?>(json['anioNumeracion']),
+      numeroLegal: serializer.fromJson<int?>(json['numeroLegal']),
       clienteId: serializer.fromJson<String>(json['clienteId']),
       fecha: serializer.fromJson<DateTime>(json['fecha']),
       fechaVencimiento: serializer.fromJson<DateTime>(json['fechaVencimiento']),
@@ -3941,6 +4653,61 @@ class Factura extends DataClass implements Insertable<Factura> {
       observaciones: serializer.fromJson<String>(json['observaciones']),
       presupuestoOrigenId: serializer.fromJson<String?>(
         json['presupuestoOrigenId'],
+      ),
+      fechaEmision: serializer.fromJson<DateTime?>(json['fechaEmision']),
+      clienteNombreHistorico: serializer.fromJson<String>(
+        json['clienteNombreHistorico'],
+      ),
+      clienteNifHistorico: serializer.fromJson<String>(
+        json['clienteNifHistorico'],
+      ),
+      clienteDireccionHistorica: serializer.fromJson<String>(
+        json['clienteDireccionHistorica'],
+      ),
+      clienteTelefonoHistorico: serializer.fromJson<String>(
+        json['clienteTelefonoHistorico'],
+      ),
+      clienteEmailHistorico: serializer.fromJson<String>(
+        json['clienteEmailHistorico'],
+      ),
+      empresaNombreHistorico: serializer.fromJson<String>(
+        json['empresaNombreHistorico'],
+      ),
+      empresaCifHistorico: serializer.fromJson<String>(
+        json['empresaCifHistorico'],
+      ),
+      empresaDireccionHistorica: serializer.fromJson<String>(
+        json['empresaDireccionHistorica'],
+      ),
+      empresaCodigoPostalHistorico: serializer.fromJson<String>(
+        json['empresaCodigoPostalHistorico'],
+      ),
+      empresaPoblacionHistorica: serializer.fromJson<String>(
+        json['empresaPoblacionHistorica'],
+      ),
+      empresaProvinciaHistorica: serializer.fromJson<String>(
+        json['empresaProvinciaHistorica'],
+      ),
+      empresaTelefonoHistorico: serializer.fromJson<String>(
+        json['empresaTelefonoHistorico'],
+      ),
+      empresaEmailHistorico: serializer.fromJson<String>(
+        json['empresaEmailHistorico'],
+      ),
+      empresaWebHistorica: serializer.fromJson<String>(
+        json['empresaWebHistorica'],
+      ),
+      expedienteOrigenIdHistorico: serializer.fromJson<String>(
+        json['expedienteOrigenIdHistorico'],
+      ),
+      expedienteCodigoHistorico: serializer.fromJson<String>(
+        json['expedienteCodigoHistorico'],
+      ),
+      expedienteNombreHistorico: serializer.fromJson<String>(
+        json['expedienteNombreHistorico'],
+      ),
+      presupuestoCodigoHistorico: serializer.fromJson<String>(
+        json['presupuestoCodigoHistorico'],
       ),
       fechaCreacion: serializer.fromJson<DateTime>(json['fechaCreacion']),
       fechaModificacion: serializer.fromJson<DateTime>(
@@ -3954,6 +4721,8 @@ class Factura extends DataClass implements Insertable<Factura> {
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'codigo': serializer.toJson<String>(codigo),
+      'anioNumeracion': serializer.toJson<int?>(anioNumeracion),
+      'numeroLegal': serializer.toJson<int?>(numeroLegal),
       'clienteId': serializer.toJson<String>(clienteId),
       'fecha': serializer.toJson<DateTime>(fecha),
       'fechaVencimiento': serializer.toJson<DateTime>(fechaVencimiento),
@@ -3964,6 +4733,51 @@ class Factura extends DataClass implements Insertable<Factura> {
       'total': serializer.toJson<double>(total),
       'observaciones': serializer.toJson<String>(observaciones),
       'presupuestoOrigenId': serializer.toJson<String?>(presupuestoOrigenId),
+      'fechaEmision': serializer.toJson<DateTime?>(fechaEmision),
+      'clienteNombreHistorico': serializer.toJson<String>(
+        clienteNombreHistorico,
+      ),
+      'clienteNifHistorico': serializer.toJson<String>(clienteNifHistorico),
+      'clienteDireccionHistorica': serializer.toJson<String>(
+        clienteDireccionHistorica,
+      ),
+      'clienteTelefonoHistorico': serializer.toJson<String>(
+        clienteTelefonoHistorico,
+      ),
+      'clienteEmailHistorico': serializer.toJson<String>(clienteEmailHistorico),
+      'empresaNombreHistorico': serializer.toJson<String>(
+        empresaNombreHistorico,
+      ),
+      'empresaCifHistorico': serializer.toJson<String>(empresaCifHistorico),
+      'empresaDireccionHistorica': serializer.toJson<String>(
+        empresaDireccionHistorica,
+      ),
+      'empresaCodigoPostalHistorico': serializer.toJson<String>(
+        empresaCodigoPostalHistorico,
+      ),
+      'empresaPoblacionHistorica': serializer.toJson<String>(
+        empresaPoblacionHistorica,
+      ),
+      'empresaProvinciaHistorica': serializer.toJson<String>(
+        empresaProvinciaHistorica,
+      ),
+      'empresaTelefonoHistorico': serializer.toJson<String>(
+        empresaTelefonoHistorico,
+      ),
+      'empresaEmailHistorico': serializer.toJson<String>(empresaEmailHistorico),
+      'empresaWebHistorica': serializer.toJson<String>(empresaWebHistorica),
+      'expedienteOrigenIdHistorico': serializer.toJson<String>(
+        expedienteOrigenIdHistorico,
+      ),
+      'expedienteCodigoHistorico': serializer.toJson<String>(
+        expedienteCodigoHistorico,
+      ),
+      'expedienteNombreHistorico': serializer.toJson<String>(
+        expedienteNombreHistorico,
+      ),
+      'presupuestoCodigoHistorico': serializer.toJson<String>(
+        presupuestoCodigoHistorico,
+      ),
       'fechaCreacion': serializer.toJson<DateTime>(fechaCreacion),
       'fechaModificacion': serializer.toJson<DateTime>(fechaModificacion),
     };
@@ -3972,6 +4786,8 @@ class Factura extends DataClass implements Insertable<Factura> {
   Factura copyWith({
     String? id,
     String? codigo,
+    Value<int?> anioNumeracion = const Value.absent(),
+    Value<int?> numeroLegal = const Value.absent(),
     String? clienteId,
     DateTime? fecha,
     DateTime? fechaVencimiento,
@@ -3982,11 +4798,34 @@ class Factura extends DataClass implements Insertable<Factura> {
     double? total,
     String? observaciones,
     Value<String?> presupuestoOrigenId = const Value.absent(),
+    Value<DateTime?> fechaEmision = const Value.absent(),
+    String? clienteNombreHistorico,
+    String? clienteNifHistorico,
+    String? clienteDireccionHistorica,
+    String? clienteTelefonoHistorico,
+    String? clienteEmailHistorico,
+    String? empresaNombreHistorico,
+    String? empresaCifHistorico,
+    String? empresaDireccionHistorica,
+    String? empresaCodigoPostalHistorico,
+    String? empresaPoblacionHistorica,
+    String? empresaProvinciaHistorica,
+    String? empresaTelefonoHistorico,
+    String? empresaEmailHistorico,
+    String? empresaWebHistorica,
+    String? expedienteOrigenIdHistorico,
+    String? expedienteCodigoHistorico,
+    String? expedienteNombreHistorico,
+    String? presupuestoCodigoHistorico,
     DateTime? fechaCreacion,
     DateTime? fechaModificacion,
   }) => Factura(
     id: id ?? this.id,
     codigo: codigo ?? this.codigo,
+    anioNumeracion: anioNumeracion.present
+        ? anioNumeracion.value
+        : this.anioNumeracion,
+    numeroLegal: numeroLegal.present ? numeroLegal.value : this.numeroLegal,
     clienteId: clienteId ?? this.clienteId,
     fecha: fecha ?? this.fecha,
     fechaVencimiento: fechaVencimiento ?? this.fechaVencimiento,
@@ -3999,6 +4838,38 @@ class Factura extends DataClass implements Insertable<Factura> {
     presupuestoOrigenId: presupuestoOrigenId.present
         ? presupuestoOrigenId.value
         : this.presupuestoOrigenId,
+    fechaEmision: fechaEmision.present ? fechaEmision.value : this.fechaEmision,
+    clienteNombreHistorico:
+        clienteNombreHistorico ?? this.clienteNombreHistorico,
+    clienteNifHistorico: clienteNifHistorico ?? this.clienteNifHistorico,
+    clienteDireccionHistorica:
+        clienteDireccionHistorica ?? this.clienteDireccionHistorica,
+    clienteTelefonoHistorico:
+        clienteTelefonoHistorico ?? this.clienteTelefonoHistorico,
+    clienteEmailHistorico: clienteEmailHistorico ?? this.clienteEmailHistorico,
+    empresaNombreHistorico:
+        empresaNombreHistorico ?? this.empresaNombreHistorico,
+    empresaCifHistorico: empresaCifHistorico ?? this.empresaCifHistorico,
+    empresaDireccionHistorica:
+        empresaDireccionHistorica ?? this.empresaDireccionHistorica,
+    empresaCodigoPostalHistorico:
+        empresaCodigoPostalHistorico ?? this.empresaCodigoPostalHistorico,
+    empresaPoblacionHistorica:
+        empresaPoblacionHistorica ?? this.empresaPoblacionHistorica,
+    empresaProvinciaHistorica:
+        empresaProvinciaHistorica ?? this.empresaProvinciaHistorica,
+    empresaTelefonoHistorico:
+        empresaTelefonoHistorico ?? this.empresaTelefonoHistorico,
+    empresaEmailHistorico: empresaEmailHistorico ?? this.empresaEmailHistorico,
+    empresaWebHistorica: empresaWebHistorica ?? this.empresaWebHistorica,
+    expedienteOrigenIdHistorico:
+        expedienteOrigenIdHistorico ?? this.expedienteOrigenIdHistorico,
+    expedienteCodigoHistorico:
+        expedienteCodigoHistorico ?? this.expedienteCodigoHistorico,
+    expedienteNombreHistorico:
+        expedienteNombreHistorico ?? this.expedienteNombreHistorico,
+    presupuestoCodigoHistorico:
+        presupuestoCodigoHistorico ?? this.presupuestoCodigoHistorico,
     fechaCreacion: fechaCreacion ?? this.fechaCreacion,
     fechaModificacion: fechaModificacion ?? this.fechaModificacion,
   );
@@ -4006,6 +4877,12 @@ class Factura extends DataClass implements Insertable<Factura> {
     return Factura(
       id: data.id.present ? data.id.value : this.id,
       codigo: data.codigo.present ? data.codigo.value : this.codigo,
+      anioNumeracion: data.anioNumeracion.present
+          ? data.anioNumeracion.value
+          : this.anioNumeracion,
+      numeroLegal: data.numeroLegal.present
+          ? data.numeroLegal.value
+          : this.numeroLegal,
       clienteId: data.clienteId.present ? data.clienteId.value : this.clienteId,
       fecha: data.fecha.present ? data.fecha.value : this.fecha,
       fechaVencimiento: data.fechaVencimiento.present
@@ -4024,6 +4901,63 @@ class Factura extends DataClass implements Insertable<Factura> {
       presupuestoOrigenId: data.presupuestoOrigenId.present
           ? data.presupuestoOrigenId.value
           : this.presupuestoOrigenId,
+      fechaEmision: data.fechaEmision.present
+          ? data.fechaEmision.value
+          : this.fechaEmision,
+      clienteNombreHistorico: data.clienteNombreHistorico.present
+          ? data.clienteNombreHistorico.value
+          : this.clienteNombreHistorico,
+      clienteNifHistorico: data.clienteNifHistorico.present
+          ? data.clienteNifHistorico.value
+          : this.clienteNifHistorico,
+      clienteDireccionHistorica: data.clienteDireccionHistorica.present
+          ? data.clienteDireccionHistorica.value
+          : this.clienteDireccionHistorica,
+      clienteTelefonoHistorico: data.clienteTelefonoHistorico.present
+          ? data.clienteTelefonoHistorico.value
+          : this.clienteTelefonoHistorico,
+      clienteEmailHistorico: data.clienteEmailHistorico.present
+          ? data.clienteEmailHistorico.value
+          : this.clienteEmailHistorico,
+      empresaNombreHistorico: data.empresaNombreHistorico.present
+          ? data.empresaNombreHistorico.value
+          : this.empresaNombreHistorico,
+      empresaCifHistorico: data.empresaCifHistorico.present
+          ? data.empresaCifHistorico.value
+          : this.empresaCifHistorico,
+      empresaDireccionHistorica: data.empresaDireccionHistorica.present
+          ? data.empresaDireccionHistorica.value
+          : this.empresaDireccionHistorica,
+      empresaCodigoPostalHistorico: data.empresaCodigoPostalHistorico.present
+          ? data.empresaCodigoPostalHistorico.value
+          : this.empresaCodigoPostalHistorico,
+      empresaPoblacionHistorica: data.empresaPoblacionHistorica.present
+          ? data.empresaPoblacionHistorica.value
+          : this.empresaPoblacionHistorica,
+      empresaProvinciaHistorica: data.empresaProvinciaHistorica.present
+          ? data.empresaProvinciaHistorica.value
+          : this.empresaProvinciaHistorica,
+      empresaTelefonoHistorico: data.empresaTelefonoHistorico.present
+          ? data.empresaTelefonoHistorico.value
+          : this.empresaTelefonoHistorico,
+      empresaEmailHistorico: data.empresaEmailHistorico.present
+          ? data.empresaEmailHistorico.value
+          : this.empresaEmailHistorico,
+      empresaWebHistorica: data.empresaWebHistorica.present
+          ? data.empresaWebHistorica.value
+          : this.empresaWebHistorica,
+      expedienteOrigenIdHistorico: data.expedienteOrigenIdHistorico.present
+          ? data.expedienteOrigenIdHistorico.value
+          : this.expedienteOrigenIdHistorico,
+      expedienteCodigoHistorico: data.expedienteCodigoHistorico.present
+          ? data.expedienteCodigoHistorico.value
+          : this.expedienteCodigoHistorico,
+      expedienteNombreHistorico: data.expedienteNombreHistorico.present
+          ? data.expedienteNombreHistorico.value
+          : this.expedienteNombreHistorico,
+      presupuestoCodigoHistorico: data.presupuestoCodigoHistorico.present
+          ? data.presupuestoCodigoHistorico.value
+          : this.presupuestoCodigoHistorico,
       fechaCreacion: data.fechaCreacion.present
           ? data.fechaCreacion.value
           : this.fechaCreacion,
@@ -4038,6 +4972,8 @@ class Factura extends DataClass implements Insertable<Factura> {
     return (StringBuffer('Factura(')
           ..write('id: $id, ')
           ..write('codigo: $codigo, ')
+          ..write('anioNumeracion: $anioNumeracion, ')
+          ..write('numeroLegal: $numeroLegal, ')
           ..write('clienteId: $clienteId, ')
           ..write('fecha: $fecha, ')
           ..write('fechaVencimiento: $fechaVencimiento, ')
@@ -4048,6 +4984,27 @@ class Factura extends DataClass implements Insertable<Factura> {
           ..write('total: $total, ')
           ..write('observaciones: $observaciones, ')
           ..write('presupuestoOrigenId: $presupuestoOrigenId, ')
+          ..write('fechaEmision: $fechaEmision, ')
+          ..write('clienteNombreHistorico: $clienteNombreHistorico, ')
+          ..write('clienteNifHistorico: $clienteNifHistorico, ')
+          ..write('clienteDireccionHistorica: $clienteDireccionHistorica, ')
+          ..write('clienteTelefonoHistorico: $clienteTelefonoHistorico, ')
+          ..write('clienteEmailHistorico: $clienteEmailHistorico, ')
+          ..write('empresaNombreHistorico: $empresaNombreHistorico, ')
+          ..write('empresaCifHistorico: $empresaCifHistorico, ')
+          ..write('empresaDireccionHistorica: $empresaDireccionHistorica, ')
+          ..write(
+            'empresaCodigoPostalHistorico: $empresaCodigoPostalHistorico, ',
+          )
+          ..write('empresaPoblacionHistorica: $empresaPoblacionHistorica, ')
+          ..write('empresaProvinciaHistorica: $empresaProvinciaHistorica, ')
+          ..write('empresaTelefonoHistorico: $empresaTelefonoHistorico, ')
+          ..write('empresaEmailHistorico: $empresaEmailHistorico, ')
+          ..write('empresaWebHistorica: $empresaWebHistorica, ')
+          ..write('expedienteOrigenIdHistorico: $expedienteOrigenIdHistorico, ')
+          ..write('expedienteCodigoHistorico: $expedienteCodigoHistorico, ')
+          ..write('expedienteNombreHistorico: $expedienteNombreHistorico, ')
+          ..write('presupuestoCodigoHistorico: $presupuestoCodigoHistorico, ')
           ..write('fechaCreacion: $fechaCreacion, ')
           ..write('fechaModificacion: $fechaModificacion')
           ..write(')'))
@@ -4055,9 +5012,11 @@ class Factura extends DataClass implements Insertable<Factura> {
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     id,
     codigo,
+    anioNumeracion,
+    numeroLegal,
     clienteId,
     fecha,
     fechaVencimiento,
@@ -4068,15 +5027,36 @@ class Factura extends DataClass implements Insertable<Factura> {
     total,
     observaciones,
     presupuestoOrigenId,
+    fechaEmision,
+    clienteNombreHistorico,
+    clienteNifHistorico,
+    clienteDireccionHistorica,
+    clienteTelefonoHistorico,
+    clienteEmailHistorico,
+    empresaNombreHistorico,
+    empresaCifHistorico,
+    empresaDireccionHistorica,
+    empresaCodigoPostalHistorico,
+    empresaPoblacionHistorica,
+    empresaProvinciaHistorica,
+    empresaTelefonoHistorico,
+    empresaEmailHistorico,
+    empresaWebHistorica,
+    expedienteOrigenIdHistorico,
+    expedienteCodigoHistorico,
+    expedienteNombreHistorico,
+    presupuestoCodigoHistorico,
     fechaCreacion,
     fechaModificacion,
-  );
+  ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Factura &&
           other.id == this.id &&
           other.codigo == this.codigo &&
+          other.anioNumeracion == this.anioNumeracion &&
+          other.numeroLegal == this.numeroLegal &&
           other.clienteId == this.clienteId &&
           other.fecha == this.fecha &&
           other.fechaVencimiento == this.fechaVencimiento &&
@@ -4087,6 +5067,27 @@ class Factura extends DataClass implements Insertable<Factura> {
           other.total == this.total &&
           other.observaciones == this.observaciones &&
           other.presupuestoOrigenId == this.presupuestoOrigenId &&
+          other.fechaEmision == this.fechaEmision &&
+          other.clienteNombreHistorico == this.clienteNombreHistorico &&
+          other.clienteNifHistorico == this.clienteNifHistorico &&
+          other.clienteDireccionHistorica == this.clienteDireccionHistorica &&
+          other.clienteTelefonoHistorico == this.clienteTelefonoHistorico &&
+          other.clienteEmailHistorico == this.clienteEmailHistorico &&
+          other.empresaNombreHistorico == this.empresaNombreHistorico &&
+          other.empresaCifHistorico == this.empresaCifHistorico &&
+          other.empresaDireccionHistorica == this.empresaDireccionHistorica &&
+          other.empresaCodigoPostalHistorico ==
+              this.empresaCodigoPostalHistorico &&
+          other.empresaPoblacionHistorica == this.empresaPoblacionHistorica &&
+          other.empresaProvinciaHistorica == this.empresaProvinciaHistorica &&
+          other.empresaTelefonoHistorico == this.empresaTelefonoHistorico &&
+          other.empresaEmailHistorico == this.empresaEmailHistorico &&
+          other.empresaWebHistorica == this.empresaWebHistorica &&
+          other.expedienteOrigenIdHistorico ==
+              this.expedienteOrigenIdHistorico &&
+          other.expedienteCodigoHistorico == this.expedienteCodigoHistorico &&
+          other.expedienteNombreHistorico == this.expedienteNombreHistorico &&
+          other.presupuestoCodigoHistorico == this.presupuestoCodigoHistorico &&
           other.fechaCreacion == this.fechaCreacion &&
           other.fechaModificacion == this.fechaModificacion);
 }
@@ -4094,6 +5095,8 @@ class Factura extends DataClass implements Insertable<Factura> {
 class FacturasCompanion extends UpdateCompanion<Factura> {
   final Value<String> id;
   final Value<String> codigo;
+  final Value<int?> anioNumeracion;
+  final Value<int?> numeroLegal;
   final Value<String> clienteId;
   final Value<DateTime> fecha;
   final Value<DateTime> fechaVencimiento;
@@ -4104,12 +5107,33 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
   final Value<double> total;
   final Value<String> observaciones;
   final Value<String?> presupuestoOrigenId;
+  final Value<DateTime?> fechaEmision;
+  final Value<String> clienteNombreHistorico;
+  final Value<String> clienteNifHistorico;
+  final Value<String> clienteDireccionHistorica;
+  final Value<String> clienteTelefonoHistorico;
+  final Value<String> clienteEmailHistorico;
+  final Value<String> empresaNombreHistorico;
+  final Value<String> empresaCifHistorico;
+  final Value<String> empresaDireccionHistorica;
+  final Value<String> empresaCodigoPostalHistorico;
+  final Value<String> empresaPoblacionHistorica;
+  final Value<String> empresaProvinciaHistorica;
+  final Value<String> empresaTelefonoHistorico;
+  final Value<String> empresaEmailHistorico;
+  final Value<String> empresaWebHistorica;
+  final Value<String> expedienteOrigenIdHistorico;
+  final Value<String> expedienteCodigoHistorico;
+  final Value<String> expedienteNombreHistorico;
+  final Value<String> presupuestoCodigoHistorico;
   final Value<DateTime> fechaCreacion;
   final Value<DateTime> fechaModificacion;
   final Value<int> rowid;
   const FacturasCompanion({
     this.id = const Value.absent(),
     this.codigo = const Value.absent(),
+    this.anioNumeracion = const Value.absent(),
+    this.numeroLegal = const Value.absent(),
     this.clienteId = const Value.absent(),
     this.fecha = const Value.absent(),
     this.fechaVencimiento = const Value.absent(),
@@ -4120,6 +5144,25 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
     this.total = const Value.absent(),
     this.observaciones = const Value.absent(),
     this.presupuestoOrigenId = const Value.absent(),
+    this.fechaEmision = const Value.absent(),
+    this.clienteNombreHistorico = const Value.absent(),
+    this.clienteNifHistorico = const Value.absent(),
+    this.clienteDireccionHistorica = const Value.absent(),
+    this.clienteTelefonoHistorico = const Value.absent(),
+    this.clienteEmailHistorico = const Value.absent(),
+    this.empresaNombreHistorico = const Value.absent(),
+    this.empresaCifHistorico = const Value.absent(),
+    this.empresaDireccionHistorica = const Value.absent(),
+    this.empresaCodigoPostalHistorico = const Value.absent(),
+    this.empresaPoblacionHistorica = const Value.absent(),
+    this.empresaProvinciaHistorica = const Value.absent(),
+    this.empresaTelefonoHistorico = const Value.absent(),
+    this.empresaEmailHistorico = const Value.absent(),
+    this.empresaWebHistorica = const Value.absent(),
+    this.expedienteOrigenIdHistorico = const Value.absent(),
+    this.expedienteCodigoHistorico = const Value.absent(),
+    this.expedienteNombreHistorico = const Value.absent(),
+    this.presupuestoCodigoHistorico = const Value.absent(),
     this.fechaCreacion = const Value.absent(),
     this.fechaModificacion = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -4127,6 +5170,8 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
   FacturasCompanion.insert({
     required String id,
     this.codigo = const Value.absent(),
+    this.anioNumeracion = const Value.absent(),
+    this.numeroLegal = const Value.absent(),
     required String clienteId,
     this.fecha = const Value.absent(),
     this.fechaVencimiento = const Value.absent(),
@@ -4137,6 +5182,25 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
     this.total = const Value.absent(),
     this.observaciones = const Value.absent(),
     this.presupuestoOrigenId = const Value.absent(),
+    this.fechaEmision = const Value.absent(),
+    this.clienteNombreHistorico = const Value.absent(),
+    this.clienteNifHistorico = const Value.absent(),
+    this.clienteDireccionHistorica = const Value.absent(),
+    this.clienteTelefonoHistorico = const Value.absent(),
+    this.clienteEmailHistorico = const Value.absent(),
+    this.empresaNombreHistorico = const Value.absent(),
+    this.empresaCifHistorico = const Value.absent(),
+    this.empresaDireccionHistorica = const Value.absent(),
+    this.empresaCodigoPostalHistorico = const Value.absent(),
+    this.empresaPoblacionHistorica = const Value.absent(),
+    this.empresaProvinciaHistorica = const Value.absent(),
+    this.empresaTelefonoHistorico = const Value.absent(),
+    this.empresaEmailHistorico = const Value.absent(),
+    this.empresaWebHistorica = const Value.absent(),
+    this.expedienteOrigenIdHistorico = const Value.absent(),
+    this.expedienteCodigoHistorico = const Value.absent(),
+    this.expedienteNombreHistorico = const Value.absent(),
+    this.presupuestoCodigoHistorico = const Value.absent(),
     this.fechaCreacion = const Value.absent(),
     this.fechaModificacion = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -4145,6 +5209,8 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
   static Insertable<Factura> custom({
     Expression<String>? id,
     Expression<String>? codigo,
+    Expression<int>? anioNumeracion,
+    Expression<int>? numeroLegal,
     Expression<String>? clienteId,
     Expression<DateTime>? fecha,
     Expression<DateTime>? fechaVencimiento,
@@ -4155,6 +5221,25 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
     Expression<double>? total,
     Expression<String>? observaciones,
     Expression<String>? presupuestoOrigenId,
+    Expression<DateTime>? fechaEmision,
+    Expression<String>? clienteNombreHistorico,
+    Expression<String>? clienteNifHistorico,
+    Expression<String>? clienteDireccionHistorica,
+    Expression<String>? clienteTelefonoHistorico,
+    Expression<String>? clienteEmailHistorico,
+    Expression<String>? empresaNombreHistorico,
+    Expression<String>? empresaCifHistorico,
+    Expression<String>? empresaDireccionHistorica,
+    Expression<String>? empresaCodigoPostalHistorico,
+    Expression<String>? empresaPoblacionHistorica,
+    Expression<String>? empresaProvinciaHistorica,
+    Expression<String>? empresaTelefonoHistorico,
+    Expression<String>? empresaEmailHistorico,
+    Expression<String>? empresaWebHistorica,
+    Expression<String>? expedienteOrigenIdHistorico,
+    Expression<String>? expedienteCodigoHistorico,
+    Expression<String>? expedienteNombreHistorico,
+    Expression<String>? presupuestoCodigoHistorico,
     Expression<DateTime>? fechaCreacion,
     Expression<DateTime>? fechaModificacion,
     Expression<int>? rowid,
@@ -4162,6 +5247,8 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (codigo != null) 'codigo': codigo,
+      if (anioNumeracion != null) 'anio_numeracion': anioNumeracion,
+      if (numeroLegal != null) 'numero_legal': numeroLegal,
       if (clienteId != null) 'cliente_id': clienteId,
       if (fecha != null) 'fecha': fecha,
       if (fechaVencimiento != null) 'fecha_vencimiento': fechaVencimiento,
@@ -4173,6 +5260,43 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
       if (observaciones != null) 'observaciones': observaciones,
       if (presupuestoOrigenId != null)
         'presupuesto_origen_id': presupuestoOrigenId,
+      if (fechaEmision != null) 'fecha_emision': fechaEmision,
+      if (clienteNombreHistorico != null)
+        'cliente_nombre_historico': clienteNombreHistorico,
+      if (clienteNifHistorico != null)
+        'cliente_nif_historico': clienteNifHistorico,
+      if (clienteDireccionHistorica != null)
+        'cliente_direccion_historica': clienteDireccionHistorica,
+      if (clienteTelefonoHistorico != null)
+        'cliente_telefono_historico': clienteTelefonoHistorico,
+      if (clienteEmailHistorico != null)
+        'cliente_email_historico': clienteEmailHistorico,
+      if (empresaNombreHistorico != null)
+        'empresa_nombre_historico': empresaNombreHistorico,
+      if (empresaCifHistorico != null)
+        'empresa_cif_historico': empresaCifHistorico,
+      if (empresaDireccionHistorica != null)
+        'empresa_direccion_historica': empresaDireccionHistorica,
+      if (empresaCodigoPostalHistorico != null)
+        'empresa_codigo_postal_historico': empresaCodigoPostalHistorico,
+      if (empresaPoblacionHistorica != null)
+        'empresa_poblacion_historica': empresaPoblacionHistorica,
+      if (empresaProvinciaHistorica != null)
+        'empresa_provincia_historica': empresaProvinciaHistorica,
+      if (empresaTelefonoHistorico != null)
+        'empresa_telefono_historico': empresaTelefonoHistorico,
+      if (empresaEmailHistorico != null)
+        'empresa_email_historico': empresaEmailHistorico,
+      if (empresaWebHistorica != null)
+        'empresa_web_historica': empresaWebHistorica,
+      if (expedienteOrigenIdHistorico != null)
+        'expediente_origen_id_historico': expedienteOrigenIdHistorico,
+      if (expedienteCodigoHistorico != null)
+        'expediente_codigo_historico': expedienteCodigoHistorico,
+      if (expedienteNombreHistorico != null)
+        'expediente_nombre_historico': expedienteNombreHistorico,
+      if (presupuestoCodigoHistorico != null)
+        'presupuesto_codigo_historico': presupuestoCodigoHistorico,
       if (fechaCreacion != null) 'fecha_creacion': fechaCreacion,
       if (fechaModificacion != null) 'fecha_modificacion': fechaModificacion,
       if (rowid != null) 'rowid': rowid,
@@ -4182,6 +5306,8 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
   FacturasCompanion copyWith({
     Value<String>? id,
     Value<String>? codigo,
+    Value<int?>? anioNumeracion,
+    Value<int?>? numeroLegal,
     Value<String>? clienteId,
     Value<DateTime>? fecha,
     Value<DateTime>? fechaVencimiento,
@@ -4192,6 +5318,25 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
     Value<double>? total,
     Value<String>? observaciones,
     Value<String?>? presupuestoOrigenId,
+    Value<DateTime?>? fechaEmision,
+    Value<String>? clienteNombreHistorico,
+    Value<String>? clienteNifHistorico,
+    Value<String>? clienteDireccionHistorica,
+    Value<String>? clienteTelefonoHistorico,
+    Value<String>? clienteEmailHistorico,
+    Value<String>? empresaNombreHistorico,
+    Value<String>? empresaCifHistorico,
+    Value<String>? empresaDireccionHistorica,
+    Value<String>? empresaCodigoPostalHistorico,
+    Value<String>? empresaPoblacionHistorica,
+    Value<String>? empresaProvinciaHistorica,
+    Value<String>? empresaTelefonoHistorico,
+    Value<String>? empresaEmailHistorico,
+    Value<String>? empresaWebHistorica,
+    Value<String>? expedienteOrigenIdHistorico,
+    Value<String>? expedienteCodigoHistorico,
+    Value<String>? expedienteNombreHistorico,
+    Value<String>? presupuestoCodigoHistorico,
     Value<DateTime>? fechaCreacion,
     Value<DateTime>? fechaModificacion,
     Value<int>? rowid,
@@ -4199,6 +5344,8 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
     return FacturasCompanion(
       id: id ?? this.id,
       codigo: codigo ?? this.codigo,
+      anioNumeracion: anioNumeracion ?? this.anioNumeracion,
+      numeroLegal: numeroLegal ?? this.numeroLegal,
       clienteId: clienteId ?? this.clienteId,
       fecha: fecha ?? this.fecha,
       fechaVencimiento: fechaVencimiento ?? this.fechaVencimiento,
@@ -4209,6 +5356,40 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
       total: total ?? this.total,
       observaciones: observaciones ?? this.observaciones,
       presupuestoOrigenId: presupuestoOrigenId ?? this.presupuestoOrigenId,
+      fechaEmision: fechaEmision ?? this.fechaEmision,
+      clienteNombreHistorico:
+          clienteNombreHistorico ?? this.clienteNombreHistorico,
+      clienteNifHistorico: clienteNifHistorico ?? this.clienteNifHistorico,
+      clienteDireccionHistorica:
+          clienteDireccionHistorica ?? this.clienteDireccionHistorica,
+      clienteTelefonoHistorico:
+          clienteTelefonoHistorico ?? this.clienteTelefonoHistorico,
+      clienteEmailHistorico:
+          clienteEmailHistorico ?? this.clienteEmailHistorico,
+      empresaNombreHistorico:
+          empresaNombreHistorico ?? this.empresaNombreHistorico,
+      empresaCifHistorico: empresaCifHistorico ?? this.empresaCifHistorico,
+      empresaDireccionHistorica:
+          empresaDireccionHistorica ?? this.empresaDireccionHistorica,
+      empresaCodigoPostalHistorico:
+          empresaCodigoPostalHistorico ?? this.empresaCodigoPostalHistorico,
+      empresaPoblacionHistorica:
+          empresaPoblacionHistorica ?? this.empresaPoblacionHistorica,
+      empresaProvinciaHistorica:
+          empresaProvinciaHistorica ?? this.empresaProvinciaHistorica,
+      empresaTelefonoHistorico:
+          empresaTelefonoHistorico ?? this.empresaTelefonoHistorico,
+      empresaEmailHistorico:
+          empresaEmailHistorico ?? this.empresaEmailHistorico,
+      empresaWebHistorica: empresaWebHistorica ?? this.empresaWebHistorica,
+      expedienteOrigenIdHistorico:
+          expedienteOrigenIdHistorico ?? this.expedienteOrigenIdHistorico,
+      expedienteCodigoHistorico:
+          expedienteCodigoHistorico ?? this.expedienteCodigoHistorico,
+      expedienteNombreHistorico:
+          expedienteNombreHistorico ?? this.expedienteNombreHistorico,
+      presupuestoCodigoHistorico:
+          presupuestoCodigoHistorico ?? this.presupuestoCodigoHistorico,
       fechaCreacion: fechaCreacion ?? this.fechaCreacion,
       fechaModificacion: fechaModificacion ?? this.fechaModificacion,
       rowid: rowid ?? this.rowid,
@@ -4223,6 +5404,12 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
     }
     if (codigo.present) {
       map['codigo'] = Variable<String>(codigo.value);
+    }
+    if (anioNumeracion.present) {
+      map['anio_numeracion'] = Variable<int>(anioNumeracion.value);
+    }
+    if (numeroLegal.present) {
+      map['numero_legal'] = Variable<int>(numeroLegal.value);
     }
     if (clienteId.present) {
       map['cliente_id'] = Variable<String>(clienteId.value);
@@ -4256,6 +5443,99 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
         presupuestoOrigenId.value,
       );
     }
+    if (fechaEmision.present) {
+      map['fecha_emision'] = Variable<DateTime>(fechaEmision.value);
+    }
+    if (clienteNombreHistorico.present) {
+      map['cliente_nombre_historico'] = Variable<String>(
+        clienteNombreHistorico.value,
+      );
+    }
+    if (clienteNifHistorico.present) {
+      map['cliente_nif_historico'] = Variable<String>(
+        clienteNifHistorico.value,
+      );
+    }
+    if (clienteDireccionHistorica.present) {
+      map['cliente_direccion_historica'] = Variable<String>(
+        clienteDireccionHistorica.value,
+      );
+    }
+    if (clienteTelefonoHistorico.present) {
+      map['cliente_telefono_historico'] = Variable<String>(
+        clienteTelefonoHistorico.value,
+      );
+    }
+    if (clienteEmailHistorico.present) {
+      map['cliente_email_historico'] = Variable<String>(
+        clienteEmailHistorico.value,
+      );
+    }
+    if (empresaNombreHistorico.present) {
+      map['empresa_nombre_historico'] = Variable<String>(
+        empresaNombreHistorico.value,
+      );
+    }
+    if (empresaCifHistorico.present) {
+      map['empresa_cif_historico'] = Variable<String>(
+        empresaCifHistorico.value,
+      );
+    }
+    if (empresaDireccionHistorica.present) {
+      map['empresa_direccion_historica'] = Variable<String>(
+        empresaDireccionHistorica.value,
+      );
+    }
+    if (empresaCodigoPostalHistorico.present) {
+      map['empresa_codigo_postal_historico'] = Variable<String>(
+        empresaCodigoPostalHistorico.value,
+      );
+    }
+    if (empresaPoblacionHistorica.present) {
+      map['empresa_poblacion_historica'] = Variable<String>(
+        empresaPoblacionHistorica.value,
+      );
+    }
+    if (empresaProvinciaHistorica.present) {
+      map['empresa_provincia_historica'] = Variable<String>(
+        empresaProvinciaHistorica.value,
+      );
+    }
+    if (empresaTelefonoHistorico.present) {
+      map['empresa_telefono_historico'] = Variable<String>(
+        empresaTelefonoHistorico.value,
+      );
+    }
+    if (empresaEmailHistorico.present) {
+      map['empresa_email_historico'] = Variable<String>(
+        empresaEmailHistorico.value,
+      );
+    }
+    if (empresaWebHistorica.present) {
+      map['empresa_web_historica'] = Variable<String>(
+        empresaWebHistorica.value,
+      );
+    }
+    if (expedienteOrigenIdHistorico.present) {
+      map['expediente_origen_id_historico'] = Variable<String>(
+        expedienteOrigenIdHistorico.value,
+      );
+    }
+    if (expedienteCodigoHistorico.present) {
+      map['expediente_codigo_historico'] = Variable<String>(
+        expedienteCodigoHistorico.value,
+      );
+    }
+    if (expedienteNombreHistorico.present) {
+      map['expediente_nombre_historico'] = Variable<String>(
+        expedienteNombreHistorico.value,
+      );
+    }
+    if (presupuestoCodigoHistorico.present) {
+      map['presupuesto_codigo_historico'] = Variable<String>(
+        presupuestoCodigoHistorico.value,
+      );
+    }
     if (fechaCreacion.present) {
       map['fecha_creacion'] = Variable<DateTime>(fechaCreacion.value);
     }
@@ -4273,6 +5553,8 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
     return (StringBuffer('FacturasCompanion(')
           ..write('id: $id, ')
           ..write('codigo: $codigo, ')
+          ..write('anioNumeracion: $anioNumeracion, ')
+          ..write('numeroLegal: $numeroLegal, ')
           ..write('clienteId: $clienteId, ')
           ..write('fecha: $fecha, ')
           ..write('fechaVencimiento: $fechaVencimiento, ')
@@ -4283,6 +5565,27 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
           ..write('total: $total, ')
           ..write('observaciones: $observaciones, ')
           ..write('presupuestoOrigenId: $presupuestoOrigenId, ')
+          ..write('fechaEmision: $fechaEmision, ')
+          ..write('clienteNombreHistorico: $clienteNombreHistorico, ')
+          ..write('clienteNifHistorico: $clienteNifHistorico, ')
+          ..write('clienteDireccionHistorica: $clienteDireccionHistorica, ')
+          ..write('clienteTelefonoHistorico: $clienteTelefonoHistorico, ')
+          ..write('clienteEmailHistorico: $clienteEmailHistorico, ')
+          ..write('empresaNombreHistorico: $empresaNombreHistorico, ')
+          ..write('empresaCifHistorico: $empresaCifHistorico, ')
+          ..write('empresaDireccionHistorica: $empresaDireccionHistorica, ')
+          ..write(
+            'empresaCodigoPostalHistorico: $empresaCodigoPostalHistorico, ',
+          )
+          ..write('empresaPoblacionHistorica: $empresaPoblacionHistorica, ')
+          ..write('empresaProvinciaHistorica: $empresaProvinciaHistorica, ')
+          ..write('empresaTelefonoHistorico: $empresaTelefonoHistorico, ')
+          ..write('empresaEmailHistorico: $empresaEmailHistorico, ')
+          ..write('empresaWebHistorica: $empresaWebHistorica, ')
+          ..write('expedienteOrigenIdHistorico: $expedienteOrigenIdHistorico, ')
+          ..write('expedienteCodigoHistorico: $expedienteCodigoHistorico, ')
+          ..write('expedienteNombreHistorico: $expedienteNombreHistorico, ')
+          ..write('presupuestoCodigoHistorico: $presupuestoCodigoHistorico, ')
           ..write('fechaCreacion: $fechaCreacion, ')
           ..write('fechaModificacion: $fechaModificacion, ')
           ..write('rowid: $rowid')
@@ -11708,6 +13011,7 @@ typedef $$LineasPresupuestoTableCreateCompanionBuilder =
       required String presupuestoId,
       required String concepto,
       required double cantidad,
+      Value<String> unidad,
       required double precioUnitario,
       Value<int> rowid,
     });
@@ -11717,6 +13021,7 @@ typedef $$LineasPresupuestoTableUpdateCompanionBuilder =
       Value<String> presupuestoId,
       Value<String> concepto,
       Value<double> cantidad,
+      Value<String> unidad,
       Value<double> precioUnitario,
       Value<int> rowid,
     });
@@ -11777,6 +13082,11 @@ class $$LineasPresupuestoTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get unidad => $composableBuilder(
+    column: $table.unidad,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<double> get precioUnitario => $composableBuilder(
     column: $table.precioUnitario,
     builder: (column) => ColumnFilters(column),
@@ -11830,6 +13140,11 @@ class $$LineasPresupuestoTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get unidad => $composableBuilder(
+    column: $table.unidad,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<double> get precioUnitario => $composableBuilder(
     column: $table.precioUnitario,
     builder: (column) => ColumnOrderings(column),
@@ -11876,6 +13191,9 @@ class $$LineasPresupuestoTableAnnotationComposer
 
   GeneratedColumn<double> get cantidad =>
       $composableBuilder(column: $table.cantidad, builder: (column) => column);
+
+  GeneratedColumn<String> get unidad =>
+      $composableBuilder(column: $table.unidad, builder: (column) => column);
 
   GeneratedColumn<double> get precioUnitario => $composableBuilder(
     column: $table.precioUnitario,
@@ -11943,6 +13261,7 @@ class $$LineasPresupuestoTableTableManager
                 Value<String> presupuestoId = const Value.absent(),
                 Value<String> concepto = const Value.absent(),
                 Value<double> cantidad = const Value.absent(),
+                Value<String> unidad = const Value.absent(),
                 Value<double> precioUnitario = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LineasPresupuestoCompanion(
@@ -11950,6 +13269,7 @@ class $$LineasPresupuestoTableTableManager
                 presupuestoId: presupuestoId,
                 concepto: concepto,
                 cantidad: cantidad,
+                unidad: unidad,
                 precioUnitario: precioUnitario,
                 rowid: rowid,
               ),
@@ -11959,6 +13279,7 @@ class $$LineasPresupuestoTableTableManager
                 required String presupuestoId,
                 required String concepto,
                 required double cantidad,
+                Value<String> unidad = const Value.absent(),
                 required double precioUnitario,
                 Value<int> rowid = const Value.absent(),
               }) => LineasPresupuestoCompanion.insert(
@@ -11966,6 +13287,7 @@ class $$LineasPresupuestoTableTableManager
                 presupuestoId: presupuestoId,
                 concepto: concepto,
                 cantidad: cantidad,
+                unidad: unidad,
                 precioUnitario: precioUnitario,
                 rowid: rowid,
               ),
@@ -12376,6 +13698,8 @@ typedef $$FacturasTableCreateCompanionBuilder =
     FacturasCompanion Function({
       required String id,
       Value<String> codigo,
+      Value<int?> anioNumeracion,
+      Value<int?> numeroLegal,
       required String clienteId,
       Value<DateTime> fecha,
       Value<DateTime> fechaVencimiento,
@@ -12386,6 +13710,25 @@ typedef $$FacturasTableCreateCompanionBuilder =
       Value<double> total,
       Value<String> observaciones,
       Value<String?> presupuestoOrigenId,
+      Value<DateTime?> fechaEmision,
+      Value<String> clienteNombreHistorico,
+      Value<String> clienteNifHistorico,
+      Value<String> clienteDireccionHistorica,
+      Value<String> clienteTelefonoHistorico,
+      Value<String> clienteEmailHistorico,
+      Value<String> empresaNombreHistorico,
+      Value<String> empresaCifHistorico,
+      Value<String> empresaDireccionHistorica,
+      Value<String> empresaCodigoPostalHistorico,
+      Value<String> empresaPoblacionHistorica,
+      Value<String> empresaProvinciaHistorica,
+      Value<String> empresaTelefonoHistorico,
+      Value<String> empresaEmailHistorico,
+      Value<String> empresaWebHistorica,
+      Value<String> expedienteOrigenIdHistorico,
+      Value<String> expedienteCodigoHistorico,
+      Value<String> expedienteNombreHistorico,
+      Value<String> presupuestoCodigoHistorico,
       Value<DateTime> fechaCreacion,
       Value<DateTime> fechaModificacion,
       Value<int> rowid,
@@ -12394,6 +13737,8 @@ typedef $$FacturasTableUpdateCompanionBuilder =
     FacturasCompanion Function({
       Value<String> id,
       Value<String> codigo,
+      Value<int?> anioNumeracion,
+      Value<int?> numeroLegal,
       Value<String> clienteId,
       Value<DateTime> fecha,
       Value<DateTime> fechaVencimiento,
@@ -12404,6 +13749,25 @@ typedef $$FacturasTableUpdateCompanionBuilder =
       Value<double> total,
       Value<String> observaciones,
       Value<String?> presupuestoOrigenId,
+      Value<DateTime?> fechaEmision,
+      Value<String> clienteNombreHistorico,
+      Value<String> clienteNifHistorico,
+      Value<String> clienteDireccionHistorica,
+      Value<String> clienteTelefonoHistorico,
+      Value<String> clienteEmailHistorico,
+      Value<String> empresaNombreHistorico,
+      Value<String> empresaCifHistorico,
+      Value<String> empresaDireccionHistorica,
+      Value<String> empresaCodigoPostalHistorico,
+      Value<String> empresaPoblacionHistorica,
+      Value<String> empresaProvinciaHistorica,
+      Value<String> empresaTelefonoHistorico,
+      Value<String> empresaEmailHistorico,
+      Value<String> empresaWebHistorica,
+      Value<String> expedienteOrigenIdHistorico,
+      Value<String> expedienteCodigoHistorico,
+      Value<String> expedienteNombreHistorico,
+      Value<String> presupuestoCodigoHistorico,
       Value<DateTime> fechaCreacion,
       Value<DateTime> fechaModificacion,
       Value<int> rowid,
@@ -12505,6 +13869,16 @@ class $$FacturasTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get anioNumeracion => $composableBuilder(
+    column: $table.anioNumeracion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get numeroLegal => $composableBuilder(
+    column: $table.numeroLegal,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<DateTime> get fecha => $composableBuilder(
     column: $table.fecha,
     builder: (column) => ColumnFilters(column),
@@ -12542,6 +13916,101 @@ class $$FacturasTableFilterComposer
 
   ColumnFilters<String> get observaciones => $composableBuilder(
     column: $table.observaciones,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaEmision => $composableBuilder(
+    column: $table.fechaEmision,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clienteNombreHistorico => $composableBuilder(
+    column: $table.clienteNombreHistorico,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clienteNifHistorico => $composableBuilder(
+    column: $table.clienteNifHistorico,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clienteDireccionHistorica => $composableBuilder(
+    column: $table.clienteDireccionHistorica,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clienteTelefonoHistorico => $composableBuilder(
+    column: $table.clienteTelefonoHistorico,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clienteEmailHistorico => $composableBuilder(
+    column: $table.clienteEmailHistorico,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get empresaNombreHistorico => $composableBuilder(
+    column: $table.empresaNombreHistorico,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get empresaCifHistorico => $composableBuilder(
+    column: $table.empresaCifHistorico,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get empresaDireccionHistorica => $composableBuilder(
+    column: $table.empresaDireccionHistorica,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get empresaCodigoPostalHistorico => $composableBuilder(
+    column: $table.empresaCodigoPostalHistorico,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get empresaPoblacionHistorica => $composableBuilder(
+    column: $table.empresaPoblacionHistorica,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get empresaProvinciaHistorica => $composableBuilder(
+    column: $table.empresaProvinciaHistorica,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get empresaTelefonoHistorico => $composableBuilder(
+    column: $table.empresaTelefonoHistorico,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get empresaEmailHistorico => $composableBuilder(
+    column: $table.empresaEmailHistorico,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get empresaWebHistorica => $composableBuilder(
+    column: $table.empresaWebHistorica,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get expedienteOrigenIdHistorico => $composableBuilder(
+    column: $table.expedienteOrigenIdHistorico,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get expedienteCodigoHistorico => $composableBuilder(
+    column: $table.expedienteCodigoHistorico,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get expedienteNombreHistorico => $composableBuilder(
+    column: $table.expedienteNombreHistorico,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get presupuestoCodigoHistorico => $composableBuilder(
+    column: $table.presupuestoCodigoHistorico,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -12671,6 +14140,16 @@ class $$FacturasTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get anioNumeracion => $composableBuilder(
+    column: $table.anioNumeracion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get numeroLegal => $composableBuilder(
+    column: $table.numeroLegal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get fecha => $composableBuilder(
     column: $table.fecha,
     builder: (column) => ColumnOrderings(column),
@@ -12708,6 +14187,102 @@ class $$FacturasTableOrderingComposer
 
   ColumnOrderings<String> get observaciones => $composableBuilder(
     column: $table.observaciones,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaEmision => $composableBuilder(
+    column: $table.fechaEmision,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clienteNombreHistorico => $composableBuilder(
+    column: $table.clienteNombreHistorico,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clienteNifHistorico => $composableBuilder(
+    column: $table.clienteNifHistorico,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clienteDireccionHistorica => $composableBuilder(
+    column: $table.clienteDireccionHistorica,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clienteTelefonoHistorico => $composableBuilder(
+    column: $table.clienteTelefonoHistorico,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clienteEmailHistorico => $composableBuilder(
+    column: $table.clienteEmailHistorico,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get empresaNombreHistorico => $composableBuilder(
+    column: $table.empresaNombreHistorico,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get empresaCifHistorico => $composableBuilder(
+    column: $table.empresaCifHistorico,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get empresaDireccionHistorica => $composableBuilder(
+    column: $table.empresaDireccionHistorica,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get empresaCodigoPostalHistorico =>
+      $composableBuilder(
+        column: $table.empresaCodigoPostalHistorico,
+        builder: (column) => ColumnOrderings(column),
+      );
+
+  ColumnOrderings<String> get empresaPoblacionHistorica => $composableBuilder(
+    column: $table.empresaPoblacionHistorica,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get empresaProvinciaHistorica => $composableBuilder(
+    column: $table.empresaProvinciaHistorica,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get empresaTelefonoHistorico => $composableBuilder(
+    column: $table.empresaTelefonoHistorico,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get empresaEmailHistorico => $composableBuilder(
+    column: $table.empresaEmailHistorico,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get empresaWebHistorica => $composableBuilder(
+    column: $table.empresaWebHistorica,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get expedienteOrigenIdHistorico => $composableBuilder(
+    column: $table.expedienteOrigenIdHistorico,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get expedienteCodigoHistorico => $composableBuilder(
+    column: $table.expedienteCodigoHistorico,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get expedienteNombreHistorico => $composableBuilder(
+    column: $table.expedienteNombreHistorico,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get presupuestoCodigoHistorico => $composableBuilder(
+    column: $table.presupuestoCodigoHistorico,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -12783,6 +14358,16 @@ class $$FacturasTableAnnotationComposer
   GeneratedColumn<String> get codigo =>
       $composableBuilder(column: $table.codigo, builder: (column) => column);
 
+  GeneratedColumn<int> get anioNumeracion => $composableBuilder(
+    column: $table.anioNumeracion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get numeroLegal => $composableBuilder(
+    column: $table.numeroLegal,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<DateTime> get fecha =>
       $composableBuilder(column: $table.fecha, builder: (column) => column);
 
@@ -12810,6 +14395,102 @@ class $$FacturasTableAnnotationComposer
 
   GeneratedColumn<String> get observaciones => $composableBuilder(
     column: $table.observaciones,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaEmision => $composableBuilder(
+    column: $table.fechaEmision,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get clienteNombreHistorico => $composableBuilder(
+    column: $table.clienteNombreHistorico,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get clienteNifHistorico => $composableBuilder(
+    column: $table.clienteNifHistorico,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get clienteDireccionHistorica => $composableBuilder(
+    column: $table.clienteDireccionHistorica,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get clienteTelefonoHistorico => $composableBuilder(
+    column: $table.clienteTelefonoHistorico,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get clienteEmailHistorico => $composableBuilder(
+    column: $table.clienteEmailHistorico,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get empresaNombreHistorico => $composableBuilder(
+    column: $table.empresaNombreHistorico,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get empresaCifHistorico => $composableBuilder(
+    column: $table.empresaCifHistorico,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get empresaDireccionHistorica => $composableBuilder(
+    column: $table.empresaDireccionHistorica,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get empresaCodigoPostalHistorico =>
+      $composableBuilder(
+        column: $table.empresaCodigoPostalHistorico,
+        builder: (column) => column,
+      );
+
+  GeneratedColumn<String> get empresaPoblacionHistorica => $composableBuilder(
+    column: $table.empresaPoblacionHistorica,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get empresaProvinciaHistorica => $composableBuilder(
+    column: $table.empresaProvinciaHistorica,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get empresaTelefonoHistorico => $composableBuilder(
+    column: $table.empresaTelefonoHistorico,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get empresaEmailHistorico => $composableBuilder(
+    column: $table.empresaEmailHistorico,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get empresaWebHistorica => $composableBuilder(
+    column: $table.empresaWebHistorica,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get expedienteOrigenIdHistorico => $composableBuilder(
+    column: $table.expedienteOrigenIdHistorico,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get expedienteCodigoHistorico => $composableBuilder(
+    column: $table.expedienteCodigoHistorico,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get expedienteNombreHistorico => $composableBuilder(
+    column: $table.expedienteNombreHistorico,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get presupuestoCodigoHistorico => $composableBuilder(
+    column: $table.presupuestoCodigoHistorico,
     builder: (column) => column,
   );
 
@@ -12955,6 +14636,8 @@ class $$FacturasTableTableManager
               ({
                 Value<String> id = const Value.absent(),
                 Value<String> codigo = const Value.absent(),
+                Value<int?> anioNumeracion = const Value.absent(),
+                Value<int?> numeroLegal = const Value.absent(),
                 Value<String> clienteId = const Value.absent(),
                 Value<DateTime> fecha = const Value.absent(),
                 Value<DateTime> fechaVencimiento = const Value.absent(),
@@ -12965,12 +14648,35 @@ class $$FacturasTableTableManager
                 Value<double> total = const Value.absent(),
                 Value<String> observaciones = const Value.absent(),
                 Value<String?> presupuestoOrigenId = const Value.absent(),
+                Value<DateTime?> fechaEmision = const Value.absent(),
+                Value<String> clienteNombreHistorico = const Value.absent(),
+                Value<String> clienteNifHistorico = const Value.absent(),
+                Value<String> clienteDireccionHistorica = const Value.absent(),
+                Value<String> clienteTelefonoHistorico = const Value.absent(),
+                Value<String> clienteEmailHistorico = const Value.absent(),
+                Value<String> empresaNombreHistorico = const Value.absent(),
+                Value<String> empresaCifHistorico = const Value.absent(),
+                Value<String> empresaDireccionHistorica = const Value.absent(),
+                Value<String> empresaCodigoPostalHistorico =
+                    const Value.absent(),
+                Value<String> empresaPoblacionHistorica = const Value.absent(),
+                Value<String> empresaProvinciaHistorica = const Value.absent(),
+                Value<String> empresaTelefonoHistorico = const Value.absent(),
+                Value<String> empresaEmailHistorico = const Value.absent(),
+                Value<String> empresaWebHistorica = const Value.absent(),
+                Value<String> expedienteOrigenIdHistorico =
+                    const Value.absent(),
+                Value<String> expedienteCodigoHistorico = const Value.absent(),
+                Value<String> expedienteNombreHistorico = const Value.absent(),
+                Value<String> presupuestoCodigoHistorico = const Value.absent(),
                 Value<DateTime> fechaCreacion = const Value.absent(),
                 Value<DateTime> fechaModificacion = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => FacturasCompanion(
                 id: id,
                 codigo: codigo,
+                anioNumeracion: anioNumeracion,
+                numeroLegal: numeroLegal,
                 clienteId: clienteId,
                 fecha: fecha,
                 fechaVencimiento: fechaVencimiento,
@@ -12981,6 +14687,25 @@ class $$FacturasTableTableManager
                 total: total,
                 observaciones: observaciones,
                 presupuestoOrigenId: presupuestoOrigenId,
+                fechaEmision: fechaEmision,
+                clienteNombreHistorico: clienteNombreHistorico,
+                clienteNifHistorico: clienteNifHistorico,
+                clienteDireccionHistorica: clienteDireccionHistorica,
+                clienteTelefonoHistorico: clienteTelefonoHistorico,
+                clienteEmailHistorico: clienteEmailHistorico,
+                empresaNombreHistorico: empresaNombreHistorico,
+                empresaCifHistorico: empresaCifHistorico,
+                empresaDireccionHistorica: empresaDireccionHistorica,
+                empresaCodigoPostalHistorico: empresaCodigoPostalHistorico,
+                empresaPoblacionHistorica: empresaPoblacionHistorica,
+                empresaProvinciaHistorica: empresaProvinciaHistorica,
+                empresaTelefonoHistorico: empresaTelefonoHistorico,
+                empresaEmailHistorico: empresaEmailHistorico,
+                empresaWebHistorica: empresaWebHistorica,
+                expedienteOrigenIdHistorico: expedienteOrigenIdHistorico,
+                expedienteCodigoHistorico: expedienteCodigoHistorico,
+                expedienteNombreHistorico: expedienteNombreHistorico,
+                presupuestoCodigoHistorico: presupuestoCodigoHistorico,
                 fechaCreacion: fechaCreacion,
                 fechaModificacion: fechaModificacion,
                 rowid: rowid,
@@ -12989,6 +14714,8 @@ class $$FacturasTableTableManager
               ({
                 required String id,
                 Value<String> codigo = const Value.absent(),
+                Value<int?> anioNumeracion = const Value.absent(),
+                Value<int?> numeroLegal = const Value.absent(),
                 required String clienteId,
                 Value<DateTime> fecha = const Value.absent(),
                 Value<DateTime> fechaVencimiento = const Value.absent(),
@@ -12999,12 +14726,35 @@ class $$FacturasTableTableManager
                 Value<double> total = const Value.absent(),
                 Value<String> observaciones = const Value.absent(),
                 Value<String?> presupuestoOrigenId = const Value.absent(),
+                Value<DateTime?> fechaEmision = const Value.absent(),
+                Value<String> clienteNombreHistorico = const Value.absent(),
+                Value<String> clienteNifHistorico = const Value.absent(),
+                Value<String> clienteDireccionHistorica = const Value.absent(),
+                Value<String> clienteTelefonoHistorico = const Value.absent(),
+                Value<String> clienteEmailHistorico = const Value.absent(),
+                Value<String> empresaNombreHistorico = const Value.absent(),
+                Value<String> empresaCifHistorico = const Value.absent(),
+                Value<String> empresaDireccionHistorica = const Value.absent(),
+                Value<String> empresaCodigoPostalHistorico =
+                    const Value.absent(),
+                Value<String> empresaPoblacionHistorica = const Value.absent(),
+                Value<String> empresaProvinciaHistorica = const Value.absent(),
+                Value<String> empresaTelefonoHistorico = const Value.absent(),
+                Value<String> empresaEmailHistorico = const Value.absent(),
+                Value<String> empresaWebHistorica = const Value.absent(),
+                Value<String> expedienteOrigenIdHistorico =
+                    const Value.absent(),
+                Value<String> expedienteCodigoHistorico = const Value.absent(),
+                Value<String> expedienteNombreHistorico = const Value.absent(),
+                Value<String> presupuestoCodigoHistorico = const Value.absent(),
                 Value<DateTime> fechaCreacion = const Value.absent(),
                 Value<DateTime> fechaModificacion = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => FacturasCompanion.insert(
                 id: id,
                 codigo: codigo,
+                anioNumeracion: anioNumeracion,
+                numeroLegal: numeroLegal,
                 clienteId: clienteId,
                 fecha: fecha,
                 fechaVencimiento: fechaVencimiento,
@@ -13015,6 +14765,25 @@ class $$FacturasTableTableManager
                 total: total,
                 observaciones: observaciones,
                 presupuestoOrigenId: presupuestoOrigenId,
+                fechaEmision: fechaEmision,
+                clienteNombreHistorico: clienteNombreHistorico,
+                clienteNifHistorico: clienteNifHistorico,
+                clienteDireccionHistorica: clienteDireccionHistorica,
+                clienteTelefonoHistorico: clienteTelefonoHistorico,
+                clienteEmailHistorico: clienteEmailHistorico,
+                empresaNombreHistorico: empresaNombreHistorico,
+                empresaCifHistorico: empresaCifHistorico,
+                empresaDireccionHistorica: empresaDireccionHistorica,
+                empresaCodigoPostalHistorico: empresaCodigoPostalHistorico,
+                empresaPoblacionHistorica: empresaPoblacionHistorica,
+                empresaProvinciaHistorica: empresaProvinciaHistorica,
+                empresaTelefonoHistorico: empresaTelefonoHistorico,
+                empresaEmailHistorico: empresaEmailHistorico,
+                empresaWebHistorica: empresaWebHistorica,
+                expedienteOrigenIdHistorico: expedienteOrigenIdHistorico,
+                expedienteCodigoHistorico: expedienteCodigoHistorico,
+                expedienteNombreHistorico: expedienteNombreHistorico,
+                presupuestoCodigoHistorico: presupuestoCodigoHistorico,
                 fechaCreacion: fechaCreacion,
                 fechaModificacion: fechaModificacion,
                 rowid: rowid,

@@ -32,6 +32,7 @@ class LineaPresupuestoRepository {
     required String presupuestoId,
     required String concepto,
     required double cantidad,
+    String unidad = 'ud',
     required double precioUnitario,
   }) async {
     await database.transaction(() async {
@@ -41,6 +42,7 @@ class LineaPresupuestoRepository {
           presupuestoId: presupuestoId,
           concepto: concepto,
           cantidad: cantidad,
+          unidad: Value(unidad),
           precioUnitario: precioUnitario,
         ),
       );
@@ -54,6 +56,7 @@ class LineaPresupuestoRepository {
     required String presupuestoId,
     required String concepto,
     required double cantidad,
+    String unidad = 'ud',
     required double precioUnitario,
   }) async {
     await database.transaction(() async {
@@ -62,6 +65,7 @@ class LineaPresupuestoRepository {
         LineasPresupuestoCompanion(
           concepto: Value(concepto),
           cantidad: Value(cantidad),
+          unidad: Value(unidad),
           precioUnitario: Value(precioUnitario),
         ),
       );

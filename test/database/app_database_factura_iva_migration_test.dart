@@ -31,6 +31,19 @@ void main() {
             ('con-base', 'c1', 0, 0, 80, 8, 88, 0, 0),
             ('sin-base', 'c1', 0, 0, 0, 3, 3, 0, 0)
         ''');
+        rawDatabase.execute('''
+          CREATE TABLE lineas_presupuesto (
+            id TEXT NOT NULL PRIMARY KEY,
+            presupuesto_id TEXT NOT NULL,
+            concepto TEXT NOT NULL,
+            cantidad REAL NOT NULL,
+            precio_unitario REAL NOT NULL,
+            importe REAL NOT NULL DEFAULT 0,
+            orden INTEGER NOT NULL DEFAULT 0,
+            fecha_creacion INTEGER NOT NULL DEFAULT 0,
+            fecha_modificacion INTEGER NOT NULL DEFAULT 0
+          )
+        ''');
         rawDatabase.userVersion = 16;
       },
     );
@@ -38,7 +51,8 @@ void main() {
     addTearDown(database.close);
 
     final rows = await database.customSelect('''
-      SELECT id, subtotal, iva, total, iva_porcentaje
+      SELECT id, subtotal, iva, total, iva_porcentaje,
+        cliente_nombre_historico, numero_legal
       FROM facturas ORDER BY id
     ''').get();
 
@@ -52,5 +66,7 @@ void main() {
     expect(rows[1].read<double>('subtotal'), 0);
     expect(rows[1].read<double>('iva'), 3);
     expect(rows[1].read<double>('total'), 3);
+    expect(rows[0].read<String>('cliente_nombre_historico'), isEmpty);
+    expect(rows[0].read<int?>('numero_legal'), isNull);
   });
 }

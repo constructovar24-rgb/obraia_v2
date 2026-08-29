@@ -14,13 +14,12 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
     with _$FacturasDaoMixin {
   FacturasDao(super.db);
 
-  factura_domain.Factura _toDomain(
-    Factura row, {
-    String clienteNombre = '',
-  }) {
+  factura_domain.Factura _toDomain(Factura row, {String clienteNombre = ''}) {
     return factura_domain.Factura(
       id: row.id,
       codigo: row.codigo,
+      anioNumeracion: row.anioNumeracion,
+      numeroLegal: row.numeroLegal,
       clienteId: row.clienteId,
       clienteNombre: clienteNombre,
       fecha: row.fecha,
@@ -32,23 +31,51 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
       total: row.total,
       observaciones: row.observaciones,
       presupuestoOrigenId: row.presupuestoOrigenId,
+      fechaEmision: row.fechaEmision,
+      clienteNombreHistorico: row.clienteNombreHistorico,
+      clienteNifHistorico: row.clienteNifHistorico,
+      clienteDireccionHistorica: row.clienteDireccionHistorica,
+      clienteTelefonoHistorico: row.clienteTelefonoHistorico,
+      clienteEmailHistorico: row.clienteEmailHistorico,
+      empresaNombreHistorico: row.empresaNombreHistorico,
+      empresaCifHistorico: row.empresaCifHistorico,
+      empresaDireccionHistorica: row.empresaDireccionHistorica,
+      empresaCodigoPostalHistorico: row.empresaCodigoPostalHistorico,
+      empresaPoblacionHistorica: row.empresaPoblacionHistorica,
+      empresaProvinciaHistorica: row.empresaProvinciaHistorica,
+      empresaTelefonoHistorico: row.empresaTelefonoHistorico,
+      empresaEmailHistorico: row.empresaEmailHistorico,
+      empresaWebHistorica: row.empresaWebHistorica,
+      expedienteOrigenIdHistorico: row.expedienteOrigenIdHistorico,
+      expedienteCodigoHistorico: row.expedienteCodigoHistorico,
+      expedienteNombreHistorico: row.expedienteNombreHistorico,
+      presupuestoCodigoHistorico: row.presupuestoCodigoHistorico,
     );
   }
 
   Future<List<String>> obtenerCodigosPorCliente(String clienteId) async {
-    final rows = await (select(facturas)
-          ..where((t) => t.clienteId.equals(clienteId)))
-        .get();
+    final rows = await (select(
+      facturas,
+    )..where((t) => t.clienteId.equals(clienteId))).get();
 
     return rows.map((row) => row.codigo).toList();
   }
 
   Future<List<String>> obtenerCodigosPorPrefijo(String prefijo) async {
-    final rows = await (select(facturas)
-          ..where((t) => t.codigo.like('$prefijo%')))
-        .get();
+    final rows = await (select(
+      facturas,
+    )..where((t) => t.codigo.like('$prefijo%'))).get();
 
     return rows.map((row) => row.codigo).toList();
+  }
+
+  Future<int> obtenerMayorNumeroLegal(int anio) async {
+    final result = await customSelect(
+      'SELECT MAX(numero_legal) AS maximo FROM facturas '
+      'WHERE anio_numeracion = ?',
+      variables: [Variable<int>(anio)],
+    ).getSingle();
+    return result.readNullable<int>('maximo') ?? 0;
   }
 
   Stream<List<factura_domain.Factura>> observarFacturas() {
@@ -56,9 +83,11 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
     final tableClientes = attachedDatabase.clientes;
 
     final query = select(tableFacturas).join([
-      leftOuterJoin(tableClientes, tableClientes.id.equalsExp(tableFacturas.clienteId)),
-    ])
-      ..orderBy([OrderingTerm.desc(tableFacturas.fecha)]);
+      leftOuterJoin(
+        tableClientes,
+        tableClientes.id.equalsExp(tableFacturas.clienteId),
+      ),
+    ])..orderBy([OrderingTerm.desc(tableFacturas.fecha)]);
 
     return query.watch().map((rows) {
       return rows.map((row) {
@@ -68,10 +97,7 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
             ? ''
             : '${cliente.nombre} ${cliente.apellidos}'.trim();
 
-        return _toDomain(
-          factura,
-          clienteNombre: clienteNombre,
-        );
+        return _toDomain(factura, clienteNombre: clienteNombre);
       }).toList();
     });
   }
@@ -80,15 +106,17 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
     final tableFacturas = attachedDatabase.facturas;
     final tableClientes = attachedDatabase.clientes;
 
-    final query = select(tableFacturas).join([
-      leftOuterJoin(tableClientes, tableClientes.id.equalsExp(tableFacturas.clienteId)),
-    ])
-      ..where(tableFacturas.clienteId.equals(clienteId))
-      ..orderBy([OrderingTerm.desc(tableFacturas.fecha)]);
+    final query =
+        select(tableFacturas).join([
+            leftOuterJoin(
+              tableClientes,
+              tableClientes.id.equalsExp(tableFacturas.clienteId),
+            ),
+          ])
+          ..where(tableFacturas.clienteId.equals(clienteId))
+          ..orderBy([OrderingTerm.desc(tableFacturas.fecha)]);
 
-    return query
-        .watch()
-        .map((rows) {
+    return query.watch().map((rows) {
       return rows.map((row) {
         final factura = row.readTable(tableFacturas);
         final cliente = row.readTableOrNull(tableClientes);
@@ -96,10 +124,7 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
             ? ''
             : '${cliente.nombre} ${cliente.apellidos}'.trim();
 
-        return _toDomain(
-          factura,
-          clienteNombre: clienteNombre,
-        );
+        return _toDomain(factura, clienteNombre: clienteNombre);
       }).toList();
     });
   }
@@ -111,18 +136,19 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
     final tableClientes = attachedDatabase.clientes;
     final tablePresupuestos = attachedDatabase.presupuestos;
 
-    final query = select(tableFacturas).join([
-      innerJoin(
-        tablePresupuestos,
-        tablePresupuestos.id.equalsExp(tableFacturas.presupuestoOrigenId),
-      ),
-      leftOuterJoin(
-        tableClientes,
-        tableClientes.id.equalsExp(tableFacturas.clienteId),
-      ),
-    ])
-      ..where(tablePresupuestos.expedienteId.equals(expedienteId))
-      ..orderBy([OrderingTerm.desc(tableFacturas.fecha)]);
+    final query =
+        select(tableFacturas).join([
+            innerJoin(
+              tablePresupuestos,
+              tablePresupuestos.id.equalsExp(tableFacturas.presupuestoOrigenId),
+            ),
+            leftOuterJoin(
+              tableClientes,
+              tableClientes.id.equalsExp(tableFacturas.clienteId),
+            ),
+          ])
+          ..where(tablePresupuestos.expedienteId.equals(expedienteId))
+          ..orderBy([OrderingTerm.desc(tableFacturas.fecha)]);
 
     return query.watch().map((rows) {
       return rows.map((row) {
@@ -132,10 +158,7 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
             ? ''
             : '${cliente.nombre} ${cliente.apellidos}'.trim();
 
-        return _toDomain(
-          factura,
-          clienteNombre: clienteNombre,
-        );
+        return _toDomain(factura, clienteNombre: clienteNombre);
       }).toList();
     });
   }
@@ -145,10 +168,11 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
     final tableClientes = attachedDatabase.clientes;
 
     final row = await (select(tableFacturas).join([
-      leftOuterJoin(tableClientes, tableClientes.id.equalsExp(tableFacturas.clienteId)),
-    ])
-          ..where(tableFacturas.id.equals(id)))
-        .getSingleOrNull();
+      leftOuterJoin(
+        tableClientes,
+        tableClientes.id.equalsExp(tableFacturas.clienteId),
+      ),
+    ])..where(tableFacturas.id.equals(id))).getSingleOrNull();
 
     if (row == null) {
       return null;
@@ -160,17 +184,15 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
         ? ''
         : '${cliente.nombre} ${cliente.apellidos}'.trim();
 
-    return _toDomain(
-      factura,
-      clienteNombre: clienteNombre,
-    );
+    return _toDomain(factura, clienteNombre: clienteNombre);
   }
 
   Future<String?> obtenerIdPorPresupuestoOrigen(String presupuestoId) async {
-    final row = await (select(facturas)
-          ..where((t) => t.presupuestoOrigenId.equals(presupuestoId))
-          ..limit(1))
-        .getSingleOrNull();
+    final row =
+        await (select(facturas)
+              ..where((t) => t.presupuestoOrigenId.equals(presupuestoId))
+              ..limit(1))
+            .getSingleOrNull();
 
     return row?.id;
   }
@@ -179,15 +201,18 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
     final tableFacturas = attachedDatabase.facturas;
     final tablePresupuestos = attachedDatabase.presupuestos;
 
-    final row = await (select(tableFacturas).join([
-      innerJoin(
-        tablePresupuestos,
-        tablePresupuestos.id.equalsExp(tableFacturas.presupuestoOrigenId),
-      ),
-    ])
-      ..where(tablePresupuestos.expedienteId.equals(expedienteId))
-      ..limit(1))
-        .getSingleOrNull();
+    final row =
+        await (select(tableFacturas).join([
+                innerJoin(
+                  tablePresupuestos,
+                  tablePresupuestos.id.equalsExp(
+                    tableFacturas.presupuestoOrigenId,
+                  ),
+                ),
+              ])
+              ..where(tablePresupuestos.expedienteId.equals(expedienteId))
+              ..limit(1))
+            .getSingleOrNull();
 
     return row != null;
   }
@@ -219,6 +244,15 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
         fechaModificacion: Value(DateTime.now()),
       ),
     );
+  }
+
+  Future<void> actualizarEmision(
+    String facturaId,
+    FacturasCompanion companion,
+  ) async {
+    await (update(
+      facturas,
+    )..where((t) => t.id.equals(facturaId))).write(companion);
   }
 
   Future<void> actualizarFactura({

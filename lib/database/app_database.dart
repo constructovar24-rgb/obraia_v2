@@ -77,12 +77,17 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 17;
+  int get schemaVersion => 18;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
       await m.createAll();
+      await customStatement('''
+        CREATE UNIQUE INDEX IF NOT EXISTS facturas_numeracion_legal_unica
+        ON facturas(anio_numeracion, numero_legal)
+        WHERE anio_numeracion IS NOT NULL AND numero_legal IS NOT NULL
+      ''');
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
@@ -216,6 +221,36 @@ class AppDatabase extends _$AppDatabase {
                 ELSE 21
               END
             ''');
+      }
+
+      if (from < 18) {
+        await m.addColumn(lineasPresupuesto, lineasPresupuesto.unidad);
+        await m.addColumn(facturas, facturas.anioNumeracion);
+        await m.addColumn(facturas, facturas.numeroLegal);
+        await m.addColumn(facturas, facturas.fechaEmision);
+        await m.addColumn(facturas, facturas.clienteNombreHistorico);
+        await m.addColumn(facturas, facturas.clienteNifHistorico);
+        await m.addColumn(facturas, facturas.clienteDireccionHistorica);
+        await m.addColumn(facturas, facturas.clienteTelefonoHistorico);
+        await m.addColumn(facturas, facturas.clienteEmailHistorico);
+        await m.addColumn(facturas, facturas.empresaNombreHistorico);
+        await m.addColumn(facturas, facturas.empresaCifHistorico);
+        await m.addColumn(facturas, facturas.empresaDireccionHistorica);
+        await m.addColumn(facturas, facturas.empresaCodigoPostalHistorico);
+        await m.addColumn(facturas, facturas.empresaPoblacionHistorica);
+        await m.addColumn(facturas, facturas.empresaProvinciaHistorica);
+        await m.addColumn(facturas, facturas.empresaTelefonoHistorico);
+        await m.addColumn(facturas, facturas.empresaEmailHistorico);
+        await m.addColumn(facturas, facturas.empresaWebHistorica);
+        await m.addColumn(facturas, facturas.expedienteOrigenIdHistorico);
+        await m.addColumn(facturas, facturas.expedienteCodigoHistorico);
+        await m.addColumn(facturas, facturas.expedienteNombreHistorico);
+        await m.addColumn(facturas, facturas.presupuestoCodigoHistorico);
+        await customStatement('''
+          CREATE UNIQUE INDEX IF NOT EXISTS facturas_numeracion_legal_unica
+          ON facturas(anio_numeracion, numero_legal)
+          WHERE anio_numeracion IS NOT NULL AND numero_legal IS NOT NULL
+        ''');
       }
     },
   );

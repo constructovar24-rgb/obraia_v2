@@ -4,11 +4,14 @@ import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:obraia_v2/database/app_database.dart';
 import 'package:obraia_v2/database/database_provider.dart';
+import 'package:obraia_v2/features/clientes/domain/cliente.dart'
+    as cliente_domain;
 import 'package:obraia_v2/features/cobros/domain/cobro.dart' as cobro_domain;
 import 'package:obraia_v2/features/cobros/domain/factura_estado_economico.dart';
 import 'package:obraia_v2/features/facturas/domain/estado_factura.dart';
 import 'package:obraia_v2/features/facturas/domain/factura_presupuesto_policy.dart';
 import 'package:obraia_v2/features/facturas/domain/factura_totales.dart';
+import 'package:obraia_v2/features/facturas/domain/redondeo_monetario.dart';
 import 'package:obraia_v2/features/facturas/domain/factura.dart'
     as factura_domain;
 import 'package:obraia_v2/features/presupuestos/domain/presupuesto.dart'
@@ -254,29 +257,12 @@ class FacturaRepository {
     return database.facturasDao.obtenerPorId(facturaId);
   }
 
-  Future<String> _generarCodigoFactura() async {
-    final year = DateTime.now().year;
+  Future<(int, int, String)> _generarCodigoFactura(int year) async {
     final prefijo = 'FAC-$year-';
-
-    final codigosExistentes = await database.facturasDao
-        .obtenerCodigosPorPrefijo(prefijo);
-
-    var maxCorrelativo = 0;
-
-    for (final codigo in codigosExistentes) {
-      if (!codigo.startsWith(prefijo)) {
-        continue;
-      }
-
-      final valor = int.tryParse(codigo.substring(prefijo.length));
-      if (valor != null && valor > maxCorrelativo) {
-        maxCorrelativo = valor;
-      }
-    }
-
-    final siguiente = maxCorrelativo + 1;
+    final siguiente =
+        await database.facturasDao.obtenerMayorNumeroLegal(year) + 1;
     final correlativo = siguiente.toString().padLeft(4, '0');
-    return '$prefijo$correlativo';
+    return (year, siguiente, '$prefijo$correlativo');
   }
 
   Future<String> crearFactura({
@@ -312,20 +298,21 @@ class FacturaRepository {
     String? presupuestoOrigenId,
   }) async {
     final facturaId = const Uuid().v4();
-    final codigo = await _generarCodigoFactura();
-
+    final subtotalRedondeado = redondearMoneda(subtotal);
+    final ivaRedondeado = redondearMoneda(
+      subtotalRedondeado * ivaPorcentaje / 100,
+    );
     await database.facturasDao.insertarFactura(
       FacturasCompanion.insert(
         id: facturaId,
-        codigo: Value(codigo),
         clienteId: clienteId,
         fecha: Value(fecha),
         fechaVencimiento: Value(fechaVencimiento),
         estado: const Value('borrador'),
-        subtotal: Value(subtotal),
-        iva: Value(subtotal * ivaPorcentaje / 100),
+        subtotal: Value(subtotalRedondeado),
+        iva: Value(ivaRedondeado),
         ivaPorcentaje: Value(ivaPorcentaje),
-        total: Value(subtotal + subtotal * ivaPorcentaje / 100),
+        total: Value(redondearMoneda(subtotalRedondeado + ivaRedondeado)),
         observaciones: Value(observaciones),
         presupuestoOrigenId: presupuestoOrigenId == null
             ? const Value.absent()
@@ -390,7 +377,9 @@ class FacturaRepository {
         );
       }
 
-      final subtotal = presupuestoPersistido.importeTotal;
+      final subtotal = redondearMoneda(
+        lineas.fold<double>(0, (total, linea) => total + linea.importe),
+      );
       final fechaFactura = DateTime.now();
       facturaId = await _insertarFactura(
         clienteId: clienteId,
@@ -409,7 +398,7 @@ class FacturaRepository {
             facturaId: facturaId,
             descripcion: linea.concepto,
             cantidad: linea.cantidad,
-            unidad: const Value('ud'),
+            unidad: Value(linea.unidad),
             precioUnitario: linea.precioUnitario,
             descuento: const Value(0),
             importe: Value(linea.importe),
@@ -503,8 +492,11 @@ class FacturaRepository {
         0,
         (suma, cobro) => suma + cobro.importe,
       );
-      final iva = subtotal * factura.ivaPorcentaje / 100;
-      final total = subtotal + iva;
+      final subtotalRedondeado = redondearMoneda(subtotal);
+      final iva = redondearMoneda(
+        subtotalRedondeado * factura.ivaPorcentaje / 100,
+      );
+      final total = redondearMoneda(subtotalRedondeado + iva);
       if (!totalFacturaCubreCobros(
         totalFactura: total,
         totalCobrado: totalCobrado,
@@ -518,7 +510,7 @@ class FacturaRepository {
 
       await database.facturasDao.actualizarTotales(
         facturaId: facturaId,
-        subtotal: subtotal,
+        subtotal: subtotalRedondeado,
         iva: iva,
         total: total,
       );
@@ -587,9 +579,7 @@ class FacturaRepository {
         clienteId: clienteId,
         fecha: fecha,
         fechaVencimiento: fechaVencimiento,
-        estado: estadoFacturaToString(
-          facturaActual.estado,
-        ),
+        estado: estadoFacturaToString(facturaActual.estado),
         observaciones: observaciones,
       );
       final actualizada = await database.facturasDao.obtenerPorId(id);
@@ -640,11 +630,65 @@ class FacturaRepository {
         totalCobrado: cobrado,
         fechaVencimiento: factura.fechaVencimiento,
       );
-      await database.facturasDao.actualizarEstado(
+      final (anio, numero, codigo) = await _generarCodigoFactura(
+        factura.fecha.year,
+      );
+      final empresa = await database.empresaConfiguracionDao
+          .obtenerConfiguracion();
+      final presupuesto = factura.presupuestoOrigenId == null
+          ? null
+          : (await database.presupuestosDao.observarPresupuestos().first)
+                .where((item) => item.id == factura.presupuestoOrigenId)
+                .firstOrNull;
+      final expediente = presupuesto == null
+          ? null
+          : await database.expedientesDao.obtenerExpediente(
+              presupuesto.expedienteId,
+            );
+
+      await database.facturasDao.actualizarEmision(
         facturaId,
-        estadoFacturaToString(estado),
+        FacturasCompanion(
+          codigo: Value(codigo),
+          anioNumeracion: Value(anio),
+          numeroLegal: Value(numero),
+          estado: Value(estadoFacturaToString(estado)),
+          fechaEmision: Value(DateTime.now()),
+          clienteNombreHistorico: Value(
+            '${cliente!.nombre} ${cliente.apellidos}'.trim(),
+          ),
+          clienteNifHistorico: Value(cliente.nif),
+          clienteDireccionHistorica: Value(_direccionCliente(cliente)),
+          clienteTelefonoHistorico: Value(cliente.telefono),
+          clienteEmailHistorico: Value(cliente.email),
+          empresaNombreHistorico: Value(empresa?.nombreEmpresa ?? ''),
+          empresaCifHistorico: Value(empresa?.cif ?? ''),
+          empresaDireccionHistorica: Value(empresa?.direccion ?? ''),
+          empresaCodigoPostalHistorico: Value(empresa?.codigoPostal ?? ''),
+          empresaPoblacionHistorica: Value(empresa?.poblacion ?? ''),
+          empresaProvinciaHistorica: Value(empresa?.provincia ?? ''),
+          empresaTelefonoHistorico: Value(empresa?.telefono ?? ''),
+          empresaEmailHistorico: Value(empresa?.email ?? ''),
+          empresaWebHistorica: Value(empresa?.web ?? ''),
+          expedienteOrigenIdHistorico: Value(expediente?.id ?? ''),
+          expedienteCodigoHistorico: Value(expediente?.codigo ?? ''),
+          expedienteNombreHistorico: Value(expediente?.nombre ?? ''),
+          presupuestoCodigoHistorico: Value(presupuesto?.codigo ?? ''),
+          fechaModificacion: Value(DateTime.now()),
+        ),
       );
     });
+  }
+
+  String _direccionCliente(cliente_domain.Cliente cliente) {
+    return [
+      cliente.direccion.trim(),
+      [
+        cliente.codigoPostal.trim(),
+        cliente.poblacion.trim(),
+        cliente.provincia.trim(),
+      ].where((part) => part.isNotEmpty).join(' '),
+    ].where((part) => part.isNotEmpty).join(' · ');
   }
 
   Future<void> anularFactura(String facturaId) async {

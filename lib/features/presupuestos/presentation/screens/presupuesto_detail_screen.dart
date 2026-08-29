@@ -235,7 +235,7 @@ class PresupuestoDetailScreen extends ConsumerWidget {
                                     top: AppSpacing.xs,
                                   ),
                                   child: Text(
-                                    '${_formatearCantidad(linea.cantidad)} × ${_formatearMoneda(linea.precioUnitario)} = ${_formatearMoneda(linea.importe)}',
+                                    '${_formatearCantidad(linea.cantidad)} ${linea.unidad} × ${_formatearMoneda(linea.precioUnitario)} = ${_formatearMoneda(linea.importe)}',
                                     style: textTheme.bodyMedium,
                                   ),
                                 ),
