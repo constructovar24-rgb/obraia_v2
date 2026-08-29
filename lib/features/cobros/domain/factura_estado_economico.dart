@@ -3,7 +3,12 @@ import '../../facturas/domain/factura.dart' as factura_domain;
 import '../../facturas/domain/redondeo_monetario.dart';
 import 'cobro.dart';
 
-enum EstadoEconomicoFactura { pendiente, parcialmenteCobrada, cobrada }
+enum EstadoEconomicoFactura {
+  pendiente,
+  parcialmenteCobrada,
+  cobrada,
+  ajusteDocumental,
+}
 
 double normalizarImporteCobro(double importe) => redondearMoneda(importe);
 
@@ -61,6 +66,8 @@ String estadoEconomicoFacturaToLabel(EstadoEconomicoFactura estado) {
       return 'Parcialmente cobrada';
     case EstadoEconomicoFactura.cobrada:
       return 'Cobrada';
+    case EstadoEconomicoFactura.ajusteDocumental:
+      return 'Ajuste documental';
   }
 }
 

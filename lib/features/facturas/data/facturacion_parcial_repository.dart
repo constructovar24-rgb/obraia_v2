@@ -105,7 +105,7 @@ class FacturacionParcialRepository {
                 )
           : monedaACentimos(factura.subtotal);
       if (factura.estado == EstadoFactura.borrador) {
-        reservado += base;
+        if (!factura.esRectificativa || base > 0) reservado += base;
       } else {
         facturado += base;
       }
@@ -115,9 +115,10 @@ class FacturacionParcialRepository {
       basePresupuestadaCentimos: total,
       facturadoCentimos: facturado,
       reservadoCentimos: reservado,
-      pendienteCentimos: (total - facturado - reservado).clamp(0, total),
+      pendienteCentimos: total - facturado - reservado,
       tieneConsumoLegacySinDetalle: activas.any(
         (factura) =>
+            !factura.esRectificativa &&
             idsActivas.contains(factura.id) &&
             !idsConAsignacion.contains(factura.id),
       ),
@@ -378,7 +379,13 @@ class FacturacionParcialRepository {
 
   _Consumos _consumosActivos(_Contexto contexto) {
     final ids = contexto.facturas
-        .where((f) => f.estado != EstadoFactura.anulada)
+        .where(
+          (f) =>
+              f.estado != EstadoFactura.anulada &&
+              (!f.esRectificativa ||
+                  f.estado != EstadoFactura.borrador ||
+                  f.efectoBase > 0),
+        )
         .map((f) => f.id)
         .toSet();
     final base = <String, int>{};

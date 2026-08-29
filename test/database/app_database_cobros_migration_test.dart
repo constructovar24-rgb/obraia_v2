@@ -10,14 +10,14 @@ import 'package:sqlite3/sqlite3.dart';
 
 void main() {
   for (final version in [16, 17, 18, 19, 20]) {
-    test('migra y conserva cobros desde esquema $version a 20', () async {
+    test('migra y conserva cobros desde esquema $version a 21', () async {
       final directory = await Directory.systemTemp.createTemp(
         'obraia-cobros-migration-$version-',
       );
       addTearDown(() => directory.delete(recursive: true));
       final file = File(p.join(directory.path, 'database.sqlite'));
       await _crearBaseActual(file);
-      if (version < 20) _degradar(file, version);
+      _degradar(file, version);
 
       final database = AppDatabase.forTesting(NativeDatabase(file));
       addTearDown(database.close);
@@ -25,7 +25,7 @@ void main() {
         'factura',
       )).single;
 
-      expect(database.schemaVersion, 20);
+      expect(database.schemaVersion, 21);
       expect(movimiento.importe, 25.5);
       expect(movimiento.esReversion, isFalse);
       expect(movimiento.cobroOrigenId, isNull);
@@ -44,7 +44,7 @@ void main() {
       final versionPersistida = await database
           .customSelect('PRAGMA user_version')
           .getSingle();
-      expect(versionPersistida.data.values.single, 20);
+      expect(versionPersistida.data.values.single, 21);
     });
   }
 }
@@ -86,7 +86,28 @@ Future<void> _crearBaseActual(File file) async {
 void _degradar(File file, int version) {
   final raw = sqlite3.open(file.path, mode: OpenMode.readWrite);
   try {
-    raw.execute('DROP TABLE factura_asignaciones_presupuesto');
+    raw.execute('DROP TABLE factura_documentos_emitidos');
+    raw.execute('DROP INDEX IF EXISTS facturas_rectificada_idx');
+    raw.execute('DROP INDEX IF EXISTS facturas_raiz_idx');
+    raw.execute('DROP INDEX IF EXISTS facturas_numeracion_legal_unica');
+    raw.execute('ALTER TABLE factura_lineas DROP COLUMN linea_raiz_id');
+    raw.execute('ALTER TABLE factura_lineas DROP COLUMN linea_rectificada_id');
+    for (final column in <String>[
+      'efecto_total',
+      'efecto_iva',
+      'efecto_base',
+      'motivo_rectificacion',
+      'modalidad_rectificacion',
+      'factura_raiz_id',
+      'factura_rectificada_id',
+      'serie',
+      'tipo_documento',
+    ]) {
+      raw.execute('ALTER TABLE facturas DROP COLUMN $column');
+    }
+    if (version < 20) {
+      raw.execute('DROP TABLE factura_asignaciones_presupuesto');
+    }
     if (version < 19) {
       raw.execute('ALTER TABLE cobros DROP COLUMN motivo');
       raw.execute('ALTER TABLE cobros DROP COLUMN cobro_origen_id');

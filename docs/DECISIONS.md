@@ -27,3 +27,11 @@ Este documento está preparado para registrar decisiones arquitectónicas, tecno
 - 2026-08-29: La trazabilidad se conserva en una tabla de asignaciones entre presupuesto, partida, factura y línea de factura, con cantidad opcional, base aplicada y vínculo futuro nullable a Certificaciones.
 - 2026-08-29: Porcentaje e importe se reparten proporcionalmente sobre partidas disponibles; el residuo de céntimos se asigna de forma determinista sin superar ninguna partida.
 - 2026-08-29: Las facturas legacy vinculadas sin asignaciones consumen su subtotal global, pero no se inventan cantidades por partida. Se bloquea nueva facturación parcial hasta regularizarlas.
+
+## Facturas rectificativas
+
+- 2026-08-29: La primera modalidad soportada es exclusivamente la rectificación por diferencias. Una rectificativa conserva el documento rectificado y la factura ordinaria raíz; puede ser rectificada de nuevo sin reescribir ningún documento emitido.
+- 2026-08-29: Las rectificativas usan la serie anual independiente `RECT-AAAA-NNNN`, numerada al emitir. La unicidad legal se controla por serie, año y correlativo; las facturas ordinarias existentes conservan `FAC` y su numeración histórica.
+- 2026-08-29: El efecto económico se persiste con signo y se aplica a las asignaciones del presupuesto. Los documentos ordinarios y rectificativos emitidos son inmutables y la rectificación acumulada no puede superar la base, IVA o cantidad de la factura raíz.
+- 2026-08-29: Un saldo a favor se muestra como crédito pendiente. No se considera liquidado, no altera cobros existentes y todavía no admite devolución bancaria ni compensación.
+- 2026-08-29: El PDF rectificativo emitido se conserva exactamente en SQLite junto con su SHA-256. El backup protege el binario como parte de la base de datos.

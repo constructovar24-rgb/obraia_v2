@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 
-import '../../features/facturas/domain/factura_linea.dart' as factura_linea_domain;
+import '../../features/facturas/domain/factura_linea.dart'
+    as factura_linea_domain;
 import '../app_database.dart';
 import '../tables/factura_lineas.dart';
 
@@ -15,6 +16,8 @@ class FacturaLineasDao extends DatabaseAccessor<AppDatabase>
     return factura_linea_domain.FacturaLinea(
       id: row.id,
       facturaId: row.facturaId,
+      lineaRectificadaId: row.lineaRectificadaId,
+      lineaRaizId: row.lineaRaizId,
       descripcion: row.descripcion,
       cantidad: row.cantidad,
       unidad: row.unidad,
@@ -27,10 +30,21 @@ class FacturaLineasDao extends DatabaseAccessor<AppDatabase>
   Future<List<factura_linea_domain.FacturaLinea>> obtenerPorFactura(
     String facturaId,
   ) async {
-    final rows = await (select(facturaLineas)
-          ..where((t) => t.facturaId.equals(facturaId)))
-        .get();
+    final rows = await (select(
+      facturaLineas,
+    )..where((t) => t.facturaId.equals(facturaId))).get();
 
+    return rows.map(_toDomain).toList();
+  }
+
+  Future<List<factura_linea_domain.FacturaLinea>> obtenerPorFacturas(
+    Iterable<String> facturaIds,
+  ) async {
+    final ids = facturaIds.toList();
+    if (ids.isEmpty) return const [];
+    final rows = await (select(
+      facturaLineas,
+    )..where((t) => t.facturaId.isIn(ids))).get();
     return rows.map(_toDomain).toList();
   }
 
@@ -39,17 +53,14 @@ class FacturaLineasDao extends DatabaseAccessor<AppDatabase>
   ) {
     return (select(facturaLineas)..where((t) => t.facturaId.equals(facturaId)))
         .watch()
-      .map((rows) => rows.map(_toDomain).toList());
+        .map((rows) => rows.map(_toDomain).toList());
   }
 
   Future<void> insertarLinea(FacturaLineasCompanion linea) async {
     await into(facturaLineas).insert(linea);
   }
 
-  Future<void> actualizarLinea(
-    String id,
-    FacturaLineasCompanion linea,
-  ) async {
+  Future<void> actualizarLinea(String id, FacturaLineasCompanion linea) async {
     await (update(facturaLineas)..where((t) => t.id.equals(id))).write(linea);
   }
 
@@ -58,8 +69,8 @@ class FacturaLineasDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<void> eliminarPorFactura(String facturaId) async {
-    await (delete(facturaLineas)
-          ..where((t) => t.facturaId.equals(facturaId)))
-        .go();
+    await (delete(
+      facturaLineas,
+    )..where((t) => t.facturaId.equals(facturaId))).go();
   }
 }

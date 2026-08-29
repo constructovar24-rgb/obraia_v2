@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 
 import '../../features/facturas/domain/estado_factura.dart';
 import '../../features/facturas/domain/factura.dart' as factura_domain;
+import '../../features/facturas/domain/tipo_documento_factura.dart';
 import '../app_database.dart';
 import '../tables/clientes.dart';
 import '../tables/facturas.dart';
@@ -20,6 +21,17 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
       codigo: row.codigo,
       anioNumeracion: row.anioNumeracion,
       numeroLegal: row.numeroLegal,
+      tipoDocumento: tipoDocumentoFacturaFromString(row.tipoDocumento),
+      serie: row.serie,
+      facturaRectificadaId: row.facturaRectificadaId,
+      facturaRaizId: row.facturaRaizId,
+      modalidadRectificacion: modalidadRectificacionFromString(
+        row.modalidadRectificacion,
+      ),
+      motivoRectificacion: row.motivoRectificacion,
+      efectoBase: row.efectoBase,
+      efectoIva: row.efectoIva,
+      efectoTotal: row.efectoTotal,
       clienteId: row.clienteId,
       clienteNombre: clienteNombre,
       fecha: row.fecha,
@@ -69,11 +81,11 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
     return rows.map((row) => row.codigo).toList();
   }
 
-  Future<int> obtenerMayorNumeroLegal(int anio) async {
+  Future<int> obtenerMayorNumeroLegal(int anio, {String serie = 'FAC'}) async {
     final result = await customSelect(
       'SELECT MAX(numero_legal) AS maximo FROM facturas '
-      'WHERE anio_numeracion = ?',
-      variables: [Variable<int>(anio)],
+      'WHERE anio_numeracion = ? AND serie = ?',
+      variables: [Variable<int>(anio), Variable<String>(serie)],
     ).getSingle();
     return result.readNullable<int>('maximo') ?? 0;
   }
@@ -194,6 +206,37 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
         await (select(facturas)
               ..where((t) => t.presupuestoOrigenId.equals(presupuestoId))
               ..orderBy([(t) => OrderingTerm.desc(t.fechaCreacion)]))
+            .get();
+    return rows.map((row) => _toDomain(row)).toList();
+  }
+
+  Future<List<factura_domain.Factura>> obtenerRectificativasDe(
+    String facturaId,
+  ) async {
+    final rows =
+        await (select(facturas)
+              ..where((t) => t.facturaRectificadaId.equals(facturaId))
+              ..orderBy([(t) => OrderingTerm.asc(t.fechaCreacion)]))
+            .get();
+    return rows.map((row) => _toDomain(row)).toList();
+  }
+
+  Stream<List<factura_domain.Factura>> observarRectificativasDe(
+    String facturaId,
+  ) =>
+      (select(facturas)
+            ..where((t) => t.facturaRectificadaId.equals(facturaId))
+            ..orderBy([(t) => OrderingTerm.asc(t.fechaCreacion)]))
+          .watch()
+          .map((rows) => rows.map((row) => _toDomain(row)).toList());
+
+  Future<List<factura_domain.Factura>> obtenerCadenaPorRaiz(
+    String raizId,
+  ) async {
+    final rows =
+        await (select(facturas)..where(
+              (t) => t.id.equals(raizId) | t.facturaRaizId.equals(raizId),
+            ))
             .get();
     return rows.map((row) => _toDomain(row)).toList();
   }

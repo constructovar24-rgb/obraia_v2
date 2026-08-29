@@ -19,6 +19,7 @@ import 'tables/certificaciones.dart';
 import 'tables/documentos.dart';
 import 'tables/timeline_events.dart';
 import 'tables/factura_asignaciones_presupuesto.dart';
+import 'tables/factura_documentos_emitidos.dart';
 import 'dao/expedientes_dao.dart';
 import 'dao/clientes_dao.dart';
 import 'dao/presupuestos_dao.dart';
@@ -33,6 +34,7 @@ import 'dao/certificaciones_dao.dart';
 import 'dao/documentos_dao.dart';
 import 'dao/timeline_events_dao.dart';
 import 'dao/factura_asignaciones_presupuesto_dao.dart';
+import 'dao/factura_documentos_emitidos_dao.dart';
 
 part 'app_database.g.dart';
 
@@ -52,6 +54,7 @@ part 'app_database.g.dart';
     Documentos,
     TimelineEvents,
     FacturaAsignacionesPresupuesto,
+    FacturaDocumentosEmitidos,
   ],
   daos: [
     ExpedientesDao,
@@ -68,6 +71,7 @@ part 'app_database.g.dart';
     DocumentosDao,
     TimelineEventsDao,
     FacturaAsignacionesPresupuestoDao,
+    FacturaDocumentosEmitidosDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -81,7 +85,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 20;
+  int get schemaVersion => 21;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -89,7 +93,7 @@ class AppDatabase extends _$AppDatabase {
       await m.createAll();
       await customStatement('''
         CREATE UNIQUE INDEX IF NOT EXISTS facturas_numeracion_legal_unica
-        ON facturas(anio_numeracion, numero_legal)
+        ON facturas(serie, anio_numeracion, numero_legal)
         WHERE anio_numeracion IS NOT NULL AND numero_legal IS NOT NULL
       ''');
       await customStatement('''
@@ -99,6 +103,13 @@ class AppDatabase extends _$AppDatabase {
       await customStatement('''
         CREATE INDEX IF NOT EXISTS factura_asignaciones_factura_idx
         ON factura_asignaciones_presupuesto(factura_id)
+      ''');
+      await customStatement('''
+        CREATE INDEX IF NOT EXISTS facturas_rectificada_idx
+        ON facturas(factura_rectificada_id)
+      ''');
+      await customStatement('''
+        CREATE INDEX IF NOT EXISTS facturas_raiz_idx ON facturas(factura_raiz_id)
       ''');
     },
     onUpgrade: (m, from, to) async {
@@ -278,6 +289,35 @@ class AppDatabase extends _$AppDatabase {
         await customStatement('''
           CREATE INDEX IF NOT EXISTS factura_asignaciones_factura_idx
           ON factura_asignaciones_presupuesto(factura_id)
+        ''');
+      }
+      if (from < 21) {
+        await m.addColumn(facturas, facturas.tipoDocumento);
+        await m.addColumn(facturas, facturas.serie);
+        await m.addColumn(facturas, facturas.facturaRectificadaId);
+        await m.addColumn(facturas, facturas.facturaRaizId);
+        await m.addColumn(facturas, facturas.modalidadRectificacion);
+        await m.addColumn(facturas, facturas.motivoRectificacion);
+        await m.addColumn(facturas, facturas.efectoBase);
+        await m.addColumn(facturas, facturas.efectoIva);
+        await m.addColumn(facturas, facturas.efectoTotal);
+        await m.addColumn(facturaLineas, facturaLineas.lineaRectificadaId);
+        await m.addColumn(facturaLineas, facturaLineas.lineaRaizId);
+        await m.createTable(facturaDocumentosEmitidos);
+        await customStatement(
+          'DROP INDEX IF EXISTS facturas_numeracion_legal_unica',
+        );
+        await customStatement('''
+          CREATE UNIQUE INDEX facturas_numeracion_legal_unica
+          ON facturas(serie, anio_numeracion, numero_legal)
+          WHERE anio_numeracion IS NOT NULL AND numero_legal IS NOT NULL
+        ''');
+        await customStatement('''
+          CREATE INDEX facturas_rectificada_idx
+          ON facturas(factura_rectificada_id)
+        ''');
+        await customStatement('''
+          CREATE INDEX facturas_raiz_idx ON facturas(factura_raiz_id)
         ''');
       }
     },

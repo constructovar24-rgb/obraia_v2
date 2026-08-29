@@ -62,7 +62,10 @@ class PresupuestoRepository {
                     .where(
                       (factura) =>
                           factura.presupuestoOrigenId == presupuesto.id &&
-                          factura.estado != EstadoFactura.anulada,
+                          factura.estado != EstadoFactura.anulada &&
+                          (!factura.esRectificativa ||
+                              factura.estado != EstadoFactura.borrador ||
+                              factura.efectoBase > 0),
                     )
                     .toList();
                 final idsConDetalle = asignaciones!

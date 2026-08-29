@@ -152,6 +152,58 @@ class TimelineRepository {
     );
   }
 
+  Future<void> registrarRectificativaCreada({
+    required String expedienteId,
+    required String facturaId,
+    required String titulo,
+    String? descripcion,
+  }) => _registrarEventoNegocioUnico(
+    expedienteId: expedienteId,
+    tipo: TimelineEventType.rectificativaCreada,
+    titulo: titulo,
+    descripcion: descripcion,
+    referenciaId: facturaId,
+  );
+
+  Future<void> registrarRectificativaEmitida({
+    required String expedienteId,
+    required String facturaId,
+    required String titulo,
+    String? descripcion,
+  }) => _registrarEventoNegocioUnico(
+    expedienteId: expedienteId,
+    tipo: TimelineEventType.rectificativaEmitida,
+    titulo: titulo,
+    descripcion: descripcion,
+    referenciaId: facturaId,
+  );
+
+  Future<void> registrarRectificativaAnulada({
+    required String expedienteId,
+    required String facturaId,
+    required String titulo,
+    String? descripcion,
+  }) => _registrarEventoNegocioUnico(
+    expedienteId: expedienteId,
+    tipo: TimelineEventType.rectificativaAnulada,
+    titulo: titulo,
+    descripcion: descripcion,
+    referenciaId: facturaId,
+  );
+
+  Future<void> registrarSaldoFavorGenerado({
+    required String expedienteId,
+    required String facturaId,
+    required String titulo,
+    String? descripcion,
+  }) => _registrarEventoNegocioUnico(
+    expedienteId: expedienteId,
+    tipo: TimelineEventType.saldoFavorGenerado,
+    titulo: titulo,
+    descripcion: descripcion,
+    referenciaId: facturaId,
+  );
+
   Future<void> registrarCobroRegistrado({
     required String expedienteId,
     required String cobroId,

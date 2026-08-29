@@ -3570,6 +3570,115 @@ class $FacturasTable extends Facturas with TableInfo<$FacturasTable, Factura> {
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _tipoDocumentoMeta = const VerificationMeta(
+    'tipoDocumento',
+  );
+  @override
+  late final GeneratedColumn<String> tipoDocumento = GeneratedColumn<String>(
+    'tipo_documento',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('ordinaria'),
+  );
+  static const VerificationMeta _serieMeta = const VerificationMeta('serie');
+  @override
+  late final GeneratedColumn<String> serie = GeneratedColumn<String>(
+    'serie',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('FAC'),
+  );
+  static const VerificationMeta _facturaRectificadaIdMeta =
+      const VerificationMeta('facturaRectificadaId');
+  @override
+  late final GeneratedColumn<String> facturaRectificadaId =
+      GeneratedColumn<String>(
+        'factura_rectificada_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES facturas (id)',
+        ),
+      );
+  static const VerificationMeta _facturaRaizIdMeta = const VerificationMeta(
+    'facturaRaizId',
+  );
+  @override
+  late final GeneratedColumn<String> facturaRaizId = GeneratedColumn<String>(
+    'factura_raiz_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES facturas (id)',
+    ),
+  );
+  static const VerificationMeta _modalidadRectificacionMeta =
+      const VerificationMeta('modalidadRectificacion');
+  @override
+  late final GeneratedColumn<String> modalidadRectificacion =
+      GeneratedColumn<String>(
+        'modalidad_rectificacion',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _motivoRectificacionMeta =
+      const VerificationMeta('motivoRectificacion');
+  @override
+  late final GeneratedColumn<String> motivoRectificacion =
+      GeneratedColumn<String>(
+        'motivo_rectificacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _efectoBaseMeta = const VerificationMeta(
+    'efectoBase',
+  );
+  @override
+  late final GeneratedColumn<double> efectoBase = GeneratedColumn<double>(
+    'efecto_base',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _efectoIvaMeta = const VerificationMeta(
+    'efectoIva',
+  );
+  @override
+  late final GeneratedColumn<double> efectoIva = GeneratedColumn<double>(
+    'efecto_iva',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _efectoTotalMeta = const VerificationMeta(
+    'efectoTotal',
+  );
+  @override
+  late final GeneratedColumn<double> efectoTotal = GeneratedColumn<double>(
+    'efecto_total',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _clienteIdMeta = const VerificationMeta(
     'clienteId',
   );
@@ -3946,6 +4055,15 @@ class $FacturasTable extends Facturas with TableInfo<$FacturasTable, Factura> {
     codigo,
     anioNumeracion,
     numeroLegal,
+    tipoDocumento,
+    serie,
+    facturaRectificadaId,
+    facturaRaizId,
+    modalidadRectificacion,
+    motivoRectificacion,
+    efectoBase,
+    efectoIva,
+    efectoTotal,
     clienteId,
     fecha,
     fechaVencimiento,
@@ -4016,6 +4134,78 @@ class $FacturasTable extends Facturas with TableInfo<$FacturasTable, Factura> {
         numeroLegal.isAcceptableOrUnknown(
           data['numero_legal']!,
           _numeroLegalMeta,
+        ),
+      );
+    }
+    if (data.containsKey('tipo_documento')) {
+      context.handle(
+        _tipoDocumentoMeta,
+        tipoDocumento.isAcceptableOrUnknown(
+          data['tipo_documento']!,
+          _tipoDocumentoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('serie')) {
+      context.handle(
+        _serieMeta,
+        serie.isAcceptableOrUnknown(data['serie']!, _serieMeta),
+      );
+    }
+    if (data.containsKey('factura_rectificada_id')) {
+      context.handle(
+        _facturaRectificadaIdMeta,
+        facturaRectificadaId.isAcceptableOrUnknown(
+          data['factura_rectificada_id']!,
+          _facturaRectificadaIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('factura_raiz_id')) {
+      context.handle(
+        _facturaRaizIdMeta,
+        facturaRaizId.isAcceptableOrUnknown(
+          data['factura_raiz_id']!,
+          _facturaRaizIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('modalidad_rectificacion')) {
+      context.handle(
+        _modalidadRectificacionMeta,
+        modalidadRectificacion.isAcceptableOrUnknown(
+          data['modalidad_rectificacion']!,
+          _modalidadRectificacionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('motivo_rectificacion')) {
+      context.handle(
+        _motivoRectificacionMeta,
+        motivoRectificacion.isAcceptableOrUnknown(
+          data['motivo_rectificacion']!,
+          _motivoRectificacionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('efecto_base')) {
+      context.handle(
+        _efectoBaseMeta,
+        efectoBase.isAcceptableOrUnknown(data['efecto_base']!, _efectoBaseMeta),
+      );
+    }
+    if (data.containsKey('efecto_iva')) {
+      context.handle(
+        _efectoIvaMeta,
+        efectoIva.isAcceptableOrUnknown(data['efecto_iva']!, _efectoIvaMeta),
+      );
+    }
+    if (data.containsKey('efecto_total')) {
+      context.handle(
+        _efectoTotalMeta,
+        efectoTotal.isAcceptableOrUnknown(
+          data['efecto_total']!,
+          _efectoTotalMeta,
         ),
       );
     }
@@ -4307,6 +4497,42 @@ class $FacturasTable extends Facturas with TableInfo<$FacturasTable, Factura> {
         DriftSqlType.int,
         data['${effectivePrefix}numero_legal'],
       ),
+      tipoDocumento: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tipo_documento'],
+      )!,
+      serie: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}serie'],
+      )!,
+      facturaRectificadaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}factura_rectificada_id'],
+      ),
+      facturaRaizId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}factura_raiz_id'],
+      ),
+      modalidadRectificacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}modalidad_rectificacion'],
+      ),
+      motivoRectificacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}motivo_rectificacion'],
+      )!,
+      efectoBase: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}efecto_base'],
+      )!,
+      efectoIva: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}efecto_iva'],
+      )!,
+      efectoTotal: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}efecto_total'],
+      )!,
       clienteId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}cliente_id'],
@@ -4445,6 +4671,15 @@ class Factura extends DataClass implements Insertable<Factura> {
   final String codigo;
   final int? anioNumeracion;
   final int? numeroLegal;
+  final String tipoDocumento;
+  final String serie;
+  final String? facturaRectificadaId;
+  final String? facturaRaizId;
+  final String? modalidadRectificacion;
+  final String motivoRectificacion;
+  final double efectoBase;
+  final double efectoIva;
+  final double efectoTotal;
   final String clienteId;
   final DateTime fecha;
   final DateTime fechaVencimiento;
@@ -4481,6 +4716,15 @@ class Factura extends DataClass implements Insertable<Factura> {
     required this.codigo,
     this.anioNumeracion,
     this.numeroLegal,
+    required this.tipoDocumento,
+    required this.serie,
+    this.facturaRectificadaId,
+    this.facturaRaizId,
+    this.modalidadRectificacion,
+    required this.motivoRectificacion,
+    required this.efectoBase,
+    required this.efectoIva,
+    required this.efectoTotal,
     required this.clienteId,
     required this.fecha,
     required this.fechaVencimiento,
@@ -4524,6 +4768,21 @@ class Factura extends DataClass implements Insertable<Factura> {
     if (!nullToAbsent || numeroLegal != null) {
       map['numero_legal'] = Variable<int>(numeroLegal);
     }
+    map['tipo_documento'] = Variable<String>(tipoDocumento);
+    map['serie'] = Variable<String>(serie);
+    if (!nullToAbsent || facturaRectificadaId != null) {
+      map['factura_rectificada_id'] = Variable<String>(facturaRectificadaId);
+    }
+    if (!nullToAbsent || facturaRaizId != null) {
+      map['factura_raiz_id'] = Variable<String>(facturaRaizId);
+    }
+    if (!nullToAbsent || modalidadRectificacion != null) {
+      map['modalidad_rectificacion'] = Variable<String>(modalidadRectificacion);
+    }
+    map['motivo_rectificacion'] = Variable<String>(motivoRectificacion);
+    map['efecto_base'] = Variable<double>(efectoBase);
+    map['efecto_iva'] = Variable<double>(efectoIva);
+    map['efecto_total'] = Variable<double>(efectoTotal);
     map['cliente_id'] = Variable<String>(clienteId);
     map['fecha'] = Variable<DateTime>(fecha);
     map['fecha_vencimiento'] = Variable<DateTime>(fechaVencimiento);
@@ -4594,6 +4853,21 @@ class Factura extends DataClass implements Insertable<Factura> {
       numeroLegal: numeroLegal == null && nullToAbsent
           ? const Value.absent()
           : Value(numeroLegal),
+      tipoDocumento: Value(tipoDocumento),
+      serie: Value(serie),
+      facturaRectificadaId: facturaRectificadaId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(facturaRectificadaId),
+      facturaRaizId: facturaRaizId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(facturaRaizId),
+      modalidadRectificacion: modalidadRectificacion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(modalidadRectificacion),
+      motivoRectificacion: Value(motivoRectificacion),
+      efectoBase: Value(efectoBase),
+      efectoIva: Value(efectoIva),
+      efectoTotal: Value(efectoTotal),
       clienteId: Value(clienteId),
       fecha: Value(fecha),
       fechaVencimiento: Value(fechaVencimiento),
@@ -4642,6 +4916,21 @@ class Factura extends DataClass implements Insertable<Factura> {
       codigo: serializer.fromJson<String>(json['codigo']),
       anioNumeracion: serializer.fromJson<int?>(json['anioNumeracion']),
       numeroLegal: serializer.fromJson<int?>(json['numeroLegal']),
+      tipoDocumento: serializer.fromJson<String>(json['tipoDocumento']),
+      serie: serializer.fromJson<String>(json['serie']),
+      facturaRectificadaId: serializer.fromJson<String?>(
+        json['facturaRectificadaId'],
+      ),
+      facturaRaizId: serializer.fromJson<String?>(json['facturaRaizId']),
+      modalidadRectificacion: serializer.fromJson<String?>(
+        json['modalidadRectificacion'],
+      ),
+      motivoRectificacion: serializer.fromJson<String>(
+        json['motivoRectificacion'],
+      ),
+      efectoBase: serializer.fromJson<double>(json['efectoBase']),
+      efectoIva: serializer.fromJson<double>(json['efectoIva']),
+      efectoTotal: serializer.fromJson<double>(json['efectoTotal']),
       clienteId: serializer.fromJson<String>(json['clienteId']),
       fecha: serializer.fromJson<DateTime>(json['fecha']),
       fechaVencimiento: serializer.fromJson<DateTime>(json['fechaVencimiento']),
@@ -4723,6 +5012,17 @@ class Factura extends DataClass implements Insertable<Factura> {
       'codigo': serializer.toJson<String>(codigo),
       'anioNumeracion': serializer.toJson<int?>(anioNumeracion),
       'numeroLegal': serializer.toJson<int?>(numeroLegal),
+      'tipoDocumento': serializer.toJson<String>(tipoDocumento),
+      'serie': serializer.toJson<String>(serie),
+      'facturaRectificadaId': serializer.toJson<String?>(facturaRectificadaId),
+      'facturaRaizId': serializer.toJson<String?>(facturaRaizId),
+      'modalidadRectificacion': serializer.toJson<String?>(
+        modalidadRectificacion,
+      ),
+      'motivoRectificacion': serializer.toJson<String>(motivoRectificacion),
+      'efectoBase': serializer.toJson<double>(efectoBase),
+      'efectoIva': serializer.toJson<double>(efectoIva),
+      'efectoTotal': serializer.toJson<double>(efectoTotal),
       'clienteId': serializer.toJson<String>(clienteId),
       'fecha': serializer.toJson<DateTime>(fecha),
       'fechaVencimiento': serializer.toJson<DateTime>(fechaVencimiento),
@@ -4788,6 +5088,15 @@ class Factura extends DataClass implements Insertable<Factura> {
     String? codigo,
     Value<int?> anioNumeracion = const Value.absent(),
     Value<int?> numeroLegal = const Value.absent(),
+    String? tipoDocumento,
+    String? serie,
+    Value<String?> facturaRectificadaId = const Value.absent(),
+    Value<String?> facturaRaizId = const Value.absent(),
+    Value<String?> modalidadRectificacion = const Value.absent(),
+    String? motivoRectificacion,
+    double? efectoBase,
+    double? efectoIva,
+    double? efectoTotal,
     String? clienteId,
     DateTime? fecha,
     DateTime? fechaVencimiento,
@@ -4826,6 +5135,21 @@ class Factura extends DataClass implements Insertable<Factura> {
         ? anioNumeracion.value
         : this.anioNumeracion,
     numeroLegal: numeroLegal.present ? numeroLegal.value : this.numeroLegal,
+    tipoDocumento: tipoDocumento ?? this.tipoDocumento,
+    serie: serie ?? this.serie,
+    facturaRectificadaId: facturaRectificadaId.present
+        ? facturaRectificadaId.value
+        : this.facturaRectificadaId,
+    facturaRaizId: facturaRaizId.present
+        ? facturaRaizId.value
+        : this.facturaRaizId,
+    modalidadRectificacion: modalidadRectificacion.present
+        ? modalidadRectificacion.value
+        : this.modalidadRectificacion,
+    motivoRectificacion: motivoRectificacion ?? this.motivoRectificacion,
+    efectoBase: efectoBase ?? this.efectoBase,
+    efectoIva: efectoIva ?? this.efectoIva,
+    efectoTotal: efectoTotal ?? this.efectoTotal,
     clienteId: clienteId ?? this.clienteId,
     fecha: fecha ?? this.fecha,
     fechaVencimiento: fechaVencimiento ?? this.fechaVencimiento,
@@ -4883,6 +5207,29 @@ class Factura extends DataClass implements Insertable<Factura> {
       numeroLegal: data.numeroLegal.present
           ? data.numeroLegal.value
           : this.numeroLegal,
+      tipoDocumento: data.tipoDocumento.present
+          ? data.tipoDocumento.value
+          : this.tipoDocumento,
+      serie: data.serie.present ? data.serie.value : this.serie,
+      facturaRectificadaId: data.facturaRectificadaId.present
+          ? data.facturaRectificadaId.value
+          : this.facturaRectificadaId,
+      facturaRaizId: data.facturaRaizId.present
+          ? data.facturaRaizId.value
+          : this.facturaRaizId,
+      modalidadRectificacion: data.modalidadRectificacion.present
+          ? data.modalidadRectificacion.value
+          : this.modalidadRectificacion,
+      motivoRectificacion: data.motivoRectificacion.present
+          ? data.motivoRectificacion.value
+          : this.motivoRectificacion,
+      efectoBase: data.efectoBase.present
+          ? data.efectoBase.value
+          : this.efectoBase,
+      efectoIva: data.efectoIva.present ? data.efectoIva.value : this.efectoIva,
+      efectoTotal: data.efectoTotal.present
+          ? data.efectoTotal.value
+          : this.efectoTotal,
       clienteId: data.clienteId.present ? data.clienteId.value : this.clienteId,
       fecha: data.fecha.present ? data.fecha.value : this.fecha,
       fechaVencimiento: data.fechaVencimiento.present
@@ -4974,6 +5321,15 @@ class Factura extends DataClass implements Insertable<Factura> {
           ..write('codigo: $codigo, ')
           ..write('anioNumeracion: $anioNumeracion, ')
           ..write('numeroLegal: $numeroLegal, ')
+          ..write('tipoDocumento: $tipoDocumento, ')
+          ..write('serie: $serie, ')
+          ..write('facturaRectificadaId: $facturaRectificadaId, ')
+          ..write('facturaRaizId: $facturaRaizId, ')
+          ..write('modalidadRectificacion: $modalidadRectificacion, ')
+          ..write('motivoRectificacion: $motivoRectificacion, ')
+          ..write('efectoBase: $efectoBase, ')
+          ..write('efectoIva: $efectoIva, ')
+          ..write('efectoTotal: $efectoTotal, ')
           ..write('clienteId: $clienteId, ')
           ..write('fecha: $fecha, ')
           ..write('fechaVencimiento: $fechaVencimiento, ')
@@ -5017,6 +5373,15 @@ class Factura extends DataClass implements Insertable<Factura> {
     codigo,
     anioNumeracion,
     numeroLegal,
+    tipoDocumento,
+    serie,
+    facturaRectificadaId,
+    facturaRaizId,
+    modalidadRectificacion,
+    motivoRectificacion,
+    efectoBase,
+    efectoIva,
+    efectoTotal,
     clienteId,
     fecha,
     fechaVencimiento,
@@ -5057,6 +5422,15 @@ class Factura extends DataClass implements Insertable<Factura> {
           other.codigo == this.codigo &&
           other.anioNumeracion == this.anioNumeracion &&
           other.numeroLegal == this.numeroLegal &&
+          other.tipoDocumento == this.tipoDocumento &&
+          other.serie == this.serie &&
+          other.facturaRectificadaId == this.facturaRectificadaId &&
+          other.facturaRaizId == this.facturaRaizId &&
+          other.modalidadRectificacion == this.modalidadRectificacion &&
+          other.motivoRectificacion == this.motivoRectificacion &&
+          other.efectoBase == this.efectoBase &&
+          other.efectoIva == this.efectoIva &&
+          other.efectoTotal == this.efectoTotal &&
           other.clienteId == this.clienteId &&
           other.fecha == this.fecha &&
           other.fechaVencimiento == this.fechaVencimiento &&
@@ -5097,6 +5471,15 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
   final Value<String> codigo;
   final Value<int?> anioNumeracion;
   final Value<int?> numeroLegal;
+  final Value<String> tipoDocumento;
+  final Value<String> serie;
+  final Value<String?> facturaRectificadaId;
+  final Value<String?> facturaRaizId;
+  final Value<String?> modalidadRectificacion;
+  final Value<String> motivoRectificacion;
+  final Value<double> efectoBase;
+  final Value<double> efectoIva;
+  final Value<double> efectoTotal;
   final Value<String> clienteId;
   final Value<DateTime> fecha;
   final Value<DateTime> fechaVencimiento;
@@ -5134,6 +5517,15 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
     this.codigo = const Value.absent(),
     this.anioNumeracion = const Value.absent(),
     this.numeroLegal = const Value.absent(),
+    this.tipoDocumento = const Value.absent(),
+    this.serie = const Value.absent(),
+    this.facturaRectificadaId = const Value.absent(),
+    this.facturaRaizId = const Value.absent(),
+    this.modalidadRectificacion = const Value.absent(),
+    this.motivoRectificacion = const Value.absent(),
+    this.efectoBase = const Value.absent(),
+    this.efectoIva = const Value.absent(),
+    this.efectoTotal = const Value.absent(),
     this.clienteId = const Value.absent(),
     this.fecha = const Value.absent(),
     this.fechaVencimiento = const Value.absent(),
@@ -5172,6 +5564,15 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
     this.codigo = const Value.absent(),
     this.anioNumeracion = const Value.absent(),
     this.numeroLegal = const Value.absent(),
+    this.tipoDocumento = const Value.absent(),
+    this.serie = const Value.absent(),
+    this.facturaRectificadaId = const Value.absent(),
+    this.facturaRaizId = const Value.absent(),
+    this.modalidadRectificacion = const Value.absent(),
+    this.motivoRectificacion = const Value.absent(),
+    this.efectoBase = const Value.absent(),
+    this.efectoIva = const Value.absent(),
+    this.efectoTotal = const Value.absent(),
     required String clienteId,
     this.fecha = const Value.absent(),
     this.fechaVencimiento = const Value.absent(),
@@ -5211,6 +5612,15 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
     Expression<String>? codigo,
     Expression<int>? anioNumeracion,
     Expression<int>? numeroLegal,
+    Expression<String>? tipoDocumento,
+    Expression<String>? serie,
+    Expression<String>? facturaRectificadaId,
+    Expression<String>? facturaRaizId,
+    Expression<String>? modalidadRectificacion,
+    Expression<String>? motivoRectificacion,
+    Expression<double>? efectoBase,
+    Expression<double>? efectoIva,
+    Expression<double>? efectoTotal,
     Expression<String>? clienteId,
     Expression<DateTime>? fecha,
     Expression<DateTime>? fechaVencimiento,
@@ -5249,6 +5659,18 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
       if (codigo != null) 'codigo': codigo,
       if (anioNumeracion != null) 'anio_numeracion': anioNumeracion,
       if (numeroLegal != null) 'numero_legal': numeroLegal,
+      if (tipoDocumento != null) 'tipo_documento': tipoDocumento,
+      if (serie != null) 'serie': serie,
+      if (facturaRectificadaId != null)
+        'factura_rectificada_id': facturaRectificadaId,
+      if (facturaRaizId != null) 'factura_raiz_id': facturaRaizId,
+      if (modalidadRectificacion != null)
+        'modalidad_rectificacion': modalidadRectificacion,
+      if (motivoRectificacion != null)
+        'motivo_rectificacion': motivoRectificacion,
+      if (efectoBase != null) 'efecto_base': efectoBase,
+      if (efectoIva != null) 'efecto_iva': efectoIva,
+      if (efectoTotal != null) 'efecto_total': efectoTotal,
       if (clienteId != null) 'cliente_id': clienteId,
       if (fecha != null) 'fecha': fecha,
       if (fechaVencimiento != null) 'fecha_vencimiento': fechaVencimiento,
@@ -5308,6 +5730,15 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
     Value<String>? codigo,
     Value<int?>? anioNumeracion,
     Value<int?>? numeroLegal,
+    Value<String>? tipoDocumento,
+    Value<String>? serie,
+    Value<String?>? facturaRectificadaId,
+    Value<String?>? facturaRaizId,
+    Value<String?>? modalidadRectificacion,
+    Value<String>? motivoRectificacion,
+    Value<double>? efectoBase,
+    Value<double>? efectoIva,
+    Value<double>? efectoTotal,
     Value<String>? clienteId,
     Value<DateTime>? fecha,
     Value<DateTime>? fechaVencimiento,
@@ -5346,6 +5777,16 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
       codigo: codigo ?? this.codigo,
       anioNumeracion: anioNumeracion ?? this.anioNumeracion,
       numeroLegal: numeroLegal ?? this.numeroLegal,
+      tipoDocumento: tipoDocumento ?? this.tipoDocumento,
+      serie: serie ?? this.serie,
+      facturaRectificadaId: facturaRectificadaId ?? this.facturaRectificadaId,
+      facturaRaizId: facturaRaizId ?? this.facturaRaizId,
+      modalidadRectificacion:
+          modalidadRectificacion ?? this.modalidadRectificacion,
+      motivoRectificacion: motivoRectificacion ?? this.motivoRectificacion,
+      efectoBase: efectoBase ?? this.efectoBase,
+      efectoIva: efectoIva ?? this.efectoIva,
+      efectoTotal: efectoTotal ?? this.efectoTotal,
       clienteId: clienteId ?? this.clienteId,
       fecha: fecha ?? this.fecha,
       fechaVencimiento: fechaVencimiento ?? this.fechaVencimiento,
@@ -5410,6 +5851,37 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
     }
     if (numeroLegal.present) {
       map['numero_legal'] = Variable<int>(numeroLegal.value);
+    }
+    if (tipoDocumento.present) {
+      map['tipo_documento'] = Variable<String>(tipoDocumento.value);
+    }
+    if (serie.present) {
+      map['serie'] = Variable<String>(serie.value);
+    }
+    if (facturaRectificadaId.present) {
+      map['factura_rectificada_id'] = Variable<String>(
+        facturaRectificadaId.value,
+      );
+    }
+    if (facturaRaizId.present) {
+      map['factura_raiz_id'] = Variable<String>(facturaRaizId.value);
+    }
+    if (modalidadRectificacion.present) {
+      map['modalidad_rectificacion'] = Variable<String>(
+        modalidadRectificacion.value,
+      );
+    }
+    if (motivoRectificacion.present) {
+      map['motivo_rectificacion'] = Variable<String>(motivoRectificacion.value);
+    }
+    if (efectoBase.present) {
+      map['efecto_base'] = Variable<double>(efectoBase.value);
+    }
+    if (efectoIva.present) {
+      map['efecto_iva'] = Variable<double>(efectoIva.value);
+    }
+    if (efectoTotal.present) {
+      map['efecto_total'] = Variable<double>(efectoTotal.value);
     }
     if (clienteId.present) {
       map['cliente_id'] = Variable<String>(clienteId.value);
@@ -5555,6 +6027,15 @@ class FacturasCompanion extends UpdateCompanion<Factura> {
           ..write('codigo: $codigo, ')
           ..write('anioNumeracion: $anioNumeracion, ')
           ..write('numeroLegal: $numeroLegal, ')
+          ..write('tipoDocumento: $tipoDocumento, ')
+          ..write('serie: $serie, ')
+          ..write('facturaRectificadaId: $facturaRectificadaId, ')
+          ..write('facturaRaizId: $facturaRaizId, ')
+          ..write('modalidadRectificacion: $modalidadRectificacion, ')
+          ..write('motivoRectificacion: $motivoRectificacion, ')
+          ..write('efectoBase: $efectoBase, ')
+          ..write('efectoIva: $efectoIva, ')
+          ..write('efectoTotal: $efectoTotal, ')
           ..write('clienteId: $clienteId, ')
           ..write('fecha: $fecha, ')
           ..write('fechaVencimiento: $fechaVencimiento, ')
@@ -5621,6 +6102,34 @@ class $FacturaLineasTable extends FacturaLineas
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'REFERENCES facturas (id)',
+    ),
+  );
+  static const VerificationMeta _lineaRectificadaIdMeta =
+      const VerificationMeta('lineaRectificadaId');
+  @override
+  late final GeneratedColumn<String> lineaRectificadaId =
+      GeneratedColumn<String>(
+        'linea_rectificada_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES factura_lineas (id)',
+        ),
+      );
+  static const VerificationMeta _lineaRaizIdMeta = const VerificationMeta(
+    'lineaRaizId',
+  );
+  @override
+  late final GeneratedColumn<String> lineaRaizId = GeneratedColumn<String>(
+    'linea_raiz_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES factura_lineas (id)',
     ),
   );
   static const VerificationMeta _descripcionMeta = const VerificationMeta(
@@ -5694,6 +6203,8 @@ class $FacturaLineasTable extends FacturaLineas
   List<GeneratedColumn> get $columns => [
     id,
     facturaId,
+    lineaRectificadaId,
+    lineaRaizId,
     descripcion,
     cantidad,
     unidad,
@@ -5725,6 +6236,24 @@ class $FacturaLineasTable extends FacturaLineas
       );
     } else if (isInserting) {
       context.missing(_facturaIdMeta);
+    }
+    if (data.containsKey('linea_rectificada_id')) {
+      context.handle(
+        _lineaRectificadaIdMeta,
+        lineaRectificadaId.isAcceptableOrUnknown(
+          data['linea_rectificada_id']!,
+          _lineaRectificadaIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('linea_raiz_id')) {
+      context.handle(
+        _lineaRaizIdMeta,
+        lineaRaizId.isAcceptableOrUnknown(
+          data['linea_raiz_id']!,
+          _lineaRaizIdMeta,
+        ),
+      );
     }
     if (data.containsKey('descripcion')) {
       context.handle(
@@ -5791,6 +6320,14 @@ class $FacturaLineasTable extends FacturaLineas
         DriftSqlType.string,
         data['${effectivePrefix}factura_id'],
       )!,
+      lineaRectificadaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}linea_rectificada_id'],
+      ),
+      lineaRaizId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}linea_raiz_id'],
+      ),
       descripcion: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}descripcion'],
@@ -5827,6 +6364,8 @@ class $FacturaLineasTable extends FacturaLineas
 class FacturaLinea extends DataClass implements Insertable<FacturaLinea> {
   final String id;
   final String facturaId;
+  final String? lineaRectificadaId;
+  final String? lineaRaizId;
   final String descripcion;
   final double cantidad;
   final String unidad;
@@ -5836,6 +6375,8 @@ class FacturaLinea extends DataClass implements Insertable<FacturaLinea> {
   const FacturaLinea({
     required this.id,
     required this.facturaId,
+    this.lineaRectificadaId,
+    this.lineaRaizId,
     required this.descripcion,
     required this.cantidad,
     required this.unidad,
@@ -5848,6 +6389,12 @@ class FacturaLinea extends DataClass implements Insertable<FacturaLinea> {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['factura_id'] = Variable<String>(facturaId);
+    if (!nullToAbsent || lineaRectificadaId != null) {
+      map['linea_rectificada_id'] = Variable<String>(lineaRectificadaId);
+    }
+    if (!nullToAbsent || lineaRaizId != null) {
+      map['linea_raiz_id'] = Variable<String>(lineaRaizId);
+    }
     map['descripcion'] = Variable<String>(descripcion);
     map['cantidad'] = Variable<double>(cantidad);
     map['unidad'] = Variable<String>(unidad);
@@ -5861,6 +6408,12 @@ class FacturaLinea extends DataClass implements Insertable<FacturaLinea> {
     return FacturaLineasCompanion(
       id: Value(id),
       facturaId: Value(facturaId),
+      lineaRectificadaId: lineaRectificadaId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lineaRectificadaId),
+      lineaRaizId: lineaRaizId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lineaRaizId),
       descripcion: Value(descripcion),
       cantidad: Value(cantidad),
       unidad: Value(unidad),
@@ -5878,6 +6431,10 @@ class FacturaLinea extends DataClass implements Insertable<FacturaLinea> {
     return FacturaLinea(
       id: serializer.fromJson<String>(json['id']),
       facturaId: serializer.fromJson<String>(json['facturaId']),
+      lineaRectificadaId: serializer.fromJson<String?>(
+        json['lineaRectificadaId'],
+      ),
+      lineaRaizId: serializer.fromJson<String?>(json['lineaRaizId']),
       descripcion: serializer.fromJson<String>(json['descripcion']),
       cantidad: serializer.fromJson<double>(json['cantidad']),
       unidad: serializer.fromJson<String>(json['unidad']),
@@ -5892,6 +6449,8 @@ class FacturaLinea extends DataClass implements Insertable<FacturaLinea> {
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'facturaId': serializer.toJson<String>(facturaId),
+      'lineaRectificadaId': serializer.toJson<String?>(lineaRectificadaId),
+      'lineaRaizId': serializer.toJson<String?>(lineaRaizId),
       'descripcion': serializer.toJson<String>(descripcion),
       'cantidad': serializer.toJson<double>(cantidad),
       'unidad': serializer.toJson<String>(unidad),
@@ -5904,6 +6463,8 @@ class FacturaLinea extends DataClass implements Insertable<FacturaLinea> {
   FacturaLinea copyWith({
     String? id,
     String? facturaId,
+    Value<String?> lineaRectificadaId = const Value.absent(),
+    Value<String?> lineaRaizId = const Value.absent(),
     String? descripcion,
     double? cantidad,
     String? unidad,
@@ -5913,6 +6474,10 @@ class FacturaLinea extends DataClass implements Insertable<FacturaLinea> {
   }) => FacturaLinea(
     id: id ?? this.id,
     facturaId: facturaId ?? this.facturaId,
+    lineaRectificadaId: lineaRectificadaId.present
+        ? lineaRectificadaId.value
+        : this.lineaRectificadaId,
+    lineaRaizId: lineaRaizId.present ? lineaRaizId.value : this.lineaRaizId,
     descripcion: descripcion ?? this.descripcion,
     cantidad: cantidad ?? this.cantidad,
     unidad: unidad ?? this.unidad,
@@ -5924,6 +6489,12 @@ class FacturaLinea extends DataClass implements Insertable<FacturaLinea> {
     return FacturaLinea(
       id: data.id.present ? data.id.value : this.id,
       facturaId: data.facturaId.present ? data.facturaId.value : this.facturaId,
+      lineaRectificadaId: data.lineaRectificadaId.present
+          ? data.lineaRectificadaId.value
+          : this.lineaRectificadaId,
+      lineaRaizId: data.lineaRaizId.present
+          ? data.lineaRaizId.value
+          : this.lineaRaizId,
       descripcion: data.descripcion.present
           ? data.descripcion.value
           : this.descripcion,
@@ -5942,6 +6513,8 @@ class FacturaLinea extends DataClass implements Insertable<FacturaLinea> {
     return (StringBuffer('FacturaLinea(')
           ..write('id: $id, ')
           ..write('facturaId: $facturaId, ')
+          ..write('lineaRectificadaId: $lineaRectificadaId, ')
+          ..write('lineaRaizId: $lineaRaizId, ')
           ..write('descripcion: $descripcion, ')
           ..write('cantidad: $cantidad, ')
           ..write('unidad: $unidad, ')
@@ -5956,6 +6529,8 @@ class FacturaLinea extends DataClass implements Insertable<FacturaLinea> {
   int get hashCode => Object.hash(
     id,
     facturaId,
+    lineaRectificadaId,
+    lineaRaizId,
     descripcion,
     cantidad,
     unidad,
@@ -5969,6 +6544,8 @@ class FacturaLinea extends DataClass implements Insertable<FacturaLinea> {
       (other is FacturaLinea &&
           other.id == this.id &&
           other.facturaId == this.facturaId &&
+          other.lineaRectificadaId == this.lineaRectificadaId &&
+          other.lineaRaizId == this.lineaRaizId &&
           other.descripcion == this.descripcion &&
           other.cantidad == this.cantidad &&
           other.unidad == this.unidad &&
@@ -5980,6 +6557,8 @@ class FacturaLinea extends DataClass implements Insertable<FacturaLinea> {
 class FacturaLineasCompanion extends UpdateCompanion<FacturaLinea> {
   final Value<String> id;
   final Value<String> facturaId;
+  final Value<String?> lineaRectificadaId;
+  final Value<String?> lineaRaizId;
   final Value<String> descripcion;
   final Value<double> cantidad;
   final Value<String> unidad;
@@ -5990,6 +6569,8 @@ class FacturaLineasCompanion extends UpdateCompanion<FacturaLinea> {
   const FacturaLineasCompanion({
     this.id = const Value.absent(),
     this.facturaId = const Value.absent(),
+    this.lineaRectificadaId = const Value.absent(),
+    this.lineaRaizId = const Value.absent(),
     this.descripcion = const Value.absent(),
     this.cantidad = const Value.absent(),
     this.unidad = const Value.absent(),
@@ -6001,6 +6582,8 @@ class FacturaLineasCompanion extends UpdateCompanion<FacturaLinea> {
   FacturaLineasCompanion.insert({
     required String id,
     required String facturaId,
+    this.lineaRectificadaId = const Value.absent(),
+    this.lineaRaizId = const Value.absent(),
     required String descripcion,
     required double cantidad,
     this.unidad = const Value.absent(),
@@ -6016,6 +6599,8 @@ class FacturaLineasCompanion extends UpdateCompanion<FacturaLinea> {
   static Insertable<FacturaLinea> custom({
     Expression<String>? id,
     Expression<String>? facturaId,
+    Expression<String>? lineaRectificadaId,
+    Expression<String>? lineaRaizId,
     Expression<String>? descripcion,
     Expression<double>? cantidad,
     Expression<String>? unidad,
@@ -6027,6 +6612,9 @@ class FacturaLineasCompanion extends UpdateCompanion<FacturaLinea> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (facturaId != null) 'factura_id': facturaId,
+      if (lineaRectificadaId != null)
+        'linea_rectificada_id': lineaRectificadaId,
+      if (lineaRaizId != null) 'linea_raiz_id': lineaRaizId,
       if (descripcion != null) 'descripcion': descripcion,
       if (cantidad != null) 'cantidad': cantidad,
       if (unidad != null) 'unidad': unidad,
@@ -6040,6 +6628,8 @@ class FacturaLineasCompanion extends UpdateCompanion<FacturaLinea> {
   FacturaLineasCompanion copyWith({
     Value<String>? id,
     Value<String>? facturaId,
+    Value<String?>? lineaRectificadaId,
+    Value<String?>? lineaRaizId,
     Value<String>? descripcion,
     Value<double>? cantidad,
     Value<String>? unidad,
@@ -6051,6 +6641,8 @@ class FacturaLineasCompanion extends UpdateCompanion<FacturaLinea> {
     return FacturaLineasCompanion(
       id: id ?? this.id,
       facturaId: facturaId ?? this.facturaId,
+      lineaRectificadaId: lineaRectificadaId ?? this.lineaRectificadaId,
+      lineaRaizId: lineaRaizId ?? this.lineaRaizId,
       descripcion: descripcion ?? this.descripcion,
       cantidad: cantidad ?? this.cantidad,
       unidad: unidad ?? this.unidad,
@@ -6069,6 +6661,12 @@ class FacturaLineasCompanion extends UpdateCompanion<FacturaLinea> {
     }
     if (facturaId.present) {
       map['factura_id'] = Variable<String>(facturaId.value);
+    }
+    if (lineaRectificadaId.present) {
+      map['linea_rectificada_id'] = Variable<String>(lineaRectificadaId.value);
+    }
+    if (lineaRaizId.present) {
+      map['linea_raiz_id'] = Variable<String>(lineaRaizId.value);
     }
     if (descripcion.present) {
       map['descripcion'] = Variable<String>(descripcion.value);
@@ -6099,6 +6697,8 @@ class FacturaLineasCompanion extends UpdateCompanion<FacturaLinea> {
     return (StringBuffer('FacturaLineasCompanion(')
           ..write('id: $id, ')
           ..write('facturaId: $facturaId, ')
+          ..write('lineaRectificadaId: $lineaRectificadaId, ')
+          ..write('lineaRaizId: $lineaRaizId, ')
           ..write('descripcion: $descripcion, ')
           ..write('cantidad: $cantidad, ')
           ..write('unidad: $unidad, ')
@@ -11314,6 +11914,336 @@ class FacturaAsignacionesPresupuestoCompanion
   }
 }
 
+class $FacturaDocumentosEmitidosTable extends FacturaDocumentosEmitidos
+    with TableInfo<$FacturaDocumentosEmitidosTable, FacturaDocumentosEmitido> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FacturaDocumentosEmitidosTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _facturaIdMeta = const VerificationMeta(
+    'facturaId',
+  );
+  @override
+  late final GeneratedColumn<String> facturaId = GeneratedColumn<String>(
+    'factura_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES facturas (id)',
+    ),
+  );
+  static const VerificationMeta _pdfMeta = const VerificationMeta('pdf');
+  @override
+  late final GeneratedColumn<Uint8List> pdf = GeneratedColumn<Uint8List>(
+    'pdf',
+    aliasedName,
+    false,
+    type: DriftSqlType.blob,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sha256Meta = const VerificationMeta('sha256');
+  @override
+  late final GeneratedColumn<String> sha256 = GeneratedColumn<String>(
+    'sha256',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fechaCreacionMeta = const VerificationMeta(
+    'fechaCreacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaCreacion =
+      GeneratedColumn<DateTime>(
+        'fecha_creacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+        defaultValue: currentDateAndTime,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [facturaId, pdf, sha256, fechaCreacion];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'factura_documentos_emitidos';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FacturaDocumentosEmitido> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('factura_id')) {
+      context.handle(
+        _facturaIdMeta,
+        facturaId.isAcceptableOrUnknown(data['factura_id']!, _facturaIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_facturaIdMeta);
+    }
+    if (data.containsKey('pdf')) {
+      context.handle(
+        _pdfMeta,
+        pdf.isAcceptableOrUnknown(data['pdf']!, _pdfMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_pdfMeta);
+    }
+    if (data.containsKey('sha256')) {
+      context.handle(
+        _sha256Meta,
+        sha256.isAcceptableOrUnknown(data['sha256']!, _sha256Meta),
+      );
+    } else if (isInserting) {
+      context.missing(_sha256Meta);
+    }
+    if (data.containsKey('fecha_creacion')) {
+      context.handle(
+        _fechaCreacionMeta,
+        fechaCreacion.isAcceptableOrUnknown(
+          data['fecha_creacion']!,
+          _fechaCreacionMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {facturaId};
+  @override
+  FacturaDocumentosEmitido map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FacturaDocumentosEmitido(
+      facturaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}factura_id'],
+      )!,
+      pdf: attachedDatabase.typeMapping.read(
+        DriftSqlType.blob,
+        data['${effectivePrefix}pdf'],
+      )!,
+      sha256: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sha256'],
+      )!,
+      fechaCreacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_creacion'],
+      )!,
+    );
+  }
+
+  @override
+  $FacturaDocumentosEmitidosTable createAlias(String alias) {
+    return $FacturaDocumentosEmitidosTable(attachedDatabase, alias);
+  }
+}
+
+class FacturaDocumentosEmitido extends DataClass
+    implements Insertable<FacturaDocumentosEmitido> {
+  final String facturaId;
+  final Uint8List pdf;
+  final String sha256;
+  final DateTime fechaCreacion;
+  const FacturaDocumentosEmitido({
+    required this.facturaId,
+    required this.pdf,
+    required this.sha256,
+    required this.fechaCreacion,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['factura_id'] = Variable<String>(facturaId);
+    map['pdf'] = Variable<Uint8List>(pdf);
+    map['sha256'] = Variable<String>(sha256);
+    map['fecha_creacion'] = Variable<DateTime>(fechaCreacion);
+    return map;
+  }
+
+  FacturaDocumentosEmitidosCompanion toCompanion(bool nullToAbsent) {
+    return FacturaDocumentosEmitidosCompanion(
+      facturaId: Value(facturaId),
+      pdf: Value(pdf),
+      sha256: Value(sha256),
+      fechaCreacion: Value(fechaCreacion),
+    );
+  }
+
+  factory FacturaDocumentosEmitido.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FacturaDocumentosEmitido(
+      facturaId: serializer.fromJson<String>(json['facturaId']),
+      pdf: serializer.fromJson<Uint8List>(json['pdf']),
+      sha256: serializer.fromJson<String>(json['sha256']),
+      fechaCreacion: serializer.fromJson<DateTime>(json['fechaCreacion']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'facturaId': serializer.toJson<String>(facturaId),
+      'pdf': serializer.toJson<Uint8List>(pdf),
+      'sha256': serializer.toJson<String>(sha256),
+      'fechaCreacion': serializer.toJson<DateTime>(fechaCreacion),
+    };
+  }
+
+  FacturaDocumentosEmitido copyWith({
+    String? facturaId,
+    Uint8List? pdf,
+    String? sha256,
+    DateTime? fechaCreacion,
+  }) => FacturaDocumentosEmitido(
+    facturaId: facturaId ?? this.facturaId,
+    pdf: pdf ?? this.pdf,
+    sha256: sha256 ?? this.sha256,
+    fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+  );
+  FacturaDocumentosEmitido copyWithCompanion(
+    FacturaDocumentosEmitidosCompanion data,
+  ) {
+    return FacturaDocumentosEmitido(
+      facturaId: data.facturaId.present ? data.facturaId.value : this.facturaId,
+      pdf: data.pdf.present ? data.pdf.value : this.pdf,
+      sha256: data.sha256.present ? data.sha256.value : this.sha256,
+      fechaCreacion: data.fechaCreacion.present
+          ? data.fechaCreacion.value
+          : this.fechaCreacion,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FacturaDocumentosEmitido(')
+          ..write('facturaId: $facturaId, ')
+          ..write('pdf: $pdf, ')
+          ..write('sha256: $sha256, ')
+          ..write('fechaCreacion: $fechaCreacion')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    facturaId,
+    $driftBlobEquality.hash(pdf),
+    sha256,
+    fechaCreacion,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FacturaDocumentosEmitido &&
+          other.facturaId == this.facturaId &&
+          $driftBlobEquality.equals(other.pdf, this.pdf) &&
+          other.sha256 == this.sha256 &&
+          other.fechaCreacion == this.fechaCreacion);
+}
+
+class FacturaDocumentosEmitidosCompanion
+    extends UpdateCompanion<FacturaDocumentosEmitido> {
+  final Value<String> facturaId;
+  final Value<Uint8List> pdf;
+  final Value<String> sha256;
+  final Value<DateTime> fechaCreacion;
+  final Value<int> rowid;
+  const FacturaDocumentosEmitidosCompanion({
+    this.facturaId = const Value.absent(),
+    this.pdf = const Value.absent(),
+    this.sha256 = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FacturaDocumentosEmitidosCompanion.insert({
+    required String facturaId,
+    required Uint8List pdf,
+    required String sha256,
+    this.fechaCreacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : facturaId = Value(facturaId),
+       pdf = Value(pdf),
+       sha256 = Value(sha256);
+  static Insertable<FacturaDocumentosEmitido> custom({
+    Expression<String>? facturaId,
+    Expression<Uint8List>? pdf,
+    Expression<String>? sha256,
+    Expression<DateTime>? fechaCreacion,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (facturaId != null) 'factura_id': facturaId,
+      if (pdf != null) 'pdf': pdf,
+      if (sha256 != null) 'sha256': sha256,
+      if (fechaCreacion != null) 'fecha_creacion': fechaCreacion,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FacturaDocumentosEmitidosCompanion copyWith({
+    Value<String>? facturaId,
+    Value<Uint8List>? pdf,
+    Value<String>? sha256,
+    Value<DateTime>? fechaCreacion,
+    Value<int>? rowid,
+  }) {
+    return FacturaDocumentosEmitidosCompanion(
+      facturaId: facturaId ?? this.facturaId,
+      pdf: pdf ?? this.pdf,
+      sha256: sha256 ?? this.sha256,
+      fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (facturaId.present) {
+      map['factura_id'] = Variable<String>(facturaId.value);
+    }
+    if (pdf.present) {
+      map['pdf'] = Variable<Uint8List>(pdf.value);
+    }
+    if (sha256.present) {
+      map['sha256'] = Variable<String>(sha256.value);
+    }
+    if (fechaCreacion.present) {
+      map['fecha_creacion'] = Variable<DateTime>(fechaCreacion.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FacturaDocumentosEmitidosCompanion(')
+          ..write('facturaId: $facturaId, ')
+          ..write('pdf: $pdf, ')
+          ..write('sha256: $sha256, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -11336,6 +12266,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $TimelineEventsTable timelineEvents = $TimelineEventsTable(this);
   late final $FacturaAsignacionesPresupuestoTable
   facturaAsignacionesPresupuesto = $FacturaAsignacionesPresupuestoTable(this);
+  late final $FacturaDocumentosEmitidosTable facturaDocumentosEmitidos =
+      $FacturaDocumentosEmitidosTable(this);
   late final ExpedientesDao expedientesDao = ExpedientesDao(
     this as AppDatabase,
   );
@@ -11368,6 +12300,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   facturaAsignacionesPresupuestoDao = FacturaAsignacionesPresupuestoDao(
     this as AppDatabase,
   );
+  late final FacturaDocumentosEmitidosDao facturaDocumentosEmitidosDao =
+      FacturaDocumentosEmitidosDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -11387,6 +12321,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     documentos,
     timelineEvents,
     facturaAsignacionesPresupuesto,
+    facturaDocumentosEmitidos,
   ];
 }
 
@@ -14685,6 +15620,15 @@ typedef $$FacturasTableCreateCompanionBuilder =
       Value<String> codigo,
       Value<int?> anioNumeracion,
       Value<int?> numeroLegal,
+      Value<String> tipoDocumento,
+      Value<String> serie,
+      Value<String?> facturaRectificadaId,
+      Value<String?> facturaRaizId,
+      Value<String?> modalidadRectificacion,
+      Value<String> motivoRectificacion,
+      Value<double> efectoBase,
+      Value<double> efectoIva,
+      Value<double> efectoTotal,
       required String clienteId,
       Value<DateTime> fecha,
       Value<DateTime> fechaVencimiento,
@@ -14724,6 +15668,15 @@ typedef $$FacturasTableUpdateCompanionBuilder =
       Value<String> codigo,
       Value<int?> anioNumeracion,
       Value<int?> numeroLegal,
+      Value<String> tipoDocumento,
+      Value<String> serie,
+      Value<String?> facturaRectificadaId,
+      Value<String?> facturaRaizId,
+      Value<String?> modalidadRectificacion,
+      Value<String> motivoRectificacion,
+      Value<double> efectoBase,
+      Value<double> efectoIva,
+      Value<double> efectoTotal,
       Value<String> clienteId,
       Value<DateTime> fecha,
       Value<DateTime> fechaVencimiento,
@@ -14761,6 +15714,42 @@ typedef $$FacturasTableUpdateCompanionBuilder =
 final class $$FacturasTableReferences
     extends BaseReferences<_$AppDatabase, $FacturasTable, Factura> {
   $$FacturasTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $FacturasTable _facturaRectificadaIdTable(_$AppDatabase db) =>
+      db.facturas.createAlias('facturas__factura_rectificada_id__facturas__id');
+
+  $$FacturasTableProcessedTableManager? get facturaRectificadaId {
+    final $_column = $_itemColumn<String>('factura_rectificada_id');
+    if ($_column == null) return null;
+    final manager = $$FacturasTableTableManager(
+      $_db,
+      $_db.facturas,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(
+      _facturaRectificadaIdTable($_db),
+    );
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $FacturasTable _facturaRaizIdTable(_$AppDatabase db) =>
+      db.facturas.createAlias('facturas__factura_raiz_id__facturas__id');
+
+  $$FacturasTableProcessedTableManager? get facturaRaizId {
+    final $_column = $_itemColumn<String>('factura_raiz_id');
+    if ($_column == null) return null;
+    final manager = $$FacturasTableTableManager(
+      $_db,
+      $_db.facturas,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_facturaRaizIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
 
   static $ClientesTable _clienteIdTable(_$AppDatabase db) =>
       db.clientes.createAlias('facturas__cliente_id__clientes__id');
@@ -14858,6 +15847,31 @@ final class $$FacturasTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<
+    $FacturaDocumentosEmitidosTable,
+    List<FacturaDocumentosEmitido>
+  >
+  _facturaDocumentosEmitidosRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.facturaDocumentosEmitidos,
+        aliasName: 'facturas__id__factura_documentos_emitidos__factura_id',
+      );
+
+  $$FacturaDocumentosEmitidosTableProcessedTableManager
+  get facturaDocumentosEmitidosRefs {
+    final manager = $$FacturaDocumentosEmitidosTableTableManager(
+      $_db,
+      $_db.facturaDocumentosEmitidos,
+    ).filter((f) => f.facturaId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _facturaDocumentosEmitidosRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$FacturasTableFilterComposer
@@ -14886,6 +15900,41 @@ class $$FacturasTableFilterComposer
 
   ColumnFilters<int> get numeroLegal => $composableBuilder(
     column: $table.numeroLegal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tipoDocumento => $composableBuilder(
+    column: $table.tipoDocumento,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get serie => $composableBuilder(
+    column: $table.serie,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get modalidadRectificacion => $composableBuilder(
+    column: $table.modalidadRectificacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get motivoRectificacion => $composableBuilder(
+    column: $table.motivoRectificacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get efectoBase => $composableBuilder(
+    column: $table.efectoBase,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get efectoIva => $composableBuilder(
+    column: $table.efectoIva,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get efectoTotal => $composableBuilder(
+    column: $table.efectoTotal,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -15034,6 +16083,52 @@ class $$FacturasTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  $$FacturasTableFilterComposer get facturaRectificadaId {
+    final $$FacturasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.facturaRectificadaId,
+      referencedTable: $db.facturas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturasTableFilterComposer(
+            $db: $db,
+            $table: $db.facturas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$FacturasTableFilterComposer get facturaRaizId {
+    final $$FacturasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.facturaRaizId,
+      referencedTable: $db.facturas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturasTableFilterComposer(
+            $db: $db,
+            $table: $db.facturas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
   $$ClientesTableFilterComposer get clienteId {
     final $$ClientesTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -15158,6 +16253,33 @@ class $$FacturasTableFilterComposer
         );
     return f(composer);
   }
+
+  Expression<bool> facturaDocumentosEmitidosRefs(
+    Expression<bool> Function($$FacturaDocumentosEmitidosTableFilterComposer f)
+    f,
+  ) {
+    final $$FacturaDocumentosEmitidosTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.facturaDocumentosEmitidos,
+          getReferencedColumn: (t) => t.facturaId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$FacturaDocumentosEmitidosTableFilterComposer(
+                $db: $db,
+                $table: $db.facturaDocumentosEmitidos,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$FacturasTableOrderingComposer
@@ -15186,6 +16308,41 @@ class $$FacturasTableOrderingComposer
 
   ColumnOrderings<int> get numeroLegal => $composableBuilder(
     column: $table.numeroLegal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tipoDocumento => $composableBuilder(
+    column: $table.tipoDocumento,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get serie => $composableBuilder(
+    column: $table.serie,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get modalidadRectificacion => $composableBuilder(
+    column: $table.modalidadRectificacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get motivoRectificacion => $composableBuilder(
+    column: $table.motivoRectificacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get efectoBase => $composableBuilder(
+    column: $table.efectoBase,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get efectoIva => $composableBuilder(
+    column: $table.efectoIva,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get efectoTotal => $composableBuilder(
+    column: $table.efectoTotal,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -15335,6 +16492,52 @@ class $$FacturasTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  $$FacturasTableOrderingComposer get facturaRectificadaId {
+    final $$FacturasTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.facturaRectificadaId,
+      referencedTable: $db.facturas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturasTableOrderingComposer(
+            $db: $db,
+            $table: $db.facturas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$FacturasTableOrderingComposer get facturaRaizId {
+    final $$FacturasTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.facturaRaizId,
+      referencedTable: $db.facturas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturasTableOrderingComposer(
+            $db: $db,
+            $table: $db.facturas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
   $$ClientesTableOrderingComposer get clienteId {
     final $$ClientesTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -15404,6 +16607,37 @@ class $$FacturasTableAnnotationComposer
 
   GeneratedColumn<int> get numeroLegal => $composableBuilder(
     column: $table.numeroLegal,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get tipoDocumento => $composableBuilder(
+    column: $table.tipoDocumento,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get serie =>
+      $composableBuilder(column: $table.serie, builder: (column) => column);
+
+  GeneratedColumn<String> get modalidadRectificacion => $composableBuilder(
+    column: $table.modalidadRectificacion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get motivoRectificacion => $composableBuilder(
+    column: $table.motivoRectificacion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get efectoBase => $composableBuilder(
+    column: $table.efectoBase,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get efectoIva =>
+      $composableBuilder(column: $table.efectoIva, builder: (column) => column);
+
+  GeneratedColumn<double> get efectoTotal => $composableBuilder(
+    column: $table.efectoTotal,
     builder: (column) => column,
   );
 
@@ -15543,6 +16777,52 @@ class $$FacturasTableAnnotationComposer
     builder: (column) => column,
   );
 
+  $$FacturasTableAnnotationComposer get facturaRectificadaId {
+    final $$FacturasTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.facturaRectificadaId,
+      referencedTable: $db.facturas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.facturas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$FacturasTableAnnotationComposer get facturaRaizId {
+    final $$FacturasTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.facturaRaizId,
+      referencedTable: $db.facturas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.facturas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
   $$ClientesTableAnnotationComposer get clienteId {
     final $$ClientesTableAnnotationComposer composer = $composerBuilder(
       composer: this,
@@ -15667,6 +16947,33 @@ class $$FacturasTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> facturaDocumentosEmitidosRefs<T extends Object>(
+    Expression<T> Function($$FacturaDocumentosEmitidosTableAnnotationComposer a)
+    f,
+  ) {
+    final $$FacturaDocumentosEmitidosTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.facturaDocumentosEmitidos,
+          getReferencedColumn: (t) => t.facturaId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$FacturaDocumentosEmitidosTableAnnotationComposer(
+                $db: $db,
+                $table: $db.facturaDocumentosEmitidos,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$FacturasTableTableManager
@@ -15683,11 +16990,14 @@ class $$FacturasTableTableManager
           (Factura, $$FacturasTableReferences),
           Factura,
           PrefetchHooks Function({
+            bool facturaRectificadaId,
+            bool facturaRaizId,
             bool clienteId,
             bool presupuestoOrigenId,
             bool facturaLineasRefs,
             bool cobrosRefs,
             bool facturaAsignacionesPresupuestoRefs,
+            bool facturaDocumentosEmitidosRefs,
           })
         > {
   $$FacturasTableTableManager(_$AppDatabase db, $FacturasTable table)
@@ -15707,6 +17017,15 @@ class $$FacturasTableTableManager
                 Value<String> codigo = const Value.absent(),
                 Value<int?> anioNumeracion = const Value.absent(),
                 Value<int?> numeroLegal = const Value.absent(),
+                Value<String> tipoDocumento = const Value.absent(),
+                Value<String> serie = const Value.absent(),
+                Value<String?> facturaRectificadaId = const Value.absent(),
+                Value<String?> facturaRaizId = const Value.absent(),
+                Value<String?> modalidadRectificacion = const Value.absent(),
+                Value<String> motivoRectificacion = const Value.absent(),
+                Value<double> efectoBase = const Value.absent(),
+                Value<double> efectoIva = const Value.absent(),
+                Value<double> efectoTotal = const Value.absent(),
                 Value<String> clienteId = const Value.absent(),
                 Value<DateTime> fecha = const Value.absent(),
                 Value<DateTime> fechaVencimiento = const Value.absent(),
@@ -15746,6 +17065,15 @@ class $$FacturasTableTableManager
                 codigo: codigo,
                 anioNumeracion: anioNumeracion,
                 numeroLegal: numeroLegal,
+                tipoDocumento: tipoDocumento,
+                serie: serie,
+                facturaRectificadaId: facturaRectificadaId,
+                facturaRaizId: facturaRaizId,
+                modalidadRectificacion: modalidadRectificacion,
+                motivoRectificacion: motivoRectificacion,
+                efectoBase: efectoBase,
+                efectoIva: efectoIva,
+                efectoTotal: efectoTotal,
                 clienteId: clienteId,
                 fecha: fecha,
                 fechaVencimiento: fechaVencimiento,
@@ -15785,6 +17113,15 @@ class $$FacturasTableTableManager
                 Value<String> codigo = const Value.absent(),
                 Value<int?> anioNumeracion = const Value.absent(),
                 Value<int?> numeroLegal = const Value.absent(),
+                Value<String> tipoDocumento = const Value.absent(),
+                Value<String> serie = const Value.absent(),
+                Value<String?> facturaRectificadaId = const Value.absent(),
+                Value<String?> facturaRaizId = const Value.absent(),
+                Value<String?> modalidadRectificacion = const Value.absent(),
+                Value<String> motivoRectificacion = const Value.absent(),
+                Value<double> efectoBase = const Value.absent(),
+                Value<double> efectoIva = const Value.absent(),
+                Value<double> efectoTotal = const Value.absent(),
                 required String clienteId,
                 Value<DateTime> fecha = const Value.absent(),
                 Value<DateTime> fechaVencimiento = const Value.absent(),
@@ -15824,6 +17161,15 @@ class $$FacturasTableTableManager
                 codigo: codigo,
                 anioNumeracion: anioNumeracion,
                 numeroLegal: numeroLegal,
+                tipoDocumento: tipoDocumento,
+                serie: serie,
+                facturaRectificadaId: facturaRectificadaId,
+                facturaRaizId: facturaRaizId,
+                modalidadRectificacion: modalidadRectificacion,
+                motivoRectificacion: motivoRectificacion,
+                efectoBase: efectoBase,
+                efectoIva: efectoIva,
+                efectoTotal: efectoTotal,
                 clienteId: clienteId,
                 fecha: fecha,
                 fechaVencimiento: fechaVencimiento,
@@ -15867,11 +17213,14 @@ class $$FacturasTableTableManager
               .toList(),
           prefetchHooksCallback:
               ({
+                facturaRectificadaId = false,
+                facturaRaizId = false,
                 clienteId = false,
                 presupuestoOrigenId = false,
                 facturaLineasRefs = false,
                 cobrosRefs = false,
                 facturaAsignacionesPresupuestoRefs = false,
+                facturaDocumentosEmitidosRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -15880,6 +17229,8 @@ class $$FacturasTableTableManager
                     if (cobrosRefs) db.cobros,
                     if (facturaAsignacionesPresupuestoRefs)
                       db.facturaAsignacionesPresupuesto,
+                    if (facturaDocumentosEmitidosRefs)
+                      db.facturaDocumentosEmitidos,
                   ],
                   addJoins:
                       <
@@ -15897,6 +17248,32 @@ class $$FacturasTableTableManager
                           dynamic
                         >
                       >(state) {
+                        if (facturaRectificadaId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.facturaRectificadaId,
+                                    referencedTable: $$FacturasTableReferences
+                                        ._facturaRectificadaIdTable(db),
+                                    referencedColumn: $$FacturasTableReferences
+                                        ._facturaRectificadaIdTable(db)
+                                        .id,
+                                  )
+                                  as T;
+                        }
+                        if (facturaRaizId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.facturaRaizId,
+                                    referencedTable: $$FacturasTableReferences
+                                        ._facturaRaizIdTable(db),
+                                    referencedColumn: $$FacturasTableReferences
+                                        ._facturaRaizIdTable(db)
+                                        .id,
+                                  )
+                                  as T;
+                        }
                         if (clienteId) {
                           state =
                               state.withJoin(
@@ -15991,6 +17368,27 @@ class $$FacturasTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (facturaDocumentosEmitidosRefs)
+                        await $_getPrefetchedData<
+                          Factura,
+                          $FacturasTable,
+                          FacturaDocumentosEmitido
+                        >(
+                          currentTable: table,
+                          referencedTable: $$FacturasTableReferences
+                              ._facturaDocumentosEmitidosRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$FacturasTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).facturaDocumentosEmitidosRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.facturaId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -16012,17 +17410,22 @@ typedef $$FacturasTableProcessedTableManager =
       (Factura, $$FacturasTableReferences),
       Factura,
       PrefetchHooks Function({
+        bool facturaRectificadaId,
+        bool facturaRaizId,
         bool clienteId,
         bool presupuestoOrigenId,
         bool facturaLineasRefs,
         bool cobrosRefs,
         bool facturaAsignacionesPresupuestoRefs,
+        bool facturaDocumentosEmitidosRefs,
       })
     >;
 typedef $$FacturaLineasTableCreateCompanionBuilder =
     FacturaLineasCompanion Function({
       required String id,
       required String facturaId,
+      Value<String?> lineaRectificadaId,
+      Value<String?> lineaRaizId,
       required String descripcion,
       required double cantidad,
       Value<String> unidad,
@@ -16035,6 +17438,8 @@ typedef $$FacturaLineasTableUpdateCompanionBuilder =
     FacturaLineasCompanion Function({
       Value<String> id,
       Value<String> facturaId,
+      Value<String?> lineaRectificadaId,
+      Value<String?> lineaRaizId,
       Value<String> descripcion,
       Value<double> cantidad,
       Value<String> unidad,
@@ -16063,6 +17468,42 @@ final class $$FacturaLineasTableReferences
       $_db.facturas,
     ).filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_facturaIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $FacturaLineasTable _lineaRectificadaIdTable(_$AppDatabase db) => db
+      .facturaLineas
+      .createAlias('factura_lineas__linea_rectificada_id__factura_lineas__id');
+
+  $$FacturaLineasTableProcessedTableManager? get lineaRectificadaId {
+    final $_column = $_itemColumn<String>('linea_rectificada_id');
+    if ($_column == null) return null;
+    final manager = $$FacturaLineasTableTableManager(
+      $_db,
+      $_db.facturaLineas,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_lineaRectificadaIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $FacturaLineasTable _lineaRaizIdTable(_$AppDatabase db) => db
+      .facturaLineas
+      .createAlias('factura_lineas__linea_raiz_id__factura_lineas__id');
+
+  $$FacturaLineasTableProcessedTableManager? get lineaRaizId {
+    final $_column = $_itemColumn<String>('linea_raiz_id');
+    if ($_column == null) return null;
+    final manager = $$FacturaLineasTableTableManager(
+      $_db,
+      $_db.facturaLineas,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_lineaRaizIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
@@ -16155,6 +17596,52 @@ class $$FacturaLineasTableFilterComposer
           }) => $$FacturasTableFilterComposer(
             $db: $db,
             $table: $db.facturas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$FacturaLineasTableFilterComposer get lineaRectificadaId {
+    final $$FacturaLineasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.lineaRectificadaId,
+      referencedTable: $db.facturaLineas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturaLineasTableFilterComposer(
+            $db: $db,
+            $table: $db.facturaLineas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$FacturaLineasTableFilterComposer get lineaRaizId {
+    final $$FacturaLineasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.lineaRaizId,
+      referencedTable: $db.facturaLineas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturaLineasTableFilterComposer(
+            $db: $db,
+            $table: $db.facturaLineas,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -16260,6 +17747,52 @@ class $$FacturaLineasTableOrderingComposer
     );
     return composer;
   }
+
+  $$FacturaLineasTableOrderingComposer get lineaRectificadaId {
+    final $$FacturaLineasTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.lineaRectificadaId,
+      referencedTable: $db.facturaLineas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturaLineasTableOrderingComposer(
+            $db: $db,
+            $table: $db.facturaLineas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$FacturaLineasTableOrderingComposer get lineaRaizId {
+    final $$FacturaLineasTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.lineaRaizId,
+      referencedTable: $db.facturaLineas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturaLineasTableOrderingComposer(
+            $db: $db,
+            $table: $db.facturaLineas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$FacturaLineasTableAnnotationComposer
@@ -16319,6 +17852,52 @@ class $$FacturaLineasTableAnnotationComposer
     return composer;
   }
 
+  $$FacturaLineasTableAnnotationComposer get lineaRectificadaId {
+    final $$FacturaLineasTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.lineaRectificadaId,
+      referencedTable: $db.facturaLineas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturaLineasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.facturaLineas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$FacturaLineasTableAnnotationComposer get lineaRaizId {
+    final $$FacturaLineasTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.lineaRaizId,
+      referencedTable: $db.facturaLineas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturaLineasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.facturaLineas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
   Expression<T> facturaAsignacionesPresupuestoRefs<T extends Object>(
     Expression<T> Function(
       $$FacturaAsignacionesPresupuestoTableAnnotationComposer a,
@@ -16364,6 +17943,8 @@ class $$FacturaLineasTableTableManager
           FacturaLinea,
           PrefetchHooks Function({
             bool facturaId,
+            bool lineaRectificadaId,
+            bool lineaRaizId,
             bool facturaAsignacionesPresupuestoRefs,
           })
         > {
@@ -16382,6 +17963,8 @@ class $$FacturaLineasTableTableManager
               ({
                 Value<String> id = const Value.absent(),
                 Value<String> facturaId = const Value.absent(),
+                Value<String?> lineaRectificadaId = const Value.absent(),
+                Value<String?> lineaRaizId = const Value.absent(),
                 Value<String> descripcion = const Value.absent(),
                 Value<double> cantidad = const Value.absent(),
                 Value<String> unidad = const Value.absent(),
@@ -16392,6 +17975,8 @@ class $$FacturaLineasTableTableManager
               }) => FacturaLineasCompanion(
                 id: id,
                 facturaId: facturaId,
+                lineaRectificadaId: lineaRectificadaId,
+                lineaRaizId: lineaRaizId,
                 descripcion: descripcion,
                 cantidad: cantidad,
                 unidad: unidad,
@@ -16404,6 +17989,8 @@ class $$FacturaLineasTableTableManager
               ({
                 required String id,
                 required String facturaId,
+                Value<String?> lineaRectificadaId = const Value.absent(),
+                Value<String?> lineaRaizId = const Value.absent(),
                 required String descripcion,
                 required double cantidad,
                 Value<String> unidad = const Value.absent(),
@@ -16414,6 +18001,8 @@ class $$FacturaLineasTableTableManager
               }) => FacturaLineasCompanion.insert(
                 id: id,
                 facturaId: facturaId,
+                lineaRectificadaId: lineaRectificadaId,
+                lineaRaizId: lineaRaizId,
                 descripcion: descripcion,
                 cantidad: cantidad,
                 unidad: unidad,
@@ -16433,6 +18022,8 @@ class $$FacturaLineasTableTableManager
           prefetchHooksCallback:
               ({
                 facturaId = false,
+                lineaRectificadaId = false,
+                lineaRaizId = false,
                 facturaAsignacionesPresupuestoRefs = false,
               }) {
                 return PrefetchHooks(
@@ -16468,6 +18059,36 @@ class $$FacturaLineasTableTableManager
                                     referencedColumn:
                                         $$FacturaLineasTableReferences
                                             ._facturaIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+                        if (lineaRectificadaId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.lineaRectificadaId,
+                                    referencedTable:
+                                        $$FacturaLineasTableReferences
+                                            ._lineaRectificadaIdTable(db),
+                                    referencedColumn:
+                                        $$FacturaLineasTableReferences
+                                            ._lineaRectificadaIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+                        if (lineaRaizId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.lineaRaizId,
+                                    referencedTable:
+                                        $$FacturaLineasTableReferences
+                                            ._lineaRaizIdTable(db),
+                                    referencedColumn:
+                                        $$FacturaLineasTableReferences
+                                            ._lineaRaizIdTable(db)
                                             .id,
                                   )
                                   as T;
@@ -16520,6 +18141,8 @@ typedef $$FacturaLineasTableProcessedTableManager =
       FacturaLinea,
       PrefetchHooks Function({
         bool facturaId,
+        bool lineaRectificadaId,
+        bool lineaRaizId,
         bool facturaAsignacionesPresupuestoRefs,
       })
     >;
@@ -20384,6 +22007,331 @@ typedef $$FacturaAsignacionesPresupuestoTableProcessedTableManager =
         bool certificacionOrigenId,
       })
     >;
+typedef $$FacturaDocumentosEmitidosTableCreateCompanionBuilder =
+    FacturaDocumentosEmitidosCompanion Function({
+      required String facturaId,
+      required Uint8List pdf,
+      required String sha256,
+      Value<DateTime> fechaCreacion,
+      Value<int> rowid,
+    });
+typedef $$FacturaDocumentosEmitidosTableUpdateCompanionBuilder =
+    FacturaDocumentosEmitidosCompanion Function({
+      Value<String> facturaId,
+      Value<Uint8List> pdf,
+      Value<String> sha256,
+      Value<DateTime> fechaCreacion,
+      Value<int> rowid,
+    });
+
+final class $$FacturaDocumentosEmitidosTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $FacturaDocumentosEmitidosTable,
+          FacturaDocumentosEmitido
+        > {
+  $$FacturaDocumentosEmitidosTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $FacturasTable _facturaIdTable(_$AppDatabase db) => db.facturas
+      .createAlias('factura_documentos_emitidos__factura_id__facturas__id');
+
+  $$FacturasTableProcessedTableManager get facturaId {
+    final $_column = $_itemColumn<String>('factura_id')!;
+
+    final manager = $$FacturasTableTableManager(
+      $_db,
+      $_db.facturas,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_facturaIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$FacturaDocumentosEmitidosTableFilterComposer
+    extends Composer<_$AppDatabase, $FacturaDocumentosEmitidosTable> {
+  $$FacturaDocumentosEmitidosTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<Uint8List> get pdf => $composableBuilder(
+    column: $table.pdf,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sha256 => $composableBuilder(
+    column: $table.sha256,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$FacturasTableFilterComposer get facturaId {
+    final $$FacturasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.facturaId,
+      referencedTable: $db.facturas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturasTableFilterComposer(
+            $db: $db,
+            $table: $db.facturas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FacturaDocumentosEmitidosTableOrderingComposer
+    extends Composer<_$AppDatabase, $FacturaDocumentosEmitidosTable> {
+  $$FacturaDocumentosEmitidosTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<Uint8List> get pdf => $composableBuilder(
+    column: $table.pdf,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sha256 => $composableBuilder(
+    column: $table.sha256,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$FacturasTableOrderingComposer get facturaId {
+    final $$FacturasTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.facturaId,
+      referencedTable: $db.facturas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturasTableOrderingComposer(
+            $db: $db,
+            $table: $db.facturas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FacturaDocumentosEmitidosTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FacturaDocumentosEmitidosTable> {
+  $$FacturaDocumentosEmitidosTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<Uint8List> get pdf =>
+      $composableBuilder(column: $table.pdf, builder: (column) => column);
+
+  GeneratedColumn<String> get sha256 =>
+      $composableBuilder(column: $table.sha256, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => column,
+  );
+
+  $$FacturasTableAnnotationComposer get facturaId {
+    final $$FacturasTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.facturaId,
+      referencedTable: $db.facturas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.facturas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FacturaDocumentosEmitidosTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FacturaDocumentosEmitidosTable,
+          FacturaDocumentosEmitido,
+          $$FacturaDocumentosEmitidosTableFilterComposer,
+          $$FacturaDocumentosEmitidosTableOrderingComposer,
+          $$FacturaDocumentosEmitidosTableAnnotationComposer,
+          $$FacturaDocumentosEmitidosTableCreateCompanionBuilder,
+          $$FacturaDocumentosEmitidosTableUpdateCompanionBuilder,
+          (
+            FacturaDocumentosEmitido,
+            $$FacturaDocumentosEmitidosTableReferences,
+          ),
+          FacturaDocumentosEmitido,
+          PrefetchHooks Function({bool facturaId})
+        > {
+  $$FacturaDocumentosEmitidosTableTableManager(
+    _$AppDatabase db,
+    $FacturaDocumentosEmitidosTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FacturaDocumentosEmitidosTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$FacturaDocumentosEmitidosTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$FacturaDocumentosEmitidosTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> facturaId = const Value.absent(),
+                Value<Uint8List> pdf = const Value.absent(),
+                Value<String> sha256 = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FacturaDocumentosEmitidosCompanion(
+                facturaId: facturaId,
+                pdf: pdf,
+                sha256: sha256,
+                fechaCreacion: fechaCreacion,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String facturaId,
+                required Uint8List pdf,
+                required String sha256,
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FacturaDocumentosEmitidosCompanion.insert(
+                facturaId: facturaId,
+                pdf: pdf,
+                sha256: sha256,
+                fechaCreacion: fechaCreacion,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$FacturaDocumentosEmitidosTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({facturaId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (facturaId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.facturaId,
+                                referencedTable:
+                                    $$FacturaDocumentosEmitidosTableReferences
+                                        ._facturaIdTable(db),
+                                referencedColumn:
+                                    $$FacturaDocumentosEmitidosTableReferences
+                                        ._facturaIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$FacturaDocumentosEmitidosTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FacturaDocumentosEmitidosTable,
+      FacturaDocumentosEmitido,
+      $$FacturaDocumentosEmitidosTableFilterComposer,
+      $$FacturaDocumentosEmitidosTableOrderingComposer,
+      $$FacturaDocumentosEmitidosTableAnnotationComposer,
+      $$FacturaDocumentosEmitidosTableCreateCompanionBuilder,
+      $$FacturaDocumentosEmitidosTableUpdateCompanionBuilder,
+      (FacturaDocumentosEmitido, $$FacturaDocumentosEmitidosTableReferences),
+      FacturaDocumentosEmitido,
+      PrefetchHooks Function({bool facturaId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -20419,5 +22367,10 @@ class $AppDatabaseManager {
       $$FacturaAsignacionesPresupuestoTableTableManager(
         _db,
         _db.facturaAsignacionesPresupuesto,
+      );
+  $$FacturaDocumentosEmitidosTableTableManager get facturaDocumentosEmitidos =>
+      $$FacturaDocumentosEmitidosTableTableManager(
+        _db,
+        _db.facturaDocumentosEmitidos,
       );
 }

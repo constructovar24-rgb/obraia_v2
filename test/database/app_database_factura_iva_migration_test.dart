@@ -57,6 +57,18 @@ void main() {
             fecha_modificacion INTEGER NOT NULL DEFAULT 0
           )
         ''');
+        rawDatabase.execute('''
+          CREATE TABLE factura_lineas (
+            id TEXT NOT NULL PRIMARY KEY,
+            factura_id TEXT NOT NULL REFERENCES facturas(id),
+            descripcion TEXT NOT NULL,
+            cantidad REAL NOT NULL,
+            unidad TEXT NOT NULL DEFAULT 'ud',
+            precio_unitario REAL NOT NULL,
+            descuento REAL NOT NULL DEFAULT 0,
+            importe REAL NOT NULL DEFAULT 0
+          )
+        ''');
         rawDatabase.userVersion = 16;
       },
     );

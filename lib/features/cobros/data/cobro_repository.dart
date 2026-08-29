@@ -180,6 +180,9 @@ class CobroRepository {
       if (!estadoFacturaAdmiteNuevosCobros(factura.estado)) {
         throw FacturaNoCobrableException(facturaId: facturaId);
       }
+      if (factura.esRectificativa) {
+        throw FacturaNoCobrableException(facturaId: facturaId);
+      }
       _validarImporteCobro(importe);
       _validarFechaCobro(fecha: fecha, fechaFactura: factura.fecha);
       _validarMetodoPago(metodoPago: metodoPago, observaciones: observaciones);

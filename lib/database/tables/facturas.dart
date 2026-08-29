@@ -12,6 +12,27 @@ class Facturas extends Table {
 
   IntColumn get numeroLegal => integer().nullable()();
 
+  TextColumn get tipoDocumento =>
+      text().withDefault(const Constant('ordinaria'))();
+
+  TextColumn get serie => text().withDefault(const Constant('FAC'))();
+
+  TextColumn get facturaRectificadaId =>
+      text().nullable().references(Facturas, #id)();
+
+  TextColumn get facturaRaizId => text().nullable().references(Facturas, #id)();
+
+  TextColumn get modalidadRectificacion => text().nullable()();
+
+  TextColumn get motivoRectificacion =>
+      text().withDefault(const Constant(''))();
+
+  RealColumn get efectoBase => real().withDefault(const Constant(0))();
+
+  RealColumn get efectoIva => real().withDefault(const Constant(0))();
+
+  RealColumn get efectoTotal => real().withDefault(const Constant(0))();
+
   TextColumn get clienteId => text().references(Clientes, #id)();
 
   DateTimeColumn get fecha => dateTime().withDefault(currentDateAndTime)();

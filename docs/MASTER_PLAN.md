@@ -26,7 +26,7 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 
 **Objetivo:** consolidar el flujo comercial y financiero principal con trazabilidad y estados coherentes.
 
-**Estado:** en curso. Cliente → Expediente → Presupuesto → Factura → Cobro está consolidado técnicamente y validado con SQLite aislado. La facturación parcial admite porcentaje, importe y partidas/cantidades con reservas de borrador, acumulados y asignaciones trazables. Los cobros parciales y múltiples, el saldo exacto, el sobrecobro, los estados y las reversiones auditables conservan integridad transaccional y una política monetaria única de dos decimales. La fase no está cerrada: quedan la validación manual de facturación parcial y las rectificativas completas.
+**Estado:** en curso. Cliente → Expediente → Presupuesto → Factura → Cobro está consolidado técnicamente y validado con SQLite aislado. La facturación parcial admite porcentaje, importe y partidas/cantidades con reservas de borrador, acumulados y asignaciones trazables. Los cobros parciales y múltiples, el saldo exacto, el sobrecobro, los estados y las reversiones auditables conservan integridad transaccional y una política monetaria única de dos decimales. Existe un núcleo documental de rectificativas por diferencias con serie propia, cadena inmutable, efecto firmado, integración presupuestaria y PDF exacto verificable. La fase no está cerrada: falta la aceptación manual rectificativa y siguen fuera de alcance devoluciones, compensaciones y modalidad sustitutiva.
 
 **Criterio de salida:** pruebas automatizadas y validación manual con datos aislados recorren el ciclo completo; relaciones, transiciones, IVA, redondeos, documentos congelados, anulaciones y cobros mantienen importes y trazabilidad.
 

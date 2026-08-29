@@ -101,6 +101,14 @@ String timelineEventTypeLabel(TimelineEventType tipo) {
       return 'Factura creada';
     case TimelineEventType.facturaAnulada:
       return 'Factura anulada';
+    case TimelineEventType.rectificativaCreada:
+      return 'Rectificativa creada';
+    case TimelineEventType.rectificativaEmitida:
+      return 'Rectificativa emitida';
+    case TimelineEventType.rectificativaAnulada:
+      return 'Rectificativa anulada';
+    case TimelineEventType.saldoFavorGenerado:
+      return 'Saldo a favor generado';
     case TimelineEventType.cobroRegistrado:
       return 'Cobro registrado';
     case TimelineEventType.cobroEliminado:

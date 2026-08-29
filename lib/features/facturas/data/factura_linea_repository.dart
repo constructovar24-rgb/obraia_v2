@@ -116,6 +116,12 @@ class FacturaLineaRepository {
           facturaId: facturaId,
         );
       }
+      if (factura.esRectificativa) {
+        throw FacturaNoPermiteModificarLineasException(
+          facturaId: facturaId,
+          estado: factura.estado,
+        );
+      }
       await _validarFacturaEditable(facturaId, factura.estado);
 
       final importe = _calcularImporte(
@@ -174,6 +180,12 @@ class FacturaLineaRepository {
           facturaId: facturaId,
         );
       }
+      if (factura.esRectificativa) {
+        throw FacturaNoPermiteModificarLineasException(
+          facturaId: facturaId,
+          estado: factura.estado,
+        );
+      }
       await _validarFacturaEditable(facturaId, factura.estado);
 
       final importe = _calcularImporte(
@@ -221,6 +233,12 @@ class FacturaLineaRepository {
       if (factura == null) {
         throw FacturaNoEncontradaAlModificarLineasException(
           facturaId: facturaId,
+        );
+      }
+      if (factura.esRectificativa) {
+        throw FacturaNoPermiteModificarLineasException(
+          facturaId: facturaId,
+          estado: factura.estado,
         );
       }
       await _validarFacturaEditable(facturaId, factura.estado);

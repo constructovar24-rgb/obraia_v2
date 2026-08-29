@@ -2,6 +2,14 @@
 
 ## No publicado
 
+### Facturas rectificativas por diferencias
+
+- Incorporada la serie legal independiente `RECT-AAAA-NNNN`, asignada atómicamente al emitir.
+- Añadidas cadenas inmutables original–rectificativas, motivo obligatorio y efectos firmados de base, IVA, total, partidas y cantidades.
+- Integrados el neto presupuestario, el crédito pendiente sin falsa liquidación y la protección de cobros existentes.
+- Conservado el PDF rectificativo exacto en SQLite con SHA-256 y eventos específicos de Timeline.
+- Elevado el esquema a v21 con migraciones y restauración verificable desde los esquemas 16 a 20.
+
 ### Facturación parcial
 
 - Añadidas facturas parciales acumulativas por porcentaje, importe y selección de partidas o cantidades.

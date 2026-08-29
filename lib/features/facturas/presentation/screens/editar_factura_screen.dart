@@ -20,9 +20,12 @@ import '../../data/factura_repository.dart';
 import '../../domain/estado_factura.dart';
 import '../../domain/factura.dart' as factura_domain;
 import '../../domain/factura_linea.dart' as factura_linea_domain;
+import '../../domain/rectificativa.dart';
+import '../providers/rectificativa_providers.dart';
 import 'factura_pdf_preview_screen.dart';
 import 'editar_linea_factura_screen.dart';
 import 'nueva_linea_factura_screen.dart';
+import 'nueva_rectificativa_screen.dart';
 
 class EditarFacturaScreen extends ConsumerStatefulWidget {
   const EditarFacturaScreen({super.key, required this.factura});
@@ -32,6 +35,78 @@ class EditarFacturaScreen extends ConsumerStatefulWidget {
   @override
   ConsumerState<EditarFacturaScreen> createState() =>
       _EditarFacturaScreenState();
+}
+
+class _VinculosRectificativa extends ConsumerWidget {
+  const _VinculosRectificativa({required this.factura});
+  final factura_domain.Factura factura;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final repository = ref.read(rectificativaRepositoryProvider);
+    if (factura.esRectificativa) {
+      return FutureBuilder<(factura_domain.Factura?, SaldoRectificacion)>(
+        future: (() async => (
+          await repository.obtenerOriginal(factura),
+          await repository.calcularSaldo(factura),
+        ))(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return const SizedBox.shrink();
+          final original = snapshot.data!.$1;
+          final saldo = snapshot.data!.$2;
+          return Card(
+            child: ListTile(
+              title: Text('Rectifica ${original?.codigo ?? '-'}'),
+              subtitle: Text(
+                saldo.saldoAFavor > 0
+                    ? 'Saldo a favor pendiente: ${saldo.saldoAFavor.toStringAsFixed(2)} €'
+                    : 'Efecto total: ${factura.efectoTotal.toStringAsFixed(2)} €',
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: original == null
+                  ? null
+                  : () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => EditarFacturaScreen(factura: original),
+                      ),
+                    ),
+            ),
+          );
+        },
+      );
+    }
+    return StreamBuilder<List<factura_domain.Factura>>(
+      stream: repository.observarRectificativasDe(factura.id),
+      builder: (context, snapshot) {
+        final rectificativas = snapshot.data ?? const [];
+        if (rectificativas.isEmpty) return const SizedBox.shrink();
+        return Card(
+          child: Column(
+            children: [
+              const ListTile(title: Text('Facturas rectificativas')),
+              ...rectificativas.map(
+                (rectificativa) => ListTile(
+                  title: Text(
+                    rectificativa.codigo.isEmpty
+                        ? 'Borrador RECT sin número'
+                        : rectificativa.codigo,
+                  ),
+                  subtitle: Text(rectificativa.motivoRectificacion),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          EditarFacturaScreen(factura: rectificativa),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }
 
 class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
@@ -57,13 +132,17 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
       _facturaPersistida ?? widget.factura;
 
   bool get _puedeEditarDocumento =>
-      estadoFacturaPermiteEditarDocumento(_estadoActual);
+      estadoFacturaPermiteEditarDocumento(_estadoActual) &&
+      !_facturaActual.esRectificativa;
 
   bool get _puedeEditarVencimiento =>
-      estadoFacturaPermiteEditarVencimiento(_estadoActual);
+      estadoFacturaPermiteEditarVencimiento(_estadoActual) &&
+      !_facturaActual.esRectificativa;
 
   bool get _puedeEditarLineas =>
-      estadoFacturaPermiteEditarLineas(_estadoActual) && !_esFacturaParcial;
+      estadoFacturaPermiteEditarLineas(_estadoActual) &&
+      !_esFacturaParcial &&
+      !_facturaActual.esRectificativa;
 
   bool get _puedeEliminarFactura =>
       _estadoPersistido != null &&
@@ -166,6 +245,8 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
         return StatusType.info;
       case EstadoEconomicoFactura.cobrada:
         return StatusType.success;
+      case EstadoEconomicoFactura.ajusteDocumental:
+        return StatusType.info;
     }
   }
 
@@ -185,6 +266,38 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
   }
 
   Widget _buildResumenEconomico(double totalFactura) {
+    if (_facturaActual.esRectificativa) {
+      return FutureBuilder<SaldoRectificacion>(
+        future: ref
+            .read(rectificativaRepositoryProvider)
+            .calcularSaldo(_facturaActual),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return const CircularProgressIndicator();
+          final saldo = snapshot.data!;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                'Resumen del efecto económico',
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
+              ),
+              Text(
+                'Efecto: ${_facturaActual.efectoTotal.toStringAsFixed(2)} €',
+              ),
+              Text(
+                'Neto documental: ${saldo.netoDocumental.toStringAsFixed(2)} €',
+              ),
+              Text(
+                'Cobrado en original: ${saldo.cobradoOriginal.toStringAsFixed(2)} €',
+              ),
+              Text(
+                'Saldo a favor pendiente: ${saldo.saldoAFavor.toStringAsFixed(2)} €',
+              ),
+            ],
+          );
+        },
+      );
+    }
     final cobroRepository = ref.read(cobroRepositoryProvider);
 
     return StreamBuilder<FacturaEstadoEconomico>(
@@ -433,7 +546,13 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
   Future<void> _emitirFactura() async {
     try {
       final repository = ref.read(facturaRepositoryProvider);
-      await repository.emitirFactura(widget.factura.id);
+      if (_facturaActual.esRectificativa) {
+        await ref
+            .read(rectificativaRepositoryProvider)
+            .emitir(widget.factura.id);
+      } else {
+        await repository.emitirFactura(widget.factura.id);
+      }
       final emitida = await repository.obtenerPorId(widget.factura.id);
       if (!mounted) return;
       setState(
@@ -443,6 +562,11 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
         context,
       ).showSnackBar(const SnackBar(content: Text('Factura emitida.')));
     } on FacturaEmisionException catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error.mensaje)));
+    } on RectificativaException catch (error) {
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
@@ -466,6 +590,15 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
         const SnackBar(
           content: Text(
             'No se puede anular una factura con cobros. Los cobros registrados deben corregirse o eliminarse primero si se introdujeron por error.',
+          ),
+        ),
+      );
+    } on FacturaAnulacionConRectificativasException {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'No se puede anular una factura con rectificativas activas.',
           ),
         ),
       );
@@ -673,6 +806,24 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                     ),
                   ),
                 ],
+                if (!_facturaActual.esRectificativa &&
+                    facturaPuedeOriginarRectificativa(_facturaActual)) ...[
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              NuevaRectificativaScreen(factura: _facturaActual),
+                        ),
+                      ),
+                      icon: const Icon(Icons.receipt_long_outlined),
+                      label: const Text('Crear rectificativa'),
+                    ),
+                  ),
+                ],
+                _VinculosRectificativa(factura: _facturaActual),
                 if (_estadoPersistido == EstadoFactura.borrador &&
                     _tieneCobros == true) ...[
                   const SizedBox(height: 12),
@@ -851,7 +1002,8 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                   ),
                 ],
                 const SizedBox(height: 12),
-                if (estadoFacturaAdmiteNuevosCobros(_estadoSeleccionado)) ...[
+                if (!_facturaActual.esRectificativa &&
+                    estadoFacturaAdmiteNuevosCobros(_estadoSeleccionado)) ...[
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton.icon(
@@ -862,25 +1014,26 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                   ),
                   const SizedBox(height: 12),
                 ],
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => CobrosScreen(
-                            facturaId: widget.factura.id,
-                            facturaCodigo: _facturaActual.codigo,
-                            facturaEstado: _estadoSeleccionado,
+                if (!_facturaActual.esRectificativa)
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => CobrosScreen(
+                              facturaId: widget.factura.id,
+                              facturaCodigo: _facturaActual.codigo,
+                              facturaEstado: _estadoSeleccionado,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.payments_outlined),
-                    label: const Text('Ver cobros'),
+                        );
+                      },
+                      icon: const Icon(Icons.payments_outlined),
+                      label: const Text('Ver cobros'),
+                    ),
                   ),
-                ),
               ],
             ),
           ),

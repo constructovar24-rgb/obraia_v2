@@ -31,6 +31,7 @@ class BackupArchiveService {
     'expedientes',
     'factura_lineas',
     'factura_asignaciones_presupuesto',
+    'factura_documentos_emitidos',
     'facturas',
     'lineas_presupuesto',
     'presupuestos',
@@ -397,11 +398,10 @@ class BackupArchiveService {
           .map((row) => row['name'])
           .whereType<String>()
           .toSet();
-      final expectedTables = schemaVersion >= 20
-          ? _expectedTables
-          : _expectedTables.difference(const {
-              'factura_asignaciones_presupuesto',
-            });
+      final expectedTables = _expectedTables.difference({
+        if (schemaVersion < 20) 'factura_asignaciones_presupuesto',
+        if (schemaVersion < 21) 'factura_documentos_emitidos',
+      });
       if (!tables.containsAll(expectedTables)) {
         throw const BackupValidationException();
       }

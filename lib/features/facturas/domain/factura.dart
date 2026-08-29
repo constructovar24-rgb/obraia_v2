@@ -1,10 +1,20 @@
 import 'estado_factura.dart';
+import 'tipo_documento_factura.dart';
 
 class Factura {
   final String id;
   final String codigo;
   final int? anioNumeracion;
   final int? numeroLegal;
+  final TipoDocumentoFactura tipoDocumento;
+  final String serie;
+  final String? facturaRectificadaId;
+  final String? facturaRaizId;
+  final ModalidadRectificacion? modalidadRectificacion;
+  final String motivoRectificacion;
+  final double efectoBase;
+  final double efectoIva;
+  final double efectoTotal;
   final String clienteId;
   final String clienteNombre;
   final DateTime fecha;
@@ -41,6 +51,15 @@ class Factura {
     required this.codigo,
     this.anioNumeracion,
     this.numeroLegal,
+    this.tipoDocumento = TipoDocumentoFactura.ordinaria,
+    this.serie = 'FAC',
+    this.facturaRectificadaId,
+    this.facturaRaizId,
+    this.modalidadRectificacion,
+    this.motivoRectificacion = '',
+    this.efectoBase = 0,
+    this.efectoIva = 0,
+    this.efectoTotal = 0,
     required this.clienteId,
     required this.clienteNombre,
     required this.fecha,
@@ -74,4 +93,6 @@ class Factura {
   });
 
   bool get tieneInstantaneaHistorica => fechaEmision != null;
+  bool get esRectificativa =>
+      tipoDocumento == TipoDocumentoFactura.rectificativa;
 }

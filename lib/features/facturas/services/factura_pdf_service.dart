@@ -16,6 +16,9 @@ String facturaIvaEtiqueta(double ivaPorcentaje) {
   return 'IVA ($valor%)';
 }
 
+String facturaTituloPdf(Factura factura) =>
+    factura.esRectificativa ? 'FACTURA RECTIFICATIVA' : 'FACTURA';
+
 class FacturaPdfService {
   static const double _titleFontSize = 20;
   static const double _generalFontSize = 10;
@@ -25,6 +28,7 @@ class FacturaPdfService {
 
   Future<Uint8List> generarPdf({
     required Factura factura,
+    Factura? facturaOriginal,
     required List<FacturaLinea> lineas,
     required empresa_domain.EmpresaConfiguracion empresaConfiguracion,
     cliente_domain.Cliente? cliente,
@@ -49,6 +53,10 @@ class FacturaPdfService {
                 _cabecera(factura, empresaConfiguracion, logo),
                 pw.SizedBox(height: 12),
                 _bloqueCliente(factura, cliente),
+                if (factura.esRectificativa) ...[
+                  pw.SizedBox(height: 12),
+                  _bloqueRectificacion(factura, facturaOriginal),
+                ],
                 pw.SizedBox(height: 12),
                 _linea(
                   'Observaciones',
@@ -132,7 +140,7 @@ class FacturaPdfService {
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
                 pw.Text(
-                  'FACTURA',
+                  facturaTituloPdf(factura),
                   style: pw.TextStyle(
                     fontSize: _titleFontSize,
                     fontWeight: pw.FontWeight.bold,
@@ -148,6 +156,30 @@ class FacturaPdfService {
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _bloqueRectificacion(Factura factura, Factura? original) {
+    return pw.Container(
+      width: double.infinity,
+      padding: const pw.EdgeInsets.all(10),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Text(
+            'Rectificación por diferencias',
+            style: pw.TextStyle(
+              fontSize: _generalFontSize,
+              fontWeight: pw.FontWeight.bold,
+            ),
+          ),
+          pw.SizedBox(height: 6),
+          _lineaResumen('Original', original?.codigo ?? '-'),
+          if (original != null)
+            _lineaResumen('Fecha original', _formatearFecha(original.fecha)),
+          _lineaResumen('Motivo', factura.motivoRectificacion),
         ],
       ),
     );

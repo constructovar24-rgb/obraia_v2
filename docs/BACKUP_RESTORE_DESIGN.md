@@ -23,20 +23,20 @@ Este documento guía la fase 1 desde la auditoría inicial. Ya están implementa
 
 ### Esquema, migraciones e integridad
 
-- `schemaVersion` actual: 20.
-- Hay 13 tablas: `clientes`, `expedientes`, `presupuestos`, `lineas_presupuesto`, `empresa_configuracion`, `facturas`, `factura_lineas`, `cobros`, `compras`, `proveedores`, `certificaciones`, `documentos` y `timeline_events`.
-- Las migraciones incrementales cubren cambios de las versiones 2 a 20. La versión 6 reconstruye `presupuestos`; la 17 añade y rellena `iva_porcentaje`; la 18 añade unidades y fotografía histórica; la 19 incorpora reversiones de cobros; la 20 crea las asignaciones trazables de facturación parcial.
+- `schemaVersion` actual: 21.
+- Hay 15 tablas, incluidas `factura_asignaciones_presupuesto` y `factura_documentos_emitidos` junto a las 13 tablas anteriores.
+- Las migraciones incrementales cubren cambios de las versiones 2 a 21. La versión 6 reconstruye `presupuestos`; la 17 añade y rellena `iva_porcentaje`; la 18 añade unidades y fotografía histórica; la 19 incorpora reversiones de cobros; la 20 crea las asignaciones trazables de facturación parcial; la 21 incorpora rectificativas y el PDF emitido exacto.
 - Hay relaciones declaradas entre clientes, expedientes, presupuestos, líneas, facturas, cobros, certificaciones, documentos y Timeline. No se declaran acciones `ON DELETE`. `compras.proveedorId` no es una referencia Drift.
 - La conexión activa expresamente `PRAGMA foreign_keys = ON`; la restauración mantiene además `PRAGMA foreign_key_check` para detectar huérfanos históricos.
-- La compatibilidad de restauración se limita deliberadamente a los esquemas 16, 17, 18, 19 y 20. Las rutas 16→20, 17→20, 18→20, 19→20 y 20→20 están probadas con conservación de cobros, facturas e importes. Las versiones 1 a 15 y las futuras se rechazan.
+- La compatibilidad de restauración se limita deliberadamente a los esquemas 16, 17, 18, 19, 20 y 21. Las rutas 16→21, 17→21, 18→21, 19→21, 20→21 y 21→21 están probadas con conservación de cobros, facturas, importes y PDF emitidos. Las versiones 1 a 15 y las futuras se rechazan.
 
 ### Archivos asociados
 
 - `documentos.ruta_archivo` es una ruta obligatoria introducida manualmente. Alta, edición y repositorio no seleccionan, leen ni copian ese archivo al espacio de la aplicación.
 - Las fotografías son únicamente un tipo de Documento; no existe un almacén propio de fotografías.
 - `empresa_configuracion.logo_path` también almacena texto manual. Los PDF no usan esa ruta: cargan el asset empaquetado `assets/images/logo_empresa.png`.
-- Facturas y presupuestos PDF se generan como bytes en memoria y se entregan a `PdfPreview` para imprimir o compartir. OBRA IA no conserva una copia gestionada de esos PDF.
-- Por tanto, el único conjunto de datos gestionado actualmente por la aplicación es SQLite. Las rutas externas pueden apuntar a archivos personales, unidades extraíbles o carpetas sincronizadas fuera del control de OBRA IA.
+- Los PDF ordinarios y de presupuestos se generan como bytes en memoria. El PDF exacto de cada rectificativa emitida se conserva dentro de SQLite en `factura_documentos_emitidos`, junto con su SHA-256, y queda incluido en backup/restauración.
+- El conjunto gestionado por la aplicación sigue contenido en SQLite. Las rutas externas pueden apuntar a archivos personales, unidades extraíbles o carpetas sincronizadas fuera del control de OBRA IA.
 
 ### Dependencias, pruebas y Windows
 

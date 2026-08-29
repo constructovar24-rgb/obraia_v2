@@ -7,6 +7,12 @@ class FacturaLineas extends Table {
 
   TextColumn get facturaId => text().references(Facturas, #id)();
 
+  TextColumn get lineaRectificadaId =>
+      text().nullable().references(FacturaLineas, #id)();
+
+  TextColumn get lineaRaizId =>
+      text().nullable().references(FacturaLineas, #id)();
+
   TextColumn get descripcion => text()();
 
   RealColumn get cantidad => real()();

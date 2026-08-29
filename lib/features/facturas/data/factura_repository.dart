@@ -55,6 +55,10 @@ class FacturaAnulacionConCobrosException implements Exception {
   const FacturaAnulacionConCobrosException();
 }
 
+class FacturaAnulacionConRectificativasException implements Exception {
+  const FacturaAnulacionConRectificativasException();
+}
+
 class ActualizacionTotalesIncompatibleConCobrosException implements Exception {
   const ActualizacionTotalesIncompatibleConCobrosException({
     required this.facturaId,
@@ -182,6 +186,17 @@ class FacturaRepository {
         controller.add(
           facturasActuales.map((factura) {
             final totalCobrado = cobrosActuales[factura.id] ?? 0;
+            if (factura.esRectificativa) {
+              return FacturaConEstadoEconomico(
+                factura: factura,
+                estadoEconomico: FacturaEstadoEconomico(
+                  totalFactura: factura.total,
+                  totalCobrado: 0,
+                  pendiente: 0,
+                  estado: EstadoEconomicoFactura.ajusteDocumental,
+                ),
+              );
+            }
             return FacturaConEstadoEconomico(
               factura: factura,
               estadoEconomico: calcularResumenEconomicoFactura(
@@ -257,10 +272,14 @@ class FacturaRepository {
     return database.facturasDao.obtenerPorId(facturaId);
   }
 
-  Future<(int, int, String)> _generarCodigoFactura(int year) async {
-    final prefijo = 'FAC-$year-';
+  Future<(int, int, String)> generarCodigoFactura(
+    int year, {
+    String serie = 'FAC',
+  }) async {
+    final prefijo = '$serie-$year-';
     final siguiente =
-        await database.facturasDao.obtenerMayorNumeroLegal(year) + 1;
+        await database.facturasDao.obtenerMayorNumeroLegal(year, serie: serie) +
+        1;
     final correlativo = siguiente.toString().padLeft(4, '0');
     return (year, siguiente, '$prefijo$correlativo');
   }
@@ -478,7 +497,8 @@ class FacturaRepository {
           facturaId: facturaId,
         );
       }
-      if (!estadoFacturaPermiteEditarDocumento(factura.estado)) {
+      if (!estadoFacturaPermiteEditarDocumento(factura.estado) ||
+          factura.esRectificativa) {
         throw FacturaDocumentoCongeladoException(
           facturaId: facturaId,
           estado: factura.estado,
@@ -542,7 +562,8 @@ class FacturaRepository {
       if (facturaActual == null) {
         throw FacturaNoEncontradaAlActualizarTotalesException(facturaId: id);
       }
-      if (!estadoFacturaPermiteEditarVencimiento(facturaActual.estado)) {
+      if (!estadoFacturaPermiteEditarVencimiento(facturaActual.estado) ||
+          facturaActual.esRectificativa) {
         throw FacturaDocumentoCongeladoException(
           facturaId: id,
           estado: facturaActual.estado,
@@ -624,7 +645,7 @@ class FacturaRepository {
         totalCobrado: cobrado,
         fechaVencimiento: factura.fechaVencimiento,
       );
-      final (anio, numero, codigo) = await _generarCodigoFactura(
+      final (anio, numero, codigo) = await generarCodigoFactura(
         factura.fecha.year,
       );
       final empresa = await database.empresaConfiguracionDao
@@ -695,6 +716,12 @@ class FacturaRepository {
       if (calcularTotalCobradoNeto(cobros) > 0) {
         throw const FacturaAnulacionConCobrosException();
       }
+      final rectificativas = await database.facturasDao.obtenerRectificativasDe(
+        facturaId,
+      );
+      if (rectificativas.any((item) => item.estado != EstadoFactura.anulada)) {
+        throw const FacturaAnulacionConRectificativasException();
+      }
       await _actualizarEstadoConEvento(
         facturaId: facturaId,
         nuevoEstado: EstadoFactura.anulada,
@@ -715,6 +742,7 @@ class FacturaRepository {
   }
 
   Future<bool> _reconciliarFactura(factura_domain.Factura factura) async {
+    if (factura.esRectificativa) return false;
     final cobros = await database.cobrosDao
         .observarPorFactura(factura.id)
         .first;
@@ -817,6 +845,17 @@ class FacturaRepository {
       presupuestoOrigenId,
     );
     if (expedienteId == null || expedienteId.trim().isEmpty) {
+      return;
+    }
+
+    final factura = await database.facturasDao.obtenerPorId(facturaId);
+    if (factura?.esRectificativa ?? false) {
+      await _timelineRepository.registrarRectificativaAnulada(
+        expedienteId: expedienteId,
+        facturaId: facturaId,
+        titulo: 'Rectificativa anulada',
+        descripcion: facturaCodigo,
+      );
       return;
     }
 

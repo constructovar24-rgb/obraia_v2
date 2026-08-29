@@ -183,6 +183,7 @@ const _expectedTables = <String>{
   'expedientes',
   'factura_lineas',
   'factura_asignaciones_presupuesto',
+  'factura_documentos_emitidos',
   'facturas',
   'lineas_presupuesto',
   'presupuestos',
