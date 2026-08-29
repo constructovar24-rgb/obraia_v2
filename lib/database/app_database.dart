@@ -18,6 +18,7 @@ import 'tables/proveedores.dart';
 import 'tables/certificaciones.dart';
 import 'tables/documentos.dart';
 import 'tables/timeline_events.dart';
+import 'tables/factura_asignaciones_presupuesto.dart';
 import 'dao/expedientes_dao.dart';
 import 'dao/clientes_dao.dart';
 import 'dao/presupuestos_dao.dart';
@@ -31,6 +32,7 @@ import 'dao/proveedores_dao.dart';
 import 'dao/certificaciones_dao.dart';
 import 'dao/documentos_dao.dart';
 import 'dao/timeline_events_dao.dart';
+import 'dao/factura_asignaciones_presupuesto_dao.dart';
 
 part 'app_database.g.dart';
 
@@ -49,6 +51,7 @@ part 'app_database.g.dart';
     Certificaciones,
     Documentos,
     TimelineEvents,
+    FacturaAsignacionesPresupuesto,
   ],
   daos: [
     ExpedientesDao,
@@ -64,6 +67,7 @@ part 'app_database.g.dart';
     CertificacionesDao,
     DocumentosDao,
     TimelineEventsDao,
+    FacturaAsignacionesPresupuestoDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -77,7 +81,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 19;
+  int get schemaVersion => 20;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -87,6 +91,14 @@ class AppDatabase extends _$AppDatabase {
         CREATE UNIQUE INDEX IF NOT EXISTS facturas_numeracion_legal_unica
         ON facturas(anio_numeracion, numero_legal)
         WHERE anio_numeracion IS NOT NULL AND numero_legal IS NOT NULL
+      ''');
+      await customStatement('''
+        CREATE INDEX IF NOT EXISTS factura_asignaciones_presupuesto_idx
+        ON factura_asignaciones_presupuesto(presupuesto_id)
+      ''');
+      await customStatement('''
+        CREATE INDEX IF NOT EXISTS factura_asignaciones_factura_idx
+        ON factura_asignaciones_presupuesto(factura_id)
       ''');
     },
     onUpgrade: (m, from, to) async {
@@ -256,6 +268,17 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(cobros, cobros.tipoMovimiento);
         await m.addColumn(cobros, cobros.cobroOrigenId);
         await m.addColumn(cobros, cobros.motivo);
+      }
+      if (from < 20) {
+        await m.createTable(facturaAsignacionesPresupuesto);
+        await customStatement('''
+          CREATE INDEX IF NOT EXISTS factura_asignaciones_presupuesto_idx
+          ON factura_asignaciones_presupuesto(presupuesto_id)
+        ''');
+        await customStatement('''
+          CREATE INDEX IF NOT EXISTS factura_asignaciones_factura_idx
+          ON factura_asignaciones_presupuesto(factura_id)
+        ''');
       }
     },
     beforeOpen: (details) async {

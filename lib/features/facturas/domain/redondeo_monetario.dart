@@ -11,6 +11,10 @@ double redondearMoneda(double valor) {
   return ajustado.roundToDouble() / 100;
 }
 
+int monedaACentimos(double valor) => (redondearMoneda(valor) * 100).round();
+
+double centimosAMoneda(int centimos) => centimos / 100;
+
 double calcularImporteLineaFactura({
   required double cantidad,
   required double precioUnitario,

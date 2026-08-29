@@ -10724,6 +10724,596 @@ class TimelineEventsCompanion extends UpdateCompanion<TimelineEvent> {
   }
 }
 
+class $FacturaAsignacionesPresupuestoTable
+    extends FacturaAsignacionesPresupuesto
+    with
+        TableInfo<
+          $FacturaAsignacionesPresupuestoTable,
+          FacturaAsignacionesPresupuestoData
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FacturaAsignacionesPresupuestoTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _facturaIdMeta = const VerificationMeta(
+    'facturaId',
+  );
+  @override
+  late final GeneratedColumn<String> facturaId = GeneratedColumn<String>(
+    'factura_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES facturas (id)',
+    ),
+  );
+  static const VerificationMeta _facturaLineaIdMeta = const VerificationMeta(
+    'facturaLineaId',
+  );
+  @override
+  late final GeneratedColumn<String> facturaLineaId = GeneratedColumn<String>(
+    'factura_linea_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES factura_lineas (id)',
+    ),
+  );
+  static const VerificationMeta _presupuestoIdMeta = const VerificationMeta(
+    'presupuestoId',
+  );
+  @override
+  late final GeneratedColumn<String> presupuestoId = GeneratedColumn<String>(
+    'presupuesto_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES presupuestos (id)',
+    ),
+  );
+  static const VerificationMeta _lineaPresupuestoIdMeta =
+      const VerificationMeta('lineaPresupuestoId');
+  @override
+  late final GeneratedColumn<String> lineaPresupuestoId =
+      GeneratedColumn<String>(
+        'linea_presupuesto_id',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES lineas_presupuesto (id)',
+        ),
+      );
+  static const VerificationMeta _cantidadAplicadaMeta = const VerificationMeta(
+    'cantidadAplicada',
+  );
+  @override
+  late final GeneratedColumn<double> cantidadAplicada = GeneratedColumn<double>(
+    'cantidad_aplicada',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _baseAplicadaMeta = const VerificationMeta(
+    'baseAplicada',
+  );
+  @override
+  late final GeneratedColumn<double> baseAplicada = GeneratedColumn<double>(
+    'base_aplicada',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _certificacionOrigenIdMeta =
+      const VerificationMeta('certificacionOrigenId');
+  @override
+  late final GeneratedColumn<String> certificacionOrigenId =
+      GeneratedColumn<String>(
+        'certificacion_origen_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES certificaciones (id)',
+        ),
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    facturaId,
+    facturaLineaId,
+    presupuestoId,
+    lineaPresupuestoId,
+    cantidadAplicada,
+    baseAplicada,
+    certificacionOrigenId,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'factura_asignaciones_presupuesto';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FacturaAsignacionesPresupuestoData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('factura_id')) {
+      context.handle(
+        _facturaIdMeta,
+        facturaId.isAcceptableOrUnknown(data['factura_id']!, _facturaIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_facturaIdMeta);
+    }
+    if (data.containsKey('factura_linea_id')) {
+      context.handle(
+        _facturaLineaIdMeta,
+        facturaLineaId.isAcceptableOrUnknown(
+          data['factura_linea_id']!,
+          _facturaLineaIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_facturaLineaIdMeta);
+    }
+    if (data.containsKey('presupuesto_id')) {
+      context.handle(
+        _presupuestoIdMeta,
+        presupuestoId.isAcceptableOrUnknown(
+          data['presupuesto_id']!,
+          _presupuestoIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_presupuestoIdMeta);
+    }
+    if (data.containsKey('linea_presupuesto_id')) {
+      context.handle(
+        _lineaPresupuestoIdMeta,
+        lineaPresupuestoId.isAcceptableOrUnknown(
+          data['linea_presupuesto_id']!,
+          _lineaPresupuestoIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_lineaPresupuestoIdMeta);
+    }
+    if (data.containsKey('cantidad_aplicada')) {
+      context.handle(
+        _cantidadAplicadaMeta,
+        cantidadAplicada.isAcceptableOrUnknown(
+          data['cantidad_aplicada']!,
+          _cantidadAplicadaMeta,
+        ),
+      );
+    }
+    if (data.containsKey('base_aplicada')) {
+      context.handle(
+        _baseAplicadaMeta,
+        baseAplicada.isAcceptableOrUnknown(
+          data['base_aplicada']!,
+          _baseAplicadaMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_baseAplicadaMeta);
+    }
+    if (data.containsKey('certificacion_origen_id')) {
+      context.handle(
+        _certificacionOrigenIdMeta,
+        certificacionOrigenId.isAcceptableOrUnknown(
+          data['certificacion_origen_id']!,
+          _certificacionOrigenIdMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {facturaLineaId},
+  ];
+  @override
+  FacturaAsignacionesPresupuestoData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FacturaAsignacionesPresupuestoData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      facturaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}factura_id'],
+      )!,
+      facturaLineaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}factura_linea_id'],
+      )!,
+      presupuestoId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}presupuesto_id'],
+      )!,
+      lineaPresupuestoId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}linea_presupuesto_id'],
+      )!,
+      cantidadAplicada: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}cantidad_aplicada'],
+      ),
+      baseAplicada: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}base_aplicada'],
+      )!,
+      certificacionOrigenId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}certificacion_origen_id'],
+      ),
+    );
+  }
+
+  @override
+  $FacturaAsignacionesPresupuestoTable createAlias(String alias) {
+    return $FacturaAsignacionesPresupuestoTable(attachedDatabase, alias);
+  }
+}
+
+class FacturaAsignacionesPresupuestoData extends DataClass
+    implements Insertable<FacturaAsignacionesPresupuestoData> {
+  final String id;
+  final String facturaId;
+  final String facturaLineaId;
+  final String presupuestoId;
+  final String lineaPresupuestoId;
+  final double? cantidadAplicada;
+  final double baseAplicada;
+  final String? certificacionOrigenId;
+  const FacturaAsignacionesPresupuestoData({
+    required this.id,
+    required this.facturaId,
+    required this.facturaLineaId,
+    required this.presupuestoId,
+    required this.lineaPresupuestoId,
+    this.cantidadAplicada,
+    required this.baseAplicada,
+    this.certificacionOrigenId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['factura_id'] = Variable<String>(facturaId);
+    map['factura_linea_id'] = Variable<String>(facturaLineaId);
+    map['presupuesto_id'] = Variable<String>(presupuestoId);
+    map['linea_presupuesto_id'] = Variable<String>(lineaPresupuestoId);
+    if (!nullToAbsent || cantidadAplicada != null) {
+      map['cantidad_aplicada'] = Variable<double>(cantidadAplicada);
+    }
+    map['base_aplicada'] = Variable<double>(baseAplicada);
+    if (!nullToAbsent || certificacionOrigenId != null) {
+      map['certificacion_origen_id'] = Variable<String>(certificacionOrigenId);
+    }
+    return map;
+  }
+
+  FacturaAsignacionesPresupuestoCompanion toCompanion(bool nullToAbsent) {
+    return FacturaAsignacionesPresupuestoCompanion(
+      id: Value(id),
+      facturaId: Value(facturaId),
+      facturaLineaId: Value(facturaLineaId),
+      presupuestoId: Value(presupuestoId),
+      lineaPresupuestoId: Value(lineaPresupuestoId),
+      cantidadAplicada: cantidadAplicada == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cantidadAplicada),
+      baseAplicada: Value(baseAplicada),
+      certificacionOrigenId: certificacionOrigenId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(certificacionOrigenId),
+    );
+  }
+
+  factory FacturaAsignacionesPresupuestoData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FacturaAsignacionesPresupuestoData(
+      id: serializer.fromJson<String>(json['id']),
+      facturaId: serializer.fromJson<String>(json['facturaId']),
+      facturaLineaId: serializer.fromJson<String>(json['facturaLineaId']),
+      presupuestoId: serializer.fromJson<String>(json['presupuestoId']),
+      lineaPresupuestoId: serializer.fromJson<String>(
+        json['lineaPresupuestoId'],
+      ),
+      cantidadAplicada: serializer.fromJson<double?>(json['cantidadAplicada']),
+      baseAplicada: serializer.fromJson<double>(json['baseAplicada']),
+      certificacionOrigenId: serializer.fromJson<String?>(
+        json['certificacionOrigenId'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'facturaId': serializer.toJson<String>(facturaId),
+      'facturaLineaId': serializer.toJson<String>(facturaLineaId),
+      'presupuestoId': serializer.toJson<String>(presupuestoId),
+      'lineaPresupuestoId': serializer.toJson<String>(lineaPresupuestoId),
+      'cantidadAplicada': serializer.toJson<double?>(cantidadAplicada),
+      'baseAplicada': serializer.toJson<double>(baseAplicada),
+      'certificacionOrigenId': serializer.toJson<String?>(
+        certificacionOrigenId,
+      ),
+    };
+  }
+
+  FacturaAsignacionesPresupuestoData copyWith({
+    String? id,
+    String? facturaId,
+    String? facturaLineaId,
+    String? presupuestoId,
+    String? lineaPresupuestoId,
+    Value<double?> cantidadAplicada = const Value.absent(),
+    double? baseAplicada,
+    Value<String?> certificacionOrigenId = const Value.absent(),
+  }) => FacturaAsignacionesPresupuestoData(
+    id: id ?? this.id,
+    facturaId: facturaId ?? this.facturaId,
+    facturaLineaId: facturaLineaId ?? this.facturaLineaId,
+    presupuestoId: presupuestoId ?? this.presupuestoId,
+    lineaPresupuestoId: lineaPresupuestoId ?? this.lineaPresupuestoId,
+    cantidadAplicada: cantidadAplicada.present
+        ? cantidadAplicada.value
+        : this.cantidadAplicada,
+    baseAplicada: baseAplicada ?? this.baseAplicada,
+    certificacionOrigenId: certificacionOrigenId.present
+        ? certificacionOrigenId.value
+        : this.certificacionOrigenId,
+  );
+  FacturaAsignacionesPresupuestoData copyWithCompanion(
+    FacturaAsignacionesPresupuestoCompanion data,
+  ) {
+    return FacturaAsignacionesPresupuestoData(
+      id: data.id.present ? data.id.value : this.id,
+      facturaId: data.facturaId.present ? data.facturaId.value : this.facturaId,
+      facturaLineaId: data.facturaLineaId.present
+          ? data.facturaLineaId.value
+          : this.facturaLineaId,
+      presupuestoId: data.presupuestoId.present
+          ? data.presupuestoId.value
+          : this.presupuestoId,
+      lineaPresupuestoId: data.lineaPresupuestoId.present
+          ? data.lineaPresupuestoId.value
+          : this.lineaPresupuestoId,
+      cantidadAplicada: data.cantidadAplicada.present
+          ? data.cantidadAplicada.value
+          : this.cantidadAplicada,
+      baseAplicada: data.baseAplicada.present
+          ? data.baseAplicada.value
+          : this.baseAplicada,
+      certificacionOrigenId: data.certificacionOrigenId.present
+          ? data.certificacionOrigenId.value
+          : this.certificacionOrigenId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FacturaAsignacionesPresupuestoData(')
+          ..write('id: $id, ')
+          ..write('facturaId: $facturaId, ')
+          ..write('facturaLineaId: $facturaLineaId, ')
+          ..write('presupuestoId: $presupuestoId, ')
+          ..write('lineaPresupuestoId: $lineaPresupuestoId, ')
+          ..write('cantidadAplicada: $cantidadAplicada, ')
+          ..write('baseAplicada: $baseAplicada, ')
+          ..write('certificacionOrigenId: $certificacionOrigenId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    facturaId,
+    facturaLineaId,
+    presupuestoId,
+    lineaPresupuestoId,
+    cantidadAplicada,
+    baseAplicada,
+    certificacionOrigenId,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FacturaAsignacionesPresupuestoData &&
+          other.id == this.id &&
+          other.facturaId == this.facturaId &&
+          other.facturaLineaId == this.facturaLineaId &&
+          other.presupuestoId == this.presupuestoId &&
+          other.lineaPresupuestoId == this.lineaPresupuestoId &&
+          other.cantidadAplicada == this.cantidadAplicada &&
+          other.baseAplicada == this.baseAplicada &&
+          other.certificacionOrigenId == this.certificacionOrigenId);
+}
+
+class FacturaAsignacionesPresupuestoCompanion
+    extends UpdateCompanion<FacturaAsignacionesPresupuestoData> {
+  final Value<String> id;
+  final Value<String> facturaId;
+  final Value<String> facturaLineaId;
+  final Value<String> presupuestoId;
+  final Value<String> lineaPresupuestoId;
+  final Value<double?> cantidadAplicada;
+  final Value<double> baseAplicada;
+  final Value<String?> certificacionOrigenId;
+  final Value<int> rowid;
+  const FacturaAsignacionesPresupuestoCompanion({
+    this.id = const Value.absent(),
+    this.facturaId = const Value.absent(),
+    this.facturaLineaId = const Value.absent(),
+    this.presupuestoId = const Value.absent(),
+    this.lineaPresupuestoId = const Value.absent(),
+    this.cantidadAplicada = const Value.absent(),
+    this.baseAplicada = const Value.absent(),
+    this.certificacionOrigenId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FacturaAsignacionesPresupuestoCompanion.insert({
+    required String id,
+    required String facturaId,
+    required String facturaLineaId,
+    required String presupuestoId,
+    required String lineaPresupuestoId,
+    this.cantidadAplicada = const Value.absent(),
+    required double baseAplicada,
+    this.certificacionOrigenId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       facturaId = Value(facturaId),
+       facturaLineaId = Value(facturaLineaId),
+       presupuestoId = Value(presupuestoId),
+       lineaPresupuestoId = Value(lineaPresupuestoId),
+       baseAplicada = Value(baseAplicada);
+  static Insertable<FacturaAsignacionesPresupuestoData> custom({
+    Expression<String>? id,
+    Expression<String>? facturaId,
+    Expression<String>? facturaLineaId,
+    Expression<String>? presupuestoId,
+    Expression<String>? lineaPresupuestoId,
+    Expression<double>? cantidadAplicada,
+    Expression<double>? baseAplicada,
+    Expression<String>? certificacionOrigenId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (facturaId != null) 'factura_id': facturaId,
+      if (facturaLineaId != null) 'factura_linea_id': facturaLineaId,
+      if (presupuestoId != null) 'presupuesto_id': presupuestoId,
+      if (lineaPresupuestoId != null)
+        'linea_presupuesto_id': lineaPresupuestoId,
+      if (cantidadAplicada != null) 'cantidad_aplicada': cantidadAplicada,
+      if (baseAplicada != null) 'base_aplicada': baseAplicada,
+      if (certificacionOrigenId != null)
+        'certificacion_origen_id': certificacionOrigenId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FacturaAsignacionesPresupuestoCompanion copyWith({
+    Value<String>? id,
+    Value<String>? facturaId,
+    Value<String>? facturaLineaId,
+    Value<String>? presupuestoId,
+    Value<String>? lineaPresupuestoId,
+    Value<double?>? cantidadAplicada,
+    Value<double>? baseAplicada,
+    Value<String?>? certificacionOrigenId,
+    Value<int>? rowid,
+  }) {
+    return FacturaAsignacionesPresupuestoCompanion(
+      id: id ?? this.id,
+      facturaId: facturaId ?? this.facturaId,
+      facturaLineaId: facturaLineaId ?? this.facturaLineaId,
+      presupuestoId: presupuestoId ?? this.presupuestoId,
+      lineaPresupuestoId: lineaPresupuestoId ?? this.lineaPresupuestoId,
+      cantidadAplicada: cantidadAplicada ?? this.cantidadAplicada,
+      baseAplicada: baseAplicada ?? this.baseAplicada,
+      certificacionOrigenId:
+          certificacionOrigenId ?? this.certificacionOrigenId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (facturaId.present) {
+      map['factura_id'] = Variable<String>(facturaId.value);
+    }
+    if (facturaLineaId.present) {
+      map['factura_linea_id'] = Variable<String>(facturaLineaId.value);
+    }
+    if (presupuestoId.present) {
+      map['presupuesto_id'] = Variable<String>(presupuestoId.value);
+    }
+    if (lineaPresupuestoId.present) {
+      map['linea_presupuesto_id'] = Variable<String>(lineaPresupuestoId.value);
+    }
+    if (cantidadAplicada.present) {
+      map['cantidad_aplicada'] = Variable<double>(cantidadAplicada.value);
+    }
+    if (baseAplicada.present) {
+      map['base_aplicada'] = Variable<double>(baseAplicada.value);
+    }
+    if (certificacionOrigenId.present) {
+      map['certificacion_origen_id'] = Variable<String>(
+        certificacionOrigenId.value,
+      );
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FacturaAsignacionesPresupuestoCompanion(')
+          ..write('id: $id, ')
+          ..write('facturaId: $facturaId, ')
+          ..write('facturaLineaId: $facturaLineaId, ')
+          ..write('presupuestoId: $presupuestoId, ')
+          ..write('lineaPresupuestoId: $lineaPresupuestoId, ')
+          ..write('cantidadAplicada: $cantidadAplicada, ')
+          ..write('baseAplicada: $baseAplicada, ')
+          ..write('certificacionOrigenId: $certificacionOrigenId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -10744,6 +11334,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final $DocumentosTable documentos = $DocumentosTable(this);
   late final $TimelineEventsTable timelineEvents = $TimelineEventsTable(this);
+  late final $FacturaAsignacionesPresupuestoTable
+  facturaAsignacionesPresupuesto = $FacturaAsignacionesPresupuestoTable(this);
   late final ExpedientesDao expedientesDao = ExpedientesDao(
     this as AppDatabase,
   );
@@ -10772,6 +11364,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final TimelineEventsDao timelineEventsDao = TimelineEventsDao(
     this as AppDatabase,
   );
+  late final FacturaAsignacionesPresupuestoDao
+  facturaAsignacionesPresupuestoDao = FacturaAsignacionesPresupuestoDao(
+    this as AppDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -10790,6 +11386,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     certificaciones,
     documentos,
     timelineEvents,
+    facturaAsignacionesPresupuesto,
   ];
 }
 
@@ -12515,6 +13112,33 @@ final class $$PresupuestosTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<
+    $FacturaAsignacionesPresupuestoTable,
+    List<FacturaAsignacionesPresupuestoData>
+  >
+  _facturaAsignacionesPresupuestoRefsTable(
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.facturaAsignacionesPresupuesto,
+    aliasName:
+        'presupuestos__id__factura_asignaciones_presupuesto__presupuesto_id',
+  );
+
+  $$FacturaAsignacionesPresupuestoTableProcessedTableManager
+  get facturaAsignacionesPresupuestoRefs {
+    final manager = $$FacturaAsignacionesPresupuestoTableTableManager(
+      $_db,
+      $_db.facturaAsignacionesPresupuesto,
+    ).filter((f) => f.presupuestoId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _facturaAsignacionesPresupuestoRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$PresupuestosTableFilterComposer
@@ -12676,6 +13300,35 @@ class $$PresupuestosTableFilterComposer
                 $removeJoinBuilderFromRootComposer,
           ),
     );
+    return f(composer);
+  }
+
+  Expression<bool> facturaAsignacionesPresupuestoRefs(
+    Expression<bool> Function(
+      $$FacturaAsignacionesPresupuestoTableFilterComposer f,
+    )
+    f,
+  ) {
+    final $$FacturaAsignacionesPresupuestoTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.facturaAsignacionesPresupuesto,
+          getReferencedColumn: (t) => t.presupuestoId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$FacturaAsignacionesPresupuestoTableFilterComposer(
+                $db: $db,
+                $table: $db.facturaAsignacionesPresupuesto,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
     return f(composer);
   }
 }
@@ -12918,6 +13571,35 @@ class $$PresupuestosTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> facturaAsignacionesPresupuestoRefs<T extends Object>(
+    Expression<T> Function(
+      $$FacturaAsignacionesPresupuestoTableAnnotationComposer a,
+    )
+    f,
+  ) {
+    final $$FacturaAsignacionesPresupuestoTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.facturaAsignacionesPresupuesto,
+          getReferencedColumn: (t) => t.presupuestoId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$FacturaAsignacionesPresupuestoTableAnnotationComposer(
+                $db: $db,
+                $table: $db.facturaAsignacionesPresupuesto,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$PresupuestosTableTableManager
@@ -12938,6 +13620,7 @@ class $$PresupuestosTableTableManager
             bool lineasPresupuestoRefs,
             bool facturasRefs,
             bool certificacionesRefs,
+            bool facturaAsignacionesPresupuestoRefs,
           })
         > {
   $$PresupuestosTableTableManager(_$AppDatabase db, $PresupuestosTable table)
@@ -13025,6 +13708,7 @@ class $$PresupuestosTableTableManager
                 lineasPresupuestoRefs = false,
                 facturasRefs = false,
                 certificacionesRefs = false,
+                facturaAsignacionesPresupuestoRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -13032,6 +13716,8 @@ class $$PresupuestosTableTableManager
                     if (lineasPresupuestoRefs) db.lineasPresupuesto,
                     if (facturasRefs) db.facturas,
                     if (certificacionesRefs) db.certificaciones,
+                    if (facturaAsignacionesPresupuestoRefs)
+                      db.facturaAsignacionesPresupuesto,
                   ],
                   addJoins:
                       <
@@ -13132,6 +13818,27 @@ class $$PresupuestosTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (facturaAsignacionesPresupuestoRefs)
+                        await $_getPrefetchedData<
+                          Presupuesto,
+                          $PresupuestosTable,
+                          FacturaAsignacionesPresupuestoData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PresupuestosTableReferences
+                              ._facturaAsignacionesPresupuestoRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PresupuestosTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).facturaAsignacionesPresupuestoRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.presupuestoId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -13157,6 +13864,7 @@ typedef $$PresupuestosTableProcessedTableManager =
         bool lineasPresupuestoRefs,
         bool facturasRefs,
         bool certificacionesRefs,
+        bool facturaAsignacionesPresupuestoRefs,
       })
     >;
 typedef $$LineasPresupuestoTableCreateCompanionBuilder =
@@ -13208,6 +13916,36 @@ final class $$LineasPresupuestoTableReferences
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $FacturaAsignacionesPresupuestoTable,
+    List<FacturaAsignacionesPresupuestoData>
+  >
+  _facturaAsignacionesPresupuestoRefsTable(
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.facturaAsignacionesPresupuesto,
+    aliasName:
+        'lineas_presupuesto__id__factura_asignaciones_presupuesto__linea_presupuesto_id',
+  );
+
+  $$FacturaAsignacionesPresupuestoTableProcessedTableManager
+  get facturaAsignacionesPresupuestoRefs {
+    final manager =
+        $$FacturaAsignacionesPresupuestoTableTableManager(
+          $_db,
+          $_db.facturaAsignacionesPresupuesto,
+        ).filter(
+          (f) => f.lineaPresupuestoId.id.sqlEquals($_itemColumn<String>('id')!),
+        );
+
+    final cache = $_typedResult.readTableOrNull(
+      _facturaAsignacionesPresupuestoRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
     );
   }
 }
@@ -13267,6 +14005,35 @@ class $$LineasPresupuestoTableFilterComposer
           ),
     );
     return composer;
+  }
+
+  Expression<bool> facturaAsignacionesPresupuestoRefs(
+    Expression<bool> Function(
+      $$FacturaAsignacionesPresupuestoTableFilterComposer f,
+    )
+    f,
+  ) {
+    final $$FacturaAsignacionesPresupuestoTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.facturaAsignacionesPresupuesto,
+          getReferencedColumn: (t) => t.lineaPresupuestoId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$FacturaAsignacionesPresupuestoTableFilterComposer(
+                $db: $db,
+                $table: $db.facturaAsignacionesPresupuesto,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
   }
 }
 
@@ -13376,6 +14143,35 @@ class $$LineasPresupuestoTableAnnotationComposer
     );
     return composer;
   }
+
+  Expression<T> facturaAsignacionesPresupuestoRefs<T extends Object>(
+    Expression<T> Function(
+      $$FacturaAsignacionesPresupuestoTableAnnotationComposer a,
+    )
+    f,
+  ) {
+    final $$FacturaAsignacionesPresupuestoTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.facturaAsignacionesPresupuesto,
+          getReferencedColumn: (t) => t.lineaPresupuestoId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$FacturaAsignacionesPresupuestoTableAnnotationComposer(
+                $db: $db,
+                $table: $db.facturaAsignacionesPresupuesto,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$LineasPresupuestoTableTableManager
@@ -13391,7 +14187,10 @@ class $$LineasPresupuestoTableTableManager
           $$LineasPresupuestoTableUpdateCompanionBuilder,
           (LineasPresupuestoData, $$LineasPresupuestoTableReferences),
           LineasPresupuestoData,
-          PrefetchHooks Function({bool presupuestoId})
+          PrefetchHooks Function({
+            bool presupuestoId,
+            bool facturaAsignacionesPresupuestoRefs,
+          })
         > {
   $$LineasPresupuestoTableTableManager(
     _$AppDatabase db,
@@ -13453,49 +14252,78 @@ class $$LineasPresupuestoTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({presupuestoId = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [],
-              addJoins:
-                  <
-                    T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic
-                    >
-                  >(state) {
-                    if (presupuestoId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.presupuestoId,
-                                referencedTable:
-                                    $$LineasPresupuestoTableReferences
-                                        ._presupuestoIdTable(db),
-                                referencedColumn:
-                                    $$LineasPresupuestoTableReferences
-                                        ._presupuestoIdTable(db)
-                                        .id,
-                              )
-                              as T;
-                    }
+          prefetchHooksCallback:
+              ({
+                presupuestoId = false,
+                facturaAsignacionesPresupuestoRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (facturaAsignacionesPresupuestoRefs)
+                      db.facturaAsignacionesPresupuesto,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (presupuestoId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.presupuestoId,
+                                    referencedTable:
+                                        $$LineasPresupuestoTableReferences
+                                            ._presupuestoIdTable(db),
+                                    referencedColumn:
+                                        $$LineasPresupuestoTableReferences
+                                            ._presupuestoIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
 
-                    return state;
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (facturaAsignacionesPresupuestoRefs)
+                        await $_getPrefetchedData<
+                          LineasPresupuestoData,
+                          $LineasPresupuestoTable,
+                          FacturaAsignacionesPresupuestoData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$LineasPresupuestoTableReferences
+                              ._facturaAsignacionesPresupuestoRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$LineasPresupuestoTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).facturaAsignacionesPresupuestoRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.lineaPresupuestoId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
                   },
-              getPrefetchedDataCallback: (items) async {
-                return [];
+                );
               },
-            );
-          },
         ),
       );
 }
@@ -13512,7 +14340,10 @@ typedef $$LineasPresupuestoTableProcessedTableManager =
       $$LineasPresupuestoTableUpdateCompanionBuilder,
       (LineasPresupuestoData, $$LineasPresupuestoTableReferences),
       LineasPresupuestoData,
-      PrefetchHooks Function({bool presupuestoId})
+      PrefetchHooks Function({
+        bool presupuestoId,
+        bool facturaAsignacionesPresupuestoRefs,
+      })
     >;
 typedef $$EmpresaConfiguracionTableCreateCompanionBuilder =
     EmpresaConfiguracionCompanion Function({
@@ -14002,6 +14833,31 @@ final class $$FacturasTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<
+    $FacturaAsignacionesPresupuestoTable,
+    List<FacturaAsignacionesPresupuestoData>
+  >
+  _facturaAsignacionesPresupuestoRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.facturaAsignacionesPresupuesto,
+        aliasName: 'facturas__id__factura_asignaciones_presupuesto__factura_id',
+      );
+
+  $$FacturaAsignacionesPresupuestoTableProcessedTableManager
+  get facturaAsignacionesPresupuestoRefs {
+    final manager = $$FacturaAsignacionesPresupuestoTableTableManager(
+      $_db,
+      $_db.facturaAsignacionesPresupuesto,
+    ).filter((f) => f.facturaId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _facturaAsignacionesPresupuestoRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$FacturasTableFilterComposer
@@ -14271,6 +15127,35 @@ class $$FacturasTableFilterComposer
                 $removeJoinBuilderFromRootComposer,
           ),
     );
+    return f(composer);
+  }
+
+  Expression<bool> facturaAsignacionesPresupuestoRefs(
+    Expression<bool> Function(
+      $$FacturaAsignacionesPresupuestoTableFilterComposer f,
+    )
+    f,
+  ) {
+    final $$FacturaAsignacionesPresupuestoTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.facturaAsignacionesPresupuesto,
+          getReferencedColumn: (t) => t.facturaId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$FacturaAsignacionesPresupuestoTableFilterComposer(
+                $db: $db,
+                $table: $db.facturaAsignacionesPresupuesto,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
     return f(composer);
   }
 }
@@ -14753,6 +15638,35 @@ class $$FacturasTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> facturaAsignacionesPresupuestoRefs<T extends Object>(
+    Expression<T> Function(
+      $$FacturaAsignacionesPresupuestoTableAnnotationComposer a,
+    )
+    f,
+  ) {
+    final $$FacturaAsignacionesPresupuestoTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.facturaAsignacionesPresupuesto,
+          getReferencedColumn: (t) => t.facturaId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$FacturaAsignacionesPresupuestoTableAnnotationComposer(
+                $db: $db,
+                $table: $db.facturaAsignacionesPresupuesto,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$FacturasTableTableManager
@@ -14773,6 +15687,7 @@ class $$FacturasTableTableManager
             bool presupuestoOrigenId,
             bool facturaLineasRefs,
             bool cobrosRefs,
+            bool facturaAsignacionesPresupuestoRefs,
           })
         > {
   $$FacturasTableTableManager(_$AppDatabase db, $FacturasTable table)
@@ -14956,12 +15871,15 @@ class $$FacturasTableTableManager
                 presupuestoOrigenId = false,
                 facturaLineasRefs = false,
                 cobrosRefs = false,
+                facturaAsignacionesPresupuestoRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (facturaLineasRefs) db.facturaLineas,
                     if (cobrosRefs) db.cobros,
+                    if (facturaAsignacionesPresupuestoRefs)
+                      db.facturaAsignacionesPresupuesto,
                   ],
                   addJoins:
                       <
@@ -15052,6 +15970,27 @@ class $$FacturasTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (facturaAsignacionesPresupuestoRefs)
+                        await $_getPrefetchedData<
+                          Factura,
+                          $FacturasTable,
+                          FacturaAsignacionesPresupuestoData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$FacturasTableReferences
+                              ._facturaAsignacionesPresupuestoRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$FacturasTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).facturaAsignacionesPresupuestoRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.facturaId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -15077,6 +16016,7 @@ typedef $$FacturasTableProcessedTableManager =
         bool presupuestoOrigenId,
         bool facturaLineasRefs,
         bool cobrosRefs,
+        bool facturaAsignacionesPresupuestoRefs,
       })
     >;
 typedef $$FacturaLineasTableCreateCompanionBuilder =
@@ -15126,6 +16066,33 @@ final class $$FacturaLineasTableReferences
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $FacturaAsignacionesPresupuestoTable,
+    List<FacturaAsignacionesPresupuestoData>
+  >
+  _facturaAsignacionesPresupuestoRefsTable(
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.facturaAsignacionesPresupuesto,
+    aliasName:
+        'factura_lineas__id__factura_asignaciones_presupuesto__factura_linea_id',
+  );
+
+  $$FacturaAsignacionesPresupuestoTableProcessedTableManager
+  get facturaAsignacionesPresupuestoRefs {
+    final manager = $$FacturaAsignacionesPresupuestoTableTableManager(
+      $_db,
+      $_db.facturaAsignacionesPresupuesto,
+    ).filter((f) => f.facturaLineaId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _facturaAsignacionesPresupuestoRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
     );
   }
 }
@@ -15195,6 +16162,35 @@ class $$FacturaLineasTableFilterComposer
           ),
     );
     return composer;
+  }
+
+  Expression<bool> facturaAsignacionesPresupuestoRefs(
+    Expression<bool> Function(
+      $$FacturaAsignacionesPresupuestoTableFilterComposer f,
+    )
+    f,
+  ) {
+    final $$FacturaAsignacionesPresupuestoTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.facturaAsignacionesPresupuesto,
+          getReferencedColumn: (t) => t.facturaLineaId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$FacturaAsignacionesPresupuestoTableFilterComposer(
+                $db: $db,
+                $table: $db.facturaAsignacionesPresupuesto,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
   }
 }
 
@@ -15322,6 +16318,35 @@ class $$FacturaLineasTableAnnotationComposer
     );
     return composer;
   }
+
+  Expression<T> facturaAsignacionesPresupuestoRefs<T extends Object>(
+    Expression<T> Function(
+      $$FacturaAsignacionesPresupuestoTableAnnotationComposer a,
+    )
+    f,
+  ) {
+    final $$FacturaAsignacionesPresupuestoTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.facturaAsignacionesPresupuesto,
+          getReferencedColumn: (t) => t.facturaLineaId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$FacturaAsignacionesPresupuestoTableAnnotationComposer(
+                $db: $db,
+                $table: $db.facturaAsignacionesPresupuesto,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$FacturaLineasTableTableManager
@@ -15337,7 +16362,10 @@ class $$FacturaLineasTableTableManager
           $$FacturaLineasTableUpdateCompanionBuilder,
           (FacturaLinea, $$FacturaLineasTableReferences),
           FacturaLinea,
-          PrefetchHooks Function({bool facturaId})
+          PrefetchHooks Function({
+            bool facturaId,
+            bool facturaAsignacionesPresupuestoRefs,
+          })
         > {
   $$FacturaLineasTableTableManager(_$AppDatabase db, $FacturaLineasTable table)
     : super(
@@ -15402,47 +16430,78 @@ class $$FacturaLineasTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({facturaId = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [],
-              addJoins:
-                  <
-                    T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic
-                    >
-                  >(state) {
-                    if (facturaId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.facturaId,
-                                referencedTable: $$FacturaLineasTableReferences
-                                    ._facturaIdTable(db),
-                                referencedColumn: $$FacturaLineasTableReferences
-                                    ._facturaIdTable(db)
-                                    .id,
-                              )
-                              as T;
-                    }
+          prefetchHooksCallback:
+              ({
+                facturaId = false,
+                facturaAsignacionesPresupuestoRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (facturaAsignacionesPresupuestoRefs)
+                      db.facturaAsignacionesPresupuesto,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (facturaId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.facturaId,
+                                    referencedTable:
+                                        $$FacturaLineasTableReferences
+                                            ._facturaIdTable(db),
+                                    referencedColumn:
+                                        $$FacturaLineasTableReferences
+                                            ._facturaIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
 
-                    return state;
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (facturaAsignacionesPresupuestoRefs)
+                        await $_getPrefetchedData<
+                          FacturaLinea,
+                          $FacturaLineasTable,
+                          FacturaAsignacionesPresupuestoData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$FacturaLineasTableReferences
+                              ._facturaAsignacionesPresupuestoRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$FacturaLineasTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).facturaAsignacionesPresupuestoRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.facturaLineaId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
                   },
-              getPrefetchedDataCallback: (items) async {
-                return [];
+                );
               },
-            );
-          },
         ),
       );
 }
@@ -15459,7 +16518,10 @@ typedef $$FacturaLineasTableProcessedTableManager =
       $$FacturaLineasTableUpdateCompanionBuilder,
       (FacturaLinea, $$FacturaLineasTableReferences),
       FacturaLinea,
-      PrefetchHooks Function({bool facturaId})
+      PrefetchHooks Function({
+        bool facturaId,
+        bool facturaAsignacionesPresupuestoRefs,
+      })
     >;
 typedef $$CobrosTableCreateCompanionBuilder =
     CobrosCompanion Function({
@@ -17013,6 +18075,37 @@ final class $$CertificacionesTableReferences
       manager.$state.copyWith(prefetchedData: [item]),
     );
   }
+
+  static MultiTypedResultKey<
+    $FacturaAsignacionesPresupuestoTable,
+    List<FacturaAsignacionesPresupuestoData>
+  >
+  _facturaAsignacionesPresupuestoRefsTable(
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.facturaAsignacionesPresupuesto,
+    aliasName:
+        'certificaciones__id__factura_asignaciones_presupuesto__certificacion_origen_id',
+  );
+
+  $$FacturaAsignacionesPresupuestoTableProcessedTableManager
+  get facturaAsignacionesPresupuestoRefs {
+    final manager =
+        $$FacturaAsignacionesPresupuestoTableTableManager(
+          $_db,
+          $_db.facturaAsignacionesPresupuesto,
+        ).filter(
+          (f) =>
+              f.certificacionOrigenId.id.sqlEquals($_itemColumn<String>('id')!),
+        );
+
+    final cache = $_typedResult.readTableOrNull(
+      _facturaAsignacionesPresupuestoRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$CertificacionesTableFilterComposer
@@ -17128,6 +18221,35 @@ class $$CertificacionesTableFilterComposer
           ),
     );
     return composer;
+  }
+
+  Expression<bool> facturaAsignacionesPresupuestoRefs(
+    Expression<bool> Function(
+      $$FacturaAsignacionesPresupuestoTableFilterComposer f,
+    )
+    f,
+  ) {
+    final $$FacturaAsignacionesPresupuestoTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.facturaAsignacionesPresupuesto,
+          getReferencedColumn: (t) => t.certificacionOrigenId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$FacturaAsignacionesPresupuestoTableFilterComposer(
+                $db: $db,
+                $table: $db.facturaAsignacionesPresupuesto,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
   }
 }
 
@@ -17351,6 +18473,35 @@ class $$CertificacionesTableAnnotationComposer
     );
     return composer;
   }
+
+  Expression<T> facturaAsignacionesPresupuestoRefs<T extends Object>(
+    Expression<T> Function(
+      $$FacturaAsignacionesPresupuestoTableAnnotationComposer a,
+    )
+    f,
+  ) {
+    final $$FacturaAsignacionesPresupuestoTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.facturaAsignacionesPresupuesto,
+          getReferencedColumn: (t) => t.certificacionOrigenId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$FacturaAsignacionesPresupuestoTableAnnotationComposer(
+                $db: $db,
+                $table: $db.facturaAsignacionesPresupuesto,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$CertificacionesTableTableManager
@@ -17366,7 +18517,11 @@ class $$CertificacionesTableTableManager
           $$CertificacionesTableUpdateCompanionBuilder,
           (Certificacione, $$CertificacionesTableReferences),
           Certificacione,
-          PrefetchHooks Function({bool expedienteId, bool presupuestoId})
+          PrefetchHooks Function({
+            bool expedienteId,
+            bool presupuestoId,
+            bool facturaAsignacionesPresupuestoRefs,
+          })
         > {
   $$CertificacionesTableTableManager(
     _$AppDatabase db,
@@ -17458,10 +18613,17 @@ class $$CertificacionesTableTableManager
               )
               .toList(),
           prefetchHooksCallback:
-              ({expedienteId = false, presupuestoId = false}) {
+              ({
+                expedienteId = false,
+                presupuestoId = false,
+                facturaAsignacionesPresupuestoRefs = false,
+              }) {
                 return PrefetchHooks(
                   db: db,
-                  explicitlyWatchedTables: [],
+                  explicitlyWatchedTables: [
+                    if (facturaAsignacionesPresupuestoRefs)
+                      db.facturaAsignacionesPresupuesto,
+                  ],
                   addJoins:
                       <
                         T extends TableManagerState<
@@ -17512,7 +18674,29 @@ class $$CertificacionesTableTableManager
                         return state;
                       },
                   getPrefetchedDataCallback: (items) async {
-                    return [];
+                    return [
+                      if (facturaAsignacionesPresupuestoRefs)
+                        await $_getPrefetchedData<
+                          Certificacione,
+                          $CertificacionesTable,
+                          FacturaAsignacionesPresupuestoData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$CertificacionesTableReferences
+                              ._facturaAsignacionesPresupuestoRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$CertificacionesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).facturaAsignacionesPresupuestoRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.certificacionOrigenId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
                   },
                 );
               },
@@ -17532,7 +18716,11 @@ typedef $$CertificacionesTableProcessedTableManager =
       $$CertificacionesTableUpdateCompanionBuilder,
       (Certificacione, $$CertificacionesTableReferences),
       Certificacione,
-      PrefetchHooks Function({bool expedienteId, bool presupuestoId})
+      PrefetchHooks Function({
+        bool expedienteId,
+        bool presupuestoId,
+        bool facturaAsignacionesPresupuestoRefs,
+      })
     >;
 typedef $$DocumentosTableCreateCompanionBuilder =
     DocumentosCompanion Function({
@@ -18403,6 +19591,799 @@ typedef $$TimelineEventsTableProcessedTableManager =
       TimelineEvent,
       PrefetchHooks Function({bool expedienteId})
     >;
+typedef $$FacturaAsignacionesPresupuestoTableCreateCompanionBuilder =
+    FacturaAsignacionesPresupuestoCompanion Function({
+      required String id,
+      required String facturaId,
+      required String facturaLineaId,
+      required String presupuestoId,
+      required String lineaPresupuestoId,
+      Value<double?> cantidadAplicada,
+      required double baseAplicada,
+      Value<String?> certificacionOrigenId,
+      Value<int> rowid,
+    });
+typedef $$FacturaAsignacionesPresupuestoTableUpdateCompanionBuilder =
+    FacturaAsignacionesPresupuestoCompanion Function({
+      Value<String> id,
+      Value<String> facturaId,
+      Value<String> facturaLineaId,
+      Value<String> presupuestoId,
+      Value<String> lineaPresupuestoId,
+      Value<double?> cantidadAplicada,
+      Value<double> baseAplicada,
+      Value<String?> certificacionOrigenId,
+      Value<int> rowid,
+    });
+
+final class $$FacturaAsignacionesPresupuestoTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $FacturaAsignacionesPresupuestoTable,
+          FacturaAsignacionesPresupuestoData
+        > {
+  $$FacturaAsignacionesPresupuestoTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $FacturasTable _facturaIdTable(_$AppDatabase db) =>
+      db.facturas.createAlias(
+        'factura_asignaciones_presupuesto__factura_id__facturas__id',
+      );
+
+  $$FacturasTableProcessedTableManager get facturaId {
+    final $_column = $_itemColumn<String>('factura_id')!;
+
+    final manager = $$FacturasTableTableManager(
+      $_db,
+      $_db.facturas,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_facturaIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $FacturaLineasTable _facturaLineaIdTable(
+    _$AppDatabase db,
+  ) => db.facturaLineas.createAlias(
+    'factura_asignaciones_presupuesto__factura_linea_id__factura_lineas__id',
+  );
+
+  $$FacturaLineasTableProcessedTableManager get facturaLineaId {
+    final $_column = $_itemColumn<String>('factura_linea_id')!;
+
+    final manager = $$FacturaLineasTableTableManager(
+      $_db,
+      $_db.facturaLineas,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_facturaLineaIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $PresupuestosTable _presupuestoIdTable(_$AppDatabase db) =>
+      db.presupuestos.createAlias(
+        'factura_asignaciones_presupuesto__presupuesto_id__presupuestos__id',
+      );
+
+  $$PresupuestosTableProcessedTableManager get presupuestoId {
+    final $_column = $_itemColumn<String>('presupuesto_id')!;
+
+    final manager = $$PresupuestosTableTableManager(
+      $_db,
+      $_db.presupuestos,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_presupuestoIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $LineasPresupuestoTable _lineaPresupuestoIdTable(
+    _$AppDatabase db,
+  ) => db.lineasPresupuesto.createAlias(
+    'factura_asignaciones_presupuesto__linea_presupuesto_id__lineas_presupuesto__id',
+  );
+
+  $$LineasPresupuestoTableProcessedTableManager get lineaPresupuestoId {
+    final $_column = $_itemColumn<String>('linea_presupuesto_id')!;
+
+    final manager = $$LineasPresupuestoTableTableManager(
+      $_db,
+      $_db.lineasPresupuesto,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_lineaPresupuestoIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $CertificacionesTable _certificacionOrigenIdTable(
+    _$AppDatabase db,
+  ) => db.certificaciones.createAlias(
+    'factura_asignaciones_presupuesto__certificacion_origen_id__certificaciones__id',
+  );
+
+  $$CertificacionesTableProcessedTableManager? get certificacionOrigenId {
+    final $_column = $_itemColumn<String>('certificacion_origen_id');
+    if ($_column == null) return null;
+    final manager = $$CertificacionesTableTableManager(
+      $_db,
+      $_db.certificaciones,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(
+      _certificacionOrigenIdTable($_db),
+    );
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$FacturaAsignacionesPresupuestoTableFilterComposer
+    extends Composer<_$AppDatabase, $FacturaAsignacionesPresupuestoTable> {
+  $$FacturaAsignacionesPresupuestoTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get cantidadAplicada => $composableBuilder(
+    column: $table.cantidadAplicada,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get baseAplicada => $composableBuilder(
+    column: $table.baseAplicada,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$FacturasTableFilterComposer get facturaId {
+    final $$FacturasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.facturaId,
+      referencedTable: $db.facturas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturasTableFilterComposer(
+            $db: $db,
+            $table: $db.facturas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$FacturaLineasTableFilterComposer get facturaLineaId {
+    final $$FacturaLineasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.facturaLineaId,
+      referencedTable: $db.facturaLineas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturaLineasTableFilterComposer(
+            $db: $db,
+            $table: $db.facturaLineas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PresupuestosTableFilterComposer get presupuestoId {
+    final $$PresupuestosTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.presupuestoId,
+      referencedTable: $db.presupuestos,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PresupuestosTableFilterComposer(
+            $db: $db,
+            $table: $db.presupuestos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$LineasPresupuestoTableFilterComposer get lineaPresupuestoId {
+    final $$LineasPresupuestoTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.lineaPresupuestoId,
+      referencedTable: $db.lineasPresupuesto,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LineasPresupuestoTableFilterComposer(
+            $db: $db,
+            $table: $db.lineasPresupuesto,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$CertificacionesTableFilterComposer get certificacionOrigenId {
+    final $$CertificacionesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.certificacionOrigenId,
+      referencedTable: $db.certificaciones,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CertificacionesTableFilterComposer(
+            $db: $db,
+            $table: $db.certificaciones,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FacturaAsignacionesPresupuestoTableOrderingComposer
+    extends Composer<_$AppDatabase, $FacturaAsignacionesPresupuestoTable> {
+  $$FacturaAsignacionesPresupuestoTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get cantidadAplicada => $composableBuilder(
+    column: $table.cantidadAplicada,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get baseAplicada => $composableBuilder(
+    column: $table.baseAplicada,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$FacturasTableOrderingComposer get facturaId {
+    final $$FacturasTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.facturaId,
+      referencedTable: $db.facturas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturasTableOrderingComposer(
+            $db: $db,
+            $table: $db.facturas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$FacturaLineasTableOrderingComposer get facturaLineaId {
+    final $$FacturaLineasTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.facturaLineaId,
+      referencedTable: $db.facturaLineas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturaLineasTableOrderingComposer(
+            $db: $db,
+            $table: $db.facturaLineas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PresupuestosTableOrderingComposer get presupuestoId {
+    final $$PresupuestosTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.presupuestoId,
+      referencedTable: $db.presupuestos,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PresupuestosTableOrderingComposer(
+            $db: $db,
+            $table: $db.presupuestos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$LineasPresupuestoTableOrderingComposer get lineaPresupuestoId {
+    final $$LineasPresupuestoTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.lineaPresupuestoId,
+      referencedTable: $db.lineasPresupuesto,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LineasPresupuestoTableOrderingComposer(
+            $db: $db,
+            $table: $db.lineasPresupuesto,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$CertificacionesTableOrderingComposer get certificacionOrigenId {
+    final $$CertificacionesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.certificacionOrigenId,
+      referencedTable: $db.certificaciones,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CertificacionesTableOrderingComposer(
+            $db: $db,
+            $table: $db.certificaciones,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FacturaAsignacionesPresupuestoTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FacturaAsignacionesPresupuestoTable> {
+  $$FacturaAsignacionesPresupuestoTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<double> get cantidadAplicada => $composableBuilder(
+    column: $table.cantidadAplicada,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get baseAplicada => $composableBuilder(
+    column: $table.baseAplicada,
+    builder: (column) => column,
+  );
+
+  $$FacturasTableAnnotationComposer get facturaId {
+    final $$FacturasTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.facturaId,
+      referencedTable: $db.facturas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.facturas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$FacturaLineasTableAnnotationComposer get facturaLineaId {
+    final $$FacturaLineasTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.facturaLineaId,
+      referencedTable: $db.facturaLineas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturaLineasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.facturaLineas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PresupuestosTableAnnotationComposer get presupuestoId {
+    final $$PresupuestosTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.presupuestoId,
+      referencedTable: $db.presupuestos,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PresupuestosTableAnnotationComposer(
+            $db: $db,
+            $table: $db.presupuestos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$LineasPresupuestoTableAnnotationComposer get lineaPresupuestoId {
+    final $$LineasPresupuestoTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.lineaPresupuestoId,
+          referencedTable: $db.lineasPresupuesto,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$LineasPresupuestoTableAnnotationComposer(
+                $db: $db,
+                $table: $db.lineasPresupuesto,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+
+  $$CertificacionesTableAnnotationComposer get certificacionOrigenId {
+    final $$CertificacionesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.certificacionOrigenId,
+      referencedTable: $db.certificaciones,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CertificacionesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.certificaciones,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FacturaAsignacionesPresupuestoTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FacturaAsignacionesPresupuestoTable,
+          FacturaAsignacionesPresupuestoData,
+          $$FacturaAsignacionesPresupuestoTableFilterComposer,
+          $$FacturaAsignacionesPresupuestoTableOrderingComposer,
+          $$FacturaAsignacionesPresupuestoTableAnnotationComposer,
+          $$FacturaAsignacionesPresupuestoTableCreateCompanionBuilder,
+          $$FacturaAsignacionesPresupuestoTableUpdateCompanionBuilder,
+          (
+            FacturaAsignacionesPresupuestoData,
+            $$FacturaAsignacionesPresupuestoTableReferences,
+          ),
+          FacturaAsignacionesPresupuestoData,
+          PrefetchHooks Function({
+            bool facturaId,
+            bool facturaLineaId,
+            bool presupuestoId,
+            bool lineaPresupuestoId,
+            bool certificacionOrigenId,
+          })
+        > {
+  $$FacturaAsignacionesPresupuestoTableTableManager(
+    _$AppDatabase db,
+    $FacturaAsignacionesPresupuestoTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FacturaAsignacionesPresupuestoTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$FacturaAsignacionesPresupuestoTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$FacturaAsignacionesPresupuestoTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> facturaId = const Value.absent(),
+                Value<String> facturaLineaId = const Value.absent(),
+                Value<String> presupuestoId = const Value.absent(),
+                Value<String> lineaPresupuestoId = const Value.absent(),
+                Value<double?> cantidadAplicada = const Value.absent(),
+                Value<double> baseAplicada = const Value.absent(),
+                Value<String?> certificacionOrigenId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FacturaAsignacionesPresupuestoCompanion(
+                id: id,
+                facturaId: facturaId,
+                facturaLineaId: facturaLineaId,
+                presupuestoId: presupuestoId,
+                lineaPresupuestoId: lineaPresupuestoId,
+                cantidadAplicada: cantidadAplicada,
+                baseAplicada: baseAplicada,
+                certificacionOrigenId: certificacionOrigenId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String facturaId,
+                required String facturaLineaId,
+                required String presupuestoId,
+                required String lineaPresupuestoId,
+                Value<double?> cantidadAplicada = const Value.absent(),
+                required double baseAplicada,
+                Value<String?> certificacionOrigenId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FacturaAsignacionesPresupuestoCompanion.insert(
+                id: id,
+                facturaId: facturaId,
+                facturaLineaId: facturaLineaId,
+                presupuestoId: presupuestoId,
+                lineaPresupuestoId: lineaPresupuestoId,
+                cantidadAplicada: cantidadAplicada,
+                baseAplicada: baseAplicada,
+                certificacionOrigenId: certificacionOrigenId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$FacturaAsignacionesPresupuestoTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                facturaId = false,
+                facturaLineaId = false,
+                presupuestoId = false,
+                lineaPresupuestoId = false,
+                certificacionOrigenId = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (facturaId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.facturaId,
+                                    referencedTable:
+                                        $$FacturaAsignacionesPresupuestoTableReferences
+                                            ._facturaIdTable(db),
+                                    referencedColumn:
+                                        $$FacturaAsignacionesPresupuestoTableReferences
+                                            ._facturaIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+                        if (facturaLineaId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.facturaLineaId,
+                                    referencedTable:
+                                        $$FacturaAsignacionesPresupuestoTableReferences
+                                            ._facturaLineaIdTable(db),
+                                    referencedColumn:
+                                        $$FacturaAsignacionesPresupuestoTableReferences
+                                            ._facturaLineaIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+                        if (presupuestoId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.presupuestoId,
+                                    referencedTable:
+                                        $$FacturaAsignacionesPresupuestoTableReferences
+                                            ._presupuestoIdTable(db),
+                                    referencedColumn:
+                                        $$FacturaAsignacionesPresupuestoTableReferences
+                                            ._presupuestoIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+                        if (lineaPresupuestoId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.lineaPresupuestoId,
+                                    referencedTable:
+                                        $$FacturaAsignacionesPresupuestoTableReferences
+                                            ._lineaPresupuestoIdTable(db),
+                                    referencedColumn:
+                                        $$FacturaAsignacionesPresupuestoTableReferences
+                                            ._lineaPresupuestoIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+                        if (certificacionOrigenId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.certificacionOrigenId,
+                                    referencedTable:
+                                        $$FacturaAsignacionesPresupuestoTableReferences
+                                            ._certificacionOrigenIdTable(db),
+                                    referencedColumn:
+                                        $$FacturaAsignacionesPresupuestoTableReferences
+                                            ._certificacionOrigenIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$FacturaAsignacionesPresupuestoTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FacturaAsignacionesPresupuestoTable,
+      FacturaAsignacionesPresupuestoData,
+      $$FacturaAsignacionesPresupuestoTableFilterComposer,
+      $$FacturaAsignacionesPresupuestoTableOrderingComposer,
+      $$FacturaAsignacionesPresupuestoTableAnnotationComposer,
+      $$FacturaAsignacionesPresupuestoTableCreateCompanionBuilder,
+      $$FacturaAsignacionesPresupuestoTableUpdateCompanionBuilder,
+      (
+        FacturaAsignacionesPresupuestoData,
+        $$FacturaAsignacionesPresupuestoTableReferences,
+      ),
+      FacturaAsignacionesPresupuestoData,
+      PrefetchHooks Function({
+        bool facturaId,
+        bool facturaLineaId,
+        bool presupuestoId,
+        bool lineaPresupuestoId,
+        bool certificacionOrigenId,
+      })
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -18433,4 +20414,10 @@ class $AppDatabaseManager {
       $$DocumentosTableTableManager(_db, _db.documentos);
   $$TimelineEventsTableTableManager get timelineEvents =>
       $$TimelineEventsTableTableManager(_db, _db.timelineEvents);
+  $$FacturaAsignacionesPresupuestoTableTableManager
+  get facturaAsignacionesPresupuesto =>
+      $$FacturaAsignacionesPresupuestoTableTableManager(
+        _db,
+        _db.facturaAsignacionesPresupuesto,
+      );
 }

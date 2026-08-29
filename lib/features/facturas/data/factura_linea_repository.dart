@@ -46,10 +46,18 @@ class FacturaNoPermiteModificarLineasException implements Exception {
   final EstadoFactura estado;
 }
 
+class FacturaParcialNoPermiteModificarLineasException implements Exception {
+  const FacturaParcialNoPermiteModificarLineasException(this.facturaId);
+  final String facturaId;
+}
+
 class FacturaLineaRepository {
   final AppDatabase database;
 
   FacturaLineaRepository(this.database);
+
+  Future<bool> esFacturaParcial(String facturaId) =>
+      database.facturaAsignacionesPresupuestoDao.existePorFactura(facturaId);
 
   double _calcularImporte({
     required double cantidad,
@@ -108,7 +116,7 @@ class FacturaLineaRepository {
           facturaId: facturaId,
         );
       }
-      _validarFacturaEditable(facturaId, factura.estado);
+      await _validarFacturaEditable(facturaId, factura.estado);
 
       final importe = _calcularImporte(
         cantidad: cantidad,
@@ -166,7 +174,7 @@ class FacturaLineaRepository {
           facturaId: facturaId,
         );
       }
-      _validarFacturaEditable(facturaId, factura.estado);
+      await _validarFacturaEditable(facturaId, factura.estado);
 
       final importe = _calcularImporte(
         cantidad: cantidad,
@@ -215,7 +223,7 @@ class FacturaLineaRepository {
           facturaId: facturaId,
         );
       }
-      _validarFacturaEditable(facturaId, factura.estado);
+      await _validarFacturaEditable(facturaId, factura.estado);
 
       final lineas = await database.facturaLineasDao.obtenerPorFactura(
         facturaId,
@@ -231,12 +239,20 @@ class FacturaLineaRepository {
     });
   }
 
-  void _validarFacturaEditable(String facturaId, EstadoFactura estado) {
+  Future<void> _validarFacturaEditable(
+    String facturaId,
+    EstadoFactura estado,
+  ) async {
     if (!estadoFacturaPermiteEditarLineas(estado)) {
       throw FacturaNoPermiteModificarLineasException(
         facturaId: facturaId,
         estado: estado,
       );
+    }
+    if (await database.facturaAsignacionesPresupuestoDao.existePorFactura(
+      facturaId,
+    )) {
+      throw FacturaParcialNoPermiteModificarLineasException(facturaId);
     }
   }
 

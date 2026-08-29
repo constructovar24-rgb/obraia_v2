@@ -5,7 +5,7 @@ Fotografía verificada el **29 de agosto de 2026**. Debe actualizarse cuando cam
 ## Base tecnológica
 
 - Flutter/Dart con Riverpod.
-- Drift sobre SQLite; 13 tablas y `schemaVersion` 19. Las conexiones activan claves foráneas.
+- Drift sobre SQLite; 14 tablas y `schemaVersion` 20. Las conexiones activan claves foráneas.
 - `pdf` y `printing` para generación documental.
 - Windows como plataforma prioritaria.
 - 171 archivos Dart en la auditoría de esta línea base.
@@ -21,7 +21,7 @@ La navegación real usa `MaterialApp`, `Navigator` y `MaterialPageRoute`. GoRout
 - La edición principal de Expedientes permite cambiar código, nombre y cliente, o quitarlo, preservando los demás campos.
 - El guardado y su evento único de Timeline son atómicos; ficha y listado se actualizan mediante streams.
 - 8 pruebas específicas de Expedientes superadas sobre SQLite en memoria.
-- Suite completa: 152 pruebas superadas.
+- Suite completa: 163 pruebas superadas.
 - `flutter analyze --no-pub`: sin incidencias.
 - `git diff --check`: sin errores en el cierre funcional; los avisos existentes corresponden a finales de línea de registradores generados.
 - Toolchain Windows instalada y validada: Flutter 3.47.1 stable, Dart 3.13.1, Visual Studio Community 2026 18.9.2 y Windows SDK 10.0.26100.0.
@@ -34,18 +34,18 @@ Con análisis, pruebas y compilación Windows superados, Expedientes queda técn
 
 ## Fase actual
 
-La fase 1 está cerrada. Las restauraciones admiten los esquemas 16, 17, 18 y 19, comprobados con integridad, relaciones y conservación de importes. Se rechazan versiones anteriores o futuras. La aceptación manual Windows con datos ficticios confirmó crear una copia, modificar un cliente y restaurar correctamente el estado anterior. Las pruebas automatizadas nunca tocaron datos reales.
+La fase 1 está cerrada. Las restauraciones admiten los esquemas 16, 17, 18, 19 y 20, comprobados con integridad, relaciones y conservación de importes. Se rechazan versiones anteriores o futuras. La aceptación manual Windows con datos ficticios confirmó crear una copia, modificar un cliente y restaurar correctamente el estado anterior. Las pruebas automatizadas nunca tocaron datos reales.
 
-La fase 2 está en curso. Cliente → Expediente → Presupuesto → Factura → Cobro está consolidado técnicamente: convertir un presupuesto aceptado crea un borrador sin número legal; al emitir, se asigna una serie anual `FAC-AAAA-NNNN` y se congelan cliente, empresa, presupuesto y expediente. Facturas y cobros comparten la política monetaria de dos decimales. Los cobros admiten parciales y múltiples movimientos sin sobrecobro; las correcciones económicas se registran como reversiones positivas vinculadas que conservan el original. Alta, reversión, saldo y estado se actualizan atómicamente. La eliminación física queda limitada al saneamiento legacy de facturas ya anuladas.
+La fase 2 está en curso. Cliente → Expediente → Presupuesto → Factura → Cobro está consolidado técnicamente. Un presupuesto aceptado admite múltiples facturas parciales por porcentaje, importe o partidas/cantidades; los borradores reservan base y las emitidas la consumen. Las asignaciones trazan cada línea de factura hasta su partida y controlan en céntimos el facturado, reservado y pendiente. Al emitir se asigna `FAC-AAAA-NNNN` y se congelan cliente, empresa, presupuesto y expediente. Los cobros admiten parciales, múltiples movimientos y reversiones auditables sin sobrecobro.
 
 ## Deuda y riesgos prioritarios
 
 1. La cobertura continúa siendo desigual y aún se concentra principalmente en Facturas; el primer tramo de Presupuestos ya cuenta con pruebas de persistencia y atomicidad.
 2. Persisten providers en `data/`, accesos de UI a `databaseProvider`, métodos heredados en `AppDatabase` y archivos grandes.
-3. Faltan facturas rectificativas completas y facturación parcial; no deben modificarse facturas históricas para resolver esas necesidades.
+3. Faltan facturas rectificativas completas y la integración de Certificaciones con las asignaciones parciales; no deben modificarse facturas históricas para resolver esas necesidades.
 4. El ciclo económico completo y varias capacidades operativas aún no están consolidados de extremo a extremo.
 5. Aún no se han verificado un instalador, firma, actualización ni reversión para una distribución publicable en Windows.
 
 ## Próximo hito
 
-Realizar la validación manual aislada de Factura → Cobro y continuar después con facturación parcial como incremento independiente.
+Validar manualmente la facturación parcial y continuar después con facturas rectificativas como incremento independiente.

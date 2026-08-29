@@ -754,6 +754,9 @@ class FacturaRepository {
       final expedienteId = await _obtenerExpedienteIdDesdePresupuestoOrigen(
         factura.presupuestoOrigenId,
       );
+      await database.facturaAsignacionesPresupuestoDao.eliminarPorFactura(
+        facturaId,
+      );
       await database.facturaLineasDao.eliminarPorFactura(facturaId);
       await database.facturasDao.eliminarFactura(facturaId);
       if (expedienteId != null && expedienteId.trim().isNotEmpty) {

@@ -8,7 +8,6 @@ import '../../../../core/widgets/app_page_header.dart';
 import '../../../../core/widgets/entity_summary_card.dart';
 import '../../../../core/widgets/money_text.dart';
 import '../../../../core/widgets/status_chip.dart';
-import '../../../../database/database_provider.dart';
 import '../../../clientes/data/cliente_repository.dart';
 import '../../../clientes/domain/cliente.dart';
 import '../../../cobros/data/cobro_repository.dart';
@@ -26,15 +25,13 @@ import 'editar_linea_factura_screen.dart';
 import 'nueva_linea_factura_screen.dart';
 
 class EditarFacturaScreen extends ConsumerStatefulWidget {
-  const EditarFacturaScreen({
-    super.key,
-    required this.factura,
-  });
+  const EditarFacturaScreen({super.key, required this.factura});
 
   final factura_domain.Factura factura;
 
   @override
-  ConsumerState<EditarFacturaScreen> createState() => _EditarFacturaScreenState();
+  ConsumerState<EditarFacturaScreen> createState() =>
+      _EditarFacturaScreenState();
 }
 
 class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
@@ -48,11 +45,16 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
   late EstadoFactura _estadoSeleccionado;
   String? _clienteSeleccionadoId;
   EstadoFactura? _estadoPersistido;
+  factura_domain.Factura? _facturaPersistida;
   bool? _tieneCobros;
-  late final StreamSubscription<List<factura_domain.Factura>> _facturasSubscription;
+  bool _esFacturaParcial = false;
+  late final StreamSubscription<List<factura_domain.Factura>>
+  _facturasSubscription;
   late final StreamSubscription<List<cobro_domain.Cobro>> _cobrosSubscription;
 
   EstadoFactura get _estadoActual => _estadoPersistido ?? _estadoSeleccionado;
+  factura_domain.Factura get _facturaActual =>
+      _facturaPersistida ?? widget.factura;
 
   bool get _puedeEditarDocumento =>
       estadoFacturaPermiteEditarDocumento(_estadoActual);
@@ -61,7 +63,7 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
       estadoFacturaPermiteEditarVencimiento(_estadoActual);
 
   bool get _puedeEditarLineas =>
-      estadoFacturaPermiteEditarLineas(_estadoActual);
+      estadoFacturaPermiteEditarLineas(_estadoActual) && !_esFacturaParcial;
 
   bool get _puedeEliminarFactura =>
       _estadoPersistido != null &&
@@ -99,7 +101,10 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
             }
           }
           if (!mounted) return;
-          setState(() => _estadoPersistido = persistida?.estado);
+          setState(() {
+            _facturaPersistida = persistida;
+            _estadoPersistido = persistida?.estado;
+          });
         });
     _cobrosSubscription = ref
         .read(cobroRepositoryProvider)
@@ -107,6 +112,12 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
         .listen((cobros) {
           if (!mounted) return;
           setState(() => _tieneCobros = cobros.isNotEmpty);
+        });
+    ref
+        .read(facturaLineaRepositoryProvider)
+        .esFacturaParcial(widget.factura.id)
+        .then((value) {
+          if (mounted) setState(() => _esFacturaParcial = value);
         });
   }
 
@@ -195,13 +206,12 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Padding(
             padding: EdgeInsets.symmetric(vertical: 12),
-            child: Center(
-              child: CircularProgressIndicator(),
-            ),
+            child: Center(child: CircularProgressIndicator()),
           );
         }
 
-        final resumen = snapshot.data ??
+        final resumen =
+            snapshot.data ??
             FacturaEstadoEconomico(
               totalFactura: totalFactura,
               totalCobrado: 0,
@@ -217,20 +227,14 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
           children: [
             const Text(
               'Resumen economico',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 17,
-              ),
+              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
             ),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('Total factura'),
-                MoneyText(
-                  resumen.totalFactura,
-                  style: textTheme.bodyLarge,
-                ),
+                MoneyText(resumen.totalFactura, style: textTheme.bodyLarge),
               ],
             ),
             const SizedBox(height: 8),
@@ -238,10 +242,7 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('Total cobrado'),
-                MoneyText(
-                  resumen.totalCobrado,
-                  style: textTheme.bodyLarge,
-                ),
+                MoneyText(resumen.totalCobrado, style: textTheme.bodyLarge),
               ],
             ),
             const SizedBox(height: 8),
@@ -349,9 +350,9 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
       Navigator.of(context).pop();
     } on FacturaNoEncontradaAlEliminarException {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('La factura ya no existe.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('La factura ya no existe.')));
     } on FacturaNoEliminablePorEstadoException {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -424,9 +425,9 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
     final mensaje = estado == EstadoFactura.anulada
         ? 'Una factura anulada se conserva sin modificaciones por trazabilidad.'
         : 'Una factura emitida no puede modificarse. Para corregir su contenido, anúlala y crea una nueva factura. La fecha de vencimiento sí puede corregirse.';
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(mensaje)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(mensaje)));
   }
 
   Future<void> _emitirFactura() async {
@@ -436,17 +437,16 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
       final emitida = await repository.obtenerPorId(widget.factura.id);
       if (!mounted) return;
       setState(
-        () => _estadoSeleccionado =
-            emitida?.estado ?? EstadoFactura.emitida,
+        () => _estadoSeleccionado = emitida?.estado ?? EstadoFactura.emitida,
       );
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Factura emitida.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Factura emitida.')));
     } on FacturaEmisionException catch (error) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error.mensaje)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error.mensaje)));
     }
   }
 
@@ -457,9 +457,9 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
           .anularFactura(widget.factura.id);
       if (!mounted) return;
       setState(() => _estadoSeleccionado = EstadoFactura.anulada);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Factura anulada.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Factura anulada.')));
     } on FacturaAnulacionConCobrosException {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -471,20 +471,19 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
       );
     }
   }
+
   Future<void> _abrirNuevoCobroDirecto() async {
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => NuevoCobroScreen(
-          facturaId: widget.factura.id,
-        ),
+        builder: (_) => NuevoCobroScreen(facturaId: widget.factura.id),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final clienteRepository = ClienteRepository(ref.read(databaseProvider));
+    final clienteRepository = ref.read(clienteRepositoryProvider);
 
     return AppShortcutScope(
       onBack: () {
@@ -508,9 +507,8 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => FacturaPdfPreviewScreen(
-                      factura: widget.factura,
-                    ),
+                    builder: (_) =>
+                        FacturaPdfPreviewScreen(factura: _facturaActual),
                   ),
                 );
               },
@@ -529,316 +527,341 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
             key: _formKey,
             child: ListView(
               children: [
-              EntitySummaryCard(
-                title: widget.factura.codigo,
-                subtitle: widget.factura.clienteNombre.isNotEmpty
-                    ? widget.factura.clienteNombre
-                    : 'Sin cliente',
-                details: [
-                  Text(
-                    'Fecha: ${_fechaController.text}',
-                    style: Theme.of(context).textTheme.bodyMedium,
+                EntitySummaryCard(
+                  title: _facturaActual.codigo,
+                  subtitle: _facturaActual.clienteNombre.isNotEmpty
+                      ? _facturaActual.clienteNombre
+                      : 'Sin cliente',
+                  details: [
+                    Text(
+                      'Fecha: ${_fechaController.text}',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    Text(
+                      'Vencimiento: ${_fechaVencimientoController.text}',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
+                  statusWidget: StatusChip(
+                    label: estadoFacturaToLabel(_estadoSeleccionado),
+                    type: _statusTypeFromEstadoFactura(_estadoSeleccionado),
                   ),
-                  Text(
-                    'Vencimiento: ${_fechaVencimientoController.text}',
-                    style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 20),
+                StreamBuilder<List<Cliente>>(
+                  stream: clienteRepository.observarClientes(),
+                  builder: (context, snapshot) {
+                    final clientes = snapshot.data ?? const [];
+
+                    final existeClienteSeleccionado = clientes.any(
+                      (cliente) => cliente.id == _clienteSeleccionadoId,
+                    );
+
+                    final items = <DropdownMenuItem<String>>[
+                      if (_clienteSeleccionadoId != null &&
+                          !existeClienteSeleccionado)
+                        DropdownMenuItem<String>(
+                          value: _clienteSeleccionadoId,
+                          child: Text(_facturaActual.clienteNombre),
+                        ),
+                      ...clientes.map(
+                        (cliente) => DropdownMenuItem<String>(
+                          value: cliente.id,
+                          child: Text(
+                            '${cliente.nombre} ${cliente.apellidos}'.trim(),
+                          ),
+                        ),
+                      ),
+                    ];
+
+                    return DropdownButtonFormField<String>(
+                      initialValue: _clienteSeleccionadoId,
+                      decoration: const InputDecoration(labelText: 'Cliente'),
+                      items: items,
+                      onChanged: _puedeEditarDocumento
+                          ? (value) {
+                              setState(() {
+                                _clienteSeleccionadoId = value;
+                              });
+                            }
+                          : null,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'El cliente es obligatorio';
+                        }
+                        return null;
+                      },
+                    );
+                  },
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  readOnly: true,
+                  controller: _fechaController,
+                  decoration: const InputDecoration(
+                    labelText: 'Fecha',
+                    suffixIcon: Icon(Icons.calendar_today),
+                  ),
+                  onTap: _puedeEditarDocumento ? _seleccionarFecha : null,
+                  validator: (value) => (value == null || value.trim().isEmpty)
+                      ? 'La fecha es obligatoria'
+                      : null,
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  readOnly: true,
+                  controller: _fechaVencimientoController,
+                  decoration: const InputDecoration(
+                    labelText: 'Fecha de vencimiento',
+                    suffixIcon: Icon(Icons.calendar_today),
+                  ),
+                  onTap: _puedeEditarVencimiento
+                      ? _seleccionarFechaVencimiento
+                      : null,
+                  validator: (value) => (value == null || value.trim().isEmpty)
+                      ? 'La fecha de vencimiento es obligatoria'
+                      : null,
+                ),
+                const SizedBox(height: 20),
+                InputDecorator(
+                  decoration: const InputDecoration(labelText: 'Estado'),
+                  child: Text(estadoFacturaToLabel(_estadoSeleccionado)),
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: _observacionesController,
+                  readOnly: !_puedeEditarDocumento,
+                  decoration: const InputDecoration(labelText: 'Observaciones'),
+                  minLines: 3,
+                  maxLines: 5,
+                ),
+                if (_puedeEditarVencimiento) ...[
+                  const SizedBox(height: 30),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      onPressed: _guardarCambios,
+                      icon: const Icon(Icons.save),
+                      label: Text(
+                        _puedeEditarDocumento
+                            ? 'Guardar cambios'
+                            : 'Guardar vencimiento',
+                      ),
+                    ),
                   ),
                 ],
-                statusWidget: StatusChip(
-                  label: estadoFacturaToLabel(_estadoSeleccionado),
-                  type: _statusTypeFromEstadoFactura(_estadoSeleccionado),
-                ),
-              ),
-              const SizedBox(height: 20),
-              StreamBuilder<List<Cliente>>(
-                stream: clienteRepository.observarClientes(),
-                builder: (context, snapshot) {
-                  final clientes = snapshot.data ?? const [];
-
-                  final existeClienteSeleccionado = clientes.any(
-                    (cliente) => cliente.id == _clienteSeleccionadoId,
-                  );
-
-                  final items = <DropdownMenuItem<String>>[
-                    if (_clienteSeleccionadoId != null &&
-                        !existeClienteSeleccionado)
-                      DropdownMenuItem<String>(
-                        value: _clienteSeleccionadoId,
-                        child: Text(widget.factura.clienteNombre),
-                      ),
-                    ...clientes.map(
-                      (cliente) => DropdownMenuItem<String>(
-                        value: cliente.id,
-                        child: Text(
-                          '${cliente.nombre} ${cliente.apellidos}'.trim(),
-                        ),
-                      ),
-                    ),
-                  ];
-
-                  return DropdownButtonFormField<String>(
-                    initialValue: _clienteSeleccionadoId,
-                    decoration: const InputDecoration(
-                      labelText: 'Cliente',
-                    ),
-                    items: items,
-                    onChanged: _puedeEditarDocumento
-                        ? (value) {
-                            setState(() {
-                              _clienteSeleccionadoId = value;
-                            });
-                          }
-                        : null,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'El cliente es obligatorio';
-                      }
-                      return null;
-                    },
-                  );
-                },
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                readOnly: true,
-                controller: _fechaController,
-                decoration: const InputDecoration(
-                  labelText: 'Fecha',
-                  suffixIcon: Icon(Icons.calendar_today),
-                ),
-                onTap: _puedeEditarDocumento ? _seleccionarFecha : null,
-                validator: (value) => (value == null || value.trim().isEmpty)
-                    ? 'La fecha es obligatoria'
-                    : null,
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                readOnly: true,
-                controller: _fechaVencimientoController,
-                decoration: const InputDecoration(
-                  labelText: 'Fecha de vencimiento',
-                  suffixIcon: Icon(Icons.calendar_today),
-                ),
-                onTap: _puedeEditarVencimiento
-                    ? _seleccionarFechaVencimiento
-                    : null,
-                validator: (value) => (value == null || value.trim().isEmpty)
-                    ? 'La fecha de vencimiento es obligatoria'
-                    : null,
-              ),
-              const SizedBox(height: 20),
-              InputDecorator(
-                decoration: const InputDecoration(labelText: 'Estado'),
-                child: Text(estadoFacturaToLabel(_estadoSeleccionado)),
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: _observacionesController,
-                readOnly: !_puedeEditarDocumento,
-                decoration: const InputDecoration(
-                  labelText: 'Observaciones',
-                ),
-                minLines: 3,
-                maxLines: 5,
-              ),
-              if (_puedeEditarVencimiento) ...[
-                const SizedBox(height: 30),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton.icon(
-                    onPressed: _guardarCambios,
-                    icon: const Icon(Icons.save),
-                    label: Text(
-                      _puedeEditarDocumento
-                          ? 'Guardar cambios'
-                          : 'Guardar vencimiento',
+                if (_estadoSeleccionado == EstadoFactura.borrador) ...[
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      onPressed: _emitirFactura,
+                      icon: const Icon(Icons.send_outlined),
+                      label: const Text('Emitir factura'),
                     ),
                   ),
-                ),
-              ],
-              if (_estadoSeleccionado == EstadoFactura.borrador) ...[
-                const SizedBox(height: 12),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton.icon(
-                    onPressed: _emitirFactura,
-                    icon: const Icon(Icons.send_outlined),
-                    label: const Text('Emitir factura'),
+                ],
+                if (_estadoPersistido == EstadoFactura.emitida ||
+                    _estadoPersistido == EstadoFactura.vencida) ...[
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: _anularFactura,
+                      icon: const Icon(Icons.cancel_outlined),
+                      label: const Text('Anular factura'),
+                    ),
                   ),
-                ),
-              ],
-              if (_estadoPersistido == EstadoFactura.emitida ||
-                  _estadoPersistido == EstadoFactura.vencida) ...[
-                const SizedBox(height: 12),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    onPressed: _anularFactura,
-                    icon: const Icon(Icons.cancel_outlined),
-                    label: const Text('Anular factura'),
+                ],
+                if (_estadoPersistido == EstadoFactura.borrador &&
+                    _tieneCobros == true) ...[
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Esta factura en borrador contiene cobros asociados que '
+                    'requieren revisión. No se pueden eliminar desde el borrador.',
                   ),
-                ),
-              ],
-              if (_estadoPersistido == EstadoFactura.borrador &&
-                  _tieneCobros == true) ...[
-                const SizedBox(height: 12),
+                ],
+                const SizedBox(height: 24),
                 const Text(
-                  'Esta factura en borrador contiene cobros asociados que '
-                  'requieren revisión. No se pueden eliminar desde el borrador.',
+                  'Lineas de factura',
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
                 ),
-              ],
-              const SizedBox(height: 24),
-              const Text(
-                'Lineas de factura',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 18,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Consumer(
-                builder: (context, ref, _) {
-                  final repository = ref.read(facturaLineaRepositoryProvider);
+                const SizedBox(height: 8),
+                Consumer(
+                  builder: (context, ref, _) {
+                    final repository = ref.read(facturaLineaRepositoryProvider);
 
-                  return StreamBuilder<List<factura_linea_domain.FacturaLinea>>(
-                    stream: repository.observarPorFactura(widget.factura.id),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: SelectableText(
-                            'ERROR:\n\n${snapshot.error}',
-                            style: const TextStyle(color: Colors.red),
-                          ),
+                    return StreamBuilder<
+                      List<factura_linea_domain.FacturaLinea>
+                    >(
+                      stream: repository.observarPorFactura(widget.factura.id),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: SelectableText(
+                              'ERROR:\n\n${snapshot.error}',
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                          );
+                        }
+
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        }
+
+                        final lineas = snapshot.data ?? const [];
+
+                        if (lineas.isEmpty) {
+                          return const Padding(
+                            padding: EdgeInsets.only(top: 4),
+                            child: Text('Todavia no hay lineas de factura.'),
+                          );
+                        }
+
+                        final subtotal = lineas.fold<double>(
+                          0,
+                          (sum, linea) => sum + linea.importe,
                         );
-                      }
+                        final iva =
+                            subtotal * _facturaActual.ivaPorcentaje / 100;
+                        final total = subtotal + iva;
 
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 12),
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        );
-                      }
-
-                      final lineas = snapshot.data ?? const [];
-
-                      if (lineas.isEmpty) {
-                        return const Padding(
-                          padding: EdgeInsets.only(top: 4),
-                          child: Text('Todavia no hay lineas de factura.'),
-                        );
-                      }
-
-                      final subtotal = lineas.fold<double>(
-                        0,
-                        (sum, linea) => sum + linea.importe,
-                      );
-                      final iva = subtotal * widget.factura.ivaPorcentaje / 100;
-                      final total = subtotal + iva;
-
-                      final lineasWidgets = lineas
-                          .map<Widget>(
-                            (linea) => ListTile(
-                              contentPadding: EdgeInsets.zero,
-                              title: Text(linea.descripcion),
-                              subtitle: Text(
-                                '${_formatearCantidad(linea.cantidad)} ${linea.unidad} x ${_formatearMoneda(linea.precioUnitario)} - ${_formatearPorcentaje(linea.descuento)}% = ${_formatearMoneda(linea.importe)}',
-                              ),
-                              onTap: _puedeEditarLineas
-                                  ? () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) =>
-                                              EditarLineaFacturaScreen(
-                                            linea: linea,
+                        final lineasWidgets = lineas
+                            .map<Widget>(
+                              (linea) => ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                title: Text(linea.descripcion),
+                                subtitle: Text(
+                                  '${_formatearCantidad(linea.cantidad)} ${linea.unidad} x ${_formatearMoneda(linea.precioUnitario)} - ${_formatearPorcentaje(linea.descuento)}% = ${_formatearMoneda(linea.importe)}',
+                                ),
+                                onTap: _puedeEditarLineas
+                                    ? () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                EditarLineaFacturaScreen(
+                                                  linea: linea,
+                                                ),
                                           ),
-                                        ),
-                                      );
-                                    }
-                                  : null,
-                            ),
-                          )
-                          .toList();
+                                        );
+                                      }
+                                    : null,
+                              ),
+                            )
+                            .toList();
 
-                      lineasWidgets.addAll([
-                        const SizedBox(height: 12),
-                        const Divider(),
-                        const SizedBox(height: 8),
-                        const Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Subtotal',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
+                        lineasWidgets.addAll([
+                          const SizedBox(height: 12),
+                          const Divider(),
+                          const SizedBox(height: 8),
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Subtotal',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            _formatearMoneda(subtotal),
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'IVA (${_formatearPorcentaje(widget.factura.ivaPorcentaje)}%)',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
+                          const SizedBox(height: 4),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              _formatearMoneda(subtotal),
+                              style: Theme.of(context).textTheme.bodyLarge,
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            _formatearMoneda(iva),
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        const Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Total',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 16,
+                          const SizedBox(height: 12),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'IVA (${_formatearPorcentaje(_facturaActual.ivaPorcentaje)}%)',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            _formatearMoneda(total),
-                            style: Theme.of(context).textTheme.titleMedium,
+                          const SizedBox(height: 4),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              _formatearMoneda(iva),
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 18),
-                        const Divider(),
-                        const SizedBox(height: 12),
-                        _buildResumenEconomico(total),
-                      ]);
+                          const SizedBox(height: 12),
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Total',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              _formatearMoneda(total),
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ),
+                          const SizedBox(height: 18),
+                          const Divider(),
+                          const SizedBox(height: 12),
+                          _buildResumenEconomico(total),
+                        ]);
 
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: lineasWidgets,
-                      );
-                    },
-                  );
-                },
-              ),
-              if (_puedeEditarLineas) ...[
-                const SizedBox(height: 16),
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: lineasWidgets,
+                        );
+                      },
+                    );
+                  },
+                ),
+                if (_puedeEditarLineas) ...[
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => NuevaLineaFacturaScreen(
+                              facturaId: widget.factura.id,
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.add),
+                      label: const Text('Nueva linea'),
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 12),
+                if (estadoFacturaAdmiteNuevosCobros(_estadoSeleccionado)) ...[
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      onPressed: _abrirNuevoCobroDirecto,
+                      icon: const Icon(Icons.payments_outlined),
+                      label: const Text('Registrar cobro'),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                ],
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton.icon(
@@ -846,48 +869,18 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => NuevaLineaFacturaScreen(
+                          builder: (_) => CobrosScreen(
                             facturaId: widget.factura.id,
+                            facturaCodigo: _facturaActual.codigo,
+                            facturaEstado: _estadoSeleccionado,
                           ),
                         ),
                       );
                     },
-                    icon: const Icon(Icons.add),
-                    label: const Text('Nueva linea'),
-                  ),
-                ),
-              ],
-              const SizedBox(height: 12),
-              if (estadoFacturaAdmiteNuevosCobros(_estadoSeleccionado)) ...[
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton.icon(
-                    onPressed: _abrirNuevoCobroDirecto,
                     icon: const Icon(Icons.payments_outlined),
-                    label: const Text('Registrar cobro'),
+                    label: const Text('Ver cobros'),
                   ),
                 ),
-                const SizedBox(height: 12),
-              ],
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => CobrosScreen(
-                          facturaId: widget.factura.id,
-                          facturaCodigo: widget.factura.codigo,
-                          facturaEstado: _estadoSeleccionado,
-                        ),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.payments_outlined),
-                  label: const Text('Ver cobros'),
-                ),
-              ),
               ],
             ),
           ),

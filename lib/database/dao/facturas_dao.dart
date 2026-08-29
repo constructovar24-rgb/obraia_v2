@@ -187,15 +187,25 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
     return _toDomain(factura, clienteNombre: clienteNombre);
   }
 
-  Future<String?> obtenerIdPorPresupuestoOrigen(String presupuestoId) async {
-    final row =
+  Future<List<factura_domain.Factura>> obtenerPorPresupuestoOrigen(
+    String presupuestoId,
+  ) async {
+    final rows =
         await (select(facturas)
               ..where((t) => t.presupuestoOrigenId.equals(presupuestoId))
-              ..limit(1))
-            .getSingleOrNull();
-
-    return row?.id;
+              ..orderBy([(t) => OrderingTerm.desc(t.fechaCreacion)]))
+            .get();
+    return rows.map((row) => _toDomain(row)).toList();
   }
+
+  Stream<List<factura_domain.Factura>> observarPorPresupuestoOrigen(
+    String presupuestoId,
+  ) =>
+      (select(facturas)
+            ..where((t) => t.presupuestoOrigenId.equals(presupuestoId))
+            ..orderBy([(t) => OrderingTerm.desc(t.fechaCreacion)]))
+          .watch()
+          .map((rows) => rows.map((row) => _toDomain(row)).toList());
 
   Future<bool> tieneFacturaPorExpediente(String expedienteId) async {
     final tableFacturas = attachedDatabase.facturas;

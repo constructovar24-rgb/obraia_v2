@@ -1,7 +1,9 @@
 import 'package:drift/drift.dart';
 import 'package:obraia_v2/database/app_database.dart';
-import 'package:obraia_v2/features/cobros/domain/cobro.dart' as cobro_domain;
+import 'package:obraia_v2/features/facturas/domain/estado_factura.dart';
+import 'package:obraia_v2/features/facturas/domain/factura_asignacion_presupuesto.dart';
 import 'package:obraia_v2/features/facturas/domain/factura_presupuesto_policy.dart';
+import 'package:obraia_v2/features/facturas/domain/redondeo_monetario.dart';
 import 'package:obraia_v2/features/facturas/domain/factura.dart'
     as factura_domain;
 import 'package:obraia_v2/features/presupuestos/domain/presupuesto.dart'
@@ -43,20 +45,43 @@ class PresupuestoRepository {
     return Stream<List<presupuesto_domain.Presupuesto>>.multi((controller) {
       List<presupuesto_domain.Presupuesto>? presupuestos;
       List<factura_domain.Factura>? facturas;
-      List<cobro_domain.Cobro>? cobros;
+      List<FacturaAsignacionPresupuesto>? asignaciones;
 
       void emitirSiCompleto() {
-        if (presupuestos == null || facturas == null || cobros == null) return;
+        if (presupuestos == null || facturas == null || asignaciones == null) {
+          return;
+        }
         controller.add(
           presupuestos!
-              .where(
-                (presupuesto) => presupuestoEstaPendienteDeFacturar(
-                  estadoPresupuesto: presupuesto.estado,
-                  presupuestoId: presupuesto.id,
-                  facturas: facturas!,
-                  cobros: cobros!,
-                ),
-              )
+              .where((presupuesto) {
+                if (!estadoPresupuestoEsAceptado(presupuesto.estado)) {
+                  return false;
+                }
+                final vinculadas = facturas!
+                    .where(
+                      (factura) =>
+                          factura.presupuestoOrigenId == presupuesto.id &&
+                          factura.estado != EstadoFactura.anulada,
+                    )
+                    .toList();
+                final idsConDetalle = asignaciones!
+                    .map((item) => item.facturaId)
+                    .toSet();
+                final consumido = vinculadas.fold<int>(0, (suma, factura) {
+                  if (!idsConDetalle.contains(factura.id)) {
+                    return suma + monedaACentimos(factura.subtotal);
+                  }
+                  return suma +
+                      asignaciones!
+                          .where((item) => item.facturaId == factura.id)
+                          .fold<int>(
+                            0,
+                            (subtotal, item) =>
+                                subtotal + monedaACentimos(item.baseAplicada),
+                          );
+                });
+                return consumido < monedaACentimos(presupuesto.importeTotal);
+              })
               .toList(growable: false),
         );
       }
@@ -71,17 +96,18 @@ class PresupuestoRepository {
             facturas = data;
             emitirSiCompleto();
           }, onError: controller.addError);
-      final cobrosSubscription = database.cobrosDao.observarCobros().listen((
-        data,
-      ) {
-        cobros = data;
-        emitirSiCompleto();
-      }, onError: controller.addError);
+      final asignacionesSubscription = database
+          .facturaAsignacionesPresupuestoDao
+          .observarTodas()
+          .listen((data) {
+            asignaciones = data;
+            emitirSiCompleto();
+          }, onError: controller.addError);
 
       controller.onCancel = () async {
         await presupuestosSubscription.cancel();
         await facturasSubscription.cancel();
-        await cobrosSubscription.cancel();
+        await asignacionesSubscription.cancel();
       };
     });
   }

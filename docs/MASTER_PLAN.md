@@ -26,7 +26,7 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 
 **Objetivo:** consolidar el flujo comercial y financiero principal con trazabilidad y estados coherentes.
 
-**Estado:** en curso. Cliente → Expediente → Presupuesto → Factura → Cobro está consolidado técnicamente y validado con SQLite aislado. Los cobros parciales y múltiples, el saldo exacto, el sobrecobro, los estados y las reversiones auditables conservan integridad transaccional y una política monetaria única de dos decimales. La fase no está cerrada: quedan la validación manual aislada del ciclo completo, la facturación parcial y las rectificativas completas.
+**Estado:** en curso. Cliente → Expediente → Presupuesto → Factura → Cobro está consolidado técnicamente y validado con SQLite aislado. La facturación parcial admite porcentaje, importe y partidas/cantidades con reservas de borrador, acumulados y asignaciones trazables. Los cobros parciales y múltiples, el saldo exacto, el sobrecobro, los estados y las reversiones auditables conservan integridad transaccional y una política monetaria única de dos decimales. La fase no está cerrada: quedan la validación manual de facturación parcial y las rectificativas completas.
 
 **Criterio de salida:** pruebas automatizadas y validación manual con datos aislados recorren el ciclo completo; relaciones, transiciones, IVA, redondeos, documentos congelados, anulaciones y cobros mantienen importes y trazabilidad.
 
@@ -35,6 +35,8 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 **Objetivo:** ofrecer costes, ingresos, desviaciones, tesorería y margen fiables por expediente.
 
 **Criterio de salida:** reglas económicas documentadas y probadas; compras, certificaciones, facturación y cobros concilian; informes reproducibles explican cada cifra con precisión y redondeo consistentes.
+
+**Bloque administrativo futuro aprobado:** facturas recibidas de proveedores; conservación del documento original recibido y del PDF exacto emitido; albaranes vinculados preferentemente a una obra con reparto entre varias obras; líneas exactas de materiales y vinculación posterior a materiales normalizados; histórico de precios reales de compra; conciliación albaranes–facturas; pagos y pendientes de proveedores; costes reales por expediente; IVA soportado/repercutido e IRPF; libros de facturas emitidas/recibidas y resúmenes trimestrales. Se prevé además recepción futura desde correo, extracción asistida por IA, detección de duplicados y propuesta de proveedor/obra. El backup deberá ampliarse para proteger también el archivo documental.
 
 ## Fase 4 — Operación de obra
 

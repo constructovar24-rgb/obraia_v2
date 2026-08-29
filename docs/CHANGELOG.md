@@ -2,6 +2,14 @@
 
 ## No publicado
 
+### Facturación parcial
+
+- Añadidas facturas parciales acumulativas por porcentaje, importe y selección de partidas o cantidades.
+- Los borradores reservan base y cantidades; eliminación y anulación liberan el disponible conforme al estado documental.
+- Incorporada trazabilidad mediante asignaciones por línea, resumen reactivo y listado de múltiples facturas por presupuesto.
+- Elevado el esquema a v20 con migraciones desde 16, 17, 18 y 19 y estrategia conservadora para facturas legacy.
+- Corregido el refresco de número, PDF, cobros y cabecera inmediatamente después de emitir.
+
 ### Copias de seguridad
 
 - Definida la estrategia segura de backup y restauración de SQLite.

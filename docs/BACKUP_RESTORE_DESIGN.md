@@ -23,12 +23,12 @@ Este documento guía la fase 1 desde la auditoría inicial. Ya están implementa
 
 ### Esquema, migraciones e integridad
 
-- `schemaVersion` actual: 19.
+- `schemaVersion` actual: 20.
 - Hay 13 tablas: `clientes`, `expedientes`, `presupuestos`, `lineas_presupuesto`, `empresa_configuracion`, `facturas`, `factura_lineas`, `cobros`, `compras`, `proveedores`, `certificaciones`, `documentos` y `timeline_events`.
-- Las migraciones incrementales cubren cambios de las versiones 2 a 19. La versión 6 reconstruye `presupuestos`; la 17 añade y rellena `iva_porcentaje` en facturas sin recalcular importes históricos; la 18 añade la unidad de las líneas de presupuesto y la fotografía histórica de las facturas emitidas; la 19 incorpora el tipo de movimiento, el vínculo al cobro original y el motivo de las reversiones.
+- Las migraciones incrementales cubren cambios de las versiones 2 a 20. La versión 6 reconstruye `presupuestos`; la 17 añade y rellena `iva_porcentaje`; la 18 añade unidades y fotografía histórica; la 19 incorpora reversiones de cobros; la 20 crea las asignaciones trazables de facturación parcial.
 - Hay relaciones declaradas entre clientes, expedientes, presupuestos, líneas, facturas, cobros, certificaciones, documentos y Timeline. No se declaran acciones `ON DELETE`. `compras.proveedorId` no es una referencia Drift.
 - La conexión activa expresamente `PRAGMA foreign_keys = ON`; la restauración mantiene además `PRAGMA foreign_key_check` para detectar huérfanos históricos.
-- La compatibilidad de restauración se limita deliberadamente a los esquemas 16, 17, 18 y 19. Las rutas 16→19, 17→19, 18→19 y 19→19 están probadas con conservación de cobros e importes. Las versiones 1 a 15 y las futuras se rechazan.
+- La compatibilidad de restauración se limita deliberadamente a los esquemas 16, 17, 18, 19 y 20. Las rutas 16→20, 17→20, 18→20, 19→20 y 20→20 están probadas con conservación de cobros, facturas e importes. Las versiones 1 a 15 y las futuras se rechazan.
 
 ### Archivos asociados
 

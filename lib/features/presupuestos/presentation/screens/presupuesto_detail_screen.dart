@@ -13,8 +13,9 @@ import '../../../../core/widgets/app_section.dart';
 import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/entity_summary_card.dart';
 import '../../../../core/widgets/status_chip.dart';
-import '../../../facturas/data/factura_repository.dart';
-import '../../../facturas/domain/factura_presupuesto_policy.dart';
+import '../../../facturas/domain/facturacion_parcial.dart';
+import '../../../facturas/presentation/providers/facturacion_parcial_providers.dart';
+import '../../../facturas/presentation/screens/nueva_factura_parcial_screen.dart';
 import '../../../facturas/presentation/screens/editar_factura_screen.dart';
 import '../../../expedientes/data/expediente_repository.dart';
 import '../../domain/linea_presupuesto.dart' as linea_domain;
@@ -287,27 +288,34 @@ class PresupuestoDetailScreen extends ConsumerWidget {
             },
           ),
           const SizedBox(height: AppSpacing.md),
+          _ResumenFacturacionParcial(presupuesto: presupuesto),
+          const SizedBox(height: AppSpacing.md),
           Consumer(
             builder: (context, ref, _) {
-              final facturaRepository = ref.read(facturaRepositoryProvider);
-              return StreamBuilder<BloqueoConversionPresupuesto?>(
-                stream: facturaRepository.observarBloqueoConversion(
-                  presupuesto.id,
-                ),
+              final parcialRepository = ref.read(
+                facturacionParcialRepositoryProvider,
+              );
+              return StreamBuilder<ResumenFacturacionPresupuesto>(
+                stream: parcialRepository.observarResumen(presupuesto.id),
                 builder: (context, snapshot) {
                   final cargando =
                       snapshot.connectionState == ConnectionState.waiting;
-                  final bloqueo = snapshot.data;
-                  final disponible = !cargando && bloqueo == null;
-                  final explicacion = switch (bloqueo) {
-                    BloqueoConversionPresupuesto.presupuestoNoAceptado =>
-                      'Solo los presupuestos aceptados pueden convertirse.',
-                    BloqueoConversionPresupuesto.facturaNoAnuladaExistente =>
-                      'Ya existe una factura activa o en borrador.',
-                    BloqueoConversionPresupuesto.facturaAnuladaConCobros =>
-                      'Existe una factura anulada con cobros históricos pendientes de saneamiento.',
-                    null => null,
-                  };
+                  final resumen = snapshot.data;
+                  final disponible =
+                      !cargando &&
+                      presupuesto.estado.trim().toLowerCase() == 'aceptado' &&
+                      resumen != null &&
+                      resumen.pendienteCentimos > 0 &&
+                      !resumen.tieneConsumoLegacySinDetalle;
+                  final explicacion = disponible
+                      ? null
+                      : switch (resumen) {
+                          null => 'Calculando disponibilidad...',
+                          _ when resumen.tieneConsumoLegacySinDetalle =>
+                            'Las facturas legacy sin detalle deben regularizarse antes de continuar.',
+                          _ =>
+                            'El presupuesto está completamente reservado o facturado.',
+                        };
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -316,71 +324,17 @@ class PresupuestoDetailScreen extends ConsumerWidget {
                         enabled: disponible,
                         onPressed: disponible
                             ? () async {
-                                try {
-                                  final facturaId = await facturaRepository
-                                      .convertirDesdePresupuesto(presupuesto);
-                                  final factura = await facturaRepository
-                                      .obtenerPorId(facturaId);
-
-                                  if (!context.mounted) return;
-                                  if (factura == null) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'No se pudo abrir la factura convertida.',
-                                        ),
-                                      ),
-                                    );
-                                    return;
-                                  }
-
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) =>
-                                          EditarFacturaScreen(factura: factura),
+                                await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => NuevaFacturaParcialScreen(
+                                      presupuesto: presupuesto,
                                     ),
-                                  );
-                                } on PresupuestoYaConvertidoException {
-                                  if (!context.mounted) return;
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        'Ya existe una factura activa o en borrador.',
-                                      ),
-                                    ),
-                                  );
-                                } on PresupuestoNoAceptadoException {
-                                  if (!context.mounted) return;
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        'Solo los presupuestos aceptados pueden convertirse.',
-                                      ),
-                                    ),
-                                  );
-                                } on FacturaAnuladaConCobrosLegacyException {
-                                  if (!context.mounted) return;
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        'Existe una factura anulada con cobros históricos pendientes de saneamiento.',
-                                      ),
-                                    ),
-                                  );
-                                } catch (e) {
-                                  if (!context.mounted) return;
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        'No se pudo convertir el presupuesto: $e',
-                                      ),
-                                    ),
-                                  );
-                                }
+                                  ),
+                                );
                               }
                             : null,
-                        label: 'Convertir en factura',
+                        label: 'Crear factura parcial',
                         icon: Icons.receipt_long_outlined,
                       ),
                       if (explicacion != null) ...[
@@ -473,6 +427,93 @@ class PresupuestoDetailScreen extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ResumenFacturacionParcial extends ConsumerWidget {
+  const _ResumenFacturacionParcial({required this.presupuesto});
+  final presupuesto_domain.Presupuesto presupuesto;
+
+  String _importe(double value) =>
+      '${value.toStringAsFixed(2).replaceAll('.', ',')} €';
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final repository = ref.watch(facturacionParcialRepositoryProvider);
+    return StreamBuilder<ResumenFacturacionPresupuesto>(
+      stream: repository.observarResumen(presupuesto.id),
+      builder: (context, resumenSnapshot) {
+        if (!resumenSnapshot.hasData) {
+          return const AppLoading(message: 'Calculando facturación...');
+        }
+        final resumen = resumenSnapshot.data!;
+        final iva = resumen.basePresupuestada * presupuesto.ivaPorcentaje / 100;
+        return AppCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Facturación acumulada',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Base presupuestada: ${_importe(resumen.basePresupuestada)}',
+              ),
+              Text('IVA presupuestado: ${_importe(iva)}'),
+              Text(
+                'Total con IVA: ${_importe(resumen.basePresupuestada + iva)}',
+              ),
+              Text('Facturado emitido: ${_importe(resumen.facturado)}'),
+              Text('Reservado en borradores: ${_importe(resumen.reservado)}'),
+              Text('Pendiente disponible: ${_importe(resumen.pendiente)}'),
+              if (resumen.tieneConsumoLegacySinDetalle)
+                const Padding(
+                  padding: EdgeInsets.only(top: 8),
+                  child: Text(
+                    'Existen facturas históricas sin asignación por partida. Se conserva su consumo global.',
+                  ),
+                ),
+              const Divider(height: 24),
+              StreamBuilder(
+                stream: repository.observarFacturas(presupuesto.id),
+                builder: (context, facturasSnapshot) {
+                  final facturas = facturasSnapshot.data ?? const [];
+                  if (facturas.isEmpty) {
+                    return const Text('Todavía no hay facturas vinculadas.');
+                  }
+                  return Column(
+                    children: facturas
+                        .map(
+                          (factura) => ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            title: Text(
+                              factura.codigo.isEmpty
+                                  ? 'Borrador sin número'
+                                  : factura.codigo,
+                            ),
+                            subtitle: Text(
+                              '${factura.estado.name} · ${_importe(factura.subtotal)}',
+                            ),
+                            trailing: const Icon(Icons.chevron_right),
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    EditarFacturaScreen(factura: factura),
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
