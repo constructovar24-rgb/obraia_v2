@@ -21,7 +21,7 @@ La navegación real usa `MaterialApp`, `Navigator` y `MaterialPageRoute`. GoRout
 - La edición principal de Expedientes permite cambiar código, nombre y cliente, o quitarlo, preservando los demás campos.
 - El guardado y su evento único de Timeline son atómicos; ficha y listado se actualizan mediante streams.
 - 8 pruebas específicas de Expedientes superadas sobre SQLite en memoria.
-- Suite completa: 134 pruebas superadas.
+- Suite completa: 135 pruebas superadas.
 - `flutter analyze --no-pub`: sin incidencias.
 - `git diff --check`: sin errores en el cierre funcional; los avisos existentes corresponden a finales de línea de registradores generados.
 - Toolchain Windows instalada y validada: Flutter 3.47.1 stable, Dart 3.13.1, Visual Studio Community 2026 18.9.2 y Windows SDK 10.0.26100.0.
@@ -34,7 +34,7 @@ Con análisis, pruebas y compilación Windows superados, Expedientes queda técn
 
 ## Fase actual
 
-La fase 1 incluye la pantalla Configuración → Copias de seguridad, creación manual, selección y confirmación de restauración, progreso y mensajes claros. Al iniciar la función se comprueba una copia automática diaria, con retención de siete; las manuales y de recuperación no se eliminan. No se ha sustituido ninguna base real en pruebas.
+La fase 1 está cerrada. Las restauraciones admiten exclusivamente bases de esquema 16 y 17, comprobadas en staging con integridad, relaciones y conservación de importes. Se rechazan versiones anteriores o futuras. La aceptación manual Windows con datos ficticios confirmó crear una copia, modificar un cliente y restaurar correctamente el estado anterior. Las pruebas automatizadas nunca tocaron datos reales.
 
 ## Deuda y riesgos prioritarios
 
@@ -46,4 +46,4 @@ La fase 1 incluye la pantalla Configuración → Copias de seguridad, creación 
 
 ## Próximo hito
 
-Diseñar la interfaz de copias de seguridad y restauración, con confirmación reforzada, progreso y mensajes recuperables, sin exponer rutas ni detalles internos.
+Iniciar la Fase 2: consolidar el ciclo Cliente → Expediente → Presupuesto → Factura → Cobro.

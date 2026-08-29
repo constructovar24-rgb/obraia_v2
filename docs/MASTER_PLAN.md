@@ -16,9 +16,11 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 
 **Objetivo:** proteger la información empresarial antes de ampliar el producto.
 
-**Estado:** en implementación incremental. Backup y restauración cuentan con servicios, controlador, interfaz de Configuración y copias automáticas diarias, todo validado con archivos temporales. El siguiente incremento es la aceptación manual Windows con datos ficticios aislados.
+**Estado:** cerrada. Backup, restauración, migración soportada, recuperación e interfaz están validados con temporales y aceptación manual Windows con datos ficticios. Solo se admiten restauraciones de esquemas 16 y 17; versiones anteriores se rechazan explícitamente.
 
 **Criterio de salida:** creación, validación y restauración de backups probadas sobre copias temporales; recuperación documentada; migraciones desde las versiones soportadas verifican integridad y conservación; ninguna prueba toca la base real.
+
+**Transición:** Fase 2 — Cliente → Expediente → Presupuesto → Factura → Cobro.
 
 ## Fase 2 — Cliente → Expediente → Presupuesto → Factura → Cobro
 

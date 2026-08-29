@@ -28,7 +28,7 @@ Este documento guía la fase 1 desde la auditoría inicial. Ya están implementa
 - Las migraciones incrementales cubren cambios de las versiones 2 a 17. La versión 6 reconstruye `presupuestos`; la 17 añade y rellena `iva_porcentaje` en facturas sin recalcular importes históricos.
 - Hay relaciones declaradas entre clientes, expedientes, presupuestos, líneas, facturas, cobros, certificaciones, documentos y Timeline. No se declaran acciones `ON DELETE`. `compras.proveedorId` no es una referencia Drift.
 - La conexión no activa expresamente `PRAGMA foreign_keys = ON`. La restauración debe ejecutar `PRAGMA foreign_key_check` y no asumir que SQLite impidió previamente todos los huérfanos.
-- Solo hay una prueba específica de migración, de 16 a 17. El resto de rutas históricas carece de cobertura automatizada completa.
+- La compatibilidad de restauración se limita deliberadamente a los esquemas 16 y 17. La prueba de staging verifica 16→17 con conservación de cliente e importes; 17 se valida sin migración. Las versiones 1 a 15 y las futuras se rechazan, por no disponer de fixtures y cobertura suficiente para prometer su recuperación.
 
 ### Archivos asociados
 
@@ -218,7 +218,7 @@ No hace falta cambiar el esquema para guardar “última copia”: puede mantene
 
 **Aceptación y pruebas:** backup previo validado; fallos inyectados antes y después de cada renombrado; rollback conserva datos; sidecars se apartan como unidad; no quedan handles; providers reciben la nueva instancia. Incluir pruebas Windows.
 
-**Estado:** integración completada y probada con archivos temporales. El coordinador bloquea restauraciones solapadas, prepara y valida la entrada, crea una recuperación validada y usa el intercambio existente para cerrar, sustituir, reabrir y publicar la instancia nueva. Si un fallo sucede tras el cierre, el rollback reabre y publica el estado anterior cuando es posible. La UI, la confirmación de usuario y las pruebas manuales Windows siguen pendientes.
+**Estado:** integración completada y probada con archivos temporales. El coordinador bloquea restauraciones solapadas, prepara y valida la entrada, crea una recuperación validada y usa el intercambio existente para cerrar, sustituir, reabrir y publicar la instancia nueva. Si un fallo sucede tras el cierre, el rollback reabre y publica el estado anterior cuando es posible. La UI y la confirmación reforzada están implementadas. La aceptación manual Windows con datos ficticios confirmó crear una copia manual, modificar un cliente y restaurar el estado anterior.
 
 ### 5. Archivos asociados gestionados
 
