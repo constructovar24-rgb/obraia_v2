@@ -2,7 +2,8 @@ import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:obraia_v2/database/app_database.dart';
 import 'package:obraia_v2/database/database_provider.dart';
-import 'package:obraia_v2/features/clientes/domain/cliente.dart' as cliente_domain;
+import 'package:obraia_v2/features/clientes/domain/cliente.dart'
+    as cliente_domain;
 import 'package:uuid/uuid.dart';
 
 final clienteRepositoryProvider = Provider<ClienteRepository>((ref) {
@@ -50,6 +51,12 @@ class ClienteRepository {
 
   Stream<List<cliente_domain.Cliente>> observarClientes() {
     return database.clientesDao.observarClientes();
+  }
+
+  Stream<cliente_domain.Cliente?> observarCliente(String id) {
+    return observarClientes().map(
+      (clientes) => clientes.where((cliente) => cliente.id == id).firstOrNull,
+    );
   }
 
   Future<cliente_domain.Cliente?> obtenerCliente(String id) {
