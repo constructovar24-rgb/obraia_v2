@@ -19,6 +19,11 @@ class CobrosDao extends DatabaseAccessor<AppDatabase> with _$CobrosDaoMixin {
       metodoPago: row.metodoPago,
       referencia: row.referencia,
       observaciones: row.observaciones,
+      tipoMovimiento: cobro_domain.tipoMovimientoCobroFromString(
+        row.tipoMovimiento,
+      ),
+      cobroOrigenId: row.cobroOrigenId,
+      motivo: row.motivo,
     );
   }
 
@@ -37,8 +42,9 @@ class CobrosDao extends DatabaseAccessor<AppDatabase> with _$CobrosDaoMixin {
   }
 
   Future<cobro_domain.Cobro?> obtenerPorId(String id) async {
-    final row = await (select(cobros)..where((t) => t.id.equals(id)))
-        .getSingleOrNull();
+    final row = await (select(
+      cobros,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
     if (row == null) {
       return null;
     }
@@ -47,6 +53,15 @@ class CobrosDao extends DatabaseAccessor<AppDatabase> with _$CobrosDaoMixin {
 
   Future<void> insertarCobro(CobrosCompanion cobro) async {
     await into(cobros).insert(cobro);
+  }
+
+  Future<List<cobro_domain.Cobro>> obtenerPorFactura(String facturaId) async {
+    final rows =
+        await (select(cobros)
+              ..where((t) => t.facturaId.equals(facturaId))
+              ..orderBy([(t) => OrderingTerm.desc(t.fecha)]))
+            .get();
+    return rows.map(_toDomain).toList();
   }
 
   Future<void> actualizarCobro({

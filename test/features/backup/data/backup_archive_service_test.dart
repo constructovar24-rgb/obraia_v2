@@ -129,6 +129,7 @@ void main() {
   });
 
   test('no publica un backup si detecta relaciones huérfanas', () async {
+    await sourceDatabase.customStatement('PRAGMA foreign_keys = OFF');
     await sourceDatabase.customStatement(
       '''
       INSERT INTO expedientes (id, codigo, nombre, cliente, cliente_id)

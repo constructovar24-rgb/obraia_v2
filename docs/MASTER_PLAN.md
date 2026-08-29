@@ -16,7 +16,7 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 
 **Objetivo:** proteger la información empresarial antes de ampliar el producto.
 
-**Estado:** cerrada. Backup, restauración, migración soportada, recuperación e interfaz están validados con temporales y aceptación manual Windows con datos ficticios. Se admiten restauraciones de esquemas 16, 17 y 18; versiones anteriores o futuras se rechazan explícitamente.
+**Estado:** cerrada. Backup, restauración, migración soportada, recuperación e interfaz están validados con temporales y aceptación manual Windows con datos ficticios. Se admiten restauraciones de esquemas 16, 17, 18 y 19; versiones anteriores o futuras se rechazan explícitamente.
 
 **Criterio de salida:** creación, validación y restauración de backups probadas sobre copias temporales; recuperación documentada; migraciones desde las versiones soportadas verifican integridad y conservación; ninguna prueba toca la base real.
 
@@ -26,7 +26,7 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 
 **Objetivo:** consolidar el flujo comercial y financiero principal con trazabilidad y estados coherentes.
 
-**Estado:** en curso. Cliente → Expediente → Presupuesto → Factura está consolidado y validado con SQLite en memoria: la conversión de un presupuesto aceptado genera un borrador, la emisión asigna numeración anual y congela los datos históricos necesarios para el PDF. Las líneas conservan unidades y los importes siguen una política única de redondeo a dos decimales. La fase no está cerrada: quedan Cobros, facturación parcial y rectificativas.
+**Estado:** en curso. Cliente → Expediente → Presupuesto → Factura → Cobro está consolidado técnicamente y validado con SQLite aislado. Los cobros parciales y múltiples, el saldo exacto, el sobrecobro, los estados y las reversiones auditables conservan integridad transaccional y una política monetaria única de dos decimales. La fase no está cerrada: quedan la validación manual aislada del ciclo completo, la facturación parcial y las rectificativas completas.
 
 **Criterio de salida:** pruebas automatizadas y validación manual con datos aislados recorren el ciclo completo; relaciones, transiciones, IVA, redondeos, documentos congelados, anulaciones y cobros mantienen importes y trazabilidad.
 

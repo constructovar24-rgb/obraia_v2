@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:obraia_v2/features/cobros/domain/factura_estado_economico.dart';
 import 'package:obraia_v2/features/facturas/domain/factura_linea.dart';
 import 'package:obraia_v2/features/facturas/domain/factura_totales.dart';
 
@@ -30,12 +29,9 @@ void main() {
       );
     });
 
-    test('acepta diferencia dentro del epsilon economico', () {
+    test('acepta diferencia que normaliza al mismo céntimo', () {
       expect(
-        totalFacturaCubreCobros(
-          totalFactura: 600 - facturaEstadoEconomicoEpsilon / 2,
-          totalCobrado: 600,
-        ),
+        totalFacturaCubreCobros(totalFactura: 599.996, totalCobrado: 600),
         isTrue,
       );
     });

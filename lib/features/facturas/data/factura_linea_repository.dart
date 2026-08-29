@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:obraia_v2/database/app_database.dart';
 import 'package:obraia_v2/database/database_provider.dart';
+import 'package:obraia_v2/features/cobros/domain/factura_estado_economico.dart';
 import 'package:obraia_v2/features/facturas/data/factura_repository.dart';
 import 'package:obraia_v2/features/facturas/domain/estado_factura.dart';
 import 'package:obraia_v2/features/facturas/domain/factura_linea.dart'
@@ -64,7 +65,7 @@ class FacturaLineaRepository {
 
   Future<double> _obtenerTotalCobrado(String facturaId) async {
     final cobros = await database.cobrosDao.observarPorFactura(facturaId).first;
-    return cobros.fold<double>(0, (total, cobro) => total + cobro.importe);
+    return calcularTotalCobradoNeto(cobros);
   }
 
   Future<void> _validarTotales(String facturaId, FacturaTotales totales) async {

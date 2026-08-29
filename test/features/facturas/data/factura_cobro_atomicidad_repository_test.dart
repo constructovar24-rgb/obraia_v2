@@ -139,7 +139,7 @@ void main() {
       expect(cobros.fold<double>(0, (suma, cobro) => suma + cobro.importe), 80);
     });
 
-    test('edición rechaza importes no positivos y no finitos', () async {
+    test('un cobro confirmado no puede sobrescribirse', () async {
       final (facturaId, _) = await crearFacturaEmitida();
       await cobroRepository.crearCobro(
         facturaId: facturaId,
@@ -166,7 +166,7 @@ void main() {
             referencia: cobro.referencia,
             observaciones: cobro.observaciones,
           ),
-          throwsA(isA<ImporteCobroNoValidoException>()),
+          throwsA(isA<CobroConfirmadoNoEditableException>()),
         );
       }
 
@@ -174,7 +174,7 @@ void main() {
       expect(persistido?.importe, 30);
     });
 
-    test('ediciones concurrentes recalculan el máximo actual', () async {
+    test('ninguna edición concurrente sobrescribe cobros', () async {
       final (facturaId, _) = await crearFacturaEmitida();
 
       await cobroRepository.crearCobro(
@@ -208,17 +208,17 @@ void main() {
         ),
       );
 
-      expect(resultados.where((resultado) => resultado == true), hasLength(1));
+      expect(resultados.where((resultado) => resultado == true), isEmpty);
       expect(
-        resultados.whereType<CobroSuperaPendienteException>(),
-        hasLength(1),
+        resultados.whereType<CobroConfirmadoNoEditableException>(),
+        hasLength(2),
       );
       final finales = await database.cobrosDao
           .observarPorFactura(facturaId)
           .first;
       expect(
         finales.fold<double>(0, (suma, cobro) => suma + cobro.importe),
-        110,
+        60,
       );
     });
 
@@ -250,9 +250,7 @@ void main() {
 
   group('FacturaLineaRepository con Drift', () {
     test('una emitida rechaza cualquier reducción de líneas', () async {
-      final (facturaId, linea) = await crearFacturaEmitida(
-        precioUnitario: 200,
-      );
+      final (facturaId, linea) = await crearFacturaEmitida(precioUnitario: 200);
       await cobroRepository.crearCobro(
         facturaId: facturaId,
         fecha: DateTime(2026, 8, 26),
@@ -311,10 +309,7 @@ void main() {
         0,
         (suma, cobro) => suma + cobro.importe,
       );
-      expect(
-        factura!.total + facturaEstadoEconomicoEpsilon >= totalCobrado,
-        isTrue,
-      );
+      expect(factura!.total >= normalizarImporteCobro(totalCobrado), isTrue);
     });
 
     test('un rechazo revierte línea, total, cobros y estado', () async {
@@ -364,10 +359,7 @@ void main() {
     );
 
     await expectLater(
-      facturaRepository.actualizarTotales(
-        facturaId: facturaId,
-        subtotal: 50,
-      ),
+      facturaRepository.actualizarTotales(facturaId: facturaId, subtotal: 50),
       throwsA(isA<FacturaDocumentoCongeladoException>()),
     );
 

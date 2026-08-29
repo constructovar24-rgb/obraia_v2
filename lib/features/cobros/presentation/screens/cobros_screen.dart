@@ -151,7 +151,7 @@ class _CobrosScreenState extends ConsumerState<CobrosScreen> {
                               child: const Icon(Icons.payments_outlined),
                             ),
                             title: Text(
-                              CurrencyFormatter.format(cobro.importe),
+                              '${cobro.esReversion ? '−' : ''}${CurrencyFormatter.format(cobro.importe)}',
                               style: textTheme.titleMedium,
                             ),
                             subtitle: Padding(
@@ -159,7 +159,7 @@ class _CobrosScreenState extends ConsumerState<CobrosScreen> {
                                 top: AppSpacing.xs,
                               ),
                               child: Text(
-                                'Fecha: ${DateFormatter.formatDdMmYyyy(cobro.fecha)}\nMetodo: ${cobro.metodoPago}\nReferencia: $referencia',
+                                '${cobro.esReversion ? 'Reversión' : 'Cobro'} · Fecha: ${DateFormatter.formatDdMmYyyy(cobro.fecha)}\nMetodo: ${cobro.metodoPago}\nReferencia: $referencia${cobro.motivo.trim().isEmpty ? '' : '\nMotivo: ${cobro.motivo}'}',
                                 style: textTheme.bodyMedium,
                               ),
                             ),

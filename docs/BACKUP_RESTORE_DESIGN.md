@@ -16,19 +16,19 @@ Este documento guía la fase 1 desde la auditoría inicial. Ya están implementa
 
 ### SQLite, diario y transacciones
 
-- No hay configuración explícita de `journal_mode`, checkpoint, `foreign_keys` ni otros pragmas.
+- No hay configuración explícita de `journal_mode` ni checkpoint. Desde el esquema 19 todas las conexiones activan `PRAGMA foreign_keys = ON`.
 - `NativeDatabase(file)` conserva el modo de diario predeterminado de SQLite. Drift solo activa WAL si se solicita en `setup`, cosa que OBRA IA no hace.
 - En la configuración actual no se espera un `obraia.sqlite-wal` persistente. Aun así, el diseño debe detectar y tratar `-wal` y `-shm`, porque podrían existir tras un cambio futuro, una apertura con otra herramienta o una interrupción.
 - El proyecto usa transacciones Drift para varias operaciones económicas y de trazabilidad. Copiar directamente el archivo principal mientras la conexión está abierta no es una estrategia de backup aceptable.
 
 ### Esquema, migraciones e integridad
 
-- `schemaVersion` actual: 18.
+- `schemaVersion` actual: 19.
 - Hay 13 tablas: `clientes`, `expedientes`, `presupuestos`, `lineas_presupuesto`, `empresa_configuracion`, `facturas`, `factura_lineas`, `cobros`, `compras`, `proveedores`, `certificaciones`, `documentos` y `timeline_events`.
-- Las migraciones incrementales cubren cambios de las versiones 2 a 18. La versión 6 reconstruye `presupuestos`; la 17 añade y rellena `iva_porcentaje` en facturas sin recalcular importes históricos; la 18 añade la unidad de las líneas de presupuesto y la fotografía histórica de las facturas emitidas.
+- Las migraciones incrementales cubren cambios de las versiones 2 a 19. La versión 6 reconstruye `presupuestos`; la 17 añade y rellena `iva_porcentaje` en facturas sin recalcular importes históricos; la 18 añade la unidad de las líneas de presupuesto y la fotografía histórica de las facturas emitidas; la 19 incorpora el tipo de movimiento, el vínculo al cobro original y el motivo de las reversiones.
 - Hay relaciones declaradas entre clientes, expedientes, presupuestos, líneas, facturas, cobros, certificaciones, documentos y Timeline. No se declaran acciones `ON DELETE`. `compras.proveedorId` no es una referencia Drift.
-- La conexión no activa expresamente `PRAGMA foreign_keys = ON`. La restauración debe ejecutar `PRAGMA foreign_key_check` y no asumir que SQLite impidió previamente todos los huérfanos.
-- La compatibilidad de restauración se limita deliberadamente a los esquemas 16, 17 y 18. La prueba de staging verifica 16→18 con conservación de cliente e importes; 17 y 18 se validan o migran de forma aislada. Las versiones 1 a 15 y las futuras se rechazan, por no disponer de fixtures y cobertura suficiente para prometer su recuperación.
+- La conexión activa expresamente `PRAGMA foreign_keys = ON`; la restauración mantiene además `PRAGMA foreign_key_check` para detectar huérfanos históricos.
+- La compatibilidad de restauración se limita deliberadamente a los esquemas 16, 17, 18 y 19. Las rutas 16→19, 17→19, 18→19 y 19→19 están probadas con conservación de cobros e importes. Las versiones 1 a 15 y las futuras se rechazan.
 
 ### Archivos asociados
 

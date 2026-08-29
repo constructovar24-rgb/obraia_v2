@@ -12,6 +12,8 @@ import '../../../../core/widgets/entity_summary_card.dart';
 import '../../data/cobro_repository.dart';
 import '../../domain/cobro.dart' as cobro_domain;
 import '../../../facturas/domain/estado_factura.dart';
+import '../../domain/metodos_pago.dart';
+import 'nueva_reversion_cobro_screen.dart';
 
 class EditarCobroScreen extends ConsumerStatefulWidget {
   const EditarCobroScreen({
@@ -29,14 +31,6 @@ class EditarCobroScreen extends ConsumerStatefulWidget {
 
 class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
   bool get _esFacturaAnulada => widget.facturaEstado == EstadoFactura.anulada;
-  static const List<String> _metodosPago = [
-    'Transferencia',
-    'Efectivo',
-    'Tarjeta',
-    'Domiciliacion',
-    'Otro',
-  ];
-
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _fechaController;
   late final TextEditingController _importeController;
@@ -50,9 +44,7 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
   void initState() {
     super.initState();
     _fechaSeleccionada = widget.cobro.fecha;
-    _metodoPagoSeleccionado = _metodosPago.contains(widget.cobro.metodoPago)
-        ? widget.cobro.metodoPago
-        : _metodosPago.first;
+    _metodoPagoSeleccionado = widget.cobro.metodoPago;
 
     _fechaController = TextEditingController(
       text: DateFormatter.formatDdMmYyyy(_fechaSeleccionada),
@@ -75,24 +67,6 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
     _referenciaController.dispose();
     _observacionesController.dispose();
     super.dispose();
-  }
-
-  Future<void> _seleccionarFecha() async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _fechaSeleccionada,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-
-    if (picked == null) {
-      return;
-    }
-
-    setState(() {
-      _fechaSeleccionada = picked;
-      _fechaController.text = DateFormatter.formatDdMmYyyy(_fechaSeleccionada);
-    });
   }
 
   Future<void> _confirmarEliminar() async {
@@ -155,6 +129,8 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
     return '${parsed.toStringAsFixed(2)} €';
   }
 
+  // Conservado temporalmente para compatibilidad interna; no se expone en UI.
+  // ignore: unused_element
   Future<void> _guardarCambios() async {
     if (!_formKey.currentState!.validate()) {
       return;
@@ -245,24 +221,19 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
       onBack: () {
         Navigator.maybePop(context);
       },
-      onSave: _esFacturaAnulada
-          ? null
-          : () {
-              _guardarCambios();
-            },
-      onDelete: () {
-        _confirmarEliminar();
-      },
+      onSave: null,
+      onDelete: _esFacturaAnulada ? _confirmarEliminar : null,
       child: Scaffold(
         appBar: AppPageHeader(
           showBackButton: true,
           title: 'Cobro',
           actions: [
-            AppPageHeaderAction(
-              icon: Icons.delete_outline,
-              tooltip: 'Eliminar cobro',
-              onPressed: _confirmarEliminar,
-            ),
+            if (_esFacturaAnulada)
+              AppPageHeaderAction(
+                icon: Icons.delete_outline,
+                tooltip: 'Eliminar cobro',
+                onPressed: _confirmarEliminar,
+              ),
           ],
         ),
         body: Padding(
@@ -301,7 +272,7 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
                           labelText: 'Fecha',
                           suffixIcon: Icon(Icons.calendar_today),
                         ),
-                        onTap: _esFacturaAnulada ? null : _seleccionarFecha,
+                        enabled: false,
                         validator: (value) =>
                             (value == null || value.trim().isEmpty)
                             ? 'La fecha es obligatoria'
@@ -310,7 +281,7 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
                       const SizedBox(height: AppSpacing.lg),
                       TextFormField(
                         controller: _importeController,
-                        enabled: !_esFacturaAnulada,
+                        enabled: false,
                         keyboardType: const TextInputType.numberWithOptions(
                           decimal: true,
                         ),
@@ -338,18 +309,11 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
                       const SizedBox(height: AppSpacing.lg),
                       DropdownButtonFormField<String>(
                         initialValue: _metodoPagoSeleccionado,
-                        onChanged: _esFacturaAnulada
-                            ? null
-                            : (value) {
-                                if (value == null) return;
-                                setState(() {
-                                  _metodoPagoSeleccionado = value;
-                                });
-                              },
+                        onChanged: null,
                         decoration: const InputDecoration(
                           labelText: 'Metodo de pago',
                         ),
-                        items: _metodosPago
+                        items: {...metodosPagoCobro, widget.cobro.metodoPago}
                             .map(
                               (metodo) => DropdownMenuItem<String>(
                                 value: metodo,
@@ -361,7 +325,7 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
                       const SizedBox(height: AppSpacing.lg),
                       TextFormField(
                         controller: _referenciaController,
-                        enabled: !_esFacturaAnulada,
+                        enabled: false,
                         decoration: const InputDecoration(
                           labelText: 'Referencia',
                         ),
@@ -369,7 +333,7 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
                       const SizedBox(height: AppSpacing.lg),
                       TextFormField(
                         controller: _observacionesController,
-                        enabled: !_esFacturaAnulada,
+                        enabled: false,
                         decoration: const InputDecoration(
                           labelText: 'Observaciones',
                         ),
@@ -377,11 +341,20 @@ class _EditarCobroScreenState extends ConsumerState<EditarCobroScreen> {
                         maxLines: 5,
                       ),
                       const SizedBox(height: AppSpacing.xl),
-                      if (!_esFacturaAnulada)
+                      if (!_esFacturaAnulada && !widget.cobro.esReversion)
                         AppPrimaryButton(
-                          onPressed: _guardarCambios,
-                          icon: Icons.save,
-                          label: 'Guardar cambios',
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => NuevaReversionCobroScreen(
+                                  cobro: widget.cobro,
+                                ),
+                              ),
+                            );
+                          },
+                          icon: Icons.undo,
+                          label: 'Registrar reversión',
                         ),
                     ],
                   ),

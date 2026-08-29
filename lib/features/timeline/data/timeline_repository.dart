@@ -186,6 +186,23 @@ class TimelineRepository {
     );
   }
 
+  Future<void> registrarCobroRevertido({
+    required String expedienteId,
+    required String reversionId,
+    required String titulo,
+    String? descripcion,
+    DateTime? fecha,
+  }) {
+    return _registrarEventoNegocioUnico(
+      expedienteId: expedienteId,
+      tipo: TimelineEventType.cobroRevertido,
+      titulo: titulo,
+      descripcion: descripcion,
+      referenciaId: reversionId,
+      fecha: fecha,
+    );
+  }
+
   Future<void> registrarFacturaBorradorEliminada({
     required String expedienteId,
     required String facturaId,

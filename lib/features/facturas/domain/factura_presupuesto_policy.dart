@@ -1,4 +1,5 @@
 import 'package:obraia_v2/features/cobros/domain/cobro.dart' as cobro_domain;
+import 'package:obraia_v2/features/cobros/domain/factura_estado_economico.dart';
 import 'package:obraia_v2/features/facturas/domain/estado_factura.dart';
 import 'package:obraia_v2/features/facturas/domain/factura.dart'
     as factura_domain;
@@ -48,8 +49,11 @@ BloqueoConversionPresupuesto? obtenerBloqueoConversionPresupuesto({
       .where((factura) => factura.estado == EstadoFactura.anulada)
       .map((factura) => factura.id)
       .toSet();
-  if (cobros.any((cobro) => idsAnuladas.contains(cobro.facturaId))) {
-    return BloqueoConversionPresupuesto.facturaAnuladaConCobros;
+  for (final facturaId in idsAnuladas) {
+    final movimientos = cobros.where((cobro) => cobro.facturaId == facturaId);
+    if (calcularTotalCobradoNeto(movimientos) > 0) {
+      return BloqueoConversionPresupuesto.facturaAnuladaConCobros;
+    }
   }
 
   return null;

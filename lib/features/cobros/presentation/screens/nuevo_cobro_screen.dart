@@ -7,12 +7,10 @@ import '../../../../core/ui/app_spacing.dart';
 import '../../../../core/widgets/app_primary_button.dart';
 import '../../../../core/widgets/app_section.dart';
 import '../../data/cobro_repository.dart';
+import '../../domain/metodos_pago.dart';
 
 class NuevoCobroScreen extends ConsumerStatefulWidget {
-  const NuevoCobroScreen({
-    super.key,
-    required this.facturaId,
-  });
+  const NuevoCobroScreen({super.key, required this.facturaId});
 
   final String facturaId;
 
@@ -21,14 +19,6 @@ class NuevoCobroScreen extends ConsumerStatefulWidget {
 }
 
 class _NuevoCobroScreenState extends ConsumerState<NuevoCobroScreen> {
-  static const List<String> _metodosPago = [
-    'Transferencia',
-    'Efectivo',
-    'Tarjeta',
-    'Domiciliacion',
-    'Otro',
-  ];
-
   final _formKey = GlobalKey<FormState>();
   final _fechaController = TextEditingController();
   final _importeController = TextEditingController();
@@ -36,7 +26,7 @@ class _NuevoCobroScreenState extends ConsumerState<NuevoCobroScreen> {
   final _observacionesController = TextEditingController();
 
   DateTime _fechaSeleccionada = DateTime.now();
-  String _metodoPagoSeleccionado = _metodosPago.first;
+  String _metodoPagoSeleccionado = metodosPagoCobro.first;
 
   @override
   void initState() {
@@ -78,9 +68,7 @@ class _NuevoCobroScreenState extends ConsumerState<NuevoCobroScreen> {
         Navigator.maybePop(context);
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Nuevo cobro'),
-        ),
+        appBar: AppBar(title: const Text('Nuevo cobro')),
         body: Padding(
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Form(
@@ -89,7 +77,8 @@ class _NuevoCobroScreenState extends ConsumerState<NuevoCobroScreen> {
               children: [
                 AppSection(
                   title: 'Datos del cobro',
-                  subtitle: 'Registra la información del cobro para esta factura.',
+                  subtitle:
+                      'Registra la información del cobro para esta factura.',
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -101,7 +90,8 @@ class _NuevoCobroScreenState extends ConsumerState<NuevoCobroScreen> {
                           suffixIcon: Icon(Icons.calendar_today),
                         ),
                         onTap: _seleccionarFecha,
-                        validator: (value) => (value == null || value.trim().isEmpty)
+                        validator: (value) =>
+                            (value == null || value.trim().isEmpty)
                             ? 'La fecha es obligatoria'
                             : null,
                       ),
@@ -111,16 +101,16 @@ class _NuevoCobroScreenState extends ConsumerState<NuevoCobroScreen> {
                         keyboardType: const TextInputType.numberWithOptions(
                           decimal: true,
                         ),
-                        decoration: const InputDecoration(
-                          labelText: 'Importe',
-                        ),
+                        decoration: const InputDecoration(labelText: 'Importe'),
                         validator: (value) {
                           final raw = value?.trim() ?? '';
                           if (raw.isEmpty) {
                             return 'El importe es obligatorio';
                           }
 
-                          final parsed = double.tryParse(raw.replaceAll(',', '.'));
+                          final parsed = double.tryParse(
+                            raw.replaceAll(',', '.'),
+                          );
                           if (parsed == null) {
                             return 'Introduce un importe decimal valido';
                           }
@@ -138,7 +128,7 @@ class _NuevoCobroScreenState extends ConsumerState<NuevoCobroScreen> {
                         decoration: const InputDecoration(
                           labelText: 'Metodo de pago',
                         ),
-                        items: _metodosPago
+                        items: metodosPagoCobro
                             .map(
                               (metodo) => DropdownMenuItem<String>(
                                 value: metodo,
@@ -170,6 +160,13 @@ class _NuevoCobroScreenState extends ConsumerState<NuevoCobroScreen> {
                         ),
                         minLines: 3,
                         maxLines: 5,
+                        validator: (value) {
+                          if (_metodoPagoSeleccionado == metodoPagoOtro &&
+                              (value?.trim().length ?? 0) < 3) {
+                            return 'Describe el método de pago Otro';
+                          }
+                          return null;
+                        },
                       ),
                       const SizedBox(height: AppSpacing.xl),
                       AppPrimaryButton(
@@ -185,8 +182,13 @@ class _NuevoCobroScreenState extends ConsumerState<NuevoCobroScreen> {
                             _fechaSeleccionada.day,
                           );
                           final importe =
-                              double.tryParse(_importeController.text.trim().replaceAll(',', '.')) ??
-                                  0.0;
+                              double.tryParse(
+                                _importeController.text.trim().replaceAll(
+                                  ',',
+                                  '.',
+                                ),
+                              ) ??
+                              0.0;
 
                           try {
                             await repository.crearCobro(
@@ -195,7 +197,8 @@ class _NuevoCobroScreenState extends ConsumerState<NuevoCobroScreen> {
                               importe: importe,
                               metodoPago: _metodoPagoSeleccionado,
                               referencia: _referenciaController.text.trim(),
-                              observaciones: _observacionesController.text.trim(),
+                              observaciones: _observacionesController.text
+                                  .trim(),
                             );
                           } on ImporteCobroNoValidoException {
                             if (!context.mounted) {
@@ -245,6 +248,26 @@ class _NuevoCobroScreenState extends ConsumerState<NuevoCobroScreen> {
                               const SnackBar(
                                 content: Text(
                                   'El estado de la factura no permite registrar nuevos cobros.',
+                                ),
+                              ),
+                            );
+                            return;
+                          } on FechaMovimientoCobroNoValidaException {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'La fecha debe estar entre la fecha de la factura y hoy.',
+                                ),
+                              ),
+                            );
+                            return;
+                          } on MetodoPagoCobroNoValidoException {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Método no válido. Para Otro, añade una descripción.',
                                 ),
                               ),
                             );

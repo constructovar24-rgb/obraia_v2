@@ -6197,6 +6197,42 @@ class $CobrosTable extends Cobros with TableInfo<$CobrosTable, Cobro> {
     requiredDuringInsert: false,
     defaultValue: const Constant(''),
   );
+  static const VerificationMeta _tipoMovimientoMeta = const VerificationMeta(
+    'tipoMovimiento',
+  );
+  @override
+  late final GeneratedColumn<String> tipoMovimiento = GeneratedColumn<String>(
+    'tipo_movimiento',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('cobro'),
+  );
+  static const VerificationMeta _cobroOrigenIdMeta = const VerificationMeta(
+    'cobroOrigenId',
+  );
+  @override
+  late final GeneratedColumn<String> cobroOrigenId = GeneratedColumn<String>(
+    'cobro_origen_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES cobros (id)',
+    ),
+  );
+  static const VerificationMeta _motivoMeta = const VerificationMeta('motivo');
+  @override
+  late final GeneratedColumn<String> motivo = GeneratedColumn<String>(
+    'motivo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
   static const VerificationMeta _fechaCreacionMeta = const VerificationMeta(
     'fechaCreacion',
   );
@@ -6232,6 +6268,9 @@ class $CobrosTable extends Cobros with TableInfo<$CobrosTable, Cobro> {
     metodoPago,
     referencia,
     observaciones,
+    tipoMovimiento,
+    cobroOrigenId,
+    motivo,
     fechaCreacion,
     fechaModificacion,
   ];
@@ -6293,6 +6332,30 @@ class $CobrosTable extends Cobros with TableInfo<$CobrosTable, Cobro> {
         ),
       );
     }
+    if (data.containsKey('tipo_movimiento')) {
+      context.handle(
+        _tipoMovimientoMeta,
+        tipoMovimiento.isAcceptableOrUnknown(
+          data['tipo_movimiento']!,
+          _tipoMovimientoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('cobro_origen_id')) {
+      context.handle(
+        _cobroOrigenIdMeta,
+        cobroOrigenId.isAcceptableOrUnknown(
+          data['cobro_origen_id']!,
+          _cobroOrigenIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('motivo')) {
+      context.handle(
+        _motivoMeta,
+        motivo.isAcceptableOrUnknown(data['motivo']!, _motivoMeta),
+      );
+    }
     if (data.containsKey('fecha_creacion')) {
       context.handle(
         _fechaCreacionMeta,
@@ -6348,6 +6411,18 @@ class $CobrosTable extends Cobros with TableInfo<$CobrosTable, Cobro> {
         DriftSqlType.string,
         data['${effectivePrefix}observaciones'],
       )!,
+      tipoMovimiento: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tipo_movimiento'],
+      )!,
+      cobroOrigenId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cobro_origen_id'],
+      ),
+      motivo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}motivo'],
+      )!,
       fechaCreacion: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}fecha_creacion'],
@@ -6373,6 +6448,9 @@ class Cobro extends DataClass implements Insertable<Cobro> {
   final String metodoPago;
   final String referencia;
   final String observaciones;
+  final String tipoMovimiento;
+  final String? cobroOrigenId;
+  final String motivo;
   final DateTime fechaCreacion;
   final DateTime fechaModificacion;
   const Cobro({
@@ -6383,6 +6461,9 @@ class Cobro extends DataClass implements Insertable<Cobro> {
     required this.metodoPago,
     required this.referencia,
     required this.observaciones,
+    required this.tipoMovimiento,
+    this.cobroOrigenId,
+    required this.motivo,
     required this.fechaCreacion,
     required this.fechaModificacion,
   });
@@ -6396,6 +6477,11 @@ class Cobro extends DataClass implements Insertable<Cobro> {
     map['metodo_pago'] = Variable<String>(metodoPago);
     map['referencia'] = Variable<String>(referencia);
     map['observaciones'] = Variable<String>(observaciones);
+    map['tipo_movimiento'] = Variable<String>(tipoMovimiento);
+    if (!nullToAbsent || cobroOrigenId != null) {
+      map['cobro_origen_id'] = Variable<String>(cobroOrigenId);
+    }
+    map['motivo'] = Variable<String>(motivo);
     map['fecha_creacion'] = Variable<DateTime>(fechaCreacion);
     map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion);
     return map;
@@ -6410,6 +6496,11 @@ class Cobro extends DataClass implements Insertable<Cobro> {
       metodoPago: Value(metodoPago),
       referencia: Value(referencia),
       observaciones: Value(observaciones),
+      tipoMovimiento: Value(tipoMovimiento),
+      cobroOrigenId: cobroOrigenId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cobroOrigenId),
+      motivo: Value(motivo),
       fechaCreacion: Value(fechaCreacion),
       fechaModificacion: Value(fechaModificacion),
     );
@@ -6428,6 +6519,9 @@ class Cobro extends DataClass implements Insertable<Cobro> {
       metodoPago: serializer.fromJson<String>(json['metodoPago']),
       referencia: serializer.fromJson<String>(json['referencia']),
       observaciones: serializer.fromJson<String>(json['observaciones']),
+      tipoMovimiento: serializer.fromJson<String>(json['tipoMovimiento']),
+      cobroOrigenId: serializer.fromJson<String?>(json['cobroOrigenId']),
+      motivo: serializer.fromJson<String>(json['motivo']),
       fechaCreacion: serializer.fromJson<DateTime>(json['fechaCreacion']),
       fechaModificacion: serializer.fromJson<DateTime>(
         json['fechaModificacion'],
@@ -6445,6 +6539,9 @@ class Cobro extends DataClass implements Insertable<Cobro> {
       'metodoPago': serializer.toJson<String>(metodoPago),
       'referencia': serializer.toJson<String>(referencia),
       'observaciones': serializer.toJson<String>(observaciones),
+      'tipoMovimiento': serializer.toJson<String>(tipoMovimiento),
+      'cobroOrigenId': serializer.toJson<String?>(cobroOrigenId),
+      'motivo': serializer.toJson<String>(motivo),
       'fechaCreacion': serializer.toJson<DateTime>(fechaCreacion),
       'fechaModificacion': serializer.toJson<DateTime>(fechaModificacion),
     };
@@ -6458,6 +6555,9 @@ class Cobro extends DataClass implements Insertable<Cobro> {
     String? metodoPago,
     String? referencia,
     String? observaciones,
+    String? tipoMovimiento,
+    Value<String?> cobroOrigenId = const Value.absent(),
+    String? motivo,
     DateTime? fechaCreacion,
     DateTime? fechaModificacion,
   }) => Cobro(
@@ -6468,6 +6568,11 @@ class Cobro extends DataClass implements Insertable<Cobro> {
     metodoPago: metodoPago ?? this.metodoPago,
     referencia: referencia ?? this.referencia,
     observaciones: observaciones ?? this.observaciones,
+    tipoMovimiento: tipoMovimiento ?? this.tipoMovimiento,
+    cobroOrigenId: cobroOrigenId.present
+        ? cobroOrigenId.value
+        : this.cobroOrigenId,
+    motivo: motivo ?? this.motivo,
     fechaCreacion: fechaCreacion ?? this.fechaCreacion,
     fechaModificacion: fechaModificacion ?? this.fechaModificacion,
   );
@@ -6486,6 +6591,13 @@ class Cobro extends DataClass implements Insertable<Cobro> {
       observaciones: data.observaciones.present
           ? data.observaciones.value
           : this.observaciones,
+      tipoMovimiento: data.tipoMovimiento.present
+          ? data.tipoMovimiento.value
+          : this.tipoMovimiento,
+      cobroOrigenId: data.cobroOrigenId.present
+          ? data.cobroOrigenId.value
+          : this.cobroOrigenId,
+      motivo: data.motivo.present ? data.motivo.value : this.motivo,
       fechaCreacion: data.fechaCreacion.present
           ? data.fechaCreacion.value
           : this.fechaCreacion,
@@ -6505,6 +6617,9 @@ class Cobro extends DataClass implements Insertable<Cobro> {
           ..write('metodoPago: $metodoPago, ')
           ..write('referencia: $referencia, ')
           ..write('observaciones: $observaciones, ')
+          ..write('tipoMovimiento: $tipoMovimiento, ')
+          ..write('cobroOrigenId: $cobroOrigenId, ')
+          ..write('motivo: $motivo, ')
           ..write('fechaCreacion: $fechaCreacion, ')
           ..write('fechaModificacion: $fechaModificacion')
           ..write(')'))
@@ -6520,6 +6635,9 @@ class Cobro extends DataClass implements Insertable<Cobro> {
     metodoPago,
     referencia,
     observaciones,
+    tipoMovimiento,
+    cobroOrigenId,
+    motivo,
     fechaCreacion,
     fechaModificacion,
   );
@@ -6534,6 +6652,9 @@ class Cobro extends DataClass implements Insertable<Cobro> {
           other.metodoPago == this.metodoPago &&
           other.referencia == this.referencia &&
           other.observaciones == this.observaciones &&
+          other.tipoMovimiento == this.tipoMovimiento &&
+          other.cobroOrigenId == this.cobroOrigenId &&
+          other.motivo == this.motivo &&
           other.fechaCreacion == this.fechaCreacion &&
           other.fechaModificacion == this.fechaModificacion);
 }
@@ -6546,6 +6667,9 @@ class CobrosCompanion extends UpdateCompanion<Cobro> {
   final Value<String> metodoPago;
   final Value<String> referencia;
   final Value<String> observaciones;
+  final Value<String> tipoMovimiento;
+  final Value<String?> cobroOrigenId;
+  final Value<String> motivo;
   final Value<DateTime> fechaCreacion;
   final Value<DateTime> fechaModificacion;
   final Value<int> rowid;
@@ -6557,6 +6681,9 @@ class CobrosCompanion extends UpdateCompanion<Cobro> {
     this.metodoPago = const Value.absent(),
     this.referencia = const Value.absent(),
     this.observaciones = const Value.absent(),
+    this.tipoMovimiento = const Value.absent(),
+    this.cobroOrigenId = const Value.absent(),
+    this.motivo = const Value.absent(),
     this.fechaCreacion = const Value.absent(),
     this.fechaModificacion = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -6569,6 +6696,9 @@ class CobrosCompanion extends UpdateCompanion<Cobro> {
     this.metodoPago = const Value.absent(),
     this.referencia = const Value.absent(),
     this.observaciones = const Value.absent(),
+    this.tipoMovimiento = const Value.absent(),
+    this.cobroOrigenId = const Value.absent(),
+    this.motivo = const Value.absent(),
     this.fechaCreacion = const Value.absent(),
     this.fechaModificacion = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -6582,6 +6712,9 @@ class CobrosCompanion extends UpdateCompanion<Cobro> {
     Expression<String>? metodoPago,
     Expression<String>? referencia,
     Expression<String>? observaciones,
+    Expression<String>? tipoMovimiento,
+    Expression<String>? cobroOrigenId,
+    Expression<String>? motivo,
     Expression<DateTime>? fechaCreacion,
     Expression<DateTime>? fechaModificacion,
     Expression<int>? rowid,
@@ -6594,6 +6727,9 @@ class CobrosCompanion extends UpdateCompanion<Cobro> {
       if (metodoPago != null) 'metodo_pago': metodoPago,
       if (referencia != null) 'referencia': referencia,
       if (observaciones != null) 'observaciones': observaciones,
+      if (tipoMovimiento != null) 'tipo_movimiento': tipoMovimiento,
+      if (cobroOrigenId != null) 'cobro_origen_id': cobroOrigenId,
+      if (motivo != null) 'motivo': motivo,
       if (fechaCreacion != null) 'fecha_creacion': fechaCreacion,
       if (fechaModificacion != null) 'fecha_modificacion': fechaModificacion,
       if (rowid != null) 'rowid': rowid,
@@ -6608,6 +6744,9 @@ class CobrosCompanion extends UpdateCompanion<Cobro> {
     Value<String>? metodoPago,
     Value<String>? referencia,
     Value<String>? observaciones,
+    Value<String>? tipoMovimiento,
+    Value<String?>? cobroOrigenId,
+    Value<String>? motivo,
     Value<DateTime>? fechaCreacion,
     Value<DateTime>? fechaModificacion,
     Value<int>? rowid,
@@ -6620,6 +6759,9 @@ class CobrosCompanion extends UpdateCompanion<Cobro> {
       metodoPago: metodoPago ?? this.metodoPago,
       referencia: referencia ?? this.referencia,
       observaciones: observaciones ?? this.observaciones,
+      tipoMovimiento: tipoMovimiento ?? this.tipoMovimiento,
+      cobroOrigenId: cobroOrigenId ?? this.cobroOrigenId,
+      motivo: motivo ?? this.motivo,
       fechaCreacion: fechaCreacion ?? this.fechaCreacion,
       fechaModificacion: fechaModificacion ?? this.fechaModificacion,
       rowid: rowid ?? this.rowid,
@@ -6650,6 +6792,15 @@ class CobrosCompanion extends UpdateCompanion<Cobro> {
     if (observaciones.present) {
       map['observaciones'] = Variable<String>(observaciones.value);
     }
+    if (tipoMovimiento.present) {
+      map['tipo_movimiento'] = Variable<String>(tipoMovimiento.value);
+    }
+    if (cobroOrigenId.present) {
+      map['cobro_origen_id'] = Variable<String>(cobroOrigenId.value);
+    }
+    if (motivo.present) {
+      map['motivo'] = Variable<String>(motivo.value);
+    }
     if (fechaCreacion.present) {
       map['fecha_creacion'] = Variable<DateTime>(fechaCreacion.value);
     }
@@ -6672,6 +6823,9 @@ class CobrosCompanion extends UpdateCompanion<Cobro> {
           ..write('metodoPago: $metodoPago, ')
           ..write('referencia: $referencia, ')
           ..write('observaciones: $observaciones, ')
+          ..write('tipoMovimiento: $tipoMovimiento, ')
+          ..write('cobroOrigenId: $cobroOrigenId, ')
+          ..write('motivo: $motivo, ')
           ..write('fechaCreacion: $fechaCreacion, ')
           ..write('fechaModificacion: $fechaModificacion, ')
           ..write('rowid: $rowid')
@@ -15316,6 +15470,9 @@ typedef $$CobrosTableCreateCompanionBuilder =
       Value<String> metodoPago,
       Value<String> referencia,
       Value<String> observaciones,
+      Value<String> tipoMovimiento,
+      Value<String?> cobroOrigenId,
+      Value<String> motivo,
       Value<DateTime> fechaCreacion,
       Value<DateTime> fechaModificacion,
       Value<int> rowid,
@@ -15329,6 +15486,9 @@ typedef $$CobrosTableUpdateCompanionBuilder =
       Value<String> metodoPago,
       Value<String> referencia,
       Value<String> observaciones,
+      Value<String> tipoMovimiento,
+      Value<String?> cobroOrigenId,
+      Value<String> motivo,
       Value<DateTime> fechaCreacion,
       Value<DateTime> fechaModificacion,
       Value<int> rowid,
@@ -15349,6 +15509,23 @@ final class $$CobrosTableReferences
       $_db.facturas,
     ).filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_facturaIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $CobrosTable _cobroOrigenIdTable(_$AppDatabase db) =>
+      db.cobros.createAlias('cobros__cobro_origen_id__cobros__id');
+
+  $$CobrosTableProcessedTableManager? get cobroOrigenId {
+    final $_column = $_itemColumn<String>('cobro_origen_id');
+    if ($_column == null) return null;
+    final manager = $$CobrosTableTableManager(
+      $_db,
+      $_db.cobros,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_cobroOrigenIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
@@ -15395,6 +15572,16 @@ class $$CobrosTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get tipoMovimiento => $composableBuilder(
+    column: $table.tipoMovimiento,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get motivo => $composableBuilder(
+    column: $table.motivo,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<DateTime> get fechaCreacion => $composableBuilder(
     column: $table.fechaCreacion,
     builder: (column) => ColumnFilters(column),
@@ -15419,6 +15606,29 @@ class $$CobrosTableFilterComposer
           }) => $$FacturasTableFilterComposer(
             $db: $db,
             $table: $db.facturas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$CobrosTableFilterComposer get cobroOrigenId {
+    final $$CobrosTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.cobroOrigenId,
+      referencedTable: $db.cobros,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CobrosTableFilterComposer(
+            $db: $db,
+            $table: $db.cobros,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -15468,6 +15678,16 @@ class $$CobrosTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get tipoMovimiento => $composableBuilder(
+    column: $table.tipoMovimiento,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get motivo => $composableBuilder(
+    column: $table.motivo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get fechaCreacion => $composableBuilder(
     column: $table.fechaCreacion,
     builder: (column) => ColumnOrderings(column),
@@ -15492,6 +15712,29 @@ class $$CobrosTableOrderingComposer
           }) => $$FacturasTableOrderingComposer(
             $db: $db,
             $table: $db.facturas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$CobrosTableOrderingComposer get cobroOrigenId {
+    final $$CobrosTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.cobroOrigenId,
+      referencedTable: $db.cobros,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CobrosTableOrderingComposer(
+            $db: $db,
+            $table: $db.cobros,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -15535,6 +15778,14 @@ class $$CobrosTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get tipoMovimiento => $composableBuilder(
+    column: $table.tipoMovimiento,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get motivo =>
+      $composableBuilder(column: $table.motivo, builder: (column) => column);
+
   GeneratedColumn<DateTime> get fechaCreacion => $composableBuilder(
     column: $table.fechaCreacion,
     builder: (column) => column,
@@ -15567,6 +15818,29 @@ class $$CobrosTableAnnotationComposer
     );
     return composer;
   }
+
+  $$CobrosTableAnnotationComposer get cobroOrigenId {
+    final $$CobrosTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.cobroOrigenId,
+      referencedTable: $db.cobros,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CobrosTableAnnotationComposer(
+            $db: $db,
+            $table: $db.cobros,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$CobrosTableTableManager
@@ -15582,7 +15856,7 @@ class $$CobrosTableTableManager
           $$CobrosTableUpdateCompanionBuilder,
           (Cobro, $$CobrosTableReferences),
           Cobro,
-          PrefetchHooks Function({bool facturaId})
+          PrefetchHooks Function({bool facturaId, bool cobroOrigenId})
         > {
   $$CobrosTableTableManager(_$AppDatabase db, $CobrosTable table)
     : super(
@@ -15604,6 +15878,9 @@ class $$CobrosTableTableManager
                 Value<String> metodoPago = const Value.absent(),
                 Value<String> referencia = const Value.absent(),
                 Value<String> observaciones = const Value.absent(),
+                Value<String> tipoMovimiento = const Value.absent(),
+                Value<String?> cobroOrigenId = const Value.absent(),
+                Value<String> motivo = const Value.absent(),
                 Value<DateTime> fechaCreacion = const Value.absent(),
                 Value<DateTime> fechaModificacion = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -15615,6 +15892,9 @@ class $$CobrosTableTableManager
                 metodoPago: metodoPago,
                 referencia: referencia,
                 observaciones: observaciones,
+                tipoMovimiento: tipoMovimiento,
+                cobroOrigenId: cobroOrigenId,
+                motivo: motivo,
                 fechaCreacion: fechaCreacion,
                 fechaModificacion: fechaModificacion,
                 rowid: rowid,
@@ -15628,6 +15908,9 @@ class $$CobrosTableTableManager
                 Value<String> metodoPago = const Value.absent(),
                 Value<String> referencia = const Value.absent(),
                 Value<String> observaciones = const Value.absent(),
+                Value<String> tipoMovimiento = const Value.absent(),
+                Value<String?> cobroOrigenId = const Value.absent(),
+                Value<String> motivo = const Value.absent(),
                 Value<DateTime> fechaCreacion = const Value.absent(),
                 Value<DateTime> fechaModificacion = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -15639,6 +15922,9 @@ class $$CobrosTableTableManager
                 metodoPago: metodoPago,
                 referencia: referencia,
                 observaciones: observaciones,
+                tipoMovimiento: tipoMovimiento,
+                cobroOrigenId: cobroOrigenId,
+                motivo: motivo,
                 fechaCreacion: fechaCreacion,
                 fechaModificacion: fechaModificacion,
                 rowid: rowid,
@@ -15649,7 +15935,7 @@ class $$CobrosTableTableManager
                     (e.readTable(table), $$CobrosTableReferences(db, table, e)),
               )
               .toList(),
-          prefetchHooksCallback: ({facturaId = false}) {
+          prefetchHooksCallback: ({facturaId = false, cobroOrigenId = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -15682,6 +15968,19 @@ class $$CobrosTableTableManager
                               )
                               as T;
                     }
+                    if (cobroOrigenId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.cobroOrigenId,
+                                referencedTable: $$CobrosTableReferences
+                                    ._cobroOrigenIdTable(db),
+                                referencedColumn: $$CobrosTableReferences
+                                    ._cobroOrigenIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
 
                     return state;
                   },
@@ -15706,7 +16005,7 @@ typedef $$CobrosTableProcessedTableManager =
       $$CobrosTableUpdateCompanionBuilder,
       (Cobro, $$CobrosTableReferences),
       Cobro,
-      PrefetchHooks Function({bool facturaId})
+      PrefetchHooks Function({bool facturaId, bool cobroOrigenId})
     >;
 typedef $$ComprasTableCreateCompanionBuilder =
     ComprasCompanion Function({

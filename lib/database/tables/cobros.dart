@@ -11,11 +11,19 @@ class Cobros extends Table {
 
   RealColumn get importe => real().withDefault(const Constant(0))();
 
-  TextColumn get metodoPago => text().withDefault(const Constant('Transferencia'))();
+  TextColumn get metodoPago =>
+      text().withDefault(const Constant('Transferencia'))();
 
   TextColumn get referencia => text().withDefault(const Constant(''))();
 
   TextColumn get observaciones => text().withDefault(const Constant(''))();
+
+  TextColumn get tipoMovimiento =>
+      text().withDefault(const Constant('cobro'))();
+
+  TextColumn get cobroOrigenId => text().nullable().references(Cobros, #id)();
+
+  TextColumn get motivo => text().withDefault(const Constant(''))();
 
   DateTimeColumn get fechaCreacion =>
       dateTime().withDefault(currentDateAndTime)();

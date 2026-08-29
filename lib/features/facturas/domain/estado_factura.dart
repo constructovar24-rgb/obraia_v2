@@ -1,10 +1,6 @@
-enum EstadoFactura {
-  borrador,
-  emitida,
-  cobrada,
-  vencida,
-  anulada,
-}
+import 'redondeo_monetario.dart';
+
+enum EstadoFactura { borrador, emitida, cobrada, vencida, anulada }
 
 const estadosFactura = [
   EstadoFactura.borrador,
@@ -36,8 +32,6 @@ bool estadoFacturaPermiteEditarLineas(EstadoFactura estado) {
   return estado == EstadoFactura.borrador;
 }
 
-const epsilonEstadoFactura = 0.000001;
-
 EstadoFactura resolverEstadoDocumentalFactura({
   required EstadoFactura estadoActual,
   required double totalFactura,
@@ -52,8 +46,8 @@ EstadoFactura resolverEstadoDocumentalFactura({
     return EstadoFactura.borrador;
   }
 
-  final saldo = totalFactura - totalCobrado;
-  if (saldo <= epsilonEstadoFactura) {
+  final saldo = redondearMoneda(totalFactura - totalCobrado);
+  if (saldo <= 0) {
     return EstadoFactura.cobrada;
   }
 

@@ -8,6 +8,7 @@ enum TimelineEventType {
   facturaAnulada,
   cobroRegistrado,
   cobroEliminado,
+  cobroRevertido,
   facturaBorradorEliminada,
   documentoSubido,
   fotografiaAnadida,

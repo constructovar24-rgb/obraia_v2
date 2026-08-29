@@ -207,8 +207,8 @@ class FacturaRepository {
         for (final cobro in cobros) {
           agrupados.update(
             cobro.facturaId,
-            (total) => total + cobro.importe,
-            ifAbsent: () => cobro.importe,
+            (total) => normalizarImporteCobro(total + cobro.importeNeto),
+            ifAbsent: () => cobro.importeNeto,
           );
         }
         cobradoPorFactura = agrupados;
@@ -488,10 +488,7 @@ class FacturaRepository {
       final cobros = await database.cobrosDao
           .observarPorFactura(facturaId)
           .first;
-      final totalCobrado = cobros.fold<double>(
-        0,
-        (suma, cobro) => suma + cobro.importe,
-      );
+      final totalCobrado = calcularTotalCobradoNeto(cobros);
       final subtotalRedondeado = redondearMoneda(subtotal);
       final iva = redondearMoneda(
         subtotalRedondeado * factura.ivaPorcentaje / 100,
@@ -620,10 +617,7 @@ class FacturaRepository {
       final cobros = await database.cobrosDao
           .observarPorFactura(facturaId)
           .first;
-      final cobrado = cobros.fold<double>(
-        0,
-        (suma, cobro) => suma + cobro.importe,
-      );
+      final cobrado = calcularTotalCobradoNeto(cobros);
       final estado = resolverEstadoDocumentalFactura(
         estadoActual: EstadoFactura.emitida,
         totalFactura: factura.total,
@@ -698,7 +692,9 @@ class FacturaRepository {
       final cobros = await database.cobrosDao
           .observarPorFactura(facturaId)
           .first;
-      if (cobros.isNotEmpty) throw const FacturaAnulacionConCobrosException();
+      if (calcularTotalCobradoNeto(cobros) > 0) {
+        throw const FacturaAnulacionConCobrosException();
+      }
       await _actualizarEstadoConEvento(
         facturaId: facturaId,
         nuevoEstado: EstadoFactura.anulada,
@@ -722,10 +718,7 @@ class FacturaRepository {
     final cobros = await database.cobrosDao
         .observarPorFactura(factura.id)
         .first;
-    final cobrado = cobros.fold<double>(
-      0,
-      (suma, cobro) => suma + cobro.importe,
-    );
+    final cobrado = calcularTotalCobradoNeto(cobros);
     final estado = resolverEstadoDocumentalFactura(
       estadoActual: factura.estado,
       totalFactura: factura.total,

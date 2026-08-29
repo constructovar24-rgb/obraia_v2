@@ -6,6 +6,7 @@ import 'package:obraia_v2/database/app_database.dart';
 import 'package:obraia_v2/database/database_provider.dart';
 import 'package:obraia_v2/features/cobros/domain/cobro.dart' as cobro_domain;
 import 'package:obraia_v2/features/cobros/domain/factura_estado_economico.dart';
+import 'package:obraia_v2/features/cobros/domain/metodos_pago.dart';
 import 'package:obraia_v2/features/facturas/domain/estado_factura.dart';
 import 'package:obraia_v2/features/timeline/data/timeline_repository.dart';
 import 'package:uuid/uuid.dart';
@@ -51,12 +52,29 @@ class ImporteCobroNoValidoException implements Exception {
   final double importe;
 }
 
+class FechaMovimientoCobroNoValidaException implements Exception {
+  const FechaMovimientoCobroNoValidaException();
+}
+
+class MetodoPagoCobroNoValidoException implements Exception {
+  const MetodoPagoCobroNoValidoException();
+}
+
+class CobroNoReversibleException implements Exception {
+  const CobroNoReversibleException();
+}
+
+class CobroConfirmadoNoEditableException implements Exception {
+  const CobroConfirmadoNoEditableException();
+}
+
 class CobroRepository {
   final AppDatabase database;
   final TimelineRepository _timelineRepository;
 
-  CobroRepository(this.database)
-    : _timelineRepository = TimelineRepository(database.timelineEventsDao);
+  CobroRepository(this.database, {TimelineRepository? timelineRepository})
+    : _timelineRepository =
+          timelineRepository ?? TimelineRepository(database.timelineEventsDao);
 
   Stream<List<cobro_domain.Cobro>> observarPorFactura(String facturaId) {
     return database.cobrosDao.observarPorFactura(facturaId);
@@ -117,7 +135,7 @@ class CobroRepository {
 
   Stream<double> observarTotalCobradoPorFactura(String facturaId) {
     return observarPorFactura(facturaId).map((cobros) {
-      return cobros.fold<double>(0, (sum, cobro) => sum + cobro.importe);
+      return calcularTotalCobradoNeto(cobros);
     });
   }
 
@@ -126,9 +144,9 @@ class CobroRepository {
     required double totalFactura,
   }) {
     return observarTotalCobradoPorFactura(facturaId).map((totalCobrado) {
-      final pendiente = (totalFactura - totalCobrado)
-          .clamp(0, double.infinity)
-          .toDouble();
+      final pendiente = normalizarImporteCobro(
+        totalFactura - totalCobrado,
+      ).clamp(0, double.infinity).toDouble();
 
       return FacturaEstadoEconomico(
         totalFactura: totalFactura,
@@ -163,21 +181,21 @@ class CobroRepository {
         throw FacturaNoCobrableException(facturaId: facturaId);
       }
       _validarImporteCobro(importe);
+      _validarFechaCobro(fecha: fecha, fechaFactura: factura.fecha);
+      _validarMetodoPago(metodoPago: metodoPago, observaciones: observaciones);
+      final importeNormalizado = normalizarImporteCobro(importe);
 
-      final cobrosActuales = await database.cobrosDao
-          .observarPorFactura(facturaId)
-          .first;
-      final totalCobrado = cobrosActuales.fold<double>(
-        0,
-        (sum, cobro) => sum + cobro.importe,
+      final cobrosActuales = await database.cobrosDao.obtenerPorFactura(
+        facturaId,
       );
-      final pendienteActual = (factura.total - totalCobrado)
-          .clamp(0, double.infinity)
-          .toDouble();
-      if (importe - pendienteActual > facturaEstadoEconomicoEpsilon) {
+      final totalCobrado = calcularTotalCobradoNeto(cobrosActuales);
+      final pendienteActual = normalizarImporteCobro(
+        factura.total - totalCobrado,
+      ).clamp(0, double.infinity).toDouble();
+      if (importeNormalizado > pendienteActual) {
         throw CobroSuperaPendienteException(
           facturaId: facturaId,
-          importeSolicitado: importe,
+          importeSolicitado: importeNormalizado,
           pendienteActual: pendienteActual,
         );
       }
@@ -191,7 +209,7 @@ class CobroRepository {
           id: cobroId,
           facturaId: facturaId,
           fecha: Value(fecha),
-          importe: Value(importe),
+          importe: Value(importeNormalizado),
           metodoPago: Value(metodoPago),
           referencia: Value(referencia),
           observaciones: Value(observaciones),
@@ -203,7 +221,14 @@ class CobroRepository {
           expedienteId: expedienteId,
           cobroId: cobroId,
           titulo: 'Cobro registrado',
-          descripcion: factura.codigo,
+          descripcion: _descripcionMovimiento(
+            facturaCodigo: factura.codigo,
+            importe: importeNormalizado,
+            fecha: fecha,
+            metodoPago: metodoPago,
+            referencia: referencia,
+            observaciones: observaciones,
+          ),
           fecha: fecha,
         );
       }
@@ -218,51 +243,96 @@ class CobroRepository {
     required String referencia,
     required String observaciones,
   }) async {
+    if (await database.cobrosDao.obtenerPorId(id) == null) {
+      throw CobroNoEncontradoException(cobroId: id);
+    }
+    throw const CobroConfirmadoNoEditableException();
+  }
+
+  Future<String> revertirCobro({
+    required String cobroId,
+    required DateTime fecha,
+    required double importe,
+    required String motivo,
+  }) async {
+    late String reversionId;
     await database.transaction(() async {
-      final cobroExistente = await database.cobrosDao.obtenerPorId(id);
-      if (cobroExistente == null) {
-        throw CobroNoEncontradoException(cobroId: id);
+      final original = await database.cobrosDao.obtenerPorId(cobroId);
+      if (original == null) {
+        throw CobroNoEncontradoException(cobroId: cobroId);
       }
+      if (original.esReversion) throw const CobroNoReversibleException();
       final factura = await database.facturasDao.obtenerPorId(
-        cobroExistente.facturaId,
+        original.facturaId,
       );
       if (factura == null) {
-        throw FacturaNoEncontradaException(facturaId: cobroExistente.facturaId);
+        throw FacturaNoEncontradaException(facturaId: original.facturaId);
       }
       if (!estadoFacturaAdmiteModificarCobros(factura.estado)) {
         throw FacturaNoCobrableException(facturaId: factura.id);
       }
       _validarImporteCobro(importe);
+      _validarFechaReversion(fecha: fecha, fechaOriginal: original.fecha);
+      if (motivo.trim().length < 3) throw const CobroNoReversibleException();
 
-      final cobrosActuales = await database.cobrosDao
-          .observarPorFactura(factura.id)
-          .first;
-      final maximoImporte = calcularMaximoImporteEditableCobro(
-        totalFactura: factura.total,
-        cobrosActuales: cobrosActuales,
-        cobroId: cobroExistente.id,
+      final movimientos = await database.cobrosDao.obtenerPorFactura(
+        factura.id,
       );
-      if (importeSuperaMaximoEditableCobro(
-        importe: importe,
-        maximoImporte: maximoImporte,
-      )) {
-        throw CobroSuperaPendienteException(
-          facturaId: factura.id,
-          importeSolicitado: importe,
-          pendienteActual: maximoImporte,
-        );
+      final yaRevertido = normalizarImporteCobro(
+        movimientos
+            .where(
+              (movimiento) =>
+                  movimiento.esReversion &&
+                  movimiento.cobroOrigenId == original.id,
+            )
+            .fold<double>(0, (total, movimiento) => total + movimiento.importe),
+      );
+      final disponible = normalizarImporteCobro(original.importe - yaRevertido);
+      final importeNormalizado = normalizarImporteCobro(importe);
+      if (importeNormalizado > disponible) {
+        throw const CobroNoReversibleException();
       }
 
-      await database.cobrosDao.actualizarCobro(
-        id: id,
-        fecha: fecha,
-        importe: importe,
-        metodoPago: metodoPago,
-        referencia: referencia,
-        observaciones: observaciones,
+      reversionId = const Uuid().v4();
+      await database.cobrosDao.insertarCobro(
+        CobrosCompanion.insert(
+          id: reversionId,
+          facturaId: factura.id,
+          fecha: Value(fecha),
+          importe: Value(importeNormalizado),
+          metodoPago: Value(original.metodoPago),
+          referencia: Value(original.referencia),
+          observaciones: Value(original.observaciones),
+          tipoMovimiento: Value(
+            cobro_domain.TipoMovimientoCobro.reversion.name,
+          ),
+          cobroOrigenId: Value(original.id),
+          motivo: Value(motivo.trim()),
+        ),
       );
       await _sincronizarEstadoFactura(factura.id);
+
+      final expedienteId = await _obtenerExpedienteIdDesdePresupuestoOrigen(
+        factura.presupuestoOrigenId,
+      );
+      if (expedienteId != null && expedienteId.trim().isNotEmpty) {
+        await _timelineRepository.registrarCobroRevertido(
+          expedienteId: expedienteId,
+          reversionId: reversionId,
+          titulo: 'Cobro revertido',
+          descripcion: _descripcionMovimiento(
+            facturaCodigo: factura.codigo,
+            importe: importeNormalizado,
+            fecha: fecha,
+            metodoPago: original.metodoPago,
+            referencia: original.referencia,
+            observaciones: motivo.trim(),
+          ),
+          fecha: fecha,
+        );
+      }
     });
+    return reversionId;
   }
 
   Future<void> eliminarCobro(String id) async {
@@ -273,7 +343,7 @@ class CobroRepository {
       if (factura == null) {
         throw FacturaNoEncontradaException(facturaId: cobro.facturaId);
       }
-      if (!estadoFacturaAdmiteEliminarCobros(factura.estado)) {
+      if (factura.estado != EstadoFactura.anulada) {
         throw FacturaNoCobrableException(facturaId: factura.id);
       }
       final expedienteId = await _obtenerExpedienteIdDesdePresupuestoOrigen(
@@ -298,7 +368,7 @@ class CobroRepository {
   }
 
   void _validarImporteCobro(double importe) {
-    if (!importe.isFinite || importe <= 0) {
+    if (!importe.isFinite || normalizarImporteCobro(importe) <= 0) {
       throw ImporteCobroNoValidoException(importe: importe);
     }
   }
@@ -306,11 +376,8 @@ class CobroRepository {
   Future<void> _sincronizarEstadoFactura(String facturaId) async {
     final factura = await database.facturasDao.obtenerPorId(facturaId);
     if (factura == null) return;
-    final cobros = await database.cobrosDao.observarPorFactura(facturaId).first;
-    final totalCobrado = cobros.fold<double>(
-      0,
-      (suma, cobro) => suma + cobro.importe,
-    );
+    final cobros = await database.cobrosDao.obtenerPorFactura(facturaId);
+    final totalCobrado = calcularTotalCobradoNeto(cobros);
     final estado = resolverEstadoDocumentalFactura(
       estadoActual: factura.estado,
       totalFactura: factura.total,
@@ -323,6 +390,68 @@ class CobroRepository {
         estadoFacturaToString(estado),
       );
     }
+  }
+
+  void _validarFechaCobro({
+    required DateTime fecha,
+    required DateTime fechaFactura,
+  }) {
+    final dia = _soloFecha(fecha);
+    final hoy = _soloFecha(DateTime.now());
+    final diaFactura = _soloFecha(fechaFactura);
+    if (dia.isAfter(hoy) || dia.isBefore(diaFactura)) {
+      throw const FechaMovimientoCobroNoValidaException();
+    }
+  }
+
+  void _validarFechaReversion({
+    required DateTime fecha,
+    required DateTime fechaOriginal,
+  }) {
+    final dia = _soloFecha(fecha);
+    if (dia.isAfter(_soloFecha(DateTime.now())) ||
+        dia.isBefore(_soloFecha(fechaOriginal))) {
+      throw const FechaMovimientoCobroNoValidaException();
+    }
+  }
+
+  void _validarMetodoPago({
+    required String metodoPago,
+    required String observaciones,
+  }) {
+    if (!metodoPagoCobroConocido(metodoPago) ||
+        !descripcionMetodoPagoOtroValida(
+          metodoPago: metodoPago,
+          descripcion: observaciones,
+        )) {
+      throw const MetodoPagoCobroNoValidoException();
+    }
+  }
+
+  DateTime _soloFecha(DateTime fecha) =>
+      DateTime(fecha.year, fecha.month, fecha.day);
+
+  String _descripcionMovimiento({
+    required String facturaCodigo,
+    required double importe,
+    required DateTime fecha,
+    required String metodoPago,
+    required String referencia,
+    required String observaciones,
+  }) {
+    final fechaTexto =
+        '${fecha.day.toString().padLeft(2, '0')}/'
+        '${fecha.month.toString().padLeft(2, '0')}/${fecha.year}';
+    final partes = <String>[
+      'Factura $facturaCodigo',
+      'Importe ${importe.toStringAsFixed(2)} €',
+      'Fecha $fechaTexto',
+      'Método $metodoPago',
+      if (referencia.trim().isNotEmpty) 'Referencia ${referencia.trim()}',
+      if (observaciones.trim().isNotEmpty)
+        'Observación ${observaciones.trim()}',
+    ];
+    return partes.join(' · ');
   }
 
   String _descripcionCobroEliminado({

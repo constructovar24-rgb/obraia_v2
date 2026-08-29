@@ -81,12 +81,9 @@ void main() {
       );
     });
 
-    test('respeta el epsilon económico', () {
+    test('compara importes normalizados a céntimos', () {
       expect(
-        importeSuperaMaximoEditableCobro(
-          importe: 800 + facturaEstadoEconomicoEpsilon,
-          maximoImporte: 800,
-        ),
+        importeSuperaMaximoEditableCobro(importe: 800.004, maximoImporte: 800),
         isFalse,
       );
     });

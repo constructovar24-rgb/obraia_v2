@@ -77,7 +77,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 18;
+  int get schemaVersion => 19;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -252,6 +252,14 @@ class AppDatabase extends _$AppDatabase {
           WHERE anio_numeracion IS NOT NULL AND numero_legal IS NOT NULL
         ''');
       }
+      if (from < 19) {
+        await m.addColumn(cobros, cobros.tipoMovimiento);
+        await m.addColumn(cobros, cobros.cobroOrigenId);
+        await m.addColumn(cobros, cobros.motivo);
+      }
+    },
+    beforeOpen: (details) async {
+      await customStatement('PRAGMA foreign_keys = ON');
     },
   );
 

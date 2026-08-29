@@ -92,11 +92,7 @@ void main() {
 
     test('saldo dentro de epsilon queda cobrada', () {
       expect(
-        resolver(
-          estado: EstadoFactura.emitida,
-          saldo: epsilonEstadoFactura,
-          vencimiento: hoy,
-        ),
+        resolver(estado: EstadoFactura.emitida, saldo: 0.004, vencimiento: hoy),
         EstadoFactura.cobrada,
       );
     });

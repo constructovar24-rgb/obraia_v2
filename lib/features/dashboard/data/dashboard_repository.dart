@@ -116,8 +116,8 @@ class DashboardRepository {
         for (final cobro in cobros!) {
           cobradoPorFactura.update(
             cobro.facturaId,
-            (prev) => prev + cobro.importe,
-            ifAbsent: () => cobro.importe,
+            (prev) => normalizarImporteCobro(prev + cobro.importeNeto),
+            ifAbsent: () => cobro.importeNeto,
           );
         }
 
@@ -160,14 +160,8 @@ class DashboardRepository {
           }
         }
 
-        final totalCobrado = cobros!.fold<double>(
-          0,
-          (sum, cobro) => sum + cobro.importe,
-        );
-        final totalCobradoEsteMes = cobradoEsteMes!.fold<double>(
-          0,
-          (sum, cobro) => sum + cobro.importe,
-        );
+        final totalCobrado = calcularTotalCobradoNeto(cobros!);
+        final totalCobradoEsteMes = calcularTotalCobradoNeto(cobradoEsteMes!);
 
         final coberturaCobroPorcentaje = totalFacturado == 0
             ? 0.0

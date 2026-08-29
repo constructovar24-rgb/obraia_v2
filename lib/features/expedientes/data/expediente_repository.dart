@@ -5,6 +5,7 @@ import 'package:drift/drift.dart';
 import 'package:obraia_v2/database/app_database.dart';
 import 'package:obraia_v2/database/database_provider.dart';
 import 'package:obraia_v2/features/cobros/domain/cobro.dart' as cobro_domain;
+import 'package:obraia_v2/features/cobros/domain/factura_estado_economico.dart';
 import 'package:obraia_v2/features/facturas/domain/estado_factura.dart';
 import 'package:obraia_v2/features/facturas/domain/factura_presupuesto_policy.dart';
 import 'package:obraia_v2/features/facturas/domain/factura.dart'
@@ -372,23 +373,22 @@ class ExpedienteRepository {
 
       totalCobradoPorFactura.update(
         cobro.facturaId,
-        (prev) => prev + cobro.importe,
-        ifAbsent: () => cobro.importe,
+        (prev) => normalizarImporteCobro(prev + cobro.importeNeto),
+        ifAbsent: () => cobro.importeNeto,
       );
     }
 
-    const epsilon = 0.000001;
     for (final factura in facturas) {
       if (!estadoFacturaEsEfectiva(factura.estado)) {
         continue;
       }
 
       final totalCobrado = totalCobradoPorFactura[factura.id] ?? 0;
-      final pendiente = (factura.total - totalCobrado)
-          .clamp(0, double.infinity)
-          .toDouble();
+      final pendiente = normalizarImporteCobro(
+        factura.total - totalCobrado,
+      ).clamp(0, double.infinity).toDouble();
 
-      if (pendiente > epsilon) {
+      if (pendiente > 0) {
         return expediente_domain.ExpedienteAtencionEstado(
           nivel: expediente_domain.ExpedienteAtencionNivel.critico,
           mensajePrincipal: 'Factura pendiente de cobro',

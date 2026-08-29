@@ -105,6 +105,8 @@ String timelineEventTypeLabel(TimelineEventType tipo) {
       return 'Cobro registrado';
     case TimelineEventType.cobroEliminado:
       return 'Cobro eliminado';
+    case TimelineEventType.cobroRevertido:
+      return 'Cobro revertido';
     case TimelineEventType.facturaBorradorEliminada:
       return 'Factura borrador eliminada';
     case TimelineEventType.documentoSubido:

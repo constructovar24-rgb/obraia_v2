@@ -1,4 +1,3 @@
-import '../../cobros/domain/factura_estado_economico.dart';
 import 'factura_linea.dart';
 import 'redondeo_monetario.dart';
 
@@ -25,7 +24,7 @@ FacturaTotales calcularTotalesFactura(
 bool totalFacturaCubreCobros({
   required double totalFactura,
   required double totalCobrado,
-}) => totalFactura + facturaEstadoEconomicoEpsilon >= totalCobrado;
+}) => redondearMoneda(totalFactura) >= redondearMoneda(totalCobrado);
 
 List<FacturaLinea> sustituirLineaPorId({
   required Iterable<FacturaLinea> lineas,

@@ -44,6 +44,19 @@ void main() {
             fecha_modificacion INTEGER NOT NULL DEFAULT 0
           )
         ''');
+        rawDatabase.execute('''
+          CREATE TABLE cobros (
+            id TEXT NOT NULL PRIMARY KEY,
+            factura_id TEXT NOT NULL REFERENCES facturas(id),
+            fecha INTEGER NOT NULL DEFAULT 0,
+            importe REAL NOT NULL DEFAULT 0,
+            metodo_pago TEXT NOT NULL DEFAULT 'Transferencia',
+            referencia TEXT NOT NULL DEFAULT '',
+            observaciones TEXT NOT NULL DEFAULT '',
+            fecha_creacion INTEGER NOT NULL DEFAULT 0,
+            fecha_modificacion INTEGER NOT NULL DEFAULT 0
+          )
+        ''');
         rawDatabase.userVersion = 16;
       },
     );

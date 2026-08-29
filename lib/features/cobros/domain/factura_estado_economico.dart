@@ -1,10 +1,15 @@
 import '../../facturas/domain/estado_factura.dart';
 import '../../facturas/domain/factura.dart' as factura_domain;
+import '../../facturas/domain/redondeo_monetario.dart';
 import 'cobro.dart';
 
 enum EstadoEconomicoFactura { pendiente, parcialmenteCobrada, cobrada }
 
-const facturaEstadoEconomicoEpsilon = 0.000001;
+double normalizarImporteCobro(double importe) => redondearMoneda(importe);
+
+double calcularTotalCobradoNeto(Iterable<Cobro> cobros) => redondearMoneda(
+  cobros.fold<double>(0, (total, cobro) => total + cobro.importeNeto),
+);
 
 bool estadoFacturaAdmiteEliminarCobros(EstadoFactura estado) {
   return estadoFacturaAdmiteModificarCobros(estado) ||
@@ -15,7 +20,8 @@ bool importeSuperaMaximoEditableCobro({
   required double importe,
   required double maximoImporte,
 }) {
-  return importe - maximoImporte > facturaEstadoEconomicoEpsilon;
+  return normalizarImporteCobro(importe) >
+      normalizarImporteCobro(maximoImporte);
 }
 
 double calcularMaximoImporteEditableCobro({
@@ -25,20 +31,22 @@ double calcularMaximoImporteEditableCobro({
 }) {
   final otrosCobros = cobrosActuales
       .where((cobro) => cobro.id != cobroId)
-      .fold<double>(0, (total, cobro) => total + cobro.importe);
+      .fold<double>(0, (total, cobro) => total + cobro.importeNeto);
 
-  return totalFactura - otrosCobros;
+  return redondearMoneda(totalFactura - otrosCobros);
 }
 
 EstadoEconomicoFactura calcularEstadoEconomicoFactura({
   required double totalFactura,
   required double totalCobrado,
 }) {
-  if (totalCobrado <= facturaEstadoEconomicoEpsilon) {
+  final cobrado = redondearMoneda(totalCobrado);
+  final total = redondearMoneda(totalFactura);
+  if (cobrado <= 0) {
     return EstadoEconomicoFactura.pendiente;
   }
 
-  if (totalCobrado + facturaEstadoEconomicoEpsilon < totalFactura) {
+  if (cobrado < total) {
     return EstadoEconomicoFactura.parcialmenteCobrada;
   }
 
@@ -97,15 +105,15 @@ FacturaEstadoEconomico calcularResumenEconomicoFactura({
   required EstadoFactura estadoFactura,
   required DateTime fechaReferencia,
 }) {
-  final pendiente = (totalFactura - totalCobrado)
-      .clamp(0, double.infinity)
-      .toDouble();
+  final pendiente = redondearMoneda(
+    totalFactura - totalCobrado,
+  ).clamp(0, double.infinity).toDouble();
   final estadoEconomico = calcularEstadoEconomicoFactura(
     totalFactura: totalFactura,
     totalCobrado: totalCobrado,
   );
   final esFacturaEfectiva = estadoFacturaEsEfectiva(estadoFactura);
-  final tienePendiente = pendiente > facturaEstadoEconomicoEpsilon;
+  final tienePendiente = pendiente > 0;
   final hoy = DateTime(
     fechaReferencia.year,
     fechaReferencia.month,
