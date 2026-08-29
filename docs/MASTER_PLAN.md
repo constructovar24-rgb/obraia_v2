@@ -26,6 +26,8 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 
 **Objetivo:** consolidar el flujo comercial y financiero principal con trazabilidad y estados coherentes.
 
+**Estado:** en curso. El primer tramo Cliente → Expediente → Presupuesto está consolidado y validado con SQLite en memoria: asociación persistente de cliente y expediente, presupuestos vinculados al expediente, partidas, IVA existente, recálculo transaccional del importe base y ficha reactiva con la identidad actual del expediente y cliente. La fase no está cerrada: quedan por consolidar Presupuesto → Factura → Cobro y sus reglas documentales y económicas.
+
 **Criterio de salida:** pruebas automatizadas y validación manual con datos aislados recorren el ciclo completo; relaciones, transiciones, IVA, redondeos, documentos congelados, anulaciones y cobros mantienen importes y trazabilidad.
 
 ## Fase 3 — Gestión económica y rentabilidad por obra

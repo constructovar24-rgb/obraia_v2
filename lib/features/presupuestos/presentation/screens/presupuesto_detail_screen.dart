@@ -16,6 +16,7 @@ import '../../../../core/widgets/status_chip.dart';
 import '../../../facturas/data/factura_repository.dart';
 import '../../../facturas/domain/factura_presupuesto_policy.dart';
 import '../../../facturas/presentation/screens/editar_factura_screen.dart';
+import '../../../expedientes/data/expediente_repository.dart';
 import '../../domain/linea_presupuesto.dart' as linea_domain;
 import '../../domain/presupuesto.dart' as presupuesto_domain;
 import '../providers/presupuesto_providers.dart';
@@ -23,7 +24,7 @@ import 'presupuesto_pdf_preview_screen.dart';
 import 'editar_linea_presupuesto_screen.dart';
 import 'nuevo_linea_presupuesto_screen.dart';
 
-class PresupuestoDetailScreen extends StatelessWidget {
+class PresupuestoDetailScreen extends ConsumerWidget {
   const PresupuestoDetailScreen({super.key, required this.presupuesto});
 
   final presupuesto_domain.Presupuesto presupuesto;
@@ -78,7 +79,42 @@ class PresupuestoDetailScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final repository = ref.watch(presupuestoRepositoryProvider);
+
+    return StreamBuilder<presupuesto_domain.Presupuesto?>(
+      stream: repository.observarPresupuesto(presupuesto.id),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return const Scaffold(
+            body: AppErrorState(message: 'No se pudo cargar el presupuesto.'),
+          );
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: AppLoading(message: 'Cargando presupuesto...'),
+          );
+        }
+
+        final presupuestoActual = snapshot.data;
+        if (presupuestoActual == null) {
+          return const Scaffold(
+            body: AppErrorState(
+              message: 'El presupuesto ya no está disponible.',
+            ),
+          );
+        }
+
+        return _buildContenido(context, presupuestoActual);
+      },
+    );
+  }
+
+  Widget _buildContenido(
+    BuildContext context,
+    presupuesto_domain.Presupuesto presupuesto,
+  ) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = AppTypography.textTheme(colorScheme);
 
@@ -87,25 +123,43 @@ class PresupuestoDetailScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.md),
         children: [
-          EntitySummaryCard(
-            title: presupuesto.codigo,
-            subtitle: presupuesto.descripcion.isNotEmpty
-                ? presupuesto.descripcion
-                : '-',
-            details: [
-              Text(
-                'Fecha: ${_formatearFecha(presupuesto.fecha)}',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              Text(
-                'Importe total (€): ${_formatearImporte(presupuesto.importeTotal)}',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ],
-            statusWidget: StatusChip(
-              label: presupuesto.estado,
-              type: _statusTypeFromEstado(presupuesto.estado),
-            ),
+          Consumer(
+            builder: (context, ref, _) {
+              final expediente = ref
+                  .watch(expedienteProvider(presupuesto.expedienteId))
+                  .value;
+
+              return EntitySummaryCard(
+                title: presupuesto.codigo,
+                subtitle: presupuesto.descripcion.isNotEmpty
+                    ? presupuesto.descripcion
+                    : '-',
+                details: [
+                  Text(
+                    'Fecha: ${_formatearFecha(presupuesto.fecha)}',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  if (expediente != null)
+                    Text(
+                      'Expediente: ${expediente.codigo}',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  if (expediente?.clienteNombre?.isNotEmpty ?? false)
+                    Text(
+                      'Cliente: ${expediente!.clienteNombre}',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  Text(
+                    'Subtotal (€): ${_formatearImporte(presupuesto.importeTotal)}',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ],
+                statusWidget: StatusChip(
+                  label: presupuesto.estado,
+                  type: _statusTypeFromEstado(presupuesto.estado),
+                ),
+              );
+            },
           ),
           const SizedBox(height: AppSpacing.lg),
           Consumer(

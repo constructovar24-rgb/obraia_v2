@@ -1,7 +1,6 @@
 import 'package:obraia_v2/database/app_database.dart';
 import 'package:obraia_v2/features/presupuestos/domain/linea_presupuesto.dart'
     as linea_domain;
-import 'package:obraia_v2/features/presupuestos/data/presupuesto_repository.dart';
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 
@@ -10,17 +9,20 @@ class LineaPresupuestoRepository {
 
   LineaPresupuestoRepository(this.database);
 
+  /// Recalculates and persists the header total in the transaction that
+  /// changes a line. This keeps a budget and its lines consistent if either
+  /// write fails.
   Future<void> _recalcularImporteTotal(String presupuestoId) async {
-    final lineas = await database.lineasPresupuestoDao
-        .obtenerPorPresupuesto(presupuestoId);
+    final lineas = await database.lineasPresupuestoDao.obtenerPorPresupuesto(
+      presupuestoId,
+    );
 
     final importeTotal = lineas.fold<double>(
       0,
       (sum, linea) => sum + linea.importe,
     );
 
-    final presupuestoRepository = PresupuestoRepository(database);
-    await presupuestoRepository.actualizarImporteTotal(
+    await database.presupuestosDao.actualizarImporteTotal(
       presupuestoId,
       importeTotal,
     );
@@ -32,17 +34,19 @@ class LineaPresupuestoRepository {
     required double cantidad,
     required double precioUnitario,
   }) async {
-    await database.lineasPresupuestoDao.insertarLinea(
-      LineasPresupuestoCompanion.insert(
-        id: const Uuid().v4(),
-        presupuestoId: presupuestoId,
-        concepto: concepto,
-        cantidad: cantidad,
-        precioUnitario: precioUnitario,
-      ),
-    );
+    await database.transaction(() async {
+      await database.lineasPresupuestoDao.insertarLinea(
+        LineasPresupuestoCompanion.insert(
+          id: const Uuid().v4(),
+          presupuestoId: presupuestoId,
+          concepto: concepto,
+          cantidad: cantidad,
+          precioUnitario: precioUnitario,
+        ),
+      );
 
-    await _recalcularImporteTotal(presupuestoId);
+      await _recalcularImporteTotal(presupuestoId);
+    });
   }
 
   Future<void> actualizarLinea({
@@ -52,24 +56,25 @@ class LineaPresupuestoRepository {
     required double cantidad,
     required double precioUnitario,
   }) async {
-    await database.lineasPresupuestoDao.actualizarLinea(
-      id,
-      LineasPresupuestoCompanion(
-        concepto: Value(concepto),
-        cantidad: Value(cantidad),
-        precioUnitario: Value(precioUnitario),
-      ),
-    );
+    await database.transaction(() async {
+      await database.lineasPresupuestoDao.actualizarLinea(
+        id,
+        LineasPresupuestoCompanion(
+          concepto: Value(concepto),
+          cantidad: Value(cantidad),
+          precioUnitario: Value(precioUnitario),
+        ),
+      );
 
-    await _recalcularImporteTotal(presupuestoId);
+      await _recalcularImporteTotal(presupuestoId);
+    });
   }
 
-  Future<void> eliminarLinea(
-    String id,
-    String presupuestoId,
-  ) async {
-    await database.lineasPresupuestoDao.eliminarLinea(id);
-    await _recalcularImporteTotal(presupuestoId);
+  Future<void> eliminarLinea(String id, String presupuestoId) async {
+    await database.transaction(() async {
+      await database.lineasPresupuestoDao.eliminarLinea(id);
+      await _recalcularImporteTotal(presupuestoId);
+    });
   }
 
   Stream<List<linea_domain.LineaPresupuesto>> observarPorPresupuesto(

@@ -5,12 +5,13 @@ import '../../data/linea_presupuesto_repository.dart';
 import '../../data/presupuesto_repository.dart';
 
 final presupuestoRepositoryProvider = Provider<PresupuestoRepository>((ref) {
-  final database = ref.read(databaseProvider);
+  final database = ref.watch(databaseProvider);
   return PresupuestoRepository(database);
 });
 
-final lineaPresupuestoRepositoryProvider =
-    Provider<LineaPresupuestoRepository>((ref) {
-      final database = ref.read(databaseProvider);
-      return LineaPresupuestoRepository(database);
-    });
+final lineaPresupuestoRepositoryProvider = Provider<LineaPresupuestoRepository>(
+  (ref) {
+    final database = ref.watch(databaseProvider);
+    return LineaPresupuestoRepository(database);
+  },
+);

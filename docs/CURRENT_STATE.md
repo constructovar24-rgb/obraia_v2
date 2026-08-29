@@ -21,7 +21,7 @@ La navegación real usa `MaterialApp`, `Navigator` y `MaterialPageRoute`. GoRout
 - La edición principal de Expedientes permite cambiar código, nombre y cliente, o quitarlo, preservando los demás campos.
 - El guardado y su evento único de Timeline son atómicos; ficha y listado se actualizan mediante streams.
 - 8 pruebas específicas de Expedientes superadas sobre SQLite en memoria.
-- Suite completa: 135 pruebas superadas.
+- Suite completa: 137 pruebas superadas.
 - `flutter analyze --no-pub`: sin incidencias.
 - `git diff --check`: sin errores en el cierre funcional; los avisos existentes corresponden a finales de línea de registradores generados.
 - Toolchain Windows instalada y validada: Flutter 3.47.1 stable, Dart 3.13.1, Visual Studio Community 2026 18.9.2 y Windows SDK 10.0.26100.0.
@@ -36,14 +36,16 @@ Con análisis, pruebas y compilación Windows superados, Expedientes queda técn
 
 La fase 1 está cerrada. Las restauraciones admiten exclusivamente bases de esquema 16 y 17, comprobadas en staging con integridad, relaciones y conservación de importes. Se rechazan versiones anteriores o futuras. La aceptación manual Windows con datos ficticios confirmó crear una copia, modificar un cliente y restaurar correctamente el estado anterior. Las pruebas automatizadas nunca tocaron datos reales.
 
+La fase 2 está en curso. Su primer tramo, Cliente → Expediente → Presupuesto, está consolidado: el expediente conserva su cliente, cada presupuesto queda vinculado al expediente, sus partidas recalculan el importe base dentro de la misma transacción y la ficha se refresca al reabrirse para mostrar importes, expediente y cliente actuales. La evidencia automatizada usa SQLite en memoria e incluye un fallo simulado que revierte la alta de una partida si no puede actualizarse el total.
+
 ## Deuda y riesgos prioritarios
 
-1. No existe una estrategia completa y verificada de backup/restauración de la base SQLite.
-2. La cobertura es desigual y continúa concentrada principalmente en Facturas.
-3. Persisten providers en `data/`, accesos de UI a `databaseProvider`, métodos heredados en `AppDatabase` y archivos grandes.
+1. La cobertura continúa siendo desigual y aún se concentra principalmente en Facturas; el primer tramo de Presupuestos ya cuenta con pruebas de persistencia y atomicidad.
+2. Persisten providers en `data/`, accesos de UI a `databaseProvider`, métodos heredados en `AppDatabase` y archivos grandes.
+3. El siguiente tramo económico debe definir y probar qué datos del presupuesto se congelan al convertirlo en factura, incluyendo cliente, expediente, IVA, importes y redondeos.
 4. El ciclo económico completo y varias capacidades operativas aún no están consolidados de extremo a extremo.
 5. Aún no se han verificado un instalador, firma, actualización ni reversión para una distribución publicable en Windows.
 
 ## Próximo hito
 
-Iniciar la Fase 2: consolidar el ciclo Cliente → Expediente → Presupuesto → Factura → Cobro.
+Continuar la Fase 2 con el diseño y la consolidación controlada de Presupuesto → Factura, sin perder la trazabilidad del presupuesto aceptado.

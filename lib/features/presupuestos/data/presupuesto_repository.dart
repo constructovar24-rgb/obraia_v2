@@ -28,6 +28,17 @@ class PresupuestoRepository {
     return database.presupuestosDao.observarPresupuestos();
   }
 
+  Stream<presupuesto_domain.Presupuesto?> observarPresupuesto(String id) {
+    return observarPresupuestos().map((presupuestos) {
+      for (final presupuesto in presupuestos) {
+        if (presupuesto.id == id) {
+          return presupuesto;
+        }
+      }
+      return null;
+    });
+  }
+
   Stream<List<presupuesto_domain.Presupuesto>> observarPendientesFacturar() {
     return Stream<List<presupuesto_domain.Presupuesto>>.multi((controller) {
       List<presupuesto_domain.Presupuesto>? presupuestos;
