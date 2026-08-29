@@ -3,15 +3,15 @@ import 'package:obraia_v2/features/cobros/domain/factura_estado_economico.dart';
 import 'package:obraia_v2/features/facturas/domain/estado_factura.dart';
 import 'package:obraia_v2/features/facturas/domain/factura.dart'
     as factura_domain;
+import 'package:obraia_v2/features/presupuestos/domain/estado_presupuesto.dart';
+
+export 'package:obraia_v2/features/presupuestos/domain/estado_presupuesto.dart'
+    show estadoPresupuestoEsAceptado;
 
 enum BloqueoConversionPresupuesto {
   presupuestoNoAceptado,
   facturaNoAnuladaExistente,
   facturaAnuladaConCobros,
-}
-
-bool estadoPresupuestoEsAceptado(String estado) {
-  return estado.trim().toLowerCase() == 'aceptado';
 }
 
 bool facturaBloqueaConversion(factura_domain.Factura factura) {

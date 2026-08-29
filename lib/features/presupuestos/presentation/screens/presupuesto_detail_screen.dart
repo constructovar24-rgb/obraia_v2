@@ -20,6 +20,7 @@ import '../../../facturas/presentation/screens/editar_factura_screen.dart';
 import '../../../expedientes/data/expediente_repository.dart';
 import '../../domain/linea_presupuesto.dart' as linea_domain;
 import '../../domain/presupuesto.dart' as presupuesto_domain;
+import '../../domain/estado_presupuesto.dart';
 import '../providers/presupuesto_providers.dart';
 import 'presupuesto_pdf_preview_screen.dart';
 import 'editar_linea_presupuesto_screen.dart';
@@ -290,6 +291,41 @@ class PresupuestoDetailScreen extends ConsumerWidget {
           const SizedBox(height: AppSpacing.md),
           _ResumenFacturacionParcial(presupuesto: presupuesto),
           const SizedBox(height: AppSpacing.md),
+          if (puedeAceptarPresupuesto(presupuesto.estado)) ...[
+            Consumer(
+              builder: (context, ref, _) => AppPrimaryButton(
+                onPressed: () async {
+                  final confirmado = await ConfirmDialog.show(
+                    context,
+                    title: 'Aceptar presupuesto',
+                    message:
+                        '¿Quieres aceptar este presupuesto y habilitar su facturación?',
+                    confirmLabel: 'Aceptar presupuesto',
+                    cancelLabel: 'Cancelar',
+                  );
+                  if (!confirmado || !context.mounted) return;
+
+                  try {
+                    await ref
+                        .read(presupuestoRepositoryProvider)
+                        .aceptarPresupuesto(presupuesto.id);
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Presupuesto aceptado.')),
+                    );
+                  } on EstadoPresupuestoException catch (error) {
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(error.mensaje)));
+                  }
+                },
+                label: 'Aceptar presupuesto',
+                icon: Icons.check_circle_outline,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+          ],
           Consumer(
             builder: (context, ref, _) {
               final parcialRepository = ref.read(
@@ -301,21 +337,22 @@ class PresupuestoDetailScreen extends ConsumerWidget {
                   final cargando =
                       snapshot.connectionState == ConnectionState.waiting;
                   final resumen = snapshot.data;
-                  final disponible =
-                      !cargando &&
-                      presupuesto.estado.trim().toLowerCase() == 'aceptado' &&
-                      resumen != null &&
-                      resumen.pendienteCentimos > 0 &&
-                      !resumen.tieneConsumoLegacySinDetalle;
-                  final explicacion = disponible
-                      ? null
-                      : switch (resumen) {
-                          null => 'Calculando disponibilidad...',
-                          _ when resumen.tieneConsumoLegacySinDetalle =>
-                            'Las facturas legacy sin detalle deben regularizarse antes de continuar.',
-                          _ =>
-                            'El presupuesto está completamente reservado o facturado.',
-                        };
+                  final bloqueo = obtenerBloqueoCrearFacturaParcial(
+                    estadoPresupuesto: presupuesto.estado,
+                    resumen: cargando ? null : resumen,
+                  );
+                  final disponible = bloqueo == null;
+                  final explicacion = switch (bloqueo) {
+                    null => null,
+                    BloqueoCrearFacturaParcial.presupuestoNoAceptado =>
+                      'El presupuesto debe estar aceptado antes de facturarlo.',
+                    BloqueoCrearFacturaParcial.calculandoDisponibilidad =>
+                      'Calculando disponibilidad...',
+                    BloqueoCrearFacturaParcial.consumoLegacySinDetalle =>
+                      'Las facturas legacy sin detalle deben regularizarse antes de continuar.',
+                    BloqueoCrearFacturaParcial.sinPendiente =>
+                      'El presupuesto está completamente reservado o facturado.',
+                  };
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,

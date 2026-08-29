@@ -6,6 +6,8 @@ import 'package:obraia_v2/features/clientes/data/cliente_repository.dart';
 import 'package:obraia_v2/features/expedientes/data/expediente_repository.dart';
 import 'package:obraia_v2/features/presupuestos/data/linea_presupuesto_repository.dart';
 import 'package:obraia_v2/features/presupuestos/data/presupuesto_repository.dart';
+import 'package:obraia_v2/features/presupuestos/domain/estado_presupuesto.dart';
+import 'package:obraia_v2/features/timeline/domain/timeline_event.dart';
 
 void main() {
   late AppDatabase database;
@@ -140,6 +142,72 @@ void main() {
     expect(
       (await _obtenerPresupuesto(database, presupuestoId)).importeTotal,
       0,
+    );
+  });
+
+  test('acepta un borrador y registra la transición trazable', () async {
+    final presupuestoId = await _crearPresupuestoBase(database);
+
+    await presupuestos.aceptarPresupuesto(presupuestoId);
+
+    expect(
+      (await _obtenerPresupuesto(database, presupuestoId)).estado,
+      'Aceptado',
+    );
+    final eventos = await database.timelineEventsDao.obtenerPorExpediente(
+      'expediente-test',
+    );
+    expect(
+      eventos.where(
+        (evento) =>
+            evento.tipo == TimelineEventType.presupuestoAceptado.name &&
+            evento.referenciaId == presupuestoId,
+      ),
+      hasLength(1),
+    );
+  });
+
+  test('rechaza aceptar un presupuesto que ya no es borrador', () async {
+    final presupuestoId = await _crearPresupuestoBase(database);
+    await presupuestos.aceptarPresupuesto(presupuestoId);
+
+    await expectLater(
+      presupuestos.aceptarPresupuesto(presupuestoId),
+      throwsA(isA<EstadoPresupuestoException>()),
+    );
+
+    expect(
+      (await _obtenerPresupuesto(database, presupuestoId)).estado,
+      'Aceptado',
+    );
+    expect(
+      await database.timelineEventsDao.obtenerPorExpediente('expediente-test'),
+      hasLength(1),
+    );
+  });
+
+  test('revierte la aceptación si falla su evento de trazabilidad', () async {
+    final presupuestoId = await _crearPresupuestoBase(database);
+    await database.customStatement('''
+      CREATE TRIGGER impedir_evento_aceptacion
+      BEFORE INSERT ON timeline_events
+      BEGIN
+        SELECT RAISE(ABORT, 'fallo simulado de trazabilidad');
+      END;
+    ''');
+
+    await expectLater(
+      presupuestos.aceptarPresupuesto(presupuestoId),
+      throwsA(anything),
+    );
+
+    expect(
+      (await _obtenerPresupuesto(database, presupuestoId)).estado,
+      'Borrador',
+    );
+    expect(
+      await database.timelineEventsDao.obtenerPorExpediente('expediente-test'),
+      isEmpty,
     );
   });
 }

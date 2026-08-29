@@ -1,7 +1,34 @@
 import '../../presupuestos/domain/linea_presupuesto.dart';
+import '../../presupuestos/domain/estado_presupuesto.dart';
 import 'redondeo_monetario.dart';
 
 enum ModalidadFacturacionParcial { porcentaje, importe, partidas }
+
+enum BloqueoCrearFacturaParcial {
+  presupuestoNoAceptado,
+  calculandoDisponibilidad,
+  consumoLegacySinDetalle,
+  sinPendiente,
+}
+
+BloqueoCrearFacturaParcial? obtenerBloqueoCrearFacturaParcial({
+  required String estadoPresupuesto,
+  required ResumenFacturacionPresupuesto? resumen,
+}) {
+  if (!estadoPresupuestoEsAceptado(estadoPresupuesto)) {
+    return BloqueoCrearFacturaParcial.presupuestoNoAceptado;
+  }
+  if (resumen == null) {
+    return BloqueoCrearFacturaParcial.calculandoDisponibilidad;
+  }
+  if (resumen.tieneConsumoLegacySinDetalle) {
+    return BloqueoCrearFacturaParcial.consumoLegacySinDetalle;
+  }
+  if (resumen.pendienteCentimos <= 0) {
+    return BloqueoCrearFacturaParcial.sinPendiente;
+  }
+  return null;
+}
 
 class SeleccionPartidaFactura {
   const SeleccionPartidaFactura({

@@ -8,6 +8,7 @@ import 'package:obraia_v2/features/facturas/domain/factura.dart'
     as factura_domain;
 import 'package:obraia_v2/features/presupuestos/domain/presupuesto.dart'
     as presupuesto_domain;
+import 'package:obraia_v2/features/presupuestos/domain/estado_presupuesto.dart';
 import 'package:obraia_v2/features/timeline/data/timeline_repository.dart';
 import 'package:uuid/uuid.dart';
 
@@ -256,6 +257,39 @@ class PresupuestoRepository {
     final hoy = DateTime(ahora.year, ahora.month, ahora.day);
     final fechaNormalizada = DateTime(fecha.year, fecha.month, fecha.day);
     return hoy.difference(fechaNormalizada).inDays >= dias;
+  }
+
+  Future<void> aceptarPresupuesto(String presupuestoId) {
+    return database.transaction(() async {
+      final presupuesto = await database.presupuestosDao.obtenerPorId(
+        presupuestoId,
+      );
+      if (presupuesto == null || presupuesto.eliminado) {
+        throw const EstadoPresupuestoException(
+          'El presupuesto no está disponible.',
+        );
+      }
+      if (!puedeAceptarPresupuesto(presupuesto.estado)) {
+        throw const EstadoPresupuestoException(
+          'Solo se puede aceptar un presupuesto en borrador.',
+        );
+      }
+
+      final actualizados = await database.presupuestosDao.aceptarBorrador(
+        presupuestoId,
+      );
+      if (actualizados != 1) {
+        throw const EstadoPresupuestoException(
+          'El presupuesto ya no está en borrador.',
+        );
+      }
+
+      await _timelineRepository.registrarPresupuestoAceptado(
+        expedienteId: presupuesto.expedienteId,
+        presupuestoId: presupuesto.id,
+        titulo: presupuesto.codigo,
+      );
+    });
   }
 
   Future<void> actualizarImporteTotal(
