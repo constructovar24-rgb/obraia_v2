@@ -650,6 +650,19 @@ class FacturaRepository {
       );
       final empresa = await database.empresaConfiguracionDao
           .obtenerConfiguracion();
+      if (empresa == null ||
+          empresa.nombreEmpresa.trim().isEmpty ||
+          empresa.cif.trim().isEmpty) {
+        throw const FacturaEmisionException(
+          'Configura el nombre y el CIF de la empresa antes de emitir.',
+        );
+      }
+      if ('${cliente!.nombre} ${cliente.apellidos}'.trim().isEmpty ||
+          cliente.nif.trim().isEmpty) {
+        throw const FacturaEmisionException(
+          'El cliente necesita nombre y NIF antes de emitir.',
+        );
+      }
       final presupuesto = factura.presupuestoOrigenId == null
           ? null
           : (await database.presupuestosDao.observarPresupuestos().first)
@@ -670,21 +683,21 @@ class FacturaRepository {
           estado: Value(estadoFacturaToString(estado)),
           fechaEmision: Value(DateTime.now()),
           clienteNombreHistorico: Value(
-            '${cliente!.nombre} ${cliente.apellidos}'.trim(),
+            '${cliente.nombre} ${cliente.apellidos}'.trim(),
           ),
           clienteNifHistorico: Value(cliente.nif),
           clienteDireccionHistorica: Value(_direccionCliente(cliente)),
           clienteTelefonoHistorico: Value(cliente.telefono),
           clienteEmailHistorico: Value(cliente.email),
-          empresaNombreHistorico: Value(empresa?.nombreEmpresa ?? ''),
-          empresaCifHistorico: Value(empresa?.cif ?? ''),
-          empresaDireccionHistorica: Value(empresa?.direccion ?? ''),
-          empresaCodigoPostalHistorico: Value(empresa?.codigoPostal ?? ''),
-          empresaPoblacionHistorica: Value(empresa?.poblacion ?? ''),
-          empresaProvinciaHistorica: Value(empresa?.provincia ?? ''),
-          empresaTelefonoHistorico: Value(empresa?.telefono ?? ''),
-          empresaEmailHistorico: Value(empresa?.email ?? ''),
-          empresaWebHistorica: Value(empresa?.web ?? ''),
+          empresaNombreHistorico: Value(empresa.nombreEmpresa),
+          empresaCifHistorico: Value(empresa.cif),
+          empresaDireccionHistorica: Value(empresa.direccion),
+          empresaCodigoPostalHistorico: Value(empresa.codigoPostal),
+          empresaPoblacionHistorica: Value(empresa.poblacion),
+          empresaProvinciaHistorica: Value(empresa.provincia),
+          empresaTelefonoHistorico: Value(empresa.telefono),
+          empresaEmailHistorico: Value(empresa.email),
+          empresaWebHistorica: Value(empresa.web),
           expedienteOrigenIdHistorico: Value(expediente?.id ?? ''),
           expedienteCodigoHistorico: Value(expediente?.codigo ?? ''),
           expedienteNombreHistorico: Value(expediente?.nombre ?? ''),

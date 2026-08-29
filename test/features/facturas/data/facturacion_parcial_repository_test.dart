@@ -16,7 +16,18 @@ void main() {
     parciales = FacturacionParcialRepository(database);
     facturas = FacturaRepository(database);
     await database.clientesDao.insertarCliente(
-      ClientesCompanion.insert(id: 'cliente', nombre: 'Cliente'),
+      ClientesCompanion.insert(
+        id: 'cliente',
+        nombre: 'Cliente',
+        nif: const Value('12345678Z'),
+      ),
+    );
+    await database.empresaConfiguracionDao.insertarConfiguracion(
+      const EmpresaConfiguracionCompanion(
+        id: Value('empresa'),
+        nombreEmpresa: Value('Empresa'),
+        cif: Value('B12345678'),
+      ),
     );
     await database.expedientesDao.insertarExpediente(
       ExpedientesCompanion.insert(

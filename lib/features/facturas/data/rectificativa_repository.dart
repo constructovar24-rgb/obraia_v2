@@ -405,9 +405,11 @@ class RectificativaRepository {
         factura.codigo.trim().isEmpty ||
         factura.fechaEmision == null ||
         factura.clienteNombreHistorico.trim().isEmpty ||
-        factura.empresaNombreHistorico.trim().isEmpty) {
+        factura.clienteNifHistorico.trim().isEmpty ||
+        factura.empresaNombreHistorico.trim().isEmpty ||
+        factura.empresaCifHistorico.trim().isEmpty) {
       throw const RectificativaException(
-        'La factura legacy no tiene número o fotografía fiscal suficiente.',
+        'La factura no tiene número o fotografía fiscal histórica suficiente.',
       );
     }
   }

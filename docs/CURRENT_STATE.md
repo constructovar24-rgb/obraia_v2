@@ -21,7 +21,7 @@ La navegación real usa `MaterialApp`, `Navigator` y `MaterialPageRoute`. GoRout
 - La edición principal de Expedientes permite cambiar código, nombre y cliente, o quitarlo, preservando los demás campos.
 - El guardado y su evento único de Timeline son atómicos; ficha y listado se actualizan mediante streams.
 - 8 pruebas específicas de Expedientes superadas sobre SQLite en memoria.
-- Suite completa: 179 pruebas superadas.
+- Suite completa: 181 pruebas superadas.
 - `flutter analyze --no-pub`: sin incidencias.
 - `git diff --check`: sin errores en el cierre funcional; los avisos existentes corresponden a finales de línea de registradores generados.
 - Toolchain Windows instalada y validada: Flutter 3.47.1 stable, Dart 3.13.1, Visual Studio Community 2026 18.9.2 y Windows SDK 10.0.26100.0.
@@ -36,7 +36,7 @@ Con análisis, pruebas y compilación Windows superados, Expedientes queda técn
 
 La fase 1 está cerrada. Las restauraciones admiten los esquemas 16, 17, 18, 19, 20 y 21, comprobados con integridad, relaciones, documentos emitidos y conservación de importes. Se rechazan versiones anteriores o futuras. La aceptación manual Windows con datos ficticios confirmó crear una copia, modificar un cliente y restaurar correctamente el estado anterior. Las pruebas automatizadas nunca tocaron datos reales.
 
-La fase 2 está en curso. Cliente → Expediente → Presupuesto → Factura → Cobro está consolidado técnicamente. La ficha permite aceptar de forma trazable un presupuesto en borrador y habilita entonces su facturación. Un presupuesto aceptado admite múltiples facturas parciales por porcentaje, importe o partidas/cantidades; los borradores reservan base y las emitidas la consumen. Las asignaciones trazan cada línea de factura hasta su partida y controlan en céntimos el facturado, reservado y pendiente. Al emitir se asigna `FAC-AAAA-NNNN` y se congelan cliente, empresa, presupuesto y expediente. Los cobros admiten parciales, múltiples movimientos y reversiones auditables sin sobrecobro. El núcleo rectificativo por diferencias conserva una cadena inmutable, efectos firmados, serie `RECT-AAAA-NNNN`, PDF exacto con SHA-256 y eventos Timeline; queda pendiente su aceptación manual y no incluye aún devoluciones ni compensaciones.
+La fase 2 está en curso. Cliente → Expediente → Presupuesto → Factura → Cobro está consolidado técnicamente. La ficha permite aceptar de forma trazable un presupuesto en borrador y habilita entonces su facturación. Un presupuesto aceptado admite múltiples facturas parciales por porcentaje, importe o partidas/cantidades; los borradores reservan base y las emitidas la consumen. Las asignaciones trazan cada línea de factura hasta su partida y controlan en céntimos el facturado, reservado y pendiente. Al emitir se asigna `FAC-AAAA-NNNN` y se congelan cliente, empresa, presupuesto y expediente; la emisión exige nombre/NIF del cliente y nombre/CIF de la empresa para no crear documentos fiscales incompletos. Los cobros admiten parciales, múltiples movimientos y reversiones auditables sin sobrecobro. El núcleo rectificativo por diferencias conserva una cadena inmutable, efectos firmados, serie `RECT-AAAA-NNNN`, PDF exacto con SHA-256 y eventos Timeline; queda pendiente su aceptación manual y no incluye aún devoluciones ni compensaciones.
 
 ## Deuda y riesgos prioritarios
 

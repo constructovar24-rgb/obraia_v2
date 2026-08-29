@@ -108,45 +108,71 @@ void main() {
     );
   }
 
-  test('crea, vincula y emite una diferencia negativa trazable', () async {
-    final originalId = await crearOriginal();
-    final rectId = await crearRectificativa(originalId);
-    var rect = (await database.facturasDao.obtenerPorId(rectId))!;
-    expect(rect.tipoDocumento, TipoDocumentoFactura.rectificativa);
-    expect(rect.serie, 'RECT');
-    expect(rect.codigo, isEmpty);
-    expect(rect.facturaRectificadaId, originalId);
-    expect(rect.facturaRaizId, originalId);
-    expect(rect.efectoBase, -20);
-    expect(
-      (await parciales.observarResumen('presupuesto').first).facturado,
-      60,
-    );
+  test(
+    'presupuesto aceptado crea, emite y rectifica inmediatamente una parcial',
+    () async {
+      final originalId = await crearOriginal();
+      final rectId = await crearRectificativa(originalId);
+      var rect = (await database.facturasDao.obtenerPorId(rectId))!;
+      expect(rect.tipoDocumento, TipoDocumentoFactura.rectificativa);
+      expect(rect.serie, 'RECT');
+      expect(rect.codigo, isEmpty);
+      expect(rect.facturaRectificadaId, originalId);
+      expect(rect.facturaRaizId, originalId);
+      expect(rect.efectoBase, -20);
+      expect(
+        (await parciales.observarResumen('presupuesto').first).facturado,
+        60,
+      );
 
-    await rectificativas.emitir(rectId);
-    rect = (await database.facturasDao.obtenerPorId(rectId))!;
-    expect(rect.codigo, 'RECT-${rect.fecha.year}-0001');
-    expect(rect.estado, EstadoFactura.emitida);
-    expect(
-      (await parciales.observarResumen('presupuesto').first).facturado,
-      40,
-    );
-    final documento = await database.facturaDocumentosEmitidosDao.obtener(
-      rectId,
-    );
-    expect(documento?.pdf, isNotEmpty);
-    expect(documento?.sha256, hasLength(64));
-    final eventos = await database.timelineEventsDao.obtenerPorExpediente(
-      'expediente',
-    );
-    expect(
-      eventos.map((item) => item.tipo),
-      containsAll([
-        TimelineEventType.rectificativaCreada.name,
-        TimelineEventType.rectificativaEmitida.name,
-      ]),
-    );
-  });
+      await rectificativas.emitir(rectId);
+      rect = (await database.facturasDao.obtenerPorId(rectId))!;
+      expect(rect.codigo, 'RECT-${rect.fecha.year}-0001');
+      expect(rect.estado, EstadoFactura.emitida);
+      expect(
+        (await parciales.observarResumen('presupuesto').first).facturado,
+        40,
+      );
+      final documento = await database.facturaDocumentosEmitidosDao.obtener(
+        rectId,
+      );
+      expect(documento?.pdf, isNotEmpty);
+      expect(documento?.sha256, hasLength(64));
+      final eventos = await database.timelineEventsDao.obtenerPorExpediente(
+        'expediente',
+      );
+      expect(
+        eventos.map((item) => item.tipo),
+        containsAll([
+          TimelineEventType.rectificativaCreada.name,
+          TimelineEventType.rectificativaEmitida.name,
+        ]),
+      );
+    },
+  );
+
+  test(
+    'una factura histórica fiscalmente incompleta sigue bloqueada',
+    () async {
+      final originalId = await crearOriginal();
+      await (database.update(
+        database.facturas,
+      )..where((table) => table.id.equals(originalId))).write(
+        const FacturasCompanion(
+          empresaNombreHistorico: Value(''),
+          empresaCifHistorico: Value(''),
+        ),
+      );
+
+      await expectLater(
+        crearRectificativa(originalId),
+        throwsA(isA<RectificativaException>()),
+      );
+      final original = (await database.facturasDao.obtenerPorId(originalId))!;
+      expect(original.empresaNombreHistorico, isEmpty);
+      expect(original.empresaCifHistorico, isEmpty);
+    },
+  );
 
   test('FAC y RECT mantienen correlativos independientes', () async {
     final originalId = await crearOriginal();

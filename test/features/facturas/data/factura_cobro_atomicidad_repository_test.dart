@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:obraia_v2/database/app_database.dart';
@@ -22,7 +23,18 @@ void main() {
     cobroRepository = CobroRepository(database);
 
     await database.clientesDao.insertarCliente(
-      ClientesCompanion.insert(id: 'cliente-1', nombre: 'Cliente'),
+      ClientesCompanion.insert(
+        id: 'cliente-1',
+        nombre: 'Cliente',
+        nif: const Value('12345678Z'),
+      ),
+    );
+    await database.empresaConfiguracionDao.insertarConfiguracion(
+      const EmpresaConfiguracionCompanion(
+        id: Value('empresa'),
+        nombreEmpresa: Value('Empresa'),
+        cif: Value('B12345678'),
+      ),
     );
   });
 

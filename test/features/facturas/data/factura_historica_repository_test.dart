@@ -68,6 +68,32 @@ void main() {
     expect(historica?.expedienteCodigoHistorico, 'EXP-2026');
   });
 
+  test(
+    'no emite ni inventa snapshot si faltan datos fiscales de empresa',
+    () async {
+      await database.empresaConfiguracionDao.actualizarConfiguracion(
+        'empresa',
+        const EmpresaConfiguracionCompanion(
+          nombreEmpresa: Value(''),
+          cif: Value(''),
+        ),
+      );
+      final facturaId = await facturas.convertirDesdePresupuesto(
+        (await database.presupuestosDao.observarPresupuestos().first).single,
+      );
+
+      await expectLater(
+        facturas.emitirFactura(facturaId),
+        throwsA(isA<FacturaEmisionException>()),
+      );
+      final factura = await database.facturasDao.obtenerPorId(facturaId);
+      expect(factura?.numeroLegal, isNull);
+      expect(factura?.fechaEmision, isNull);
+      expect(factura?.empresaNombreHistorico, isEmpty);
+      expect(factura?.empresaCifHistorico, isEmpty);
+    },
+  );
+
   test('redondea línea, IVA y total a dos decimales', () {
     expect(redondearMoneda(0.1 + 0.2), 0.3);
     final importe = calcularImporteLineaFactura(
