@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/shortcuts/app_shortcuts.dart';
 import '../../data/empresa_configuracion_repository.dart';
+import '../../../backup/presentation/screens/backup_screen.dart';
 
 class EmpresaConfiguracionScreen extends ConsumerStatefulWidget {
   const EmpresaConfiguracionScreen({super.key});
@@ -77,9 +78,7 @@ class _EmpresaConfiguracionScreenState
     return AppShortcutScope(
       onBack: () => Navigator.maybePop(context),
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Configuración - Empresa'),
-        ),
+        appBar: AppBar(title: const Text('Configuración - Empresa')),
         body: _cargando
             ? const Center(child: CircularProgressIndicator())
             : Padding(
@@ -87,6 +86,20 @@ class _EmpresaConfiguracionScreenState
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: OutlinedButton.icon(
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const BackupScreen(),
+                            ),
+                          ),
+                          icon: const Icon(Icons.backup_outlined),
+                          label: const Text('Copias de seguridad'),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
                       TextField(
                         controller: _nombreEmpresaController,
                         decoration: const InputDecoration(
@@ -172,7 +185,9 @@ class _EmpresaConfiguracionScreenState
 
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Configuración de empresa guardada'),
+                              content: Text(
+                                'Configuración de empresa guardada',
+                              ),
                             ),
                           );
                         },

@@ -21,7 +21,7 @@ La navegación real usa `MaterialApp`, `Navigator` y `MaterialPageRoute`. GoRout
 - La edición principal de Expedientes permite cambiar código, nombre y cliente, o quitarlo, preservando los demás campos.
 - El guardado y su evento único de Timeline son atómicos; ficha y listado se actualizan mediante streams.
 - 8 pruebas específicas de Expedientes superadas sobre SQLite en memoria.
-- Suite completa: 133 pruebas superadas.
+- Suite completa: 134 pruebas superadas.
 - `flutter analyze --no-pub`: sin incidencias.
 - `git diff --check`: sin errores en el cierre funcional; los avisos existentes corresponden a finales de línea de registradores generados.
 - Toolchain Windows instalada y validada: Flutter 3.47.1 stable, Dart 3.13.1, Visual Studio Community 2026 18.9.2 y Windows SDK 10.0.26100.0.
@@ -34,7 +34,7 @@ Con análisis, pruebas y compilación Windows superados, Expedientes queda técn
 
 ## Fase actual
 
-La fase 0 está cerrada y sincronizada con el repositorio remoto. La fase 1 ya integra un controlador único y reactivo de `AppDatabase` con la orquestación de restauración: staging validado, copia automática previa, cierre, intercambio recuperable, reapertura y publicación de la nueva instancia. Treinta y cuatro pruebas específicas usan exclusivamente bases y archivos temporales. La interfaz sigue pendiente y no se ha sustituido ninguna base real.
+La fase 1 incluye la pantalla Configuración → Copias de seguridad, creación manual, selección y confirmación de restauración, progreso y mensajes claros. Al iniciar la función se comprueba una copia automática diaria, con retención de siete; las manuales y de recuperación no se eliminan. No se ha sustituido ninguna base real en pruebas.
 
 ## Deuda y riesgos prioritarios
 

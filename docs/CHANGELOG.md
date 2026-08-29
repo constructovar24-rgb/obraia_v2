@@ -22,6 +22,8 @@
 - Añadido `DatabaseLifecycleController` como propietario único de la instancia activa y publicación reactiva tras una reapertura válida.
 - Añadido `BackupRestoreCoordinator`, que integra validación, staging, backup de recuperación, intercambio, rollback y reapertura sin widgets.
 - Añadidas 4 pruebas temporales de restauración completa, incluidos publicación, fallo previo, rollback y exclusión mutua.
+- Añadida la pantalla de Copias de seguridad en Configuración, con creación manual, selector de restauración, confirmación reforzada y mensajes recuperables.
+- Añadidas copias automáticas diarias con retención de siete y sin eliminación de copias manuales.
 
 ### Expedientes
 
@@ -33,7 +35,7 @@
 
 ### Calidad y documentación
 
-- Línea base comprobada con `flutter analyze --no-pub` limpio y 133 pruebas superadas.
+- Línea base comprobada con `flutter analyze --no-pub` limpio y 134 pruebas superadas.
 - Compilación debug de Windows repetida correctamente después de integrar el contenedor de backup.
 - Toolchain Windows validada con Visual Studio Community 2026 18.9.2 y Windows SDK 10.0.26100.0.
 - Compilación debug para Windows completada correctamente con `flutter build windows --debug --no-pub`.
