@@ -537,7 +537,7 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
   void _mostrarDocumentoCongelado(EstadoFactura estado) {
     final mensaje = estado == EstadoFactura.anulada
         ? 'Una factura anulada se conserva sin modificaciones por trazabilidad.'
-        : 'Una factura emitida no puede modificarse. Para corregir su contenido, anúlala y crea una nueva factura. La fecha de vencimiento sí puede corregirse.';
+        : 'Una factura emitida no puede modificarse. Para corregirla o cancelarla, crea una factura rectificativa. La fecha de vencimiento sí puede corregirse.';
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(mensaje)));
@@ -602,6 +602,61 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
           ),
         ),
       );
+    }
+  }
+
+  Future<void> _cancelarMedianteRectificativa() async {
+    final motivoController = TextEditingController();
+    final motivo = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Cancelar mediante rectificativa'),
+        content: TextField(
+          controller: motivoController,
+          autofocus: true,
+          decoration: const InputDecoration(
+            labelText: 'Motivo obligatorio',
+            helperText:
+                'Se creará un borrador RECT que neutraliza el neto vigente.',
+          ),
+          minLines: 2,
+          maxLines: 4,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Volver'),
+          ),
+          FilledButton(
+            onPressed: () {
+              final value = motivoController.text.trim();
+              if (value.length >= 3) Navigator.of(dialogContext).pop(value);
+            },
+            child: const Text('Crear borrador RECT'),
+          ),
+        ],
+      ),
+    );
+    motivoController.dispose();
+    if (motivo == null || !mounted) return;
+    try {
+      final id = await ref
+          .read(rectificativaRepositoryProvider)
+          .crearCancelatoria(facturaId: _facturaActual.id, motivo: motivo);
+      final rectificativa = await ref
+          .read(facturaRepositoryProvider)
+          .obtenerPorId(id);
+      if (!mounted || rectificativa == null) return;
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => EditarFacturaScreen(factura: rectificativa),
+        ),
+      );
+    } on RectificativaException catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error.mensaje)));
     }
   }
 
@@ -794,8 +849,10 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                     ),
                   ),
                 ],
-                if (_estadoPersistido == EstadoFactura.emitida ||
-                    _estadoPersistido == EstadoFactura.vencida) ...[
+                if ((_estadoPersistido == EstadoFactura.emitida ||
+                        _estadoPersistido == EstadoFactura.vencida ||
+                        _estadoPersistido == EstadoFactura.cobrada) &&
+                    _facturaActual.esRectificativa) ...[
                   const SizedBox(height: 12),
                   SizedBox(
                     width: double.infinity,
@@ -803,6 +860,18 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                       onPressed: _anularFactura,
                       icon: const Icon(Icons.cancel_outlined),
                       label: const Text('Anular factura'),
+                    ),
+                  ),
+                ],
+                if (facturaPuedeOriginarRectificativa(_facturaActual) &&
+                    !_facturaActual.esRectificativa) ...[
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: _cancelarMedianteRectificativa,
+                      icon: const Icon(Icons.cancel_outlined),
+                      label: const Text('Cancelar mediante rectificativa'),
                     ),
                   ),
                 ],

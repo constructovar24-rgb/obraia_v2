@@ -285,6 +285,83 @@ class RectificativaRepository {
     return facturaId;
   });
 
+  Future<String> crearCancelatoria({
+    required String facturaId,
+    required String motivo,
+  }) => database.transaction(() async {
+    final raiz = await database.facturasDao.obtenerPorId(facturaId);
+    if (raiz == null ||
+        raiz.esRectificativa ||
+        !facturaPuedeOriginarRectificativa(raiz)) {
+      throw const RectificativaException(
+        'Solo puede cancelarse una factura ordinaria emitida.',
+      );
+    }
+    final cadena = await database.facturasDao.obtenerCadenaPorRaiz(raiz.id);
+    if (cadena.any(
+      (item) => item.esRectificativa && item.estado == EstadoFactura.borrador,
+    )) {
+      throw const RectificativaException(
+        'Emite o elimina las rectificativas en borrador antes de cancelar.',
+      );
+    }
+    final activas = cadena
+        .where(
+          (item) =>
+              item.esRectificativa &&
+              item.estado != EstadoFactura.borrador &&
+              item.estado != EstadoFactura.anulada,
+        )
+        .toList();
+    final lineasRaiz = await database.facturaLineasDao.obtenerPorFactura(
+      raiz.id,
+    );
+    final lineasRectificativas = await database.facturaLineasDao
+        .obtenerPorFacturas(activas.map((item) => item.id));
+    final ajustes = <AjusteRectificativa>[];
+    for (final linea in lineasRaiz) {
+      final relacionadas = lineasRectificativas.where(
+        (item) => item.lineaRaizId == linea.id,
+      );
+      final baseVigente =
+          monedaACentimos(linea.importe) +
+          relacionadas.fold<int>(
+            0,
+            (total, item) => total + monedaACentimos(item.importe),
+          );
+      if (baseVigente == 0) continue;
+      final cantidadVigente =
+          linea.cantidad +
+          relacionadas.fold<double>(0, (total, item) => total + item.cantidad);
+      ajustes.add(
+        AjusteRectificativa(
+          lineaRectificadaId: linea.id,
+          baseDiferencia: centimosAMoneda(-baseVigente),
+          cantidadDiferencia: cantidadVigente.abs() < 0.000000001
+              ? null
+              : -cantidadVigente,
+        ),
+      );
+    }
+    final ivaVigente =
+        monedaACentimos(raiz.iva) +
+        activas.fold<int>(
+          0,
+          (total, item) => total + monedaACentimos(item.efectoIva),
+        );
+    if (ajustes.isEmpty && ivaVigente == 0) {
+      throw const RectificativaException(
+        'La familia documental ya está completamente neutralizada.',
+      );
+    }
+    return crear(
+      facturaRectificadaId: raiz.id,
+      motivo: motivo,
+      ajustes: ajustes,
+      ivaDiferencia: centimosAMoneda(-ivaVigente),
+    );
+  });
+
   Future<void> emitir(String facturaId) => database.transaction(() async {
     final factura = await database.facturasDao.obtenerPorId(facturaId);
     if (factura == null || !factura.esRectificativa) {
@@ -316,6 +393,7 @@ class RectificativaRepository {
         ),
       );
     }
+    await _validarLimitesAlEmitir(factura: factura, raiz: raiz);
     final (anio, numero, codigo) = await FacturaRepository(
       database,
     ).generarCodigoFactura(factura.fecha.year, serie: 'RECT');
@@ -411,6 +489,64 @@ class RectificativaRepository {
       cobradoOriginal: centimosAMoneda(cobrado),
       saldoAFavor: centimosAMoneda((cobrado - neto).clamp(0, 1 << 62)),
     );
+  }
+
+  Future<void> _validarLimitesAlEmitir({
+    required Factura factura,
+    required Factura raiz,
+  }) async {
+    final cadena = await database.facturasDao.obtenerCadenaPorRaiz(raiz.id);
+    final activas = cadena
+        .where(
+          (item) =>
+              item.esRectificativa &&
+              item.id != factura.id &&
+              item.estado != EstadoFactura.borrador &&
+              item.estado != EstadoFactura.anulada,
+        )
+        .toList();
+    final idsActivas = activas.map((item) => item.id).toSet();
+    final lineasRaiz = await database.facturaLineasDao.obtenerPorFactura(
+      raiz.id,
+    );
+    final lineasCadena = await database.facturaLineasDao.obtenerPorFacturas([
+      ...idsActivas,
+      factura.id,
+    ]);
+    for (final lineaRaiz in lineasRaiz) {
+      final relacionadas = lineasCadena.where(
+        (item) => item.lineaRaizId == lineaRaiz.id,
+      );
+      final baseAcumulada = relacionadas.fold<int>(
+        0,
+        (total, item) => total + monedaACentimos(item.importe),
+      );
+      if (baseAcumulada.abs() > monedaACentimos(lineaRaiz.importe).abs()) {
+        throw const RectificativaException(
+          'La rectificación acumulada supera la base de la línea original.',
+        );
+      }
+      final cantidadAcumulada = relacionadas.fold<double>(
+        0,
+        (total, item) => total + item.cantidad,
+      );
+      if (cantidadAcumulada.abs() > lineaRaiz.cantidad.abs() + 0.000000001) {
+        throw const RectificativaException(
+          'La rectificación acumulada supera la cantidad original.',
+        );
+      }
+    }
+    final ivaAcumulado =
+        activas.fold<int>(
+          0,
+          (total, item) => total + monedaACentimos(item.efectoIva),
+        ) +
+        monedaACentimos(factura.efectoIva);
+    if (ivaAcumulado.abs() > monedaACentimos(raiz.iva).abs()) {
+      throw const RectificativaException(
+        'La rectificación acumulada supera el IVA original.',
+      );
+    }
   }
 
   void _validarDocumentoOriginalSeguro(Factura factura) {

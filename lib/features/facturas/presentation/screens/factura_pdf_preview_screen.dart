@@ -99,6 +99,11 @@ class FacturaPdfPreviewScreen extends ConsumerWidget {
                             rectificativasRepository.obtenerPdfEmitido(
                               facturaActual.id,
                             ),
+                          if (!facturaActual.esRectificativa &&
+                              facturaActual.fechaEmision != null)
+                            facturasRepository.obtenerPdfEmitido(
+                              facturaActual.id,
+                            ),
                         ]),
                         builder: (context, rectSnapshot) {
                           if (rectSnapshot.hasError) {
@@ -121,7 +126,7 @@ class FacturaPdfPreviewScreen extends ConsumerWidget {
                           final pdfHistorico = datos
                               .whereType<Uint8List>()
                               .firstOrNull;
-                          return PdfPreview(
+                          final preview = PdfPreview(
                             build: (format) async =>
                                 pdfHistorico ??
                                 FacturaPdfService().generarPdf(
@@ -136,6 +141,21 @@ class FacturaPdfPreviewScreen extends ConsumerWidget {
                             canChangeOrientation: false,
                             canChangePageFormat: false,
                           );
+                          if (facturaActual.fechaEmision != null &&
+                              pdfHistorico == null) {
+                            return Column(
+                              children: [
+                                const MaterialBanner(
+                                  content: Text(
+                                    'Factura legacy: no existe un PDF original histórico almacenado. La vista inferior es una reconstrucción actual para consulta y no se archivará como original.',
+                                  ),
+                                  actions: [SizedBox.shrink()],
+                                ),
+                                Expanded(child: preview),
+                              ],
+                            );
+                          }
+                          return preview;
                         },
                       );
                     },

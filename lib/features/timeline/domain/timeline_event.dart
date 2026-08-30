@@ -5,6 +5,7 @@ enum TimelineEventType {
   presupuestoActualizado,
   presupuestoAceptado,
   facturaCreada,
+  facturaEmitida,
   facturaAnulada,
   rectificativaCreada,
   rectificativaEmitida,

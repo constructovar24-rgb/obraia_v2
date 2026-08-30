@@ -48,10 +48,12 @@ void main() {
         withInvoice: true,
       );
       final source = AppDatabase.forTesting(NativeDatabase(databaseFile));
+      final pdfFac = Uint8List.fromList([37, 80, 68, 70]);
+      final hashFac = sha256.convert(pdfFac).toString();
       await source.facturaDocumentosEmitidosDao.insertar(
         facturaId: 'factura-1',
-        pdf: Uint8List.fromList([37, 80, 68, 70]),
-        sha256: 'hash-pdf',
+        pdf: pdfFac,
+        sha256: hashFac,
       );
       await source.customStatement(
         '''
@@ -108,6 +110,11 @@ void main() {
               .single['bytes'],
           4,
         );
+        final documento = database
+            .select('SELECT pdf, sha256 FROM factura_documentos_emitidos;')
+            .single;
+        expect(documento['pdf'], pdfFac);
+        expect(documento['sha256'], hashFac);
         final movimiento = database.select('''
           SELECT factura_raiz_origen_id, tipo_movimiento, importe, referencia
           FROM movimientos_credito_cliente WHERE id = 'devolucion-1'

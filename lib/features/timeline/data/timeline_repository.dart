@@ -152,6 +152,21 @@ class TimelineRepository {
     );
   }
 
+  Future<void> registrarFacturaEmitida({
+    required String expedienteId,
+    required String facturaId,
+    required String titulo,
+    required String descripcion,
+    required DateTime fecha,
+  }) => _registrarEventoNegocioUnico(
+    expedienteId: expedienteId,
+    tipo: TimelineEventType.facturaEmitida,
+    titulo: titulo,
+    descripcion: descripcion,
+    referenciaId: facturaId,
+    fecha: fecha,
+  );
+
   Future<void> registrarRectificativaCreada({
     required String expedienteId,
     required String facturaId,

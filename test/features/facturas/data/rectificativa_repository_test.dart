@@ -1,8 +1,9 @@
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' hide isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:obraia_v2/database/app_database.dart';
 import 'package:obraia_v2/features/cobros/data/cobro_repository.dart';
+import 'package:obraia_v2/features/creditos_cliente/data/credito_cliente_repository.dart';
 import 'package:obraia_v2/features/facturas/data/factura_repository.dart';
 import 'package:obraia_v2/features/facturas/data/factura_linea_repository.dart';
 import 'package:obraia_v2/features/facturas/data/facturacion_parcial_repository.dart';
@@ -200,6 +201,39 @@ void main() {
     expect(emitidas.map((item) => item!.numeroLegal).toSet(), {1, 2});
   });
 
+  test('revalida límites al emitir borradores RECT competidores', () async {
+    final originalId = await crearOriginal();
+    final ids = [
+      await crearRectificativa(originalId, base: -30, cantidad: -3),
+      await crearRectificativa(originalId, base: -30, cantidad: -3),
+    ];
+    await rectificativas.emitir(ids.first);
+    await (database.update(
+      database.facturaLineas,
+    )..where((table) => table.facturaId.equals(ids.last))).write(
+      const FacturaLineasCompanion(importe: Value(-40), cantidad: Value(-4)),
+    );
+    await (database.update(
+      database.facturas,
+    )..where((table) => table.id.equals(ids.last))).write(
+      const FacturasCompanion(
+        subtotal: Value(-40),
+        iva: Value(-8.4),
+        total: Value(-48.4),
+        efectoBase: Value(-40),
+        efectoIva: Value(-8.4),
+        efectoTotal: Value(-48.4),
+      ),
+    );
+    await expectLater(
+      rectificativas.emitir(ids.last),
+      throwsA(isA<RectificativaException>()),
+    );
+    final rechazada = (await database.facturasDao.obtenerPorId(ids.last))!;
+    expect(rechazada.estado, EstadoFactura.borrador);
+    expect(rechazada.numeroLegal, isNull);
+  });
+
   test('bloquea borrador, motivo ausente y exceso acumulado', () async {
     final borrador = await parciales.crearPorImporte(
       presupuestoId: 'presupuesto',
@@ -318,6 +352,93 @@ void main() {
       EstadoFactura.emitida,
     );
   });
+
+  for (final cobrado in [0.0, 30.0, 72.6]) {
+    test(
+      'cancelación RECT conserva cobros y neutraliza familia (cobrado $cobrado)',
+      () async {
+        final original = await crearOriginal();
+        final facturaOriginal = (await database.facturasDao.obtenerPorId(
+          original,
+        ))!;
+        if (cobrado > 0) {
+          await cobros.crearCobro(
+            facturaId: original,
+            fecha: facturaOriginal.fecha,
+            importe: cobrado,
+            metodoPago: 'Transferencia',
+          );
+        }
+        await expectLater(
+          facturas.anularFactura(original),
+          throwsA(isA<FacturaEmitidaRequiereRectificativaException>()),
+        );
+        final cancelatoria = await rectificativas.crearCancelatoria(
+          facturaId: original,
+          motivo: 'Cancelación contractual completa',
+        );
+        await rectificativas.emitir(cancelatoria);
+        final originalReleida = (await database.facturasDao.obtenerPorId(
+          original,
+        ))!;
+        final rect = (await database.facturasDao.obtenerPorId(cancelatoria))!;
+        final resumen = await CreditoClienteRepository(
+          database,
+        ).obtenerResumen(original);
+        expect(originalReleida.estado, isNot(EstadoFactura.anulada));
+        expect(rect.facturaRectificadaId, original);
+        expect(rect.facturaRaizId, original);
+        expect(rect.motivoRectificacion, 'Cancelación contractual completa');
+        expect(rect.efectoBase, -60);
+        expect(rect.efectoIva, -12.6);
+        expect(rect.efectoTotal, -72.6);
+        expect(resumen.netoDocumental, 0);
+        expect(resumen.creditoGenerado, cobrado);
+        expect(
+          await database.cobrosDao.obtenerPorFactura(original),
+          hasLength(cobrado > 0 ? 1 : 0),
+        );
+        expect(
+          (await parciales.observarResumen('presupuesto').first).facturado,
+          0,
+        );
+      },
+    );
+  }
+
+  test(
+    'cancelatoria neutraliza el neto vigente tras una RECT previa',
+    () async {
+      final original = await crearOriginal();
+      final previa = await crearRectificativa(
+        original,
+        base: -20,
+        cantidad: -2,
+      );
+      await rectificativas.emitir(previa);
+      final cancelatoria = await rectificativas.crearCancelatoria(
+        facturaId: original,
+        motivo: 'Cancelación del neto familiar restante',
+      );
+      await rectificativas.emitir(cancelatoria);
+      final emitida = (await database.facturasDao.obtenerPorId(cancelatoria))!;
+      expect(emitida.efectoBase, -40);
+      expect(emitida.efectoIva, -8.4);
+      expect(emitida.efectoTotal, -48.4);
+      expect(
+        (await CreditoClienteRepository(
+          database,
+        ).obtenerResumen(original)).netoDocumental,
+        0,
+      );
+      expect(
+        (await database.facturasDao.obtenerCadenaPorRaiz(
+          original,
+        )).map((factura) => factura.id).toSet(),
+        {original, previa, cancelatoria},
+      );
+    },
+  );
 
   test('admite rectificación formal con efecto cero', () async {
     final original = await crearOriginal();

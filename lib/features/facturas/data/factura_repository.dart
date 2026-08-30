@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:crypto/crypto.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:obraia_v2/database/app_database.dart';
@@ -12,6 +13,7 @@ import 'package:obraia_v2/features/creditos_cliente/data/credito_cliente_reposit
 import 'package:obraia_v2/features/facturas/domain/estado_factura.dart';
 import 'package:obraia_v2/features/facturas/domain/factura_presupuesto_policy.dart';
 import 'package:obraia_v2/features/facturas/domain/factura_totales.dart';
+import 'package:obraia_v2/features/facturas/services/factura_pdf_service.dart';
 import 'package:obraia_v2/features/facturas/domain/redondeo_monetario.dart';
 import 'package:obraia_v2/features/facturas/domain/factura.dart'
     as factura_domain;
@@ -58,6 +60,14 @@ class FacturaAnulacionConCobrosException implements Exception {
 
 class FacturaAnulacionConRectificativasException implements Exception {
   const FacturaAnulacionConRectificativasException();
+}
+
+class FacturaEmitidaRequiereRectificativaException implements Exception {
+  const FacturaEmitidaRequiereRectificativaException();
+}
+
+class FacturaPdfIntegridadException implements Exception {
+  const FacturaPdfIntegridadException();
 }
 
 class ActualizacionTotalesIncompatibleConCobrosException implements Exception {
@@ -273,6 +283,17 @@ class FacturaRepository {
     if (factura == null) return null;
     await _reconciliarFactura(factura);
     return database.facturasDao.obtenerPorId(facturaId);
+  }
+
+  Future<Uint8List?> obtenerPdfEmitido(String facturaId) async {
+    final documento = await database.facturaDocumentosEmitidosDao.obtener(
+      facturaId,
+    );
+    if (documento == null) return null;
+    if (sha256.convert(documento.pdf).toString() != documento.sha256) {
+      throw const FacturaPdfIntegridadException();
+    }
+    return documento.pdf;
   }
 
   Future<(int, int, String)> generarCodigoFactura(
@@ -677,6 +698,7 @@ class FacturaRepository {
               presupuesto.expedienteId,
             );
 
+      final fechaEmision = DateTime.now();
       await database.facturasDao.actualizarEmision(
         facturaId,
         FacturasCompanion(
@@ -684,7 +706,7 @@ class FacturaRepository {
           anioNumeracion: Value(anio),
           numeroLegal: Value(numero),
           estado: Value(estadoFacturaToString(estado)),
-          fechaEmision: Value(DateTime.now()),
+          fechaEmision: Value(fechaEmision),
           clienteNombreHistorico: Value(
             '${cliente.nombre} ${cliente.apellidos}'.trim(),
           ),
@@ -708,6 +730,30 @@ class FacturaRepository {
           fechaModificacion: Value(DateTime.now()),
         ),
       );
+      final emitida = (await database.facturasDao.obtenerPorId(facturaId))!;
+      final pdf = await FacturaPdfService().generarPdf(
+        factura: emitida,
+        lineas: lineas,
+        empresaConfiguracion: empresa,
+        cliente: cliente,
+      );
+      await database.facturaDocumentosEmitidosDao.insertar(
+        facturaId: facturaId,
+        pdf: pdf,
+        sha256: sha256.convert(pdf).toString(),
+      );
+      if (expediente != null) {
+        await _timelineRepository.registrarFacturaEmitida(
+          expedienteId: expediente.id,
+          facturaId: facturaId,
+          titulo: 'Factura emitida',
+          descripcion:
+              '$codigo · ${fechaEmision.day.toString().padLeft(2, '0')}/'
+              '${fechaEmision.month.toString().padLeft(2, '0')}/'
+              '${fechaEmision.year} · presupuesto ${presupuesto?.codigo ?? '-'}',
+          fecha: fechaEmision,
+        );
+      }
     });
   }
 
@@ -726,6 +772,10 @@ class FacturaRepository {
     await database.transaction(() async {
       final factura = await database.facturasDao.obtenerPorId(facturaId);
       if (factura == null || factura.estado == EstadoFactura.anulada) return;
+      if (!factura.esRectificativa &&
+          factura.estado != EstadoFactura.borrador) {
+        throw const FacturaEmitidaRequiereRectificativaException();
+      }
       final raizId = factura.facturaRaizId ?? factura.id;
       final resumen = await _creditoRepository.obtenerResumen(raizId);
       if (factura.esRectificativa) {

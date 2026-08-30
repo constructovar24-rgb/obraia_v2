@@ -2,6 +2,15 @@
 
 ## No publicado
 
+### Cierre fiscal de emisión y cancelación
+
+- Las FAC ordinarias conservan el PDF definitivo exacto con SHA-256 y verificación de integridad, igual que las RECT.
+- Numeración, snapshot, PDF, hash, estado y evento `facturaEmitida` se confirman atómicamente; los fallos revierten la emisión completa.
+- Las FAC legacy sin PDF archivado muestran una reconstrucción de consulta claramente identificada y nunca se archivan como si fuera el original.
+- Eliminada la anulación directa de FAC emitidas; la acción `Cancelar mediante rectificativa` crea una RECT por diferencias que neutraliza el neto familiar vigente sin alterar cobros históricos.
+- La cancelación reabre la facturación parcial y genera crédito para importes cobrados, compatible con devoluciones y compensaciones existentes.
+- La rectificativa sustitutiva queda expresamente aplazada y fuera de los requisitos de Fase 2.
+
 ### Crédito de cliente
 
 - Añadido el agregado económico derivado por familia FAC/RECT con pendiente, liquidado, crédito generado, dispuesto y disponible normalizados a céntimos.

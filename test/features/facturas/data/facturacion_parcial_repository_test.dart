@@ -4,17 +4,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:obraia_v2/database/app_database.dart';
 import 'package:obraia_v2/features/facturas/data/facturacion_parcial_repository.dart';
 import 'package:obraia_v2/features/facturas/data/factura_repository.dart';
+import 'package:obraia_v2/features/facturas/data/rectificativa_repository.dart';
 import 'package:obraia_v2/features/facturas/domain/facturacion_parcial.dart';
 
 void main() {
   late AppDatabase database;
   late FacturacionParcialRepository parciales;
   late FacturaRepository facturas;
+  late RectificativaRepository rectificativas;
 
   setUp(() async {
     database = AppDatabase.forTesting(NativeDatabase.memory());
     parciales = FacturacionParcialRepository(database);
     facturas = FacturaRepository(database);
+    rectificativas = RectificativaRepository(database);
     await database.clientesDao.insertarCliente(
       ClientesCompanion.insert(
         id: 'cliente',
@@ -216,14 +219,22 @@ void main() {
     expect(actual.pendienteCentimos, 0);
   });
 
-  test('anular una emitida sin cobros reabre el pendiente', () async {
+  test('cancelar una emitida mediante RECT reabre el pendiente', () async {
     final id = await parciales.crearPorImporte(
       presupuestoId: 'presupuesto',
       importe: 40,
     );
     await facturas.emitirFactura(id);
     expect((await resumen()).facturado, 40);
-    await facturas.anularFactura(id);
+    await expectLater(
+      facturas.anularFactura(id),
+      throwsA(isA<FacturaEmitidaRequiereRectificativaException>()),
+    );
+    final rectId = await rectificativas.crearCancelatoria(
+      facturaId: id,
+      motivo: 'Cancelación completa',
+    );
+    await rectificativas.emitir(rectId);
     final actual = await resumen();
     expect(actual.facturado, 0);
     expect(actual.pendiente, 100);

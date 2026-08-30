@@ -80,7 +80,7 @@ void main() {
     );
 
     final anulada = await crearFactura();
-    await facturas.anularFactura(anulada);
+    await database.facturasDao.actualizarEstado(anulada, 'anulada');
     await expectLater(
       cobrar(anulada, 10),
       throwsA(isA<FacturaNoCobrableException>()),
@@ -183,10 +183,13 @@ void main() {
       final movimientos = await database.cobrosDao.obtenerPorFactura(facturaId);
       expect(movimientos, hasLength(3));
       expect(calcularTotalCobradoNeto(movimientos), 0);
-      await facturas.anularFactura(facturaId);
+      await expectLater(
+        facturas.anularFactura(facturaId),
+        throwsA(isA<FacturaEmitidaRequiereRectificativaException>()),
+      );
       expect(
         (await database.facturasDao.obtenerPorId(facturaId))?.estado,
-        EstadoFactura.anulada,
+        EstadoFactura.emitida,
       );
     },
   );

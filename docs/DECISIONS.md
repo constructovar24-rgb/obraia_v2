@@ -30,6 +30,10 @@ Este documento está preparado para registrar decisiones arquitectónicas, tecno
 
 ## Facturas rectificativas
 
+- 2026-08-30: La Fase 2 utiliza rectificativas por diferencias. La modalidad sustitutiva queda aplazada a una fase posterior y su ausencia no bloquea el cierre de Fase 2.
+- 2026-08-30: Una FAC emitida no cambia directamente a `anulada`. La cancelación crea una RECT por diferencias con motivo obligatorio que neutraliza el neto vigente de toda la familia; la FAC, sus cobros y todos los documentos previos permanecen históricos.
+- 2026-08-30: FAC y RECT nuevas conservan exactamente los bytes del PDF definitivo y su SHA-256. Las FAC legacy sin archivo no se completan retrospectivamente: la UI solo permite una reconstrucción inequívocamente identificada como no original.
+
 - 2026-08-29: La primera modalidad soportada es exclusivamente la rectificación por diferencias. Una rectificativa conserva el documento rectificado y la factura ordinaria raíz; puede ser rectificada de nuevo sin reescribir ningún documento emitido.
 - 2026-08-29: Las rectificativas usan la serie anual independiente `RECT-AAAA-NNNN`, numerada al emitir. La unicidad legal se controla por serie, año y correlativo; las facturas ordinarias existentes conservan `FAC` y su numeración histórica.
 - 2026-08-29: El efecto económico se persiste con signo y se aplica a las asignaciones del presupuesto. Los documentos ordinarios y rectificativos emitidos son inmutables y la rectificación acumulada no puede superar la base, IVA o cantidad de la factura raíz.
