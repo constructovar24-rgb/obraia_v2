@@ -806,8 +806,7 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                     ),
                   ),
                 ],
-                if (!_facturaActual.esRectificativa &&
-                    facturaPuedeOriginarRectificativa(_facturaActual)) ...[
+                if (facturaPuedeOriginarRectificativa(_facturaActual)) ...[
                   const SizedBox(height: 12),
                   SizedBox(
                     width: double.infinity,

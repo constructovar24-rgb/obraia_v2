@@ -220,14 +220,39 @@ void main() {
     );
   });
 
-  test('conserva raíz y permite rectificar una rectificativa', () async {
+  test('emite FAC → RECT1 → RECT2 y reconstruye cadena y efectos', () async {
     final original = await crearOriginal();
     final primera = await crearRectificativa(original, base: -20, cantidad: -2);
     await rectificativas.emitir(primera);
     final segunda = await crearRectificativa(primera, base: 5, cantidad: 0.5);
+    await rectificativas.emitir(segunda);
+
     final documento = (await database.facturasDao.obtenerPorId(segunda))!;
     expect(documento.facturaRectificadaId, primera);
     expect(documento.facturaRaizId, original);
+    expect(documento.codigo, 'RECT-${documento.fecha.year}-0002');
+
+    final cadena = await database.facturasDao.obtenerCadenaPorRaiz(original);
+    expect(cadena.map((factura) => factura.id).toSet(), {
+      original,
+      primera,
+      segunda,
+    });
+    expect(
+      (await database.facturasDao.obtenerRectificativasDe(original)).single.id,
+      primera,
+    );
+    expect(
+      (await database.facturasDao.obtenerRectificativasDe(primera)).single.id,
+      segunda,
+    );
+    expect(
+      (await parciales.observarResumen('presupuesto').first).facturado,
+      45,
+    );
+    final saldo = await rectificativas.calcularSaldo(documento);
+    expect(saldo.netoDocumental, 54.45);
+    expect(saldo.saldoAFavor, 0);
   });
 
   test(
