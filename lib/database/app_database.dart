@@ -20,6 +20,7 @@ import 'tables/documentos.dart';
 import 'tables/timeline_events.dart';
 import 'tables/factura_asignaciones_presupuesto.dart';
 import 'tables/factura_documentos_emitidos.dart';
+import 'tables/movimientos_credito_cliente.dart';
 import 'dao/expedientes_dao.dart';
 import 'dao/clientes_dao.dart';
 import 'dao/presupuestos_dao.dart';
@@ -35,6 +36,7 @@ import 'dao/documentos_dao.dart';
 import 'dao/timeline_events_dao.dart';
 import 'dao/factura_asignaciones_presupuesto_dao.dart';
 import 'dao/factura_documentos_emitidos_dao.dart';
+import 'dao/movimientos_credito_cliente_dao.dart';
 
 part 'app_database.g.dart';
 
@@ -55,6 +57,7 @@ part 'app_database.g.dart';
     TimelineEvents,
     FacturaAsignacionesPresupuesto,
     FacturaDocumentosEmitidos,
+    MovimientosCreditoCliente,
   ],
   daos: [
     ExpedientesDao,
@@ -72,6 +75,7 @@ part 'app_database.g.dart';
     TimelineEventsDao,
     FacturaAsignacionesPresupuestoDao,
     FacturaDocumentosEmitidosDao,
+    MovimientosCreditoClienteDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -85,7 +89,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 21;
+  int get schemaVersion => 22;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -111,6 +115,7 @@ class AppDatabase extends _$AppDatabase {
       await customStatement('''
         CREATE INDEX IF NOT EXISTS facturas_raiz_idx ON facturas(factura_raiz_id)
       ''');
+      await _crearIndicesCredito();
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
@@ -320,11 +325,30 @@ class AppDatabase extends _$AppDatabase {
           CREATE INDEX facturas_raiz_idx ON facturas(factura_raiz_id)
         ''');
       }
+      if (from < 22) {
+        await m.createTable(movimientosCreditoCliente);
+        await _crearIndicesCredito();
+      }
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
     },
   );
+
+  Future<void> _crearIndicesCredito() async {
+    await customStatement(
+      'CREATE INDEX IF NOT EXISTS movimientos_credito_origen_idx ON movimientos_credito_cliente(factura_raiz_origen_id)',
+    );
+    await customStatement(
+      'CREATE INDEX IF NOT EXISTS movimientos_credito_destino_idx ON movimientos_credito_cliente(factura_raiz_destino_id)',
+    );
+    await customStatement(
+      'CREATE INDEX IF NOT EXISTS movimientos_credito_movimiento_origen_idx ON movimientos_credito_cliente(movimiento_origen_id)',
+    );
+    await customStatement(
+      'CREATE INDEX IF NOT EXISTS movimientos_credito_cliente_idx ON movimientos_credito_cliente(cliente_id)',
+    );
+  }
 
   final _uuid = const Uuid();
 

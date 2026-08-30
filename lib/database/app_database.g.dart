@@ -12244,6 +12244,876 @@ class FacturaDocumentosEmitidosCompanion
   }
 }
 
+class $MovimientosCreditoClienteTable extends MovimientosCreditoCliente
+    with
+        TableInfo<
+          $MovimientosCreditoClienteTable,
+          MovimientosCreditoClienteData
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MovimientosCreditoClienteTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _clienteIdMeta = const VerificationMeta(
+    'clienteId',
+  );
+  @override
+  late final GeneratedColumn<String> clienteId = GeneratedColumn<String>(
+    'cliente_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES clientes (id)',
+    ),
+  );
+  static const VerificationMeta _facturaRaizOrigenIdMeta =
+      const VerificationMeta('facturaRaizOrigenId');
+  @override
+  late final GeneratedColumn<String> facturaRaizOrigenId =
+      GeneratedColumn<String>(
+        'factura_raiz_origen_id',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES facturas (id)',
+        ),
+      );
+  static const VerificationMeta _tipoMovimientoMeta = const VerificationMeta(
+    'tipoMovimiento',
+  );
+  @override
+  late final GeneratedColumn<String> tipoMovimiento = GeneratedColumn<String>(
+    'tipo_movimiento',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _importeMeta = const VerificationMeta(
+    'importe',
+  );
+  @override
+  late final GeneratedColumn<double> importe = GeneratedColumn<double>(
+    'importe',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fechaMeta = const VerificationMeta('fecha');
+  @override
+  late final GeneratedColumn<DateTime> fecha = GeneratedColumn<DateTime>(
+    'fecha',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _movimientoOrigenIdMeta =
+      const VerificationMeta('movimientoOrigenId');
+  @override
+  late final GeneratedColumn<String> movimientoOrigenId =
+      GeneratedColumn<String>(
+        'movimiento_origen_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES movimientos_credito_cliente (id)',
+        ),
+      );
+  static const VerificationMeta _facturaRaizDestinoIdMeta =
+      const VerificationMeta('facturaRaizDestinoId');
+  @override
+  late final GeneratedColumn<String> facturaRaizDestinoId =
+      GeneratedColumn<String>(
+        'factura_raiz_destino_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES facturas (id)',
+        ),
+      );
+  static const VerificationMeta _metodoMeta = const VerificationMeta('metodo');
+  @override
+  late final GeneratedColumn<String> metodo = GeneratedColumn<String>(
+    'metodo',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _referenciaMeta = const VerificationMeta(
+    'referencia',
+  );
+  @override
+  late final GeneratedColumn<String> referencia = GeneratedColumn<String>(
+    'referencia',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _motivoMeta = const VerificationMeta('motivo');
+  @override
+  late final GeneratedColumn<String> motivo = GeneratedColumn<String>(
+    'motivo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _observacionesMeta = const VerificationMeta(
+    'observaciones',
+  );
+  @override
+  late final GeneratedColumn<String> observaciones = GeneratedColumn<String>(
+    'observaciones',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _fechaCreacionMeta = const VerificationMeta(
+    'fechaCreacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaCreacion =
+      GeneratedColumn<DateTime>(
+        'fecha_creacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+        defaultValue: currentDateAndTime,
+      );
+  static const VerificationMeta _fechaModificacionMeta = const VerificationMeta(
+    'fechaModificacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaModificacion =
+      GeneratedColumn<DateTime>(
+        'fecha_modificacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+        defaultValue: currentDateAndTime,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    clienteId,
+    facturaRaizOrigenId,
+    tipoMovimiento,
+    importe,
+    fecha,
+    movimientoOrigenId,
+    facturaRaizDestinoId,
+    metodo,
+    referencia,
+    motivo,
+    observaciones,
+    fechaCreacion,
+    fechaModificacion,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'movimientos_credito_cliente';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MovimientosCreditoClienteData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('cliente_id')) {
+      context.handle(
+        _clienteIdMeta,
+        clienteId.isAcceptableOrUnknown(data['cliente_id']!, _clienteIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_clienteIdMeta);
+    }
+    if (data.containsKey('factura_raiz_origen_id')) {
+      context.handle(
+        _facturaRaizOrigenIdMeta,
+        facturaRaizOrigenId.isAcceptableOrUnknown(
+          data['factura_raiz_origen_id']!,
+          _facturaRaizOrigenIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_facturaRaizOrigenIdMeta);
+    }
+    if (data.containsKey('tipo_movimiento')) {
+      context.handle(
+        _tipoMovimientoMeta,
+        tipoMovimiento.isAcceptableOrUnknown(
+          data['tipo_movimiento']!,
+          _tipoMovimientoMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_tipoMovimientoMeta);
+    }
+    if (data.containsKey('importe')) {
+      context.handle(
+        _importeMeta,
+        importe.isAcceptableOrUnknown(data['importe']!, _importeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_importeMeta);
+    }
+    if (data.containsKey('fecha')) {
+      context.handle(
+        _fechaMeta,
+        fecha.isAcceptableOrUnknown(data['fecha']!, _fechaMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaMeta);
+    }
+    if (data.containsKey('movimiento_origen_id')) {
+      context.handle(
+        _movimientoOrigenIdMeta,
+        movimientoOrigenId.isAcceptableOrUnknown(
+          data['movimiento_origen_id']!,
+          _movimientoOrigenIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('factura_raiz_destino_id')) {
+      context.handle(
+        _facturaRaizDestinoIdMeta,
+        facturaRaizDestinoId.isAcceptableOrUnknown(
+          data['factura_raiz_destino_id']!,
+          _facturaRaizDestinoIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('metodo')) {
+      context.handle(
+        _metodoMeta,
+        metodo.isAcceptableOrUnknown(data['metodo']!, _metodoMeta),
+      );
+    }
+    if (data.containsKey('referencia')) {
+      context.handle(
+        _referenciaMeta,
+        referencia.isAcceptableOrUnknown(data['referencia']!, _referenciaMeta),
+      );
+    }
+    if (data.containsKey('motivo')) {
+      context.handle(
+        _motivoMeta,
+        motivo.isAcceptableOrUnknown(data['motivo']!, _motivoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_motivoMeta);
+    }
+    if (data.containsKey('observaciones')) {
+      context.handle(
+        _observacionesMeta,
+        observaciones.isAcceptableOrUnknown(
+          data['observaciones']!,
+          _observacionesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('fecha_creacion')) {
+      context.handle(
+        _fechaCreacionMeta,
+        fechaCreacion.isAcceptableOrUnknown(
+          data['fecha_creacion']!,
+          _fechaCreacionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('fecha_modificacion')) {
+      context.handle(
+        _fechaModificacionMeta,
+        fechaModificacion.isAcceptableOrUnknown(
+          data['fecha_modificacion']!,
+          _fechaModificacionMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MovimientosCreditoClienteData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MovimientosCreditoClienteData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      clienteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cliente_id'],
+      )!,
+      facturaRaizOrigenId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}factura_raiz_origen_id'],
+      )!,
+      tipoMovimiento: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tipo_movimiento'],
+      )!,
+      importe: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}importe'],
+      )!,
+      fecha: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha'],
+      )!,
+      movimientoOrigenId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}movimiento_origen_id'],
+      ),
+      facturaRaizDestinoId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}factura_raiz_destino_id'],
+      ),
+      metodo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}metodo'],
+      ),
+      referencia: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}referencia'],
+      )!,
+      motivo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}motivo'],
+      )!,
+      observaciones: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}observaciones'],
+      )!,
+      fechaCreacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_creacion'],
+      )!,
+      fechaModificacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_modificacion'],
+      )!,
+    );
+  }
+
+  @override
+  $MovimientosCreditoClienteTable createAlias(String alias) {
+    return $MovimientosCreditoClienteTable(attachedDatabase, alias);
+  }
+}
+
+class MovimientosCreditoClienteData extends DataClass
+    implements Insertable<MovimientosCreditoClienteData> {
+  final String id;
+  final String clienteId;
+  final String facturaRaizOrigenId;
+  final String tipoMovimiento;
+  final double importe;
+  final DateTime fecha;
+  final String? movimientoOrigenId;
+  final String? facturaRaizDestinoId;
+  final String? metodo;
+  final String referencia;
+  final String motivo;
+  final String observaciones;
+  final DateTime fechaCreacion;
+  final DateTime fechaModificacion;
+  const MovimientosCreditoClienteData({
+    required this.id,
+    required this.clienteId,
+    required this.facturaRaizOrigenId,
+    required this.tipoMovimiento,
+    required this.importe,
+    required this.fecha,
+    this.movimientoOrigenId,
+    this.facturaRaizDestinoId,
+    this.metodo,
+    required this.referencia,
+    required this.motivo,
+    required this.observaciones,
+    required this.fechaCreacion,
+    required this.fechaModificacion,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['cliente_id'] = Variable<String>(clienteId);
+    map['factura_raiz_origen_id'] = Variable<String>(facturaRaizOrigenId);
+    map['tipo_movimiento'] = Variable<String>(tipoMovimiento);
+    map['importe'] = Variable<double>(importe);
+    map['fecha'] = Variable<DateTime>(fecha);
+    if (!nullToAbsent || movimientoOrigenId != null) {
+      map['movimiento_origen_id'] = Variable<String>(movimientoOrigenId);
+    }
+    if (!nullToAbsent || facturaRaizDestinoId != null) {
+      map['factura_raiz_destino_id'] = Variable<String>(facturaRaizDestinoId);
+    }
+    if (!nullToAbsent || metodo != null) {
+      map['metodo'] = Variable<String>(metodo);
+    }
+    map['referencia'] = Variable<String>(referencia);
+    map['motivo'] = Variable<String>(motivo);
+    map['observaciones'] = Variable<String>(observaciones);
+    map['fecha_creacion'] = Variable<DateTime>(fechaCreacion);
+    map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion);
+    return map;
+  }
+
+  MovimientosCreditoClienteCompanion toCompanion(bool nullToAbsent) {
+    return MovimientosCreditoClienteCompanion(
+      id: Value(id),
+      clienteId: Value(clienteId),
+      facturaRaizOrigenId: Value(facturaRaizOrigenId),
+      tipoMovimiento: Value(tipoMovimiento),
+      importe: Value(importe),
+      fecha: Value(fecha),
+      movimientoOrigenId: movimientoOrigenId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(movimientoOrigenId),
+      facturaRaizDestinoId: facturaRaizDestinoId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(facturaRaizDestinoId),
+      metodo: metodo == null && nullToAbsent
+          ? const Value.absent()
+          : Value(metodo),
+      referencia: Value(referencia),
+      motivo: Value(motivo),
+      observaciones: Value(observaciones),
+      fechaCreacion: Value(fechaCreacion),
+      fechaModificacion: Value(fechaModificacion),
+    );
+  }
+
+  factory MovimientosCreditoClienteData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MovimientosCreditoClienteData(
+      id: serializer.fromJson<String>(json['id']),
+      clienteId: serializer.fromJson<String>(json['clienteId']),
+      facturaRaizOrigenId: serializer.fromJson<String>(
+        json['facturaRaizOrigenId'],
+      ),
+      tipoMovimiento: serializer.fromJson<String>(json['tipoMovimiento']),
+      importe: serializer.fromJson<double>(json['importe']),
+      fecha: serializer.fromJson<DateTime>(json['fecha']),
+      movimientoOrigenId: serializer.fromJson<String?>(
+        json['movimientoOrigenId'],
+      ),
+      facturaRaizDestinoId: serializer.fromJson<String?>(
+        json['facturaRaizDestinoId'],
+      ),
+      metodo: serializer.fromJson<String?>(json['metodo']),
+      referencia: serializer.fromJson<String>(json['referencia']),
+      motivo: serializer.fromJson<String>(json['motivo']),
+      observaciones: serializer.fromJson<String>(json['observaciones']),
+      fechaCreacion: serializer.fromJson<DateTime>(json['fechaCreacion']),
+      fechaModificacion: serializer.fromJson<DateTime>(
+        json['fechaModificacion'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'clienteId': serializer.toJson<String>(clienteId),
+      'facturaRaizOrigenId': serializer.toJson<String>(facturaRaizOrigenId),
+      'tipoMovimiento': serializer.toJson<String>(tipoMovimiento),
+      'importe': serializer.toJson<double>(importe),
+      'fecha': serializer.toJson<DateTime>(fecha),
+      'movimientoOrigenId': serializer.toJson<String?>(movimientoOrigenId),
+      'facturaRaizDestinoId': serializer.toJson<String?>(facturaRaizDestinoId),
+      'metodo': serializer.toJson<String?>(metodo),
+      'referencia': serializer.toJson<String>(referencia),
+      'motivo': serializer.toJson<String>(motivo),
+      'observaciones': serializer.toJson<String>(observaciones),
+      'fechaCreacion': serializer.toJson<DateTime>(fechaCreacion),
+      'fechaModificacion': serializer.toJson<DateTime>(fechaModificacion),
+    };
+  }
+
+  MovimientosCreditoClienteData copyWith({
+    String? id,
+    String? clienteId,
+    String? facturaRaizOrigenId,
+    String? tipoMovimiento,
+    double? importe,
+    DateTime? fecha,
+    Value<String?> movimientoOrigenId = const Value.absent(),
+    Value<String?> facturaRaizDestinoId = const Value.absent(),
+    Value<String?> metodo = const Value.absent(),
+    String? referencia,
+    String? motivo,
+    String? observaciones,
+    DateTime? fechaCreacion,
+    DateTime? fechaModificacion,
+  }) => MovimientosCreditoClienteData(
+    id: id ?? this.id,
+    clienteId: clienteId ?? this.clienteId,
+    facturaRaizOrigenId: facturaRaizOrigenId ?? this.facturaRaizOrigenId,
+    tipoMovimiento: tipoMovimiento ?? this.tipoMovimiento,
+    importe: importe ?? this.importe,
+    fecha: fecha ?? this.fecha,
+    movimientoOrigenId: movimientoOrigenId.present
+        ? movimientoOrigenId.value
+        : this.movimientoOrigenId,
+    facturaRaizDestinoId: facturaRaizDestinoId.present
+        ? facturaRaizDestinoId.value
+        : this.facturaRaizDestinoId,
+    metodo: metodo.present ? metodo.value : this.metodo,
+    referencia: referencia ?? this.referencia,
+    motivo: motivo ?? this.motivo,
+    observaciones: observaciones ?? this.observaciones,
+    fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+    fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+  );
+  MovimientosCreditoClienteData copyWithCompanion(
+    MovimientosCreditoClienteCompanion data,
+  ) {
+    return MovimientosCreditoClienteData(
+      id: data.id.present ? data.id.value : this.id,
+      clienteId: data.clienteId.present ? data.clienteId.value : this.clienteId,
+      facturaRaizOrigenId: data.facturaRaizOrigenId.present
+          ? data.facturaRaizOrigenId.value
+          : this.facturaRaizOrigenId,
+      tipoMovimiento: data.tipoMovimiento.present
+          ? data.tipoMovimiento.value
+          : this.tipoMovimiento,
+      importe: data.importe.present ? data.importe.value : this.importe,
+      fecha: data.fecha.present ? data.fecha.value : this.fecha,
+      movimientoOrigenId: data.movimientoOrigenId.present
+          ? data.movimientoOrigenId.value
+          : this.movimientoOrigenId,
+      facturaRaizDestinoId: data.facturaRaizDestinoId.present
+          ? data.facturaRaizDestinoId.value
+          : this.facturaRaizDestinoId,
+      metodo: data.metodo.present ? data.metodo.value : this.metodo,
+      referencia: data.referencia.present
+          ? data.referencia.value
+          : this.referencia,
+      motivo: data.motivo.present ? data.motivo.value : this.motivo,
+      observaciones: data.observaciones.present
+          ? data.observaciones.value
+          : this.observaciones,
+      fechaCreacion: data.fechaCreacion.present
+          ? data.fechaCreacion.value
+          : this.fechaCreacion,
+      fechaModificacion: data.fechaModificacion.present
+          ? data.fechaModificacion.value
+          : this.fechaModificacion,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MovimientosCreditoClienteData(')
+          ..write('id: $id, ')
+          ..write('clienteId: $clienteId, ')
+          ..write('facturaRaizOrigenId: $facturaRaizOrigenId, ')
+          ..write('tipoMovimiento: $tipoMovimiento, ')
+          ..write('importe: $importe, ')
+          ..write('fecha: $fecha, ')
+          ..write('movimientoOrigenId: $movimientoOrigenId, ')
+          ..write('facturaRaizDestinoId: $facturaRaizDestinoId, ')
+          ..write('metodo: $metodo, ')
+          ..write('referencia: $referencia, ')
+          ..write('motivo: $motivo, ')
+          ..write('observaciones: $observaciones, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    clienteId,
+    facturaRaizOrigenId,
+    tipoMovimiento,
+    importe,
+    fecha,
+    movimientoOrigenId,
+    facturaRaizDestinoId,
+    metodo,
+    referencia,
+    motivo,
+    observaciones,
+    fechaCreacion,
+    fechaModificacion,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MovimientosCreditoClienteData &&
+          other.id == this.id &&
+          other.clienteId == this.clienteId &&
+          other.facturaRaizOrigenId == this.facturaRaizOrigenId &&
+          other.tipoMovimiento == this.tipoMovimiento &&
+          other.importe == this.importe &&
+          other.fecha == this.fecha &&
+          other.movimientoOrigenId == this.movimientoOrigenId &&
+          other.facturaRaizDestinoId == this.facturaRaizDestinoId &&
+          other.metodo == this.metodo &&
+          other.referencia == this.referencia &&
+          other.motivo == this.motivo &&
+          other.observaciones == this.observaciones &&
+          other.fechaCreacion == this.fechaCreacion &&
+          other.fechaModificacion == this.fechaModificacion);
+}
+
+class MovimientosCreditoClienteCompanion
+    extends UpdateCompanion<MovimientosCreditoClienteData> {
+  final Value<String> id;
+  final Value<String> clienteId;
+  final Value<String> facturaRaizOrigenId;
+  final Value<String> tipoMovimiento;
+  final Value<double> importe;
+  final Value<DateTime> fecha;
+  final Value<String?> movimientoOrigenId;
+  final Value<String?> facturaRaizDestinoId;
+  final Value<String?> metodo;
+  final Value<String> referencia;
+  final Value<String> motivo;
+  final Value<String> observaciones;
+  final Value<DateTime> fechaCreacion;
+  final Value<DateTime> fechaModificacion;
+  final Value<int> rowid;
+  const MovimientosCreditoClienteCompanion({
+    this.id = const Value.absent(),
+    this.clienteId = const Value.absent(),
+    this.facturaRaizOrigenId = const Value.absent(),
+    this.tipoMovimiento = const Value.absent(),
+    this.importe = const Value.absent(),
+    this.fecha = const Value.absent(),
+    this.movimientoOrigenId = const Value.absent(),
+    this.facturaRaizDestinoId = const Value.absent(),
+    this.metodo = const Value.absent(),
+    this.referencia = const Value.absent(),
+    this.motivo = const Value.absent(),
+    this.observaciones = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.fechaModificacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MovimientosCreditoClienteCompanion.insert({
+    required String id,
+    required String clienteId,
+    required String facturaRaizOrigenId,
+    required String tipoMovimiento,
+    required double importe,
+    required DateTime fecha,
+    this.movimientoOrigenId = const Value.absent(),
+    this.facturaRaizDestinoId = const Value.absent(),
+    this.metodo = const Value.absent(),
+    this.referencia = const Value.absent(),
+    required String motivo,
+    this.observaciones = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.fechaModificacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       clienteId = Value(clienteId),
+       facturaRaizOrigenId = Value(facturaRaizOrigenId),
+       tipoMovimiento = Value(tipoMovimiento),
+       importe = Value(importe),
+       fecha = Value(fecha),
+       motivo = Value(motivo);
+  static Insertable<MovimientosCreditoClienteData> custom({
+    Expression<String>? id,
+    Expression<String>? clienteId,
+    Expression<String>? facturaRaizOrigenId,
+    Expression<String>? tipoMovimiento,
+    Expression<double>? importe,
+    Expression<DateTime>? fecha,
+    Expression<String>? movimientoOrigenId,
+    Expression<String>? facturaRaizDestinoId,
+    Expression<String>? metodo,
+    Expression<String>? referencia,
+    Expression<String>? motivo,
+    Expression<String>? observaciones,
+    Expression<DateTime>? fechaCreacion,
+    Expression<DateTime>? fechaModificacion,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (clienteId != null) 'cliente_id': clienteId,
+      if (facturaRaizOrigenId != null)
+        'factura_raiz_origen_id': facturaRaizOrigenId,
+      if (tipoMovimiento != null) 'tipo_movimiento': tipoMovimiento,
+      if (importe != null) 'importe': importe,
+      if (fecha != null) 'fecha': fecha,
+      if (movimientoOrigenId != null)
+        'movimiento_origen_id': movimientoOrigenId,
+      if (facturaRaizDestinoId != null)
+        'factura_raiz_destino_id': facturaRaizDestinoId,
+      if (metodo != null) 'metodo': metodo,
+      if (referencia != null) 'referencia': referencia,
+      if (motivo != null) 'motivo': motivo,
+      if (observaciones != null) 'observaciones': observaciones,
+      if (fechaCreacion != null) 'fecha_creacion': fechaCreacion,
+      if (fechaModificacion != null) 'fecha_modificacion': fechaModificacion,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MovimientosCreditoClienteCompanion copyWith({
+    Value<String>? id,
+    Value<String>? clienteId,
+    Value<String>? facturaRaizOrigenId,
+    Value<String>? tipoMovimiento,
+    Value<double>? importe,
+    Value<DateTime>? fecha,
+    Value<String?>? movimientoOrigenId,
+    Value<String?>? facturaRaizDestinoId,
+    Value<String?>? metodo,
+    Value<String>? referencia,
+    Value<String>? motivo,
+    Value<String>? observaciones,
+    Value<DateTime>? fechaCreacion,
+    Value<DateTime>? fechaModificacion,
+    Value<int>? rowid,
+  }) {
+    return MovimientosCreditoClienteCompanion(
+      id: id ?? this.id,
+      clienteId: clienteId ?? this.clienteId,
+      facturaRaizOrigenId: facturaRaizOrigenId ?? this.facturaRaizOrigenId,
+      tipoMovimiento: tipoMovimiento ?? this.tipoMovimiento,
+      importe: importe ?? this.importe,
+      fecha: fecha ?? this.fecha,
+      movimientoOrigenId: movimientoOrigenId ?? this.movimientoOrigenId,
+      facturaRaizDestinoId: facturaRaizDestinoId ?? this.facturaRaizDestinoId,
+      metodo: metodo ?? this.metodo,
+      referencia: referencia ?? this.referencia,
+      motivo: motivo ?? this.motivo,
+      observaciones: observaciones ?? this.observaciones,
+      fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+      fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (clienteId.present) {
+      map['cliente_id'] = Variable<String>(clienteId.value);
+    }
+    if (facturaRaizOrigenId.present) {
+      map['factura_raiz_origen_id'] = Variable<String>(
+        facturaRaizOrigenId.value,
+      );
+    }
+    if (tipoMovimiento.present) {
+      map['tipo_movimiento'] = Variable<String>(tipoMovimiento.value);
+    }
+    if (importe.present) {
+      map['importe'] = Variable<double>(importe.value);
+    }
+    if (fecha.present) {
+      map['fecha'] = Variable<DateTime>(fecha.value);
+    }
+    if (movimientoOrigenId.present) {
+      map['movimiento_origen_id'] = Variable<String>(movimientoOrigenId.value);
+    }
+    if (facturaRaizDestinoId.present) {
+      map['factura_raiz_destino_id'] = Variable<String>(
+        facturaRaizDestinoId.value,
+      );
+    }
+    if (metodo.present) {
+      map['metodo'] = Variable<String>(metodo.value);
+    }
+    if (referencia.present) {
+      map['referencia'] = Variable<String>(referencia.value);
+    }
+    if (motivo.present) {
+      map['motivo'] = Variable<String>(motivo.value);
+    }
+    if (observaciones.present) {
+      map['observaciones'] = Variable<String>(observaciones.value);
+    }
+    if (fechaCreacion.present) {
+      map['fecha_creacion'] = Variable<DateTime>(fechaCreacion.value);
+    }
+    if (fechaModificacion.present) {
+      map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MovimientosCreditoClienteCompanion(')
+          ..write('id: $id, ')
+          ..write('clienteId: $clienteId, ')
+          ..write('facturaRaizOrigenId: $facturaRaizOrigenId, ')
+          ..write('tipoMovimiento: $tipoMovimiento, ')
+          ..write('importe: $importe, ')
+          ..write('fecha: $fecha, ')
+          ..write('movimientoOrigenId: $movimientoOrigenId, ')
+          ..write('facturaRaizDestinoId: $facturaRaizDestinoId, ')
+          ..write('metodo: $metodo, ')
+          ..write('referencia: $referencia, ')
+          ..write('motivo: $motivo, ')
+          ..write('observaciones: $observaciones, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -12268,6 +13138,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   facturaAsignacionesPresupuesto = $FacturaAsignacionesPresupuestoTable(this);
   late final $FacturaDocumentosEmitidosTable facturaDocumentosEmitidos =
       $FacturaDocumentosEmitidosTable(this);
+  late final $MovimientosCreditoClienteTable movimientosCreditoCliente =
+      $MovimientosCreditoClienteTable(this);
   late final ExpedientesDao expedientesDao = ExpedientesDao(
     this as AppDatabase,
   );
@@ -12302,6 +13174,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final FacturaDocumentosEmitidosDao facturaDocumentosEmitidosDao =
       FacturaDocumentosEmitidosDao(this as AppDatabase);
+  late final MovimientosCreditoClienteDao movimientosCreditoClienteDao =
+      MovimientosCreditoClienteDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -12322,6 +13196,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     timelineEvents,
     facturaAsignacionesPresupuesto,
     facturaDocumentosEmitidos,
+    movimientosCreditoCliente,
   ];
 }
 
@@ -12404,6 +13279,31 @@ final class $$ClientesTableReferences
     ).filter((f) => f.clienteId.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_facturasRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $MovimientosCreditoClienteTable,
+    List<MovimientosCreditoClienteData>
+  >
+  _movimientosCreditoClienteRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.movimientosCreditoCliente,
+        aliasName: 'clientes__id__movimientos_credito_cliente__cliente_id',
+      );
+
+  $$MovimientosCreditoClienteTableProcessedTableManager
+  get movimientosCreditoClienteRefs {
+    final manager = $$MovimientosCreditoClienteTableTableManager(
+      $_db,
+      $_db.movimientosCreditoCliente,
+    ).filter((f) => f.clienteId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _movimientosCreditoClienteRefsTable($_db),
+    );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -12551,6 +13451,33 @@ class $$ClientesTableFilterComposer
                 $removeJoinBuilderFromRootComposer,
           ),
     );
+    return f(composer);
+  }
+
+  Expression<bool> movimientosCreditoClienteRefs(
+    Expression<bool> Function($$MovimientosCreditoClienteTableFilterComposer f)
+    f,
+  ) {
+    final $$MovimientosCreditoClienteTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.movimientosCreditoCliente,
+          getReferencedColumn: (t) => t.clienteId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MovimientosCreditoClienteTableFilterComposer(
+                $db: $db,
+                $table: $db.movimientosCreditoCliente,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
     return f(composer);
   }
 }
@@ -12767,6 +13694,33 @@ class $$ClientesTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> movimientosCreditoClienteRefs<T extends Object>(
+    Expression<T> Function($$MovimientosCreditoClienteTableAnnotationComposer a)
+    f,
+  ) {
+    final $$MovimientosCreditoClienteTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.movimientosCreditoCliente,
+          getReferencedColumn: (t) => t.clienteId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MovimientosCreditoClienteTableAnnotationComposer(
+                $db: $db,
+                $table: $db.movimientosCreditoCliente,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$ClientesTableTableManager
@@ -12782,7 +13736,11 @@ class $$ClientesTableTableManager
           $$ClientesTableUpdateCompanionBuilder,
           (Cliente, $$ClientesTableReferences),
           Cliente,
-          PrefetchHooks Function({bool expedientesRefs, bool facturasRefs})
+          PrefetchHooks Function({
+            bool expedientesRefs,
+            bool facturasRefs,
+            bool movimientosCreditoClienteRefs,
+          })
         > {
   $$ClientesTableTableManager(_$AppDatabase db, $ClientesTable table)
     : super(
@@ -12884,12 +13842,18 @@ class $$ClientesTableTableManager
               )
               .toList(),
           prefetchHooksCallback:
-              ({expedientesRefs = false, facturasRefs = false}) {
+              ({
+                expedientesRefs = false,
+                facturasRefs = false,
+                movimientosCreditoClienteRefs = false,
+              }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (expedientesRefs) db.expedientes,
                     if (facturasRefs) db.facturas,
+                    if (movimientosCreditoClienteRefs)
+                      db.movimientosCreditoCliente,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -12936,6 +13900,27 @@ class $$ClientesTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (movimientosCreditoClienteRefs)
+                        await $_getPrefetchedData<
+                          Cliente,
+                          $ClientesTable,
+                          MovimientosCreditoClienteData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ClientesTableReferences
+                              ._movimientosCreditoClienteRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ClientesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).movimientosCreditoClienteRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.clienteId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -12956,7 +13941,11 @@ typedef $$ClientesTableProcessedTableManager =
       $$ClientesTableUpdateCompanionBuilder,
       (Cliente, $$ClientesTableReferences),
       Cliente,
-      PrefetchHooks Function({bool expedientesRefs, bool facturasRefs})
+      PrefetchHooks Function({
+        bool expedientesRefs,
+        bool facturasRefs,
+        bool movimientosCreditoClienteRefs,
+      })
     >;
 typedef $$ExpedientesTableCreateCompanionBuilder =
     ExpedientesCompanion Function({
@@ -15872,6 +16861,67 @@ final class $$FacturasTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<
+    $MovimientosCreditoClienteTable,
+    List<MovimientosCreditoClienteData>
+  >
+  _movimientosCreditoOrigenTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.movimientosCreditoCliente,
+        aliasName:
+            'facturas__id__movimientos_credito_cliente__factura_raiz_origen_id',
+      );
+
+  $$MovimientosCreditoClienteTableProcessedTableManager
+  get movimientosCreditoOrigen {
+    final manager =
+        $$MovimientosCreditoClienteTableTableManager(
+          $_db,
+          $_db.movimientosCreditoCliente,
+        ).filter(
+          (f) =>
+              f.facturaRaizOrigenId.id.sqlEquals($_itemColumn<String>('id')!),
+        );
+
+    final cache = $_typedResult.readTableOrNull(
+      _movimientosCreditoOrigenTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $MovimientosCreditoClienteTable,
+    List<MovimientosCreditoClienteData>
+  >
+  _movimientosCreditoDestinoTable(
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.movimientosCreditoCliente,
+    aliasName:
+        'facturas__id__movimientos_credito_cliente__factura_raiz_destino_id',
+  );
+
+  $$MovimientosCreditoClienteTableProcessedTableManager
+  get movimientosCreditoDestino {
+    final manager =
+        $$MovimientosCreditoClienteTableTableManager(
+          $_db,
+          $_db.movimientosCreditoCliente,
+        ).filter(
+          (f) =>
+              f.facturaRaizDestinoId.id.sqlEquals($_itemColumn<String>('id')!),
+        );
+
+    final cache = $_typedResult.readTableOrNull(
+      _movimientosCreditoDestinoTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$FacturasTableFilterComposer
@@ -16272,6 +17322,60 @@ class $$FacturasTableFilterComposer
               }) => $$FacturaDocumentosEmitidosTableFilterComposer(
                 $db: $db,
                 $table: $db.facturaDocumentosEmitidos,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<bool> movimientosCreditoOrigen(
+    Expression<bool> Function($$MovimientosCreditoClienteTableFilterComposer f)
+    f,
+  ) {
+    final $$MovimientosCreditoClienteTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.movimientosCreditoCliente,
+          getReferencedColumn: (t) => t.facturaRaizOrigenId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MovimientosCreditoClienteTableFilterComposer(
+                $db: $db,
+                $table: $db.movimientosCreditoCliente,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<bool> movimientosCreditoDestino(
+    Expression<bool> Function($$MovimientosCreditoClienteTableFilterComposer f)
+    f,
+  ) {
+    final $$MovimientosCreditoClienteTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.movimientosCreditoCliente,
+          getReferencedColumn: (t) => t.facturaRaizDestinoId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MovimientosCreditoClienteTableFilterComposer(
+                $db: $db,
+                $table: $db.movimientosCreditoCliente,
                 $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
                 joinBuilder: joinBuilder,
                 $removeJoinBuilderFromRootComposer:
@@ -16974,6 +18078,60 @@ class $$FacturasTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> movimientosCreditoOrigen<T extends Object>(
+    Expression<T> Function($$MovimientosCreditoClienteTableAnnotationComposer a)
+    f,
+  ) {
+    final $$MovimientosCreditoClienteTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.movimientosCreditoCliente,
+          getReferencedColumn: (t) => t.facturaRaizOrigenId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MovimientosCreditoClienteTableAnnotationComposer(
+                $db: $db,
+                $table: $db.movimientosCreditoCliente,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> movimientosCreditoDestino<T extends Object>(
+    Expression<T> Function($$MovimientosCreditoClienteTableAnnotationComposer a)
+    f,
+  ) {
+    final $$MovimientosCreditoClienteTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.movimientosCreditoCliente,
+          getReferencedColumn: (t) => t.facturaRaizDestinoId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MovimientosCreditoClienteTableAnnotationComposer(
+                $db: $db,
+                $table: $db.movimientosCreditoCliente,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$FacturasTableTableManager
@@ -16998,6 +18156,8 @@ class $$FacturasTableTableManager
             bool cobrosRefs,
             bool facturaAsignacionesPresupuestoRefs,
             bool facturaDocumentosEmitidosRefs,
+            bool movimientosCreditoOrigen,
+            bool movimientosCreditoDestino,
           })
         > {
   $$FacturasTableTableManager(_$AppDatabase db, $FacturasTable table)
@@ -17221,6 +18381,8 @@ class $$FacturasTableTableManager
                 cobrosRefs = false,
                 facturaAsignacionesPresupuestoRefs = false,
                 facturaDocumentosEmitidosRefs = false,
+                movimientosCreditoOrigen = false,
+                movimientosCreditoDestino = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -17231,6 +18393,8 @@ class $$FacturasTableTableManager
                       db.facturaAsignacionesPresupuesto,
                     if (facturaDocumentosEmitidosRefs)
                       db.facturaDocumentosEmitidos,
+                    if (movimientosCreditoOrigen) db.movimientosCreditoCliente,
+                    if (movimientosCreditoDestino) db.movimientosCreditoCliente,
                   ],
                   addJoins:
                       <
@@ -17389,6 +18553,48 @@ class $$FacturasTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (movimientosCreditoOrigen)
+                        await $_getPrefetchedData<
+                          Factura,
+                          $FacturasTable,
+                          MovimientosCreditoClienteData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$FacturasTableReferences
+                              ._movimientosCreditoOrigenTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$FacturasTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).movimientosCreditoOrigen,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.facturaRaizOrigenId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (movimientosCreditoDestino)
+                        await $_getPrefetchedData<
+                          Factura,
+                          $FacturasTable,
+                          MovimientosCreditoClienteData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$FacturasTableReferences
+                              ._movimientosCreditoDestinoTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$FacturasTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).movimientosCreditoDestino,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.facturaRaizDestinoId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -17418,6 +18624,8 @@ typedef $$FacturasTableProcessedTableManager =
         bool cobrosRefs,
         bool facturaAsignacionesPresupuestoRefs,
         bool facturaDocumentosEmitidosRefs,
+        bool movimientosCreditoOrigen,
+        bool movimientosCreditoDestino,
       })
     >;
 typedef $$FacturaLineasTableCreateCompanionBuilder =
@@ -22332,6 +23540,825 @@ typedef $$FacturaDocumentosEmitidosTableProcessedTableManager =
       FacturaDocumentosEmitido,
       PrefetchHooks Function({bool facturaId})
     >;
+typedef $$MovimientosCreditoClienteTableCreateCompanionBuilder =
+    MovimientosCreditoClienteCompanion Function({
+      required String id,
+      required String clienteId,
+      required String facturaRaizOrigenId,
+      required String tipoMovimiento,
+      required double importe,
+      required DateTime fecha,
+      Value<String?> movimientoOrigenId,
+      Value<String?> facturaRaizDestinoId,
+      Value<String?> metodo,
+      Value<String> referencia,
+      required String motivo,
+      Value<String> observaciones,
+      Value<DateTime> fechaCreacion,
+      Value<DateTime> fechaModificacion,
+      Value<int> rowid,
+    });
+typedef $$MovimientosCreditoClienteTableUpdateCompanionBuilder =
+    MovimientosCreditoClienteCompanion Function({
+      Value<String> id,
+      Value<String> clienteId,
+      Value<String> facturaRaizOrigenId,
+      Value<String> tipoMovimiento,
+      Value<double> importe,
+      Value<DateTime> fecha,
+      Value<String?> movimientoOrigenId,
+      Value<String?> facturaRaizDestinoId,
+      Value<String?> metodo,
+      Value<String> referencia,
+      Value<String> motivo,
+      Value<String> observaciones,
+      Value<DateTime> fechaCreacion,
+      Value<DateTime> fechaModificacion,
+      Value<int> rowid,
+    });
+
+final class $$MovimientosCreditoClienteTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $MovimientosCreditoClienteTable,
+          MovimientosCreditoClienteData
+        > {
+  $$MovimientosCreditoClienteTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ClientesTable _clienteIdTable(_$AppDatabase db) => db.clientes
+      .createAlias('movimientos_credito_cliente__cliente_id__clientes__id');
+
+  $$ClientesTableProcessedTableManager get clienteId {
+    final $_column = $_itemColumn<String>('cliente_id')!;
+
+    final manager = $$ClientesTableTableManager(
+      $_db,
+      $_db.clientes,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_clienteIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $FacturasTable _facturaRaizOrigenIdTable(_$AppDatabase db) =>
+      db.facturas.createAlias(
+        'movimientos_credito_cliente__factura_raiz_origen_id__facturas__id',
+      );
+
+  $$FacturasTableProcessedTableManager get facturaRaizOrigenId {
+    final $_column = $_itemColumn<String>('factura_raiz_origen_id')!;
+
+    final manager = $$FacturasTableTableManager(
+      $_db,
+      $_db.facturas,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_facturaRaizOrigenIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $MovimientosCreditoClienteTable _movimientoOrigenIdTable(
+    _$AppDatabase db,
+  ) => db.movimientosCreditoCliente.createAlias(
+    'movimientos_credito_cliente__movimiento_origen_id__movimientos_credito_cliente__id',
+  );
+
+  $$MovimientosCreditoClienteTableProcessedTableManager?
+  get movimientoOrigenId {
+    final $_column = $_itemColumn<String>('movimiento_origen_id');
+    if ($_column == null) return null;
+    final manager = $$MovimientosCreditoClienteTableTableManager(
+      $_db,
+      $_db.movimientosCreditoCliente,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_movimientoOrigenIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $FacturasTable _facturaRaizDestinoIdTable(_$AppDatabase db) =>
+      db.facturas.createAlias(
+        'movimientos_credito_cliente__factura_raiz_destino_id__facturas__id',
+      );
+
+  $$FacturasTableProcessedTableManager? get facturaRaizDestinoId {
+    final $_column = $_itemColumn<String>('factura_raiz_destino_id');
+    if ($_column == null) return null;
+    final manager = $$FacturasTableTableManager(
+      $_db,
+      $_db.facturas,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(
+      _facturaRaizDestinoIdTable($_db),
+    );
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$MovimientosCreditoClienteTableFilterComposer
+    extends Composer<_$AppDatabase, $MovimientosCreditoClienteTable> {
+  $$MovimientosCreditoClienteTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tipoMovimiento => $composableBuilder(
+    column: $table.tipoMovimiento,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get importe => $composableBuilder(
+    column: $table.importe,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fecha => $composableBuilder(
+    column: $table.fecha,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get metodo => $composableBuilder(
+    column: $table.metodo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get referencia => $composableBuilder(
+    column: $table.referencia,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get motivo => $composableBuilder(
+    column: $table.motivo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ClientesTableFilterComposer get clienteId {
+    final $$ClientesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.clienteId,
+      referencedTable: $db.clientes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ClientesTableFilterComposer(
+            $db: $db,
+            $table: $db.clientes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$FacturasTableFilterComposer get facturaRaizOrigenId {
+    final $$FacturasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.facturaRaizOrigenId,
+      referencedTable: $db.facturas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturasTableFilterComposer(
+            $db: $db,
+            $table: $db.facturas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$MovimientosCreditoClienteTableFilterComposer get movimientoOrigenId {
+    final $$MovimientosCreditoClienteTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.movimientoOrigenId,
+          referencedTable: $db.movimientosCreditoCliente,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MovimientosCreditoClienteTableFilterComposer(
+                $db: $db,
+                $table: $db.movimientosCreditoCliente,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+
+  $$FacturasTableFilterComposer get facturaRaizDestinoId {
+    final $$FacturasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.facturaRaizDestinoId,
+      referencedTable: $db.facturas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturasTableFilterComposer(
+            $db: $db,
+            $table: $db.facturas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MovimientosCreditoClienteTableOrderingComposer
+    extends Composer<_$AppDatabase, $MovimientosCreditoClienteTable> {
+  $$MovimientosCreditoClienteTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tipoMovimiento => $composableBuilder(
+    column: $table.tipoMovimiento,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get importe => $composableBuilder(
+    column: $table.importe,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fecha => $composableBuilder(
+    column: $table.fecha,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get metodo => $composableBuilder(
+    column: $table.metodo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get referencia => $composableBuilder(
+    column: $table.referencia,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get motivo => $composableBuilder(
+    column: $table.motivo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ClientesTableOrderingComposer get clienteId {
+    final $$ClientesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.clienteId,
+      referencedTable: $db.clientes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ClientesTableOrderingComposer(
+            $db: $db,
+            $table: $db.clientes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$FacturasTableOrderingComposer get facturaRaizOrigenId {
+    final $$FacturasTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.facturaRaizOrigenId,
+      referencedTable: $db.facturas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturasTableOrderingComposer(
+            $db: $db,
+            $table: $db.facturas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$MovimientosCreditoClienteTableOrderingComposer get movimientoOrigenId {
+    final $$MovimientosCreditoClienteTableOrderingComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.movimientoOrigenId,
+          referencedTable: $db.movimientosCreditoCliente,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MovimientosCreditoClienteTableOrderingComposer(
+                $db: $db,
+                $table: $db.movimientosCreditoCliente,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+
+  $$FacturasTableOrderingComposer get facturaRaizDestinoId {
+    final $$FacturasTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.facturaRaizDestinoId,
+      referencedTable: $db.facturas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturasTableOrderingComposer(
+            $db: $db,
+            $table: $db.facturas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MovimientosCreditoClienteTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MovimientosCreditoClienteTable> {
+  $$MovimientosCreditoClienteTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get tipoMovimiento => $composableBuilder(
+    column: $table.tipoMovimiento,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get importe =>
+      $composableBuilder(column: $table.importe, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get fecha =>
+      $composableBuilder(column: $table.fecha, builder: (column) => column);
+
+  GeneratedColumn<String> get metodo =>
+      $composableBuilder(column: $table.metodo, builder: (column) => column);
+
+  GeneratedColumn<String> get referencia => $composableBuilder(
+    column: $table.referencia,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get motivo =>
+      $composableBuilder(column: $table.motivo, builder: (column) => column);
+
+  GeneratedColumn<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => column,
+  );
+
+  $$ClientesTableAnnotationComposer get clienteId {
+    final $$ClientesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.clienteId,
+      referencedTable: $db.clientes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ClientesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.clientes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$FacturasTableAnnotationComposer get facturaRaizOrigenId {
+    final $$FacturasTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.facturaRaizOrigenId,
+      referencedTable: $db.facturas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.facturas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$MovimientosCreditoClienteTableAnnotationComposer get movimientoOrigenId {
+    final $$MovimientosCreditoClienteTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.movimientoOrigenId,
+          referencedTable: $db.movimientosCreditoCliente,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MovimientosCreditoClienteTableAnnotationComposer(
+                $db: $db,
+                $table: $db.movimientosCreditoCliente,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+
+  $$FacturasTableAnnotationComposer get facturaRaizDestinoId {
+    final $$FacturasTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.facturaRaizDestinoId,
+      referencedTable: $db.facturas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.facturas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MovimientosCreditoClienteTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MovimientosCreditoClienteTable,
+          MovimientosCreditoClienteData,
+          $$MovimientosCreditoClienteTableFilterComposer,
+          $$MovimientosCreditoClienteTableOrderingComposer,
+          $$MovimientosCreditoClienteTableAnnotationComposer,
+          $$MovimientosCreditoClienteTableCreateCompanionBuilder,
+          $$MovimientosCreditoClienteTableUpdateCompanionBuilder,
+          (
+            MovimientosCreditoClienteData,
+            $$MovimientosCreditoClienteTableReferences,
+          ),
+          MovimientosCreditoClienteData,
+          PrefetchHooks Function({
+            bool clienteId,
+            bool facturaRaizOrigenId,
+            bool movimientoOrigenId,
+            bool facturaRaizDestinoId,
+          })
+        > {
+  $$MovimientosCreditoClienteTableTableManager(
+    _$AppDatabase db,
+    $MovimientosCreditoClienteTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MovimientosCreditoClienteTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$MovimientosCreditoClienteTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$MovimientosCreditoClienteTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> clienteId = const Value.absent(),
+                Value<String> facturaRaizOrigenId = const Value.absent(),
+                Value<String> tipoMovimiento = const Value.absent(),
+                Value<double> importe = const Value.absent(),
+                Value<DateTime> fecha = const Value.absent(),
+                Value<String?> movimientoOrigenId = const Value.absent(),
+                Value<String?> facturaRaizDestinoId = const Value.absent(),
+                Value<String?> metodo = const Value.absent(),
+                Value<String> referencia = const Value.absent(),
+                Value<String> motivo = const Value.absent(),
+                Value<String> observaciones = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<DateTime> fechaModificacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MovimientosCreditoClienteCompanion(
+                id: id,
+                clienteId: clienteId,
+                facturaRaizOrigenId: facturaRaizOrigenId,
+                tipoMovimiento: tipoMovimiento,
+                importe: importe,
+                fecha: fecha,
+                movimientoOrigenId: movimientoOrigenId,
+                facturaRaizDestinoId: facturaRaizDestinoId,
+                metodo: metodo,
+                referencia: referencia,
+                motivo: motivo,
+                observaciones: observaciones,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String clienteId,
+                required String facturaRaizOrigenId,
+                required String tipoMovimiento,
+                required double importe,
+                required DateTime fecha,
+                Value<String?> movimientoOrigenId = const Value.absent(),
+                Value<String?> facturaRaizDestinoId = const Value.absent(),
+                Value<String?> metodo = const Value.absent(),
+                Value<String> referencia = const Value.absent(),
+                required String motivo,
+                Value<String> observaciones = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<DateTime> fechaModificacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MovimientosCreditoClienteCompanion.insert(
+                id: id,
+                clienteId: clienteId,
+                facturaRaizOrigenId: facturaRaizOrigenId,
+                tipoMovimiento: tipoMovimiento,
+                importe: importe,
+                fecha: fecha,
+                movimientoOrigenId: movimientoOrigenId,
+                facturaRaizDestinoId: facturaRaizDestinoId,
+                metodo: metodo,
+                referencia: referencia,
+                motivo: motivo,
+                observaciones: observaciones,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$MovimientosCreditoClienteTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                clienteId = false,
+                facturaRaizOrigenId = false,
+                movimientoOrigenId = false,
+                facturaRaizDestinoId = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (clienteId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.clienteId,
+                                    referencedTable:
+                                        $$MovimientosCreditoClienteTableReferences
+                                            ._clienteIdTable(db),
+                                    referencedColumn:
+                                        $$MovimientosCreditoClienteTableReferences
+                                            ._clienteIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+                        if (facturaRaizOrigenId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.facturaRaizOrigenId,
+                                    referencedTable:
+                                        $$MovimientosCreditoClienteTableReferences
+                                            ._facturaRaizOrigenIdTable(db),
+                                    referencedColumn:
+                                        $$MovimientosCreditoClienteTableReferences
+                                            ._facturaRaizOrigenIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+                        if (movimientoOrigenId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.movimientoOrigenId,
+                                    referencedTable:
+                                        $$MovimientosCreditoClienteTableReferences
+                                            ._movimientoOrigenIdTable(db),
+                                    referencedColumn:
+                                        $$MovimientosCreditoClienteTableReferences
+                                            ._movimientoOrigenIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+                        if (facturaRaizDestinoId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.facturaRaizDestinoId,
+                                    referencedTable:
+                                        $$MovimientosCreditoClienteTableReferences
+                                            ._facturaRaizDestinoIdTable(db),
+                                    referencedColumn:
+                                        $$MovimientosCreditoClienteTableReferences
+                                            ._facturaRaizDestinoIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$MovimientosCreditoClienteTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MovimientosCreditoClienteTable,
+      MovimientosCreditoClienteData,
+      $$MovimientosCreditoClienteTableFilterComposer,
+      $$MovimientosCreditoClienteTableOrderingComposer,
+      $$MovimientosCreditoClienteTableAnnotationComposer,
+      $$MovimientosCreditoClienteTableCreateCompanionBuilder,
+      $$MovimientosCreditoClienteTableUpdateCompanionBuilder,
+      (
+        MovimientosCreditoClienteData,
+        $$MovimientosCreditoClienteTableReferences,
+      ),
+      MovimientosCreditoClienteData,
+      PrefetchHooks Function({
+        bool clienteId,
+        bool facturaRaizOrigenId,
+        bool movimientoOrigenId,
+        bool facturaRaizDestinoId,
+      })
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -22372,5 +24399,10 @@ class $AppDatabaseManager {
       $$FacturaDocumentosEmitidosTableTableManager(
         _db,
         _db.facturaDocumentosEmitidos,
+      );
+  $$MovimientosCreditoClienteTableTableManager get movimientosCreditoCliente =>
+      $$MovimientosCreditoClienteTableTableManager(
+        _db,
+        _db.movimientosCreditoCliente,
       );
 }

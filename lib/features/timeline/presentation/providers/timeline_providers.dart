@@ -115,6 +115,16 @@ String timelineEventTypeLabel(TimelineEventType tipo) {
       return 'Cobro eliminado';
     case TimelineEventType.cobroRevertido:
       return 'Cobro revertido';
+    case TimelineEventType.devolucionRegistrada:
+      return 'Devolución registrada';
+    case TimelineEventType.devolucionRevertida:
+      return 'Devolución revertida';
+    case TimelineEventType.compensacionAplicada:
+      return 'Compensación aplicada';
+    case TimelineEventType.compensacionRecibida:
+      return 'Compensación recibida';
+    case TimelineEventType.compensacionRevertida:
+      return 'Compensación revertida';
     case TimelineEventType.facturaBorradorEliminada:
       return 'Factura borrador eliminada';
     case TimelineEventType.documentoSubido:

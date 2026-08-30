@@ -15,6 +15,7 @@ import '../../../cobros/domain/cobro.dart' as cobro_domain;
 import '../../../cobros/domain/factura_estado_economico.dart';
 import '../../../cobros/presentation/screens/cobros_screen.dart';
 import '../../../cobros/presentation/screens/nuevo_cobro_screen.dart';
+import '../../../creditos_cliente/presentation/widgets/credito_cliente_panel.dart';
 import '../../data/factura_linea_repository.dart';
 import '../../data/factura_repository.dart';
 import '../../domain/estado_factura.dart';
@@ -969,6 +970,8 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                           const Divider(),
                           const SizedBox(height: 12),
                           _buildResumenEconomico(total),
+                          const SizedBox(height: 18),
+                          CreditoClientePanel(facturaId: _facturaActual.id),
                         ]);
 
                         return Column(

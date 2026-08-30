@@ -13,11 +13,24 @@ enum TimelineEventType {
   cobroRegistrado,
   cobroEliminado,
   cobroRevertido,
+  devolucionRegistrada,
+  devolucionRevertida,
+  compensacionAplicada,
+  compensacionRecibida,
+  compensacionRevertida,
   facturaBorradorEliminada,
   documentoSubido,
   fotografiaAnadida,
   notaCreada,
   compraRegistrada,
+}
+
+enum TimelineCreditoTipo {
+  devolucionRegistrada,
+  devolucionRevertida,
+  compensacionAplicada,
+  compensacionRecibida,
+  compensacionRevertida,
 }
 
 class TimelineEvent {

@@ -37,6 +37,7 @@ class BackupArchiveService {
     'presupuestos',
     'proveedores',
     'timeline_events',
+    'movimientos_credito_cliente',
   };
 
   final DatabaseSnapshotService _snapshotService;
@@ -401,6 +402,7 @@ class BackupArchiveService {
       final expectedTables = _expectedTables.difference({
         if (schemaVersion < 20) 'factura_asignaciones_presupuesto',
         if (schemaVersion < 21) 'factura_documentos_emitidos',
+        if (schemaVersion < 22) 'movimientos_credito_cliente',
       });
       if (!tables.containsAll(expectedTables)) {
         throw const BackupValidationException();

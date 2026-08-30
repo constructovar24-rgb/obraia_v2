@@ -35,3 +35,10 @@ Este documento está preparado para registrar decisiones arquitectónicas, tecno
 - 2026-08-29: El efecto económico se persiste con signo y se aplica a las asignaciones del presupuesto. Los documentos ordinarios y rectificativos emitidos son inmutables y la rectificación acumulada no puede superar la base, IVA o cantidad de la factura raíz.
 - 2026-08-29: Un saldo a favor se muestra como crédito pendiente. No se considera liquidado, no altera cobros existentes y todavía no admite devolución bancaria ni compensación.
 - 2026-08-29: El PDF rectificativo emitido se conserva exactamente en SQLite junto con su SHA-256. El backup protege el binario como parte de la base de datos.
+
+## Crédito de cliente
+
+- 2026-08-30: El crédito es un agregado derivado por familia FAC/RECT; no se persiste un saldo editable. Su fuente de verdad son el neto documental efectivo, los cobros netos y los movimientos inmutables de crédito.
+- 2026-08-30: Devolución, compensación y sus reversiones son movimientos distintos de cobros y reversiones de cobro. Una compensación solo une familias del mismo cliente fiscal y liquida el destino sin movimiento bancario.
+- 2026-08-30: Toda disposición valida céntimos disponibles dentro de la misma transacción. Cobros, reversiones y cambios RECT se bloquean cuando dejarían crédito dispuesto sin respaldo.
+- 2026-08-30: Ningún movimiento económico confirmado se edita o elimina en el flujo ordinario; las correcciones se representan mediante reversiones vinculadas y parcialmente acumulables.

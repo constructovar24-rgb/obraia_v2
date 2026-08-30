@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../database/app_database.dart' hide Factura, FacturaLinea;
 import '../../cobros/domain/factura_estado_economico.dart';
+import '../../creditos_cliente/data/credito_cliente_repository.dart';
 import '../../timeline/data/timeline_repository.dart';
 import '../domain/estado_factura.dart';
 import '../domain/factura.dart';
@@ -20,6 +21,9 @@ class RectificativaRepository {
 
   final AppDatabase database;
   final TimelineRepository _timeline;
+  late final CreditoClienteRepository _credito = CreditoClienteRepository(
+    database,
+  );
 
   Stream<List<Factura>> observarRectificativasDe(String facturaId) =>
       database.facturasDao.observarRectificativasDe(facturaId);
@@ -303,6 +307,15 @@ class RectificativaRepository {
       );
     }
     _validarDocumentoOriginalSeguro(raiz);
+    if (monedaACentimos(factura.efectoTotal) > 0) {
+      final resumen = await _credito.obtenerResumen(raiz.id);
+      await _credito.validarCreditoTrasCambio(
+        facturaRaizId: raiz.id,
+        nuevoNetoDocumental: redondearMoneda(
+          resumen.netoDocumental + factura.efectoTotal,
+        ),
+      );
+    }
     final (anio, numero, codigo) = await FacturaRepository(
       database,
     ).generarCodigoFactura(factura.fecha.year, serie: 'RECT');

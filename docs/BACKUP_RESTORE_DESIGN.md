@@ -23,12 +23,12 @@ Este documento guía la fase 1 desde la auditoría inicial. Ya están implementa
 
 ### Esquema, migraciones e integridad
 
-- `schemaVersion` actual: 21.
-- Hay 15 tablas, incluidas `factura_asignaciones_presupuesto` y `factura_documentos_emitidos` junto a las 13 tablas anteriores.
-- Las migraciones incrementales cubren cambios de las versiones 2 a 21. La versión 6 reconstruye `presupuestos`; la 17 añade y rellena `iva_porcentaje`; la 18 añade unidades y fotografía histórica; la 19 incorpora reversiones de cobros; la 20 crea las asignaciones trazables de facturación parcial; la 21 incorpora rectificativas y el PDF emitido exacto.
+- `schemaVersion` actual: 22.
+- Hay 16 tablas, incluida `movimientos_credito_cliente` junto a las tablas documentales y económicas anteriores.
+- Las migraciones incrementales cubren cambios de las versiones 2 a 22. La versión 22 incorpora movimientos inmutables de devolución, compensación y reversión con relaciones estructurales e índices.
 - Hay relaciones declaradas entre clientes, expedientes, presupuestos, líneas, facturas, cobros, certificaciones, documentos y Timeline. No se declaran acciones `ON DELETE`. `compras.proveedorId` no es una referencia Drift.
 - La conexión activa expresamente `PRAGMA foreign_keys = ON`; la restauración mantiene además `PRAGMA foreign_key_check` para detectar huérfanos históricos.
-- La compatibilidad de restauración se limita deliberadamente a los esquemas 16, 17, 18, 19, 20 y 21. Las rutas 16→21, 17→21, 18→21, 19→21, 20→21 y 21→21 están probadas con conservación de cobros, facturas, importes y PDF emitidos. Las versiones 1 a 15 y las futuras se rechazan.
+- La compatibilidad de restauración se limita deliberadamente a los esquemas 16, 17, 18, 19, 20, 21 y 22. Las rutas 16–21→22 y la apertura directa 22 se prueban sin inventar créditos históricos; v22 conserva además movimientos, relaciones, importes y PDF emitidos. Las versiones 1 a 15 y las futuras se rechazan.
 
 ### Archivos asociados
 

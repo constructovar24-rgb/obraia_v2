@@ -8,6 +8,7 @@ import 'package:obraia_v2/features/clientes/domain/cliente.dart'
     as cliente_domain;
 import 'package:obraia_v2/features/cobros/domain/cobro.dart' as cobro_domain;
 import 'package:obraia_v2/features/cobros/domain/factura_estado_economico.dart';
+import 'package:obraia_v2/features/creditos_cliente/data/credito_cliente_repository.dart';
 import 'package:obraia_v2/features/facturas/domain/estado_factura.dart';
 import 'package:obraia_v2/features/facturas/domain/factura_presupuesto_policy.dart';
 import 'package:obraia_v2/features/facturas/domain/factura_totales.dart';
@@ -127,6 +128,8 @@ bool facturaPuedeEliminarse({
 class FacturaRepository {
   final AppDatabase database;
   final TimelineRepository _timelineRepository;
+  late final CreditoClienteRepository _creditoRepository =
+      CreditoClienteRepository(database);
 
   FacturaRepository(this.database)
     : _timelineRepository = TimelineRepository(database.timelineEventsDao);
@@ -723,6 +726,19 @@ class FacturaRepository {
     await database.transaction(() async {
       final factura = await database.facturasDao.obtenerPorId(facturaId);
       if (factura == null || factura.estado == EstadoFactura.anulada) return;
+      final raizId = factura.facturaRaizId ?? factura.id;
+      final resumen = await _creditoRepository.obtenerResumen(raizId);
+      if (factura.esRectificativa) {
+        await _creditoRepository.validarCreditoTrasCambio(
+          facturaRaizId: raizId,
+          nuevoNetoDocumental: redondearMoneda(
+            resumen.netoDocumental - factura.efectoTotal,
+          ),
+        );
+      } else if (monedaACentimos(resumen.totalLiquidado) > 0 ||
+          monedaACentimos(resumen.creditoDispuesto) > 0) {
+        throw const FacturaAnulacionConCobrosException();
+      }
       final cobros = await database.cobrosDao
           .observarPorFactura(facturaId)
           .first;
@@ -756,14 +772,11 @@ class FacturaRepository {
 
   Future<bool> _reconciliarFactura(factura_domain.Factura factura) async {
     if (factura.esRectificativa) return false;
-    final cobros = await database.cobrosDao
-        .observarPorFactura(factura.id)
-        .first;
-    final cobrado = calcularTotalCobradoNeto(cobros);
+    final resumen = await _creditoRepository.obtenerResumen(factura.id);
     final estado = resolverEstadoDocumentalFactura(
       estadoActual: factura.estado,
-      totalFactura: factura.total,
-      totalCobrado: cobrado,
+      totalFactura: resumen.netoDocumental,
+      totalCobrado: resumen.totalLiquidado,
       fechaVencimiento: factura.fechaVencimiento,
     );
     if (estado == factura.estado) return false;

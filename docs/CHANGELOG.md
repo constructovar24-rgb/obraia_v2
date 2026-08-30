@@ -2,6 +2,14 @@
 
 ## No publicado
 
+### Crédito de cliente
+
+- Añadido el agregado económico derivado por familia FAC/RECT con pendiente, liquidado, crédito generado, dispuesto y disponible normalizados a céntimos.
+- Incorporadas devoluciones y compensaciones inmutables, reversiones parciales auditables, Timeline en origen/destino y acciones desde la ficha de factura.
+- Las compensaciones solo vinculan familias del mismo cliente fiscal, liquidan la deuda destino sin crear cobros bancarios y respetan concurrencia transaccional.
+- Nuevos cobros, reversiones y cambios rectificativos quedan protegidos por el neto familiar y el crédito ya dispuesto.
+- Elevado el esquema a v22; migraciones 16–21 crean movimientos vacíos sin inventar crédito histórico y backup/restauración conserva sus relaciones.
+
 ### Facturas rectificativas por diferencias
 
 - Mostrados en cada ficha el documento padre inmediato y todas sus rectificativas hijas directas, con navegación, estado y efecto económico.

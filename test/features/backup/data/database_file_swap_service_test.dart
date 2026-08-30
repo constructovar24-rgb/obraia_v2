@@ -53,7 +53,7 @@ void main() {
       final result = await service.replace(
         activeDatabasePath: activeDatabase.path,
         preparedDatabasePath: preparedDatabase.path,
-        currentSchemaVersion: 21,
+        currentSchemaVersion: 22,
         closeActiveDatabase: lifecycle.close,
         openAndValidateActiveDatabase: lifecycle.openAndValidate,
       );
@@ -99,7 +99,7 @@ void main() {
           service.replace(
             activeDatabasePath: activeDatabase.path,
             preparedDatabasePath: preparedDatabase.path,
-            currentSchemaVersion: 21,
+            currentSchemaVersion: 22,
             closeActiveDatabase: lifecycle.close,
             openAndValidateActiveDatabase: lifecycle.openAndValidate,
             failureHook: (stage) async {
@@ -128,7 +128,7 @@ void main() {
         service.replace(
           activeDatabasePath: activeDatabase.path,
           preparedDatabasePath: preparedDatabase.path,
-          currentSchemaVersion: 21,
+          currentSchemaVersion: 22,
           closeActiveDatabase: lifecycle.close,
           openAndValidateActiveDatabase: lifecycle.openAndValidate,
         ),
@@ -151,7 +151,7 @@ void main() {
       service.replace(
         activeDatabasePath: activeDatabase.path,
         preparedDatabasePath: invalidPrepared.path,
-        currentSchemaVersion: 21,
+        currentSchemaVersion: 22,
         closeActiveDatabase: lifecycle.close,
         openAndValidateActiveDatabase: lifecycle.openAndValidate,
       ),
@@ -172,7 +172,7 @@ void main() {
         service.replace(
           activeDatabasePath: activeDatabase.path,
           preparedDatabasePath: preparedDatabase.path,
-          currentSchemaVersion: 21,
+          currentSchemaVersion: 22,
           closeActiveDatabase: lifecycle.close,
           openAndValidateActiveDatabase: lifecycle.openAndValidate,
           failureHook: (stage) async {

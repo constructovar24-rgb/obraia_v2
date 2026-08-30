@@ -189,6 +189,7 @@ const _expectedTables = <String>{
   'presupuestos',
   'proveedores',
   'timeline_events',
+  'movimientos_credito_cliente',
 };
 
 class _RollbackForTest implements Exception {

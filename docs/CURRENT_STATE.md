@@ -1,11 +1,11 @@
 # Estado actual de OBRA IA
 
-Fotografía verificada el **29 de agosto de 2026**. Debe actualizarse cuando cambien de forma relevante el producto, la arquitectura, la persistencia o las prioridades. No sustituye a Git, al código ni a las pruebas.
+Fotografía verificada el **30 de agosto de 2026**. Debe actualizarse cuando cambien de forma relevante el producto, la arquitectura, la persistencia o las prioridades. No sustituye a Git, al código ni a las pruebas.
 
 ## Base tecnológica
 
 - Flutter/Dart con Riverpod.
-- Drift sobre SQLite; 15 tablas y `schemaVersion` 21. Las conexiones activan claves foráneas.
+- Drift sobre SQLite; 16 tablas y `schemaVersion` 22. Las conexiones activan claves foráneas.
 - `pdf` y `printing` para generación documental.
 - Windows como plataforma prioritaria.
 - 171 archivos Dart en la auditoría de esta línea base.
@@ -34,18 +34,18 @@ Con análisis, pruebas y compilación Windows superados, Expedientes queda técn
 
 ## Fase actual
 
-La fase 1 está cerrada. Las restauraciones admiten los esquemas 16, 17, 18, 19, 20 y 21, comprobados con integridad, relaciones, documentos emitidos y conservación de importes. Se rechazan versiones anteriores o futuras. La aceptación manual Windows con datos ficticios confirmó crear una copia, modificar un cliente y restaurar correctamente el estado anterior. Las pruebas automatizadas nunca tocaron datos reales.
+La fase 1 está cerrada. Las restauraciones admiten los esquemas 16, 17, 18, 19, 20, 21 y 22, comprobados con integridad, relaciones, documentos emitidos, movimientos económicos y conservación de importes. Se rechazan versiones anteriores o futuras. La aceptación manual Windows con datos ficticios confirmó crear una copia, modificar un cliente y restaurar correctamente el estado anterior. Las pruebas automatizadas nunca tocaron datos reales.
 
-La fase 2 está en curso. Cliente → Expediente → Presupuesto → Factura → Cobro está consolidado técnicamente. La ficha permite aceptar de forma trazable un presupuesto en borrador y habilita entonces su facturación. Un presupuesto aceptado admite múltiples facturas parciales por porcentaje, importe o partidas/cantidades; los borradores reservan base y las emitidas la consumen. Las asignaciones trazan cada línea de factura hasta su partida y controlan en céntimos el facturado, reservado y pendiente. Al emitir se asigna `FAC-AAAA-NNNN` y se congelan cliente, empresa, presupuesto y expediente; la emisión exige nombre/NIF del cliente y nombre/CIF de la empresa para no crear documentos fiscales incompletos. Los cobros admiten parciales, múltiples movimientos y reversiones auditables sin sobrecobro. El núcleo rectificativo por diferencias conserva una cadena inmutable, efectos firmados, serie `RECT-AAAA-NNNN`, PDF exacto con SHA-256 y eventos Timeline; queda pendiente su aceptación manual y no incluye aún devoluciones ni compensaciones.
+La fase 2 está en curso. Cliente → Expediente → Presupuesto → Factura → Cobro está consolidado técnicamente. La ficha permite aceptar de forma trazable un presupuesto en borrador y habilita entonces su facturación. Un presupuesto aceptado admite múltiples facturas parciales por porcentaje, importe o partidas/cantidades; los borradores reservan base y las emitidas la consumen. Las asignaciones trazan cada línea de factura hasta su partida y controlan en céntimos el facturado, reservado y pendiente. Al emitir se asigna `FAC-AAAA-NNNN` y se congelan cliente, empresa, presupuesto y expediente; la emisión exige nombre/NIF del cliente y nombre/CIF de la empresa para no crear documentos fiscales incompletos. Los cobros admiten parciales, múltiples movimientos y reversiones auditables sin sobrecobro. El núcleo rectificativo por diferencias conserva una cadena inmutable, efectos firmados, serie `RECT-AAAA-NNNN`, PDF exacto con SHA-256 y eventos Timeline. El crédito derivado de cada familia documental puede devolverse o compensarse contra deuda del mismo cliente fiscal mediante movimientos inmutables y reversibles; las compensaciones liquidan sin crear cobros bancarios. Este incremento queda pendiente de aceptación manual y no cierra todavía la fase 2.
 
 ## Deuda y riesgos prioritarios
 
 1. La cobertura continúa siendo desigual y aún se concentra principalmente en Facturas; el primer tramo de Presupuestos ya cuenta con pruebas de persistencia y atomicidad.
 2. Persisten providers en `data/`, accesos de UI a `databaseProvider`, métodos heredados en `AppDatabase` y archivos grandes.
-3. Las rectificativas por diferencias requieren aceptación manual; siguen pendientes las modalidades futuras, devoluciones/compensaciones y la integración de Certificaciones con las asignaciones parciales.
+3. Las rectificativas y el crédito de cliente requieren aceptación manual; siguen pendientes las modalidades rectificativas futuras y la integración de Certificaciones con las asignaciones parciales.
 4. El ciclo económico completo y varias capacidades operativas aún no están consolidados de extremo a extremo.
 5. Aún no se han verificado un instalador, firma, actualización ni reversión para una distribución publicable en Windows.
 
 ## Próximo hito
 
-Validar manualmente las facturas rectificativas por diferencias, incluida su cadena, PDF histórico y saldo a favor, antes de ampliar el ciclo económico.
+Validar manualmente devoluciones, compensaciones, reversiones y protecciones frente a cambios posteriores de cobros/RECT con datos ficticios.
