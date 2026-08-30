@@ -246,6 +246,13 @@ void main() {
       (await database.facturasDao.obtenerRectificativasDe(primera)).single.id,
       segunda,
     );
+    final primeraReleida = (await database.facturasDao.obtenerPorId(primera))!;
+    final segundaReleida = (await database.facturasDao.obtenerPorId(segunda))!;
+    expect(
+      (await rectificativas.obtenerOriginal(primeraReleida))!.id,
+      original,
+    );
+    expect((await rectificativas.obtenerOriginal(segundaReleida))!.id, primera);
     expect(
       (await parciales.observarResumen('presupuesto').first).facturado,
       45,

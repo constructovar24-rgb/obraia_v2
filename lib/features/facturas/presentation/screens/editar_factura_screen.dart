@@ -44,67 +44,66 @@ class _VinculosRectificativa extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final repository = ref.read(rectificativaRepositoryProvider);
-    if (factura.esRectificativa) {
-      return FutureBuilder<(factura_domain.Factura?, SaldoRectificacion)>(
-        future: (() async => (
-          await repository.obtenerOriginal(factura),
-          await repository.calcularSaldo(factura),
-        ))(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) return const SizedBox.shrink();
-          final original = snapshot.data!.$1;
-          final saldo = snapshot.data!.$2;
-          return Card(
-            child: ListTile(
-              title: Text('Rectifica ${original?.codigo ?? '-'}'),
-              subtitle: Text(
-                saldo.saldoAFavor > 0
-                    ? 'Saldo a favor pendiente: ${saldo.saldoAFavor.toStringAsFixed(2)} €'
-                    : 'Efecto total: ${factura.efectoTotal.toStringAsFixed(2)} €',
-              ),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: original == null
-                  ? null
-                  : () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => EditarFacturaScreen(factura: original),
-                      ),
-                    ),
-            ),
-          );
-        },
-      );
-    }
-    return StreamBuilder<List<factura_domain.Factura>>(
-      stream: repository.observarRectificativasDe(factura.id),
-      builder: (context, snapshot) {
-        final rectificativas = snapshot.data ?? const [];
-        if (rectificativas.isEmpty) return const SizedBox.shrink();
-        return Card(
-          child: Column(
-            children: [
-              const ListTile(title: Text('Facturas rectificativas')),
-              ...rectificativas.map(
-                (rectificativa) => ListTile(
-                  title: Text(
-                    rectificativa.codigo.isEmpty
-                        ? 'Borrador RECT sin número'
-                        : rectificativa.codigo,
+    return Column(
+      children: [
+        if (factura.esRectificativa)
+          FutureBuilder<factura_domain.Factura?>(
+            future: repository.obtenerOriginal(factura),
+            builder: (context, snapshot) {
+              final padre = snapshot.data;
+              if (padre == null) return const SizedBox.shrink();
+              return Card(
+                child: ListTile(
+                  title: Text('Rectifica ${padre.codigo}'),
+                  subtitle: Text(
+                    'Estado: ${estadoFacturaToLabel(padre.estado)}\n'
+                    'Efecto de este documento: '
+                    '${factura.efectoTotal.toStringAsFixed(2)} €',
                   ),
-                  subtitle: Text(rectificativa.motivoRectificacion),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) =>
-                          EditarFacturaScreen(factura: rectificativa),
+                      builder: (_) => EditarFacturaScreen(factura: padre),
                     ),
                   ),
                 ),
-              ),
-            ],
+              );
+            },
           ),
-        );
-      },
+        StreamBuilder<List<factura_domain.Factura>>(
+          stream: repository.observarRectificativasDe(factura.id),
+          builder: (context, snapshot) {
+            final hijas = snapshot.data ?? const [];
+            if (hijas.isEmpty) return const SizedBox.shrink();
+            return Card(
+              child: Column(
+                children: [
+                  const ListTile(title: Text('Rectificativas directas')),
+                  ...hijas.map(
+                    (hija) => ListTile(
+                      title: Text(
+                        hija.codigo.isEmpty
+                            ? 'Borrador RECT sin número'
+                            : hija.codigo,
+                      ),
+                      subtitle: Text(
+                        'Estado: ${estadoFacturaToLabel(hija.estado)}\n'
+                        'Efecto: ${hija.efectoTotal.toStringAsFixed(2)} €',
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => EditarFacturaScreen(factura: hija),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 }

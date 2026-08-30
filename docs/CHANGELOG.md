@@ -4,6 +4,7 @@
 
 ### Facturas rectificativas por diferencias
 
+- Mostrados en cada ficha el documento padre inmediato y todas sus rectificativas hijas directas, con navegación, estado y efecto económico.
 - Permitida desde la ficha la creación de una nueva rectificativa sobre otra rectificativa emitida, conservando documento inmediato, raíz y efectos acumulados.
 - Corregida la emisión ordinaria para exigir y congelar nombre/NIF del cliente y nombre/CIF de la empresa, evitando que una factura nueva quede erróneamente inhabilitada para rectificar.
 - Incorporada la serie legal independiente `RECT-AAAA-NNNN`, asignada atómicamente al emitir.
