@@ -42,3 +42,4 @@ Este documento está preparado para registrar decisiones arquitectónicas, tecno
 - 2026-08-30: Devolución, compensación y sus reversiones son movimientos distintos de cobros y reversiones de cobro. Una compensación solo une familias del mismo cliente fiscal y liquida el destino sin movimiento bancario.
 - 2026-08-30: Toda disposición valida céntimos disponibles dentro de la misma transacción. Cobros, reversiones y cambios RECT se bloquean cuando dejarían crédito dispuesto sin respaldo.
 - 2026-08-30: Ningún movimiento económico confirmado se edita o elimina en el flujo ordinario; las correcciones se representan mediante reversiones vinculadas y parcialmente acumulables.
+- 2026-08-30: Selector y confirmación de compensaciones usan una única identidad fiscal conservadora: mismo cliente estructural y NIF histórico congelado, no vacío y coincidente tras normalizar formato. Una factura legacy sin NIF histórico no es elegible y no se modifica automáticamente.

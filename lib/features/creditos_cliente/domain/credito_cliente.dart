@@ -1,4 +1,17 @@
 import '../../facturas/domain/redondeo_monetario.dart';
+import '../../facturas/domain/factura.dart';
+
+bool facturasTienenMismaIdentidadFiscal(Factura origen, Factura destino) {
+  if (origen.clienteId != destino.clienteId) return false;
+  final nifOrigen = _normalizarIdentificadorFiscal(origen.clienteNifHistorico);
+  final nifDestino = _normalizarIdentificadorFiscal(
+    destino.clienteNifHistorico,
+  );
+  return nifOrigen.isNotEmpty && nifOrigen == nifDestino;
+}
+
+String _normalizarIdentificadorFiscal(String value) =>
+    value.trim().toUpperCase().replaceAll(RegExp('[^A-Z0-9]'), '');
 
 enum TipoMovimientoCreditoCliente {
   devolucion,

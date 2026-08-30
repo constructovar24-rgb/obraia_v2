@@ -9,6 +9,7 @@
 - Las compensaciones solo vinculan familias del mismo cliente fiscal, liquidan la deuda destino sin crear cobros bancarios y respetan concurrencia transaccional.
 - Nuevos cobros, reversiones y cambios rectificativos quedan protegidos por el neto familiar y el crédito ya dispuesto.
 - Elevado el esquema a v22; migraciones 16–21 crean movimientos vacíos sin inventar crédito histórico y backup/restauración conserva sus relaciones.
+- Corregido el selector de compensaciones para excluir facturas con NIF histórico diferente o incompleto usando la misma identidad fiscal que la validación final.
 
 ### Facturas rectificativas por diferencias
 

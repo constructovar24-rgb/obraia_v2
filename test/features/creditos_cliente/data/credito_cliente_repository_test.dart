@@ -35,6 +35,15 @@ void main() {
     await _factura(db, 'fac1', 'c1', 121);
     await _factura(db, 'fac2', 'c1', 80);
     await _factura(db, 'fac3', 'c2', 80);
+    await _factura(db, 'fac-incompleta', 'c1', 80, nifHistorico: '');
+    await _factura(
+      db,
+      'fac-nif-distinto',
+      'c1',
+      80,
+      nifHistorico: 'NIF-DISTINTO',
+    );
+    await _factura(db, 'fac-formato', 'c1', 80, nifHistorico: 'nif 1');
   });
   tearDown(() => db.close());
 
@@ -155,6 +164,36 @@ void main() {
       throwsA(isA<CreditoClienteException>()),
     );
   });
+
+  test(
+    'selector y confirmación comparten identidad fiscal conservadora',
+    () async {
+      final destinos = await creditos.obtenerFacturasDestinoElegibles('fac1');
+      final ids = destinos.map((destino) => destino.facturaRaizId).toSet();
+      expect(ids, containsAll(<String>{'fac2', 'fac-formato'}));
+      expect(ids, isNot(contains('fac3')));
+      expect(ids, isNot(contains('fac-incompleta')));
+      expect(ids, isNot(contains('fac-nif-distinto')));
+
+      await cobros.crearCobro(
+        facturaId: 'fac1',
+        fecha: DateTime.now(),
+        importe: 121,
+        metodoPago: 'Efectivo',
+      );
+      await _rect(db, 'rect-identidad', 'fac1', -20);
+      await expectLater(
+        creditos.compensar(
+          facturaRaizOrigenId: 'fac1',
+          facturaRaizDestinoId: 'fac-incompleta',
+          importe: 1,
+          fecha: DateTime.now(),
+          motivo: 'Intento inseguro',
+        ),
+        throwsA(isA<CreditoClienteException>()),
+      );
+    },
+  );
 
   test(
     'anulación de RECT incompatible con crédito dispuesto queda bloqueada',
@@ -374,8 +413,9 @@ Future<void> _factura(
   AppDatabase db,
   String id,
   String clienteId,
-  double total,
-) => db.facturasDao.insertarFactura(
+  double total, {
+  String? nifHistorico,
+}) => db.facturasDao.insertarFactura(
   FacturasCompanion.insert(
     id: id,
     clienteId: clienteId,
@@ -390,7 +430,9 @@ Future<void> _factura(
     numeroLegal: Value(id.hashCode.abs()),
     fechaEmision: Value(DateTime.now()),
     clienteNombreHistorico: const Value('Cliente'),
-    clienteNifHistorico: Value(clienteId == 'c1' ? 'NIF-1' : 'NIF-2'),
+    clienteNifHistorico: Value(
+      nifHistorico ?? (clienteId == 'c1' ? 'NIF-1' : 'NIF-2'),
+    ),
     empresaNombreHistorico: const Value('Empresa'),
     empresaCifHistorico: const Value('CIF'),
   ),

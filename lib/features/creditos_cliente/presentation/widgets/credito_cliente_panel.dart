@@ -192,7 +192,9 @@ class CreditoClientePanel extends ConsumerWidget {
     if (destinos.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('No hay facturas pendientes del mismo cliente fiscal.'),
+          content: Text(
+            'No existen facturas pendientes compatibles del mismo cliente fiscal.',
+          ),
         ),
       );
       return;

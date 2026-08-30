@@ -83,7 +83,7 @@ class CreditoClienteRepository {
       (f) =>
           !f.esRectificativa &&
           f.id != raizOrigen &&
-          f.clienteId == origen.clienteId &&
+          facturasTienenMismaIdentidadFiscal(origen, f) &&
           estadoFacturaEsEfectiva(f.estado),
     );
     final result = <CreditoClienteFamilia>[];
@@ -178,9 +178,7 @@ class CreditoClienteRepository {
         'Origen y destino deben ser distintos.',
       );
     }
-    if (origen.clienteId != destino.clienteId ||
-        origen.clienteNifHistorico.trim() !=
-            destino.clienteNifHistorico.trim()) {
+    if (!facturasTienenMismaIdentidadFiscal(origen, destino)) {
       throw const CreditoClienteException(
         'La compensación exige el mismo cliente fiscal.',
       );
