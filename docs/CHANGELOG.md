@@ -2,6 +2,13 @@
 
 ## No publicado
 
+### Cierre de Fase 2
+
+- Declarado cerrado el circuito Cliente → Expediente → Presupuesto → facturación total/parcial → emisión → cobros/reversiones → RECT/cancelación → crédito/devolución/compensación.
+- Consolidada la evidencia con 203 pruebas, análisis limpio, build Windows y aceptaciones manuales del flujo económico y documental.
+- Corregido el doble envío en la pantalla de reversión de cobro: durante una operación en curso el botón queda bloqueado y muestra estado de carga, evitando un segundo error después de una reversión ya confirmada.
+- Establecido como siguiente bloque el rediseño profesional global de la interfaz, antes de profundizar en la Fase 3.
+
 ### Cierre fiscal de emisión y cancelación
 
 - Las FAC ordinarias conservan el PDF definitivo exacto con SHA-256 y verificación de integridad, igual que las RECT.

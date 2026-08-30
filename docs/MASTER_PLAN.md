@@ -26,9 +26,13 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 
 **Objetivo:** consolidar el flujo comercial y financiero principal con trazabilidad y estados coherentes.
 
-**Estado:** en curso. Cliente → Expediente → Presupuesto → Factura → Cobro está consolidado técnicamente y validado con SQLite aislado. La facturación parcial admite porcentaje, importe y partidas/cantidades con reservas de borrador, acumulados y asignaciones trazables. Los cobros parciales y múltiples, el saldo exacto, el sobrecobro, los estados y las reversiones auditables conservan integridad transaccional y una política monetaria única de dos decimales. FAC y RECT conservan el PDF definitivo exacto con SHA-256; la emisión FAC registra Timeline transaccional y una FAC emitida solo se cancela mediante RECT por diferencias que neutraliza el neto familiar. El crédito familiar admite devoluciones, compensaciones y reversiones inmutables con protección transaccional. La modalidad rectificativa sustitutiva queda expresamente aplazada y no es requisito de salida de esta fase. Faltan la aceptación manual del cierre fiscal y repetir la auditoría formal.
+**Estado:** cerrada. El circuito Cliente → Expediente → Presupuesto → aceptación → facturación total/parcial → emisión → cobros/reversiones → RECT/cancelación → crédito/devolución/compensación está validado con SQLite aislado y aceptaciones manuales acumuladas. Relaciones, IVA, redondeo a céntimos, numeración concurrente, documentos congelados, PDF exacto con SHA-256, Timeline, estados económicos, rollback, backup y compatibilidad legacy conservan trazabilidad. La modalidad rectificativa sustitutiva queda expresamente aplazada y no es requisito de esta fase.
 
 **Criterio de salida:** pruebas automatizadas y validación manual con datos aislados recorren el ciclo completo; relaciones, transiciones, IVA, redondeos, documentos congelados, anulaciones y cobros mantienen importes y trazabilidad.
+
+**Cierre verificado:** 31 de agosto de 2026, con `schemaVersion` 22, 203 pruebas superadas, análisis limpio y compilación Windows debug reproducible.
+
+**Transición:** antes de entrar profundamente en la Fase 3 se realizará un bloque independiente de **rediseño profesional global de la interfaz**, sin mezclarlo con nuevas reglas económicas.
 
 ## Fase 3 — Gestión económica y rentabilidad por obra
 
