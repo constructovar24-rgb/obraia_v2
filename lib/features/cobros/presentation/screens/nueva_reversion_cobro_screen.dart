@@ -22,6 +22,7 @@ class _NuevaReversionCobroScreenState
   late final TextEditingController _importeController;
   final _motivoController = TextEditingController();
   DateTime _fecha = DateTime.now();
+  bool _guardando = false;
 
   @override
   void initState() {
@@ -39,7 +40,8 @@ class _NuevaReversionCobroScreenState
   }
 
   Future<void> _guardar() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (_guardando || !_formKey.currentState!.validate()) return;
+    setState(() => _guardando = true);
     final importe = double.parse(
       _importeController.text.trim().replaceAll(',', '.'),
     );
@@ -63,6 +65,8 @@ class _NuevaReversionCobroScreenState
       _mostrarError('El importe debe ser mayor que 0.');
     } on FacturaNoCobrableException {
       _mostrarError('El estado de la factura no permite la reversión.');
+    } finally {
+      if (mounted) setState(() => _guardando = false);
     }
   }
 
@@ -132,7 +136,8 @@ class _NuevaReversionCobroScreenState
             AppPrimaryButton(
               onPressed: _guardar,
               icon: Icons.undo,
-              label: 'Registrar reversión',
+              label: _guardando ? 'Registrando...' : 'Registrar reversión',
+              loading: _guardando,
             ),
           ],
         ),
