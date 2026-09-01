@@ -2,6 +2,13 @@
 
 ## No publicado
 
+### Rediseño profesional de interfaz — base desktop
+
+- Sustituida la cuadrícula inicial por un shell persistente con navegación funcional agrupada, cabecera contextual, búsqueda global, actividad y configuración.
+- Unificado el tema activo sobre Material 3 y los tokens de `core/ui`, con densidad y contraste orientados a Windows.
+- Integrados el dashboard real y Expedientes dentro del shell, con navegación compacta para ventanas reducidas y ficha de Obra organizada por secciones reutilizables.
+- Añadida cobertura widget de shell, navegación responsive, dashboard y patrones de Expediente; Fase 2 permanece cerrada y no se incorporan reglas de Fase 3.
+
 ### Cierre de Fase 2
 
 - Declarado cerrado el circuito Cliente → Expediente → Presupuesto → facturación total/parcial → emisión → cobros/reversiones → RECT/cancelación → crédito/devolución/compensación.

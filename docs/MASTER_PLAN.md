@@ -34,6 +34,8 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 
 **Transición:** antes de entrar profundamente en la Fase 3 se realizará un bloque independiente de **rediseño profesional global de la interfaz**, sin mezclarlo con nuevas reglas económicas.
 
+**Rediseño global — incremento 1:** implementada la base desktop con tema común, shell y navegación persistentes, dashboard real y Expediente/Obra como patrón maestro. Los siguientes incrementos extenderán el sistema por módulos, empezando por Clientes, sin reabrir la Fase 2 ni adelantar reglas de Fase 3.
+
 ## Fase 3 — Gestión económica y rentabilidad por obra
 
 **Objetivo:** ofrecer costes, ingresos, desviaciones, tesorería y margen fiables por expediente.

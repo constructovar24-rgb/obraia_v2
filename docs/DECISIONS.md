@@ -2,6 +2,12 @@
 
 Este documento está preparado para registrar decisiones arquitectónicas, tecnológicas y de producto del proyecto OBRA IA v3.
 
+## Interfaz y navegación
+
+- 2026-09-01: La interfaz prioriza Windows mediante un shell desktop persistente con barra lateral adaptable, cabecera de contexto y un navegador interno basado en `Navigator`; no se introduce GoRouter incidentalmente.
+- 2026-09-01: `core/ui` es la fuente activa de tema, color, tipografía y espaciado. Las pantallas se migrarán por incrementos y no mediante una reescritura global.
+- 2026-09-01: Expediente/Obra es el patrón maestro operativo. Los módulos sin vista global real pueden estar presentes en la navegación, pero deben dirigir al flujo existente o explicar su alcance sin inventar datos.
+
 ## Formato recomendado
 - Fecha
 - Contexto

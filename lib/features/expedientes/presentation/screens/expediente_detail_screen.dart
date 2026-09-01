@@ -30,6 +30,7 @@ import 'cliente_tab.dart';
 import 'datos_generales_screen.dart';
 import 'editar_expediente_screen.dart';
 import '../../../presupuestos/presentation/widgets/presupuestos_tab.dart';
+import '../widgets/expediente_workspace_tabs.dart';
 
 class ExpedienteDetailScreen extends ConsumerWidget {
   const ExpedienteDetailScreen({
@@ -44,18 +45,6 @@ class ExpedienteDetailScreen extends ConsumerWidget {
   final String codigo;
   final String nombre;
   final String? clienteNombre;
-
-  static const List<Tab> _tabs = [
-    Tab(text: 'Presupuestos'),
-    Tab(text: 'Compras'),
-    Tab(text: 'Certificaciones'),
-    Tab(text: 'Facturas'),
-    Tab(text: 'Documentos'),
-    Tab(text: 'Timeline'),
-    Tab(text: 'Cliente'),
-    Tab(text: 'Datos generales'),
-    // Tab(text: 'Notas'), // Oculta temporalmente hasta que deje de ser placeholder.
-  ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -110,7 +99,7 @@ class ExpedienteDetailScreen extends ConsumerWidget {
     }
 
     return DefaultTabController(
-      length: _tabs.length,
+      length: ExpedienteWorkspaceTabs.length,
       child: AppShortcutScope(
         onBack: () => Navigator.maybePop(context),
         child: Scaffold(
@@ -141,7 +130,7 @@ class ExpedienteDetailScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  const TabBar(isScrollable: true, tabs: _tabs),
+                  const ExpedienteWorkspaceTabs(),
                 ],
               ),
             ),

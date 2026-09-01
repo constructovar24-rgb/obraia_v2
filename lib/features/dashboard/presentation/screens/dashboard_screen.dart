@@ -30,7 +30,10 @@ import '../../data/dashboard_repository.dart';
 import '../../domain/dashboard_resumen.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
-  const DashboardScreen({super.key});
+  const DashboardScreen({super.key, this.embedded = false, this.summaryStream});
+
+  final bool embedded;
+  final Stream<DashboardResumen>? summaryStream;
 
   @override
   ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
@@ -42,8 +45,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    final repository = ref.read(dashboardRepositoryProvider);
-    _stream = repository.observarResumen();
+    _stream =
+        widget.summaryStream ??
+        ref.read(dashboardRepositoryProvider).observarResumen();
   }
 
   String _saludo() {
@@ -281,7 +285,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       onBack: () => Navigator.maybePop(context),
       onNew: _abrirNuevoExpediente,
       child: Scaffold(
-        appBar: const AppPageHeader(title: 'Dashboard', showBackButton: true),
+        appBar: widget.embedded
+            ? null
+            : const AppPageHeader(title: 'Dashboard', showBackButton: true),
         body: StreamBuilder<DashboardResumen>(
           stream: _stream,
           builder: (context, snapshot) {
@@ -1081,9 +1087,8 @@ class _FacturaSelectionSheet extends StatelessWidget {
 
                     final facturas = (snapshot.data ?? const [])
                         .where(
-                          (factura) => estadoFacturaAdmiteNuevosCobros(
-                            factura.estado,
-                          ),
+                          (factura) =>
+                              estadoFacturaAdmiteNuevosCobros(factura.estado),
                         )
                         .toList();
 

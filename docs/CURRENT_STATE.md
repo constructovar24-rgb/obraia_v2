@@ -1,6 +1,6 @@
 # Estado actual de OBRA IA
 
-Fotografía verificada el **31 de agosto de 2026**. Debe actualizarse cuando cambien de forma relevante el producto, la arquitectura, la persistencia o las prioridades. No sustituye a Git, al código ni a las pruebas.
+Fotografía verificada el **1 de septiembre de 2026**. Debe actualizarse cuando cambien de forma relevante el producto, la arquitectura, la persistencia o las prioridades. No sustituye a Git, al código ni a las pruebas.
 
 ## Base tecnológica
 
@@ -21,7 +21,7 @@ La navegación real usa `MaterialApp`, `Navigator` y `MaterialPageRoute`. GoRout
 - La edición principal de Expedientes permite cambiar código, nombre y cliente, o quitarlo, preservando los demás campos.
 - El guardado y su evento único de Timeline son atómicos; ficha y listado se actualizan mediante streams.
 - 8 pruebas específicas de Expedientes superadas sobre SQLite en memoria.
-- Suite completa: 203 pruebas superadas.
+- Suite completa: 208 pruebas superadas.
 - `flutter analyze --no-pub`: sin incidencias.
 - `git diff --check`: sin errores en el cierre funcional; los avisos existentes corresponden a finales de línea de registradores generados.
 - Toolchain Windows instalada y validada: Flutter 3.47.1 stable, Dart 3.13.1, Visual Studio Community 2026 18.9.2 y Windows SDK 10.0.26100.0.
@@ -40,14 +40,18 @@ La fase 2 está cerrada. Cliente → Expediente → Presupuesto → aceptación 
 
 Las aceptaciones manuales acumuladas confirmaron presupuestos aceptados y facturación parcial, la cadena real `FAC-2026-0004 → RECT-2026-0001 → RECT-2026-0002`, crédito de 121,00 € con devolución de 50,00 € y saldo de 71,00 €, exclusión de destinos fiscalmente incompatibles, y `FAC-2026-0006` con cobros de 500,00 € + 710,00 €, estado cobrada y reversión posterior de 710,00 € que dejó 500,00 € cobrados y 710,00 € pendientes. La incidencia visual de doble activación detectada durante esta última aceptación quedó corregida y cubierta por prueba widget.
 
+## Rediseño profesional de interfaz
+
+El primer incremento está implementado sobre una arquitectura desktop persistente: barra lateral agrupada y adaptable, cabecera de contexto, búsqueda global, actividad y configuración permanecen disponibles al cambiar de módulo. Inicio usa el dashboard real; Expedientes dispone de listado embebido, estados vacíos y ficha operativa por secciones. El tema activo se ha unificado sobre `core/ui` y el contenido se compacta para ventanas reducidas. Compras, Certificaciones y Documentos se anuncian en la navegación sin inventar datos y continúan operándose desde cada expediente. Cinco pruebas widget nuevas elevan la suite completa a 208.
+
 ## Deuda y riesgos prioritarios
 
 1. La cobertura continúa siendo desigual y aún se concentra principalmente en Facturas; el primer tramo de Presupuestos ya cuenta con pruebas de persistencia y atomicidad.
-2. Persisten providers en `data/`, accesos de UI a `databaseProvider`, métodos heredados en `AppDatabase` y archivos grandes.
+2. Persisten providers en `data/`, accesos de UI a `databaseProvider` fuera de las pantallas rediseñadas, métodos heredados en `AppDatabase` y archivos grandes.
 3. Las rectificativas sustitutivas y la integración de Certificaciones con las asignaciones parciales quedan aplazadas y no forman parte del alcance cerrado de Fase 2.
 4. Compras, proveedores, certificaciones, costes y rentabilidad se consolidarán en fases posteriores.
 5. Aún no se han verificado un instalador, firma, actualización ni reversión para una distribución publicable en Windows.
 
 ## Próximo hito
 
-Iniciar un **rediseño profesional global de la interfaz** como bloque independiente antes de entrar profundamente en la Fase 3. No iniciar todavía cambios económicos de Fase 3 como parte de ese rediseño.
+Continuar el rediseño con **Clientes y sus formularios/ficha** como segundo incremento visual, consolidando cabeceras, acciones y acceso mediante providers. No iniciar todavía cambios económicos de Fase 3.

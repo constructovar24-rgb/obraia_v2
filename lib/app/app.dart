@@ -12,6 +12,8 @@ class ObraIAApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'OBRA IA',
       theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.light,
       home: const HomeScreen(),
     );
   }

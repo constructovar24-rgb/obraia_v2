@@ -11,7 +11,6 @@ import '../../../../core/widgets/app_loading.dart';
 import '../../../../core/widgets/app_page_header.dart';
 import '../../../../core/widgets/app_primary_button.dart';
 import '../../../../core/widgets/confirm_dialog.dart';
-import '../../../../database/database_provider.dart';
 import '../../data/expediente_repository.dart';
 import '../../domain/expediente.dart' as expediente_domain;
 import 'expediente_detail_screen.dart';
@@ -38,10 +37,12 @@ class ExpedientesScreen extends ConsumerStatefulWidget {
     super.key,
     this.mostrarArchivados = false,
     this.initialFilter = const ExpedientesInitialFilter.todos(),
+    this.embedded = false,
   });
 
   final bool mostrarArchivados;
   final ExpedientesInitialFilter initialFilter;
+  final bool embedded;
 
   @override
   ConsumerState<ExpedientesScreen> createState() => _ExpedientesScreenState();
@@ -56,8 +57,7 @@ class _ExpedientesScreenState extends ConsumerState<ExpedientesScreen> {
   @override
   void initState() {
     super.initState();
-    debugPrint('******** INIT EXPEDIENTES ********');
-    _repository = ExpedienteRepository(ref.read(databaseProvider));
+    _repository = ref.read(expedienteRepositoryProvider);
     if (widget.mostrarArchivados) {
       _expedientesStream = _repository.observarExpedientesArchivados();
       return;
@@ -83,18 +83,14 @@ class _ExpedientesScreenState extends ConsumerState<ExpedientesScreen> {
   void _abrirNuevoExpediente() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => const NuevoExpedienteScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const NuevoExpedienteScreen()),
     );
   }
 
   void _abrirExpedientesArchivados() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => const ExpedientesArchivadosScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const ExpedientesArchivadosScreen()),
     );
   }
 
@@ -116,14 +112,12 @@ class _ExpedientesScreenState extends ConsumerState<ExpedientesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('******** BUILD EXPEDIENTES ********');
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = AppTypography.textTheme(colorScheme);
     final esArchivados = widget.mostrarArchivados;
     final esSinActividad =
         !esArchivados &&
-        widget.initialFilter.type ==
-            ExpedientesInitialFilterType.sinActividad;
+        widget.initialFilter.type == ExpedientesInitialFilterType.sinActividad;
 
     return AppShortcutScope(
       onBack: () => Navigator.maybePop(context),
@@ -132,36 +126,34 @@ class _ExpedientesScreenState extends ConsumerState<ExpedientesScreen> {
       },
       onNew: esArchivados ? null : _abrirNuevoExpediente,
       child: Scaffold(
-        appBar: AppPageHeader(
-          title: esArchivados
-              ? 'Expedientes archivados'
-              : esSinActividad
-              ? 'Expedientes sin actividad'
-              : 'Expedientes',
-          showBackButton: true,
-          actions: esArchivados
-              ? const []
-              : [
-                  AppPageHeaderAction(
-                    icon: Icons.archive_outlined,
-                    tooltip: 'Ver archivados',
-                    onPressed: _abrirExpedientesArchivados,
-                  ),
-                ],
-        ),
+        appBar: widget.embedded
+            ? null
+            : AppPageHeader(
+                title: esArchivados
+                    ? 'Expedientes archivados'
+                    : esSinActividad
+                    ? 'Expedientes sin actividad'
+                    : 'Expedientes',
+                showBackButton: true,
+                actions: esArchivados
+                    ? const []
+                    : [
+                        AppPageHeaderAction(
+                          icon: Icons.archive_outlined,
+                          tooltip: 'Ver archivados',
+                          onPressed: _abrirExpedientesArchivados,
+                        ),
+                      ],
+              ),
         body: StreamBuilder<List<expediente_domain.Expediente>>(
           stream: _expedientesStream,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return AppErrorState(
-                message: 'ERROR:\n\n${snapshot.error}',
-              );
+              return AppErrorState(message: 'ERROR:\n\n${snapshot.error}');
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const AppLoading(
-                message: 'Cargando expedientes...',
-              );
+              return const AppLoading(message: 'Cargando expedientes...');
             }
 
             final expedientes = snapshot.data ?? [];
@@ -171,7 +163,8 @@ class _ExpedientesScreenState extends ConsumerState<ExpedientesScreen> {
                 : expedientes.where((expediente) {
                     final codigo = expediente.codigo.toLowerCase();
                     final nombre = expediente.nombre.toLowerCase();
-                    final cliente = (expediente.clienteNombre ?? '').toLowerCase();
+                    final cliente = (expediente.clienteNombre ?? '')
+                        .toLowerCase();
 
                     return codigo.contains(query) ||
                         nombre.contains(query) ||
@@ -181,7 +174,9 @@ class _ExpedientesScreenState extends ConsumerState<ExpedientesScreen> {
             return LayoutBuilder(
               builder: (context, constraints) {
                 final isWide = constraints.maxWidth >= 900;
-                final horizontalPadding = isWide ? AppSpacing.xl : AppSpacing.md;
+                final horizontalPadding = isWide
+                    ? AppSpacing.xl
+                    : AppSpacing.md;
 
                 return Center(
                   child: ConstrainedBox(
@@ -305,34 +300,36 @@ class _ExpedientesScreenState extends ConsumerState<ExpedientesScreen> {
                             ),
                             child: expedientesFiltrados.isEmpty
                                 ? query.isEmpty
-                                    ? AppEmptyState(
-                                        icon: esArchivados
-                                            ? Icons.archive_outlined
-                                            : Icons.folder_outlined,
-                                        title: esArchivados
-                                            ? 'Todavía no hay expedientes archivados'
-                                            : esSinActividad
-                                            ? 'No hay expedientes sin actividad'
-                                            : 'Todavía no hay expedientes',
-                                        message: esArchivados
-                                            ? 'Los expedientes archivados aparecerán aquí para poder revisarlos o restaurarlos.'
-                                            : esSinActividad
-                                            ? 'Todos los expedientes activos tienen eventos en los últimos 60 días.'
-                                            : 'Crea el primero para empezar a trabajar.',
-                                        actionLabel: esArchivados || esSinActividad
-                                            ? null
-                                            : 'Nuevo expediente',
-                                        onAction: esArchivados || esSinActividad
-                                            ? null
-                                            : _abrirNuevoExpediente,
-                                      )
-                                    : AppEmptyState(
-                                        icon: Icons.search_off,
-                                        title:
-                                            'No hay expedientes que coincidan',
-                                        message:
-                                            'Prueba con otro código, nombre o cliente.',
-                                      )
+                                      ? AppEmptyState(
+                                          icon: esArchivados
+                                              ? Icons.archive_outlined
+                                              : Icons.folder_outlined,
+                                          title: esArchivados
+                                              ? 'Todavía no hay expedientes archivados'
+                                              : esSinActividad
+                                              ? 'No hay expedientes sin actividad'
+                                              : 'Todavía no hay expedientes',
+                                          message: esArchivados
+                                              ? 'Los expedientes archivados aparecerán aquí para poder revisarlos o restaurarlos.'
+                                              : esSinActividad
+                                              ? 'Todos los expedientes activos tienen eventos en los últimos 60 días.'
+                                              : 'Crea el primero para empezar a trabajar.',
+                                          actionLabel:
+                                              esArchivados || esSinActividad
+                                              ? null
+                                              : 'Nuevo expediente',
+                                          onAction:
+                                              esArchivados || esSinActividad
+                                              ? null
+                                              : _abrirNuevoExpediente,
+                                        )
+                                      : AppEmptyState(
+                                          icon: Icons.search_off,
+                                          title:
+                                              'No hay expedientes que coincidan',
+                                          message:
+                                              'Prueba con otro código, nombre o cliente.',
+                                        )
                                 : ListView.separated(
                                     itemCount: expedientesFiltrados.length,
                                     separatorBuilder: (context, index) =>
@@ -344,8 +341,7 @@ class _ExpedientesScreenState extends ConsumerState<ExpedientesScreen> {
                                       return AppCard(
                                         padding: EdgeInsets.zero,
                                         child: ListTile(
-                                          contentPadding:
-                                              const EdgeInsets.all(
+                                          contentPadding: const EdgeInsets.all(
                                             AppSpacing.md,
                                           ),
                                           leading: CircleAvatar(
@@ -368,7 +364,8 @@ class _ExpedientesScreenState extends ConsumerState<ExpedientesScreen> {
                                               top: AppSpacing.xs,
                                             ),
                                             child: Text(
-                                              expediente.clienteNombre
+                                              expediente
+                                                          .clienteNombre
                                                           ?.isNotEmpty ==
                                                       true
                                                   ? '${expediente.codigo} · ${expediente.clienteNombre}'
@@ -385,7 +382,8 @@ class _ExpedientesScreenState extends ConsumerState<ExpedientesScreen> {
                                                       tooltip:
                                                           'Restaurar expediente',
                                                       icon: const Icon(
-                                                        Icons.unarchive_outlined,
+                                                        Icons
+                                                            .unarchive_outlined,
                                                       ),
                                                       onPressed: () {
                                                         _restaurarExpediente(
@@ -398,21 +396,19 @@ class _ExpedientesScreenState extends ConsumerState<ExpedientesScreen> {
                                                     ),
                                                   ],
                                                 )
-                                              : const Icon(
-                                                  Icons.chevron_right,
-                                                ),
+                                              : const Icon(Icons.chevron_right),
                                           onTap: () {
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                 builder: (_) =>
                                                     ExpedienteDetailScreen(
-                                                  id: expediente.id,
-                                                  codigo: expediente.codigo,
-                                                  nombre: expediente.nombre,
-                                                  clienteNombre:
-                                                      expediente.clienteNombre,
-                                                ),
+                                                      id: expediente.id,
+                                                      codigo: expediente.codigo,
+                                                      nombre: expediente.nombre,
+                                                      clienteNombre: expediente
+                                                          .clienteNombre,
+                                                    ),
                                               ),
                                             );
                                           },
