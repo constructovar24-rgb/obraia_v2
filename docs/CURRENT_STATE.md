@@ -46,6 +46,8 @@ El primer incremento está implementado sobre una arquitectura desktop persisten
 
 Clientes es el segundo módulo migrado al patrón profesional. Dispone de listado desktop denso, búsqueda inmediata, estados de carga/error/vacío, ficha adaptable con datos de contacto y expedientes relacionados, alta y edición mediante un formulario compartido, prevención de doble guardado y eliminación confirmada. Desde la ficha se abre cada expediente dentro del shell y se puede iniciar un expediente nuevo con el cliente preseleccionado. La UI de Clientes consume providers de presentación y no accede directamente a la base de datos. Cuatro pruebas widget específicas elevan la suite completa a 212. Fase 2 permanece cerrada y Fase 3 no ha comenzado.
 
+Presupuestos es el tercer módulo migrado al patrón profesional. Su vista global muestra todos los documentos con búsqueda, filtros por estados existentes, contexto de expediente/cliente y lectura densa de base, IVA y total. La ficha conserva las líneas, aceptación, PDF, eliminación protegida y el resumen validado de facturación parcial, añadiendo navegación directa a Expediente y Cliente. Tres pruebas widget elevan la suite a 215 sin cambiar reglas económicas. Fase 2 sigue cerrada y Fase 3 no ha comenzado.
+
 ## Deuda y riesgos prioritarios
 
 1. La cobertura continúa siendo desigual y aún se concentra principalmente en Facturas; el primer tramo de Presupuestos ya cuenta con pruebas de persistencia y atomicidad.
@@ -56,4 +58,4 @@ Clientes es el segundo módulo migrado al patrón profesional. Dispone de listad
 
 ## Próximo hito
 
-Continuar el rediseño profesional con el siguiente módulo visual priorizado, sin iniciar todavía cambios económicos de Fase 3.
+Continuar el rediseño profesional con el siguiente módulo visual priorizado, sin iniciar cambios económicos de Fase 3.

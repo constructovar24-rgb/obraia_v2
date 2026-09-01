@@ -8,10 +8,7 @@ import '../../../../core/widgets/app_section.dart';
 import '../providers/presupuesto_providers.dart';
 
 class NuevoPresupuestoScreen extends ConsumerStatefulWidget {
-  const NuevoPresupuestoScreen({
-    super.key,
-    required this.expedienteId,
-  });
+  const NuevoPresupuestoScreen({super.key, required this.expedienteId});
 
   final String expedienteId;
 
@@ -35,6 +32,7 @@ class _NuevoPresupuestoScreenState
   final _importeTotalController = TextEditingController();
   late DateTime _fechaSeleccionada;
   String _estadoSeleccionado = 'Borrador';
+  bool _guardando = false;
 
   @override
   void initState() {
@@ -83,9 +81,7 @@ class _NuevoPresupuestoScreenState
         Navigator.maybePop(context);
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Nuevo presupuesto'),
-        ),
+        appBar: AppBar(title: const Text('Nuevo presupuesto')),
         body: Padding(
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Form(
@@ -109,8 +105,8 @@ class _NuevoPresupuestoScreenState
                         onTap: _seleccionarFecha,
                         validator: (value) =>
                             (value == null || value.trim().isEmpty)
-                                ? 'La fecha es obligatoria'
-                                : null,
+                            ? 'La fecha es obligatoria'
+                            : null,
                       ),
                       const SizedBox(height: AppSpacing.lg),
                       TextFormField(
@@ -136,7 +132,9 @@ class _NuevoPresupuestoScreenState
                             return null;
                           }
 
-                          final parsed = double.tryParse(raw.replaceAll(',', '.'));
+                          final parsed = double.tryParse(
+                            raw.replaceAll(',', '.'),
+                          );
                           if (parsed == null) {
                             return 'Introduce un importe decimal válido';
                           }
@@ -147,9 +145,7 @@ class _NuevoPresupuestoScreenState
                       const SizedBox(height: AppSpacing.lg),
                       DropdownButtonFormField<String>(
                         initialValue: _estadoSeleccionado,
-                        decoration: const InputDecoration(
-                          labelText: 'Estado',
-                        ),
+                        decoration: const InputDecoration(labelText: 'Estado'),
                         items: _estados
                             .map(
                               (estado) => DropdownMenuItem<String>(
@@ -167,34 +163,50 @@ class _NuevoPresupuestoScreenState
                       ),
                       const SizedBox(height: AppSpacing.xl),
                       AppPrimaryButton(
-                        onPressed: () async {
-                          if (!_formKey.currentState!.validate()) {
-                            return;
-                          }
+                        loading: _guardando,
+                        onPressed: _guardando
+                            ? null
+                            : () async {
+                                if (!_formKey.currentState!.validate()) {
+                                  return;
+                                }
 
-                          final repository = ref.read(presupuestoRepositoryProvider);
-                          final fecha = DateTime(
-                            _fechaSeleccionada.year,
-                            _fechaSeleccionada.month,
-                            _fechaSeleccionada.day,
-                          );
-                          final importeRaw = _importeTotalController.text.trim();
-                          final importeTotal = importeRaw.isEmpty
-                              ? 0.0
-                              : (double.tryParse(importeRaw.replaceAll(',', '.')) ??
-                                  0.0);
+                                setState(() => _guardando = true);
+                                final repository = ref.read(
+                                  presupuestoRepositoryProvider,
+                                );
+                                final fecha = DateTime(
+                                  _fechaSeleccionada.year,
+                                  _fechaSeleccionada.month,
+                                  _fechaSeleccionada.day,
+                                );
+                                final importeRaw = _importeTotalController.text
+                                    .trim();
+                                final importeTotal = importeRaw.isEmpty
+                                    ? 0.0
+                                    : (double.tryParse(
+                                            importeRaw.replaceAll(',', '.'),
+                                          ) ??
+                                          0.0);
 
-                          await repository.crearPresupuesto(
-                            expedienteId: widget.expedienteId,
-                            fecha: fecha,
-                            descripcion: _descripcionController.text.trim(),
-                            importeTotal: importeTotal,
-                            estado: _estadoSeleccionado,
-                          );
-
-                          if (!context.mounted) return;
-                          Navigator.of(context).pop();
-                        },
+                                try {
+                                  await repository.crearPresupuesto(
+                                    expedienteId: widget.expedienteId,
+                                    fecha: fecha,
+                                    descripcion: _descripcionController.text
+                                        .trim(),
+                                    importeTotal: importeTotal,
+                                    estado: _estadoSeleccionado,
+                                  );
+                                  if (context.mounted) {
+                                    Navigator.of(context).pop();
+                                  }
+                                } finally {
+                                  if (mounted) {
+                                    setState(() => _guardando = false);
+                                  }
+                                }
+                              },
                         icon: Icons.save,
                         label: 'Guardar',
                       ),

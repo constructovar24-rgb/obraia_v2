@@ -18,6 +18,9 @@ import '../../../facturas/presentation/providers/facturacion_parcial_providers.d
 import '../../../facturas/presentation/screens/nueva_factura_parcial_screen.dart';
 import '../../../facturas/presentation/screens/editar_factura_screen.dart';
 import '../../../expedientes/data/expediente_repository.dart';
+import '../../../expedientes/presentation/screens/expediente_detail_screen.dart';
+import '../../../clientes/presentation/providers/cliente_providers.dart';
+import '../../../clientes/presentation/screens/cliente_detail_screen.dart';
 import '../../domain/linea_presupuesto.dart' as linea_domain;
 import '../../domain/presupuesto.dart' as presupuesto_domain;
 import '../../domain/estado_presupuesto.dart';
@@ -130,6 +133,9 @@ class PresupuestoDetailScreen extends ConsumerWidget {
               final expediente = ref
                   .watch(expedienteProvider(presupuesto.expedienteId))
                   .value;
+              final cliente = expediente?.clienteId == null
+                  ? null
+                  : ref.watch(clienteProvider(expediente!.clienteId!)).value;
 
               return EntitySummaryCard(
                 title: presupuesto.codigo,
@@ -142,14 +148,40 @@ class PresupuestoDetailScreen extends ConsumerWidget {
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   if (expediente != null)
-                    Text(
-                      'Expediente: ${expediente.codigo}',
-                      style: Theme.of(context).textTheme.bodyMedium,
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton.icon(
+                        key: const ValueKey('presupuesto-open-expediente'),
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ExpedienteDetailScreen(
+                              id: expediente.id,
+                              codigo: expediente.codigo,
+                              nombre: expediente.nombre,
+                              clienteNombre: expediente.clienteNombre,
+                            ),
+                          ),
+                        ),
+                        icon: const Icon(Icons.folder_outlined, size: 18),
+                        label: Text('Expediente: ${expediente.codigo}'),
+                      ),
                     ),
-                  if (expediente?.clienteNombre?.isNotEmpty ?? false)
-                    Text(
-                      'Cliente: ${expediente!.clienteNombre}',
-                      style: Theme.of(context).textTheme.bodyMedium,
+                  if (cliente != null)
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton.icon(
+                        key: const ValueKey('presupuesto-open-cliente'),
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                ClienteDetailScreen(cliente: cliente),
+                          ),
+                        ),
+                        icon: const Icon(Icons.person_outline, size: 18),
+                        label: Text('Cliente: ${expediente!.clienteNombre}'),
+                      ),
                     ),
                   Text(
                     'Subtotal (€): ${_formatearImporte(presupuesto.importeTotal)}',

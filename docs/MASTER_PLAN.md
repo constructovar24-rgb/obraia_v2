@@ -38,6 +38,8 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 
 **Rediseño global — incremento 2:** Clientes queda migrado al patrón desktop profesional con listado denso y buscable, ficha central con contacto y expedientes, formulario compartido de alta/edición, eliminación segura y navegación Cliente → Expediente integrada en el shell. Fase 2 sigue cerrada y Fase 3 continúa sin comenzar.
 
+**Rediseño global — incremento 3:** Presupuestos queda integrado como módulo global desktop con búsqueda, filtros, lectura económica densa y navegación a Cliente/Expediente. El detalle reutiliza sin reinterpretar líneas, aceptación, PDF y facturación parcial validados en Fase 2. Fase 3 continúa sin comenzar.
+
 ## Fase 3 — Gestión económica y rentabilidad por obra
 
 **Objetivo:** ofrecer costes, ingresos, desviaciones, tesorería y margen fiables por expediente.

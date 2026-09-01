@@ -95,6 +95,7 @@ class _LineaPresupuestoFormState extends State<LineaPresupuestoForm> {
   late final TextEditingController _cantidadController;
   late final TextEditingController _precioUnitarioController;
   late final TextEditingController _unidadController;
+  bool _submitting = false;
 
   @override
   void initState() {
@@ -206,20 +207,34 @@ class _LineaPresupuestoFormState extends State<LineaPresupuestoForm> {
             SizedBox(
               width: double.infinity,
               child: FilledButton.icon(
-                onPressed: () async {
-                  if (!_formKey.currentState!.validate()) {
-                    return;
-                  }
-
-                  await widget.onSubmit(
-                    _conceptoController.text.trim(),
-                    _parseDecimal(_cantidadController.text.trim()),
-                    _unidadController.text.trim(),
-                    _parseDecimal(_precioUnitarioController.text.trim()),
-                  );
-                },
-                icon: const Icon(Icons.save),
-                label: Text(widget.submitLabel),
+                onPressed: _submitting
+                    ? null
+                    : () async {
+                        if (!_formKey.currentState!.validate()) {
+                          return;
+                        }
+                        setState(() => _submitting = true);
+                        try {
+                          await widget.onSubmit(
+                            _conceptoController.text.trim(),
+                            _parseDecimal(_cantidadController.text.trim()),
+                            _unidadController.text.trim(),
+                            _parseDecimal(
+                              _precioUnitarioController.text.trim(),
+                            ),
+                          );
+                        } finally {
+                          if (mounted) setState(() => _submitting = false);
+                        }
+                      },
+                icon: _submitting
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.save),
+                label: Text(_submitting ? 'Guardando…' : widget.submitLabel),
               ),
             ),
             if (widget.footer != null) ...[

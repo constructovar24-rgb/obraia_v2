@@ -2,6 +2,13 @@
 
 ## No publicado
 
+### Rediseño profesional de Presupuestos
+
+- Convertida la entrada global en un listado desktop denso con búsqueda, filtros por estado, contexto de obra/cliente y base, IVA y total.
+- Integrada la ficha con accesos directos a Expediente y Cliente, conservando líneas, aceptación, PDF y acciones por estado.
+- Conservada sin cambios la lógica validada de facturación parcial, reservas, importes emitidos y pendiente disponible.
+- Añadida cobertura widget para vacío responsive, búsqueda/filtros, importes y disponibilidad de apertura del detalle.
+
 ### Rediseño profesional de Clientes
 
 - Implantado un listado desktop denso con búsqueda inmediata, contador y estados de carga, error y vacío.
