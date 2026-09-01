@@ -2,6 +2,14 @@
 
 ## No publicado
 
+### Rediseño profesional de Clientes
+
+- Implantado un listado desktop denso con búsqueda inmediata, contador y estados de carga, error y vacío.
+- Convertida la ficha en el centro del cliente, con resumen, contacto y expedientes/obras relacionados.
+- Añadidos acceso directo Cliente → Expediente y alta de expediente con el cliente preseleccionado.
+- Unificados alta y edición en un formulario adaptable con validación, feedback y prevención de doble envío.
+- Añadida confirmación informativa antes del borrado lógico y trasladados los providers de Clientes a presentación.
+
 ### Rediseño profesional de interfaz — base desktop
 
 - Sustituida la cuadrícula inicial por un shell persistente con navegación funcional agrupada, cabecera contextual, búsqueda global, actividad y configuración.

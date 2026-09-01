@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/shortcuts/app_shortcuts.dart';
-import '../../../../database/database_provider.dart';
-import '../../../clientes/data/cliente_repository.dart';
 import '../../../clientes/domain/cliente.dart';
+import '../../../clientes/presentation/providers/cliente_providers.dart';
 import '../../data/expediente_repository.dart';
 
 class NuevoExpedienteScreen extends ConsumerStatefulWidget {
-  const NuevoExpedienteScreen({super.key});
+  const NuevoExpedienteScreen({super.key, this.clienteInicial});
+
+  final Cliente? clienteInicial;
 
   @override
   ConsumerState<NuevoExpedienteScreen> createState() =>
@@ -24,6 +25,16 @@ class _NuevoExpedienteScreenState
   String? _clienteSeleccionadoNombre;
 
   @override
+  void initState() {
+    super.initState();
+    final cliente = widget.clienteInicial;
+    _clienteSeleccionadoId = cliente?.id;
+    _clienteSeleccionadoNombre = cliente == null
+        ? null
+        : '${cliente.nombre} ${cliente.apellidos}'.trim();
+  }
+
+  @override
   void dispose() {
     _codigoController.dispose();
     _nombreController.dispose();
@@ -32,7 +43,7 @@ class _NuevoExpedienteScreenState
 
   @override
   Widget build(BuildContext context) {
-    final clienteRepository = ClienteRepository(ref.read(databaseProvider));
+    final clienteRepository = ref.read(clienteRepositoryProvider);
 
     return AppShortcutScope(
       onBack: () {
@@ -126,7 +137,8 @@ class _NuevoExpedienteScreenState
                                 fechaModificacion: DateTime.now(),
                               ),
                             );
-                            _clienteSeleccionadoNombre = cliente.nombre;
+                            _clienteSeleccionadoNombre =
+                                '${cliente.nombre} ${cliente.apellidos}'.trim();
                           }
                         });
                       },

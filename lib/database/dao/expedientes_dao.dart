@@ -24,6 +24,38 @@ class ExpedientesDao extends DatabaseAccessor<AppDatabase>
     );
   }
 
+  Stream<List<expediente_domain.Expediente>> observarPorCliente(
+    String clienteId,
+  ) {
+    final table = attachedDatabase.expedientes;
+    final clientes = attachedDatabase.clientes;
+    final query =
+        select(table).join([
+            leftOuterJoin(clientes, clientes.id.equalsExp(table.clienteId)),
+          ])
+          ..where(
+            table.eliminado.equals(false) & table.clienteId.equals(clienteId),
+          )
+          ..orderBy([OrderingTerm.desc(table.fechaCreacion)]);
+
+    return query.watch().map(
+      (rows) => rows.map((row) {
+        final expediente = row.readTable(table);
+        final cliente = row.readTableOrNull(clientes);
+        return expediente_domain.Expediente(
+          id: expediente.id,
+          codigo: expediente.codigo,
+          nombre: expediente.nombre,
+          estadoCiclo: expediente_domain.expedienteEstadoCicloFromDbValue(
+            expediente.estado,
+          ),
+          clienteId: expediente.clienteId,
+          clienteNombre: _nombreCompletoCliente(cliente),
+        );
+      }).toList(),
+    );
+  }
+
   Future<expediente_domain.Expediente?> obtenerExpediente(String id) async {
     return observarExpediente(id).first;
   }

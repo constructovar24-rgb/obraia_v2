@@ -44,6 +44,8 @@ Las aceptaciones manuales acumuladas confirmaron presupuestos aceptados y factur
 
 El primer incremento está implementado sobre una arquitectura desktop persistente: barra lateral agrupada y adaptable, cabecera de contexto, búsqueda global, actividad y configuración permanecen disponibles al cambiar de módulo. Inicio usa el dashboard real; Expedientes dispone de listado embebido, estados vacíos y ficha operativa por secciones. El tema activo se ha unificado sobre `core/ui` y el contenido se compacta para ventanas reducidas. Compras, Certificaciones y Documentos se anuncian en la navegación sin inventar datos y continúan operándose desde cada expediente. Cinco pruebas widget nuevas elevan la suite completa a 208.
 
+Clientes es el segundo módulo migrado al patrón profesional. Dispone de listado desktop denso, búsqueda inmediata, estados de carga/error/vacío, ficha adaptable con datos de contacto y expedientes relacionados, alta y edición mediante un formulario compartido, prevención de doble guardado y eliminación confirmada. Desde la ficha se abre cada expediente dentro del shell y se puede iniciar un expediente nuevo con el cliente preseleccionado. La UI de Clientes consume providers de presentación y no accede directamente a la base de datos. Cuatro pruebas widget específicas elevan la suite completa a 212. Fase 2 permanece cerrada y Fase 3 no ha comenzado.
+
 ## Deuda y riesgos prioritarios
 
 1. La cobertura continúa siendo desigual y aún se concentra principalmente en Facturas; el primer tramo de Presupuestos ya cuenta con pruebas de persistencia y atomicidad.
@@ -54,4 +56,4 @@ El primer incremento está implementado sobre una arquitectura desktop persisten
 
 ## Próximo hito
 
-Continuar el rediseño con **Clientes y sus formularios/ficha** como segundo incremento visual, consolidando cabeceras, acciones y acceso mediante providers. No iniciar todavía cambios económicos de Fase 3.
+Continuar el rediseño profesional con el siguiente módulo visual priorizado, sin iniciar todavía cambios económicos de Fase 3.

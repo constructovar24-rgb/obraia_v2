@@ -7,6 +7,8 @@ Este documento está preparado para registrar decisiones arquitectónicas, tecno
 - 2026-09-01: La interfaz prioriza Windows mediante un shell desktop persistente con barra lateral adaptable, cabecera de contexto y un navegador interno basado en `Navigator`; no se introduce GoRouter incidentalmente.
 - 2026-09-01: `core/ui` es la fuente activa de tema, color, tipografía y espaciado. Las pantallas se migrarán por incrementos y no mediante una reescritura global.
 - 2026-09-01: Expediente/Obra es el patrón maestro operativo. Los módulos sin vista global real pueden estar presentes en la navegación, pero deben dirigir al flujo existente o explicar su alcance sin inventar datos.
+- 2026-09-01: Clientes es el segundo patrón desktop profesional. Su ficha concentra identificación, contacto y expedientes reales; alta y edición comparten formulario, la UI consume providers de presentación y la navegación Cliente → Expediente continúa sobre `Navigator` dentro del shell.
+- 2026-09-01: El borrado de Clientes conserva la eliminación lógica existente y exige confirmación informativa, incluyendo la presencia de expedientes asociados, sin alterar reglas de persistencia.
 
 ## Formato recomendado
 - Fecha

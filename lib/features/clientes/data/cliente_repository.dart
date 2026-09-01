@@ -6,9 +6,10 @@ import 'package:obraia_v2/features/clientes/domain/cliente.dart'
     as cliente_domain;
 import 'package:uuid/uuid.dart';
 
+// Compatibilidad para consumidores todavía no migrados. Las pantallas de
+// Clientes usan exclusivamente los providers de presentation/providers.
 final clienteRepositoryProvider = Provider<ClienteRepository>((ref) {
-  final database = ref.read(databaseProvider);
-  return ClienteRepository(database);
+  return ClienteRepository(ref.read(databaseProvider));
 });
 
 class ClienteRepository {

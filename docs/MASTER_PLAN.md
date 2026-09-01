@@ -36,6 +36,8 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 
 **Rediseño global — incremento 1:** implementada la base desktop con tema común, shell y navegación persistentes, dashboard real y Expediente/Obra como patrón maestro. Los siguientes incrementos extenderán el sistema por módulos, empezando por Clientes, sin reabrir la Fase 2 ni adelantar reglas de Fase 3.
 
+**Rediseño global — incremento 2:** Clientes queda migrado al patrón desktop profesional con listado denso y buscable, ficha central con contacto y expedientes, formulario compartido de alta/edición, eliminación segura y navegación Cliente → Expediente integrada en el shell. Fase 2 sigue cerrada y Fase 3 continúa sin comenzar.
+
 ## Fase 3 — Gestión económica y rentabilidad por obra
 
 **Objetivo:** ofrecer costes, ingresos, desviaciones, tesorería y margen fiables por expediente.

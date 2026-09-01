@@ -90,6 +90,12 @@ class ExpedienteRepository {
     return database.expedientesDao.observarExpedientesArchivados();
   }
 
+  Stream<List<expediente_domain.Expediente>> observarPorCliente(
+    String clienteId,
+  ) {
+    return database.expedientesDao.observarPorCliente(clienteId);
+  }
+
   Stream<List<expediente_domain.Expediente>> observarSinActividad() {
     return Stream<List<expediente_domain.Expediente>>.multi((controller) {
       List<expediente_domain.Expediente>? expedientes;
