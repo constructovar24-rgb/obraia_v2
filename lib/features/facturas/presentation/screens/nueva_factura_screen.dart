@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/shortcuts/app_shortcuts.dart';
-import '../../../../database/database_provider.dart';
-import '../../../clientes/data/cliente_repository.dart';
 import '../../../clientes/domain/cliente.dart';
+import '../../../clientes/presentation/providers/cliente_providers.dart';
 import '../../data/factura_repository.dart';
 import '../../domain/estado_factura.dart';
 
@@ -26,6 +25,7 @@ class _NuevaFacturaScreenState extends ConsumerState<NuevaFacturaScreen> {
     const Duration(days: 30),
   );
   String? _clienteSeleccionadoId;
+  bool _guardando = false;
 
   @override
   void initState() {
@@ -91,16 +91,14 @@ class _NuevaFacturaScreenState extends ConsumerState<NuevaFacturaScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final clienteRepository = ClienteRepository(ref.read(databaseProvider));
+    final clienteRepository = ref.watch(clienteRepositoryProvider);
 
     return AppShortcutScope(
       onBack: () {
         Navigator.maybePop(context);
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Nueva factura'),
-        ),
+        appBar: AppBar(title: const Text('Nueva factura')),
         body: Padding(
           padding: const EdgeInsets.all(20),
           child: Form(
@@ -114,9 +112,7 @@ class _NuevaFacturaScreenState extends ConsumerState<NuevaFacturaScreen> {
 
                     return DropdownButtonFormField<String>(
                       initialValue: _clienteSeleccionadoId,
-                      decoration: const InputDecoration(
-                        labelText: 'Cliente',
-                      ),
+                      decoration: const InputDecoration(labelText: 'Cliente'),
                       items: clientes
                           .map(
                             (cliente) => DropdownMenuItem<String>(
@@ -171,16 +167,12 @@ class _NuevaFacturaScreenState extends ConsumerState<NuevaFacturaScreen> {
                 TextFormField(
                   initialValue: estadoFacturaToLabel(EstadoFactura.borrador),
                   readOnly: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Estado',
-                  ),
+                  decoration: const InputDecoration(labelText: 'Estado'),
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _observacionesController,
-                  decoration: const InputDecoration(
-                    labelText: 'Observaciones',
-                  ),
+                  decoration: const InputDecoration(labelText: 'Observaciones'),
                   minLines: 3,
                   maxLines: 5,
                 ),
@@ -188,36 +180,55 @@ class _NuevaFacturaScreenState extends ConsumerState<NuevaFacturaScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton.icon(
-                    onPressed: () async {
-                      if (!_formKey.currentState!.validate()) {
-                        return;
-                      }
+                    onPressed: _guardando
+                        ? null
+                        : () async {
+                            if (!_formKey.currentState!.validate()) {
+                              return;
+                            }
 
-                      final repository = ref.read(facturaRepositoryProvider);
-                      final fecha = DateTime(
-                        _fechaSeleccionada.year,
-                        _fechaSeleccionada.month,
-                        _fechaSeleccionada.day,
-                      );
-                      final fechaVencimiento = DateTime(
-                        _fechaVencimientoSeleccionada.year,
-                        _fechaVencimientoSeleccionada.month,
-                        _fechaVencimientoSeleccionada.day,
-                      );
+                            setState(() => _guardando = true);
 
-                      await repository.crearFactura(
-                        clienteId: _clienteSeleccionadoId!,
-                        fecha: fecha,
-                        fechaVencimiento: fechaVencimiento,
-                        estado: EstadoFactura.borrador,
-                        observaciones: _observacionesController.text.trim(),
-                      );
+                            final repository = ref.read(
+                              facturaRepositoryProvider,
+                            );
+                            final fecha = DateTime(
+                              _fechaSeleccionada.year,
+                              _fechaSeleccionada.month,
+                              _fechaSeleccionada.day,
+                            );
+                            final fechaVencimiento = DateTime(
+                              _fechaVencimientoSeleccionada.year,
+                              _fechaVencimientoSeleccionada.month,
+                              _fechaVencimientoSeleccionada.day,
+                            );
 
-                      if (!context.mounted) return;
-                      Navigator.of(context).pop();
-                    },
-                    icon: const Icon(Icons.save),
-                    label: const Text('Guardar'),
+                            try {
+                              await repository.crearFactura(
+                                clienteId: _clienteSeleccionadoId!,
+                                fecha: fecha,
+                                fechaVencimiento: fechaVencimiento,
+                                estado: EstadoFactura.borrador,
+                                observaciones: _observacionesController.text
+                                    .trim(),
+                              );
+
+                              if (context.mounted) {
+                                Navigator.of(context).pop();
+                              }
+                            } finally {
+                              if (mounted) {
+                                setState(() => _guardando = false);
+                              }
+                            }
+                          },
+                    icon: _guardando
+                        ? const SizedBox.square(
+                            dimension: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.save),
+                    label: Text(_guardando ? 'Guardando...' : 'Guardar'),
                   ),
                 ),
               ],

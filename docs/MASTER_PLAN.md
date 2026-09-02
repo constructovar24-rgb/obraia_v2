@@ -40,6 +40,8 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 
 **Rediseño global — incremento 3:** Presupuestos queda integrado como módulo global desktop con búsqueda, filtros, lectura económica densa y navegación a Cliente/Expediente. El detalle reutiliza sin reinterpretar líneas, aceptación, PDF y facturación parcial validados en Fase 2. Fase 3 continúa sin comenzar.
 
+**Rediseño global — incremento 4:** Facturas queda integrada como módulo financiero-documental desktop con listado FAC/RECT denso, búsqueda y filtros, vencimiento y situación de cobro. Su ficha conserva la lógica validada de emisión congelada, PDF, cobros, cadenas RECT y crédito, añadiendo trazabilidad operativa y protección visual frente a dobles acciones. Fase 3 continúa sin comenzar.
+
 ## Fase 3 — Gestión económica y rentabilidad por obra
 
 **Objetivo:** ofrecer costes, ingresos, desviaciones, tesorería y margen fiables por expediente.

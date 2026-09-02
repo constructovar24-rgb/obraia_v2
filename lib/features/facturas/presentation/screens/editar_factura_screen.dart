@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/formatters/date_formatter.dart';
 import '../../../../core/shortcuts/app_shortcuts.dart';
 import '../../../../core/widgets/app_page_header.dart';
 import '../../../../core/widgets/entity_summary_card.dart';
@@ -10,12 +11,17 @@ import '../../../../core/widgets/money_text.dart';
 import '../../../../core/widgets/status_chip.dart';
 import '../../../clientes/data/cliente_repository.dart';
 import '../../../clientes/domain/cliente.dart';
+import '../../../clientes/presentation/screens/cliente_detail_screen.dart';
 import '../../../cobros/data/cobro_repository.dart';
 import '../../../cobros/domain/cobro.dart' as cobro_domain;
 import '../../../cobros/domain/factura_estado_economico.dart';
 import '../../../cobros/presentation/screens/cobros_screen.dart';
 import '../../../cobros/presentation/screens/nuevo_cobro_screen.dart';
 import '../../../creditos_cliente/presentation/widgets/credito_cliente_panel.dart';
+import '../../../expedientes/data/expediente_repository.dart';
+import '../../../expedientes/presentation/screens/expediente_detail_screen.dart';
+import '../../../presupuestos/presentation/providers/presupuesto_providers.dart';
+import '../../../presupuestos/presentation/screens/presupuesto_detail_screen.dart';
 import '../../data/factura_linea_repository.dart';
 import '../../data/factura_repository.dart';
 import '../../domain/estado_factura.dart';
@@ -109,6 +115,79 @@ class _VinculosRectificativa extends ConsumerWidget {
   }
 }
 
+class _CobrosFacturaResumen extends ConsumerWidget {
+  const _CobrosFacturaResumen({required this.facturaId});
+
+  final String facturaId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return StreamBuilder<List<cobro_domain.Cobro>>(
+      stream: ref.read(cobroRepositoryProvider).observarPorFactura(facturaId),
+      builder: (context, snapshot) {
+        final cobros = snapshot.data ?? const [];
+        if (snapshot.hasError || cobros.isEmpty) return const SizedBox.shrink();
+        var saldo = 0.0;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SizedBox(height: 18),
+            const Divider(),
+            const SizedBox(height: 12),
+            Text(
+              'Movimientos de cobro',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 8),
+            ...cobros.map((cobro) {
+              saldo += cobro.importeNeto;
+              final saldoMovimiento = saldo;
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Row(
+                  children: [
+                    Icon(
+                      cobro.esReversion
+                          ? Icons.undo_outlined
+                          : Icons.payments_outlined,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        '${cobro.esReversion ? 'Reversión' : 'Cobro'} · '
+                        '${DateFormatter.formatDdMmYyyy(cobro.fecha)} · '
+                        '${cobro.metodoPago}',
+                      ),
+                    ),
+                    MoneyText(cobro.importeNeto),
+                    const SizedBox(width: 18),
+                    SizedBox(
+                      width: 120,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            'Saldo',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                          MoneyText(saldoMovimiento, textAlign: TextAlign.end),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ],
+        );
+      },
+    );
+  }
+}
+
 class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _fechaController;
@@ -123,6 +202,7 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
   factura_domain.Factura? _facturaPersistida;
   bool? _tieneCobros;
   bool _esFacturaParcial = false;
+  bool _operacionEnCurso = false;
   late final StreamSubscription<List<factura_domain.Factura>>
   _facturasSubscription;
   late final StreamSubscription<List<cobro_domain.Cobro>> _cobrosSubscription;
@@ -151,6 +231,16 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
         estado: _estadoPersistido!,
         tieneCobros: _tieneCobros!,
       );
+
+  Future<void> _ejecutarProtegida(Future<void> Function() accion) async {
+    if (_operacionEnCurso) return;
+    setState(() => _operacionEnCurso = true);
+    try {
+      await accion();
+    } finally {
+      if (mounted) setState(() => _operacionEnCurso = false);
+    }
+  }
 
   @override
   void initState() {
@@ -544,6 +634,34 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
   }
 
   Future<void> _emitirFactura() async {
+    final confirmado = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(
+          _facturaActual.esRectificativa
+              ? 'Emitir factura rectificativa'
+              : 'Emitir factura',
+        ),
+        content: const Text(
+          'Al emitir se asignará la numeración legal y el documento quedará '
+          'congelado. Las correcciones posteriores se realizarán mediante '
+          'factura rectificativa.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Volver'),
+          ),
+          FilledButton.icon(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            icon: const Icon(Icons.lock_outline),
+            label: const Text('Emitir y congelar'),
+          ),
+        ],
+      ),
+    );
+    if (confirmado != true || !mounted) return;
+
     try {
       final repository = ref.read(facturaRepositoryProvider);
       if (_facturaActual.esRectificativa) {
@@ -669,6 +787,53 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
     );
   }
 
+  Future<void> _abrirCliente() async {
+    final cliente = await ref
+        .read(clienteRepositoryProvider)
+        .obtenerCliente(_facturaActual.clienteId);
+    if (!mounted || cliente == null) return;
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => ClienteDetailScreen(cliente: cliente)),
+    );
+  }
+
+  Future<void> _abrirExpediente() async {
+    final id = _facturaActual.expedienteOrigenIdHistorico.trim();
+    if (id.isEmpty) return;
+    final expediente = await ref
+        .read(expedienteRepositoryProvider)
+        .obtenerExpediente(id);
+    if (!mounted || expediente == null) return;
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ExpedienteDetailScreen(
+          id: expediente.id,
+          codigo: expediente.codigo,
+          nombre: expediente.nombre,
+          clienteNombre: expediente.clienteNombre,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _abrirPresupuesto() async {
+    final id = _facturaActual.presupuestoOrigenId?.trim();
+    if (id == null || id.isEmpty) return;
+    final presupuesto = await ref
+        .read(presupuestoRepositoryProvider)
+        .observarPresupuesto(id)
+        .first;
+    if (!mounted || presupuesto == null) return;
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PresupuestoDetailScreen(presupuesto: presupuesto),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final clienteRepository = ref.read(clienteRepositoryProvider);
@@ -679,10 +844,12 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
       },
       onSave: _puedeEditarVencimiento
           ? () {
-              _guardarCambios();
+              _ejecutarProtegida(_guardarCambios);
             }
           : null,
-      onDelete: _puedeEliminarFactura ? _confirmarEliminar : null,
+      onDelete: _puedeEliminarFactura
+          ? () => _ejecutarProtegida(_confirmarEliminar)
+          : null,
       child: Scaffold(
         appBar: AppPageHeader(
           showBackButton: true,
@@ -701,11 +868,11 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                 );
               },
             ),
-            if (_puedeEliminarFactura)
+            if (_puedeEliminarFactura && !_operacionEnCurso)
               AppPageHeaderAction(
                 icon: Icons.delete_outline,
                 tooltip: 'Eliminar factura',
-                onPressed: _confirmarEliminar,
+                onPressed: () => _ejecutarProtegida(_confirmarEliminar),
               ),
           ],
         ),
@@ -716,7 +883,11 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
             child: ListView(
               children: [
                 EntitySummaryCard(
-                  title: _facturaActual.codigo,
+                  title: _facturaActual.codigo.isEmpty
+                      ? (_facturaActual.esRectificativa
+                            ? 'RECT en borrador'
+                            : 'FAC en borrador')
+                      : _facturaActual.codigo,
                   subtitle: _facturaActual.clienteNombre.isNotEmpty
                       ? _facturaActual.clienteNombre
                       : 'Sin cliente',
@@ -734,6 +905,42 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                     label: estadoFacturaToLabel(_estadoSeleccionado),
                     type: _statusTypeFromEstadoFactura(_estadoSeleccionado),
                   ),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    OutlinedButton.icon(
+                      key: const Key('factura-open-cliente'),
+                      onPressed: _abrirCliente,
+                      icon: const Icon(Icons.person_outline),
+                      label: const Text('Abrir cliente'),
+                    ),
+                    if (_facturaActual.expedienteOrigenIdHistorico
+                        .trim()
+                        .isNotEmpty)
+                      OutlinedButton.icon(
+                        key: const Key('factura-open-expediente'),
+                        onPressed: _abrirExpediente,
+                        icon: const Icon(Icons.folder_open_outlined),
+                        label: const Text('Abrir expediente'),
+                      ),
+                    if (_facturaActual.presupuestoOrigenId?.trim().isNotEmpty ==
+                        true)
+                      OutlinedButton.icon(
+                        key: const Key('factura-open-presupuesto'),
+                        onPressed: _abrirPresupuesto,
+                        icon: const Icon(Icons.description_outlined),
+                        label: const Text('Abrir presupuesto'),
+                      ),
+                    if (_facturaActual.fechaEmision != null)
+                      const StatusChip(
+                        label: 'Documento emitido y congelado',
+                        type: StatusType.info,
+                        icon: Icons.lock_outline,
+                      ),
+                  ],
                 ),
                 const SizedBox(height: 20),
                 StreamBuilder<List<Cliente>>(
@@ -828,7 +1035,9 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton.icon(
-                      onPressed: _guardarCambios,
+                      onPressed: _operacionEnCurso
+                          ? null
+                          : () => _ejecutarProtegida(_guardarCambios),
                       icon: const Icon(Icons.save),
                       label: Text(
                         _puedeEditarDocumento
@@ -843,7 +1052,9 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton.icon(
-                      onPressed: _emitirFactura,
+                      onPressed: _operacionEnCurso
+                          ? null
+                          : () => _ejecutarProtegida(_emitirFactura),
                       icon: const Icon(Icons.send_outlined),
                       label: const Text('Emitir factura'),
                     ),
@@ -857,7 +1068,9 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
-                      onPressed: _anularFactura,
+                      onPressed: _operacionEnCurso
+                          ? null
+                          : () => _ejecutarProtegida(_anularFactura),
                       icon: const Icon(Icons.cancel_outlined),
                       label: const Text('Anular factura'),
                     ),
@@ -869,7 +1082,11 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
-                      onPressed: _cancelarMedianteRectificativa,
+                      onPressed: _operacionEnCurso
+                          ? null
+                          : () => _ejecutarProtegida(
+                              _cancelarMedianteRectificativa,
+                            ),
                       icon: const Icon(Icons.cancel_outlined),
                       label: const Text('Cancelar mediante rectificativa'),
                     ),
@@ -1039,6 +1256,7 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                           const Divider(),
                           const SizedBox(height: 12),
                           _buildResumenEconomico(total),
+                          _CobrosFacturaResumen(facturaId: _facturaActual.id),
                           const SizedBox(height: 18),
                           CreditoClientePanel(facturaId: _facturaActual.id),
                         ]);

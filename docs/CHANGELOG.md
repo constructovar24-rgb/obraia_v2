@@ -2,6 +2,14 @@
 
 ## No publicado
 
+### Rediseño profesional de Facturas
+
+- Convertido el listado global en una vista desktop densa con búsqueda, filtros documentales, diferenciación FAC/RECT y lectura conjunta de total, cobrado, pendiente y vencimiento.
+- Reforzada la ficha con trazabilidad hacia Cliente, Expediente y Presupuesto, documento emitido claramente congelado, confirmación de emisión y familia RECT navegable.
+- Integrados los movimientos de cobro y su saldo progresivo junto al resumen económico y al panel de crédito existente.
+- Eliminado el acceso directo a `databaseProvider` desde el alta de factura y añadida prevención de doble activación en guardados, emisión, cancelación y registro de cobros.
+- Añadida cobertura widget para vacío responsive, búsqueda, filtros FAC/RECT, vencimiento, importes y apertura.
+
 ### Rediseño profesional de Presupuestos
 
 - Convertida la entrada global en un listado desktop denso con búsqueda, filtros por estado, contexto de obra/cliente y base, IVA y total.

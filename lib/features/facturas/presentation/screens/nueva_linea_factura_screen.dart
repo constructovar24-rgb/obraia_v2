@@ -4,10 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/factura_linea_repository.dart';
 
 class NuevaLineaFacturaScreen extends ConsumerStatefulWidget {
-  const NuevaLineaFacturaScreen({
-    super.key,
-    required this.facturaId,
-  });
+  const NuevaLineaFacturaScreen({super.key, required this.facturaId});
 
   final String facturaId;
 
@@ -21,17 +18,9 @@ class _NuevaLineaFacturaScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Nueva linea'),
-      ),
+      appBar: AppBar(title: const Text('Nueva linea')),
       body: LineaFacturaForm(
-        onSubmit: (
-          descripcion,
-          cantidad,
-          unidad,
-          precioUnitario,
-          descuento,
-        ) async {
+        onSubmit: (descripcion, cantidad, unidad, precioUnitario, descuento) async {
           final repository = ref.read(facturaLineaRepositoryProvider);
 
           try {
@@ -92,7 +81,8 @@ class LineaFacturaForm extends StatefulWidget {
     String unidad,
     double precioUnitario,
     double descuento,
-  ) onSubmit;
+  )
+  onSubmit;
   final String initialDescripcion;
   final double? initialCantidad;
   final String initialUnidad;
@@ -112,11 +102,14 @@ class _LineaFacturaFormState extends State<LineaFacturaForm> {
   late final TextEditingController _unidadController;
   late final TextEditingController _precioUnitarioController;
   late final TextEditingController _descuentoController;
+  bool _guardando = false;
 
   @override
   void initState() {
     super.initState();
-    _descripcionController = TextEditingController(text: widget.initialDescripcion);
+    _descripcionController = TextEditingController(
+      text: widget.initialDescripcion,
+    );
     _cantidadController = TextEditingController(
       text: widget.initialCantidad != null
           ? _formatDecimal(widget.initialCantidad!)
@@ -171,9 +164,7 @@ class _LineaFacturaFormState extends State<LineaFacturaForm> {
           children: [
             TextFormField(
               controller: _descripcionController,
-              decoration: const InputDecoration(
-                labelText: 'Descripcion',
-              ),
+              decoration: const InputDecoration(labelText: 'Descripcion'),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return 'La descripcion es obligatoria';
@@ -187,9 +178,7 @@ class _LineaFacturaFormState extends State<LineaFacturaForm> {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              decoration: const InputDecoration(
-                labelText: 'Cantidad',
-              ),
+              decoration: const InputDecoration(labelText: 'Cantidad'),
               validator: (value) {
                 final raw = value?.trim() ?? '';
                 if (raw.isEmpty) {
@@ -206,9 +195,7 @@ class _LineaFacturaFormState extends State<LineaFacturaForm> {
             const SizedBox(height: 20),
             TextFormField(
               controller: _unidadController,
-              decoration: const InputDecoration(
-                labelText: 'Unidad',
-              ),
+              decoration: const InputDecoration(labelText: 'Unidad'),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return 'La unidad es obligatoria';
@@ -244,9 +231,7 @@ class _LineaFacturaFormState extends State<LineaFacturaForm> {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              decoration: const InputDecoration(
-                labelText: 'Descuento (%)',
-              ),
+              decoration: const InputDecoration(labelText: 'Descuento (%)'),
               validator: (value) {
                 final raw = value?.trim() ?? '';
                 if (raw.isEmpty) {
@@ -276,11 +261,29 @@ class _LineaFacturaFormState extends State<LineaFacturaForm> {
                       valueListenable: _descuentoController,
                       builder: (context, valueDescuento, childDescuento) {
                         final cantidad =
-                            double.tryParse(_cantidadController.text.trim().replaceAll(',', '.')) ?? 0;
+                            double.tryParse(
+                              _cantidadController.text.trim().replaceAll(
+                                ',',
+                                '.',
+                              ),
+                            ) ??
+                            0;
                         final precio =
-                            double.tryParse(_precioUnitarioController.text.trim().replaceAll(',', '.')) ?? 0;
+                            double.tryParse(
+                              _precioUnitarioController.text.trim().replaceAll(
+                                ',',
+                                '.',
+                              ),
+                            ) ??
+                            0;
                         final descuento =
-                            double.tryParse(_descuentoController.text.trim().replaceAll(',', '.')) ?? 0;
+                            double.tryParse(
+                              _descuentoController.text.trim().replaceAll(
+                                ',',
+                                '.',
+                              ),
+                            ) ??
+                            0;
                         final bruto = cantidad * precio;
                         final importe = bruto * ((100 - descuento) / 100);
 
@@ -301,23 +304,39 @@ class _LineaFacturaFormState extends State<LineaFacturaForm> {
             SizedBox(
               width: double.infinity,
               child: FilledButton.icon(
-                onPressed: () async {
-                  if (!_formKey.currentState!.validate()) {
-                    return;
-                  }
+                onPressed: _guardando
+                    ? null
+                    : () async {
+                        if (!_formKey.currentState!.validate()) {
+                          return;
+                        }
 
-                  await widget.onSubmit(
-                    _descripcionController.text.trim(),
-                    _parseDecimal(_cantidadController.text.trim()),
-                    _unidadController.text.trim(),
-                    _parseDecimal(_precioUnitarioController.text.trim()),
-                    _descuentoController.text.trim().isEmpty
-                        ? 0
-                        : _parseDecimal(_descuentoController.text.trim()),
-                  );
-                },
-                icon: const Icon(Icons.save),
-                label: Text(widget.submitLabel),
+                        setState(() => _guardando = true);
+                        try {
+                          await widget.onSubmit(
+                            _descripcionController.text.trim(),
+                            _parseDecimal(_cantidadController.text.trim()),
+                            _unidadController.text.trim(),
+                            _parseDecimal(
+                              _precioUnitarioController.text.trim(),
+                            ),
+                            _descuentoController.text.trim().isEmpty
+                                ? 0
+                                : _parseDecimal(
+                                    _descuentoController.text.trim(),
+                                  ),
+                          );
+                        } finally {
+                          if (mounted) setState(() => _guardando = false);
+                        }
+                      },
+                icon: _guardando
+                    ? const SizedBox.square(
+                        dimension: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.save),
+                label: Text(_guardando ? 'Guardando...' : widget.submitLabel),
               ),
             ),
             if (widget.footer != null) ...[

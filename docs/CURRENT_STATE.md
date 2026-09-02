@@ -48,6 +48,8 @@ Clientes es el segundo módulo migrado al patrón profesional. Dispone de listad
 
 Presupuestos es el tercer módulo migrado al patrón profesional. Su vista global muestra todos los documentos con búsqueda, filtros por estados existentes, contexto de expediente/cliente y lectura densa de base, IVA y total. La ficha conserva las líneas, aceptación, PDF, eliminación protegida y el resumen validado de facturación parcial, añadiendo navegación directa a Expediente y Cliente. Tres pruebas widget elevan la suite a 215 sin cambiar reglas económicas. Fase 2 sigue cerrada y Fase 3 no ha comenzado.
 
+Facturas es el cuarto módulo migrado al patrón profesional. El listado global diferencia FAC y RECT y reúne búsqueda, filtros, cliente, origen, fecha, vencimiento, total, cobrado, pendiente y estados documental/económico. La ficha presenta el documento emitido como congelado, mantiene líneas, PDF, familia rectificativa, crédito y acciones validadas, integra movimientos de cobro con saldo y permite navegar a Cliente, Expediente y Presupuesto. La emisión exige confirmación explícita y las operaciones sensibles tocadas evitan dobles activaciones. No se han modificado numeración, snapshots, PDF definitivo, reglas fiscales, cobros, rectificaciones ni crédito. Tres pruebas widget elevan la suite completa a 218. Fase 3 no ha comenzado.
+
 ## Deuda y riesgos prioritarios
 
 1. La cobertura continúa siendo desigual y aún se concentra principalmente en Facturas; el primer tramo de Presupuestos ya cuenta con pruebas de persistencia y atomicidad.

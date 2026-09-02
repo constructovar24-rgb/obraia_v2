@@ -27,6 +27,7 @@ class _NuevoCobroScreenState extends ConsumerState<NuevoCobroScreen> {
 
   DateTime _fechaSeleccionada = DateTime.now();
   String _metodoPagoSeleccionado = metodosPagoCobro.first;
+  bool _guardando = false;
 
   @override
   void initState() {
@@ -170,118 +171,130 @@ class _NuevoCobroScreenState extends ConsumerState<NuevoCobroScreen> {
                       ),
                       const SizedBox(height: AppSpacing.xl),
                       AppPrimaryButton(
-                        onPressed: () async {
-                          if (!_formKey.currentState!.validate()) {
-                            return;
-                          }
+                        onPressed: _guardando
+                            ? null
+                            : () async {
+                                if (!_formKey.currentState!.validate()) {
+                                  return;
+                                }
 
-                          final repository = ref.read(cobroRepositoryProvider);
-                          final fecha = DateTime(
-                            _fechaSeleccionada.year,
-                            _fechaSeleccionada.month,
-                            _fechaSeleccionada.day,
-                          );
-                          final importe =
-                              double.tryParse(
-                                _importeController.text.trim().replaceAll(
-                                  ',',
-                                  '.',
-                                ),
-                              ) ??
-                              0.0;
+                                setState(() => _guardando = true);
 
-                          try {
-                            await repository.crearCobro(
-                              facturaId: widget.facturaId,
-                              fecha: fecha,
-                              importe: importe,
-                              metodoPago: _metodoPagoSeleccionado,
-                              referencia: _referenciaController.text.trim(),
-                              observaciones: _observacionesController.text
-                                  .trim(),
-                            );
-                          } on ImporteCobroNoValidoException {
-                            if (!context.mounted) {
-                              return;
-                            }
+                                final repository = ref.read(
+                                  cobroRepositoryProvider,
+                                );
+                                final fecha = DateTime(
+                                  _fechaSeleccionada.year,
+                                  _fechaSeleccionada.month,
+                                  _fechaSeleccionada.day,
+                                );
+                                final importe =
+                                    double.tryParse(
+                                      _importeController.text.trim().replaceAll(
+                                        ',',
+                                        '.',
+                                      ),
+                                    ) ??
+                                    0.0;
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'El importe debe ser un número finito mayor que 0.',
-                                ),
-                              ),
-                            );
-                            return;
-                          } on CobroSuperaPendienteException {
-                            if (!context.mounted) {
-                              return;
-                            }
+                                try {
+                                  await repository.crearCobro(
+                                    facturaId: widget.facturaId,
+                                    fecha: fecha,
+                                    importe: importe,
+                                    metodoPago: _metodoPagoSeleccionado,
+                                    referencia: _referenciaController.text
+                                        .trim(),
+                                    observaciones: _observacionesController.text
+                                        .trim(),
+                                  );
+                                } on ImporteCobroNoValidoException {
+                                  if (!context.mounted) {
+                                    return;
+                                  }
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'El importe supera el pendiente de la factura.',
-                                ),
-                              ),
-                            );
-                            return;
-                          } on FacturaNoEncontradaException {
-                            if (!context.mounted) {
-                              return;
-                            }
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'El importe debe ser un número finito mayor que 0.',
+                                      ),
+                                    ),
+                                  );
+                                  return;
+                                } on CobroSuperaPendienteException {
+                                  if (!context.mounted) {
+                                    return;
+                                  }
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'No se ha encontrado la factura del cobro.',
-                                ),
-                              ),
-                            );
-                            return;
-                          } on FacturaNoCobrableException {
-                            if (!context.mounted) {
-                              return;
-                            }
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'El importe supera el pendiente de la factura.',
+                                      ),
+                                    ),
+                                  );
+                                  return;
+                                } on FacturaNoEncontradaException {
+                                  if (!context.mounted) {
+                                    return;
+                                  }
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'El estado de la factura no permite registrar nuevos cobros.',
-                                ),
-                              ),
-                            );
-                            return;
-                          } on FechaMovimientoCobroNoValidaException {
-                            if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'La fecha debe estar entre la fecha de la factura y hoy.',
-                                ),
-                              ),
-                            );
-                            return;
-                          } on MetodoPagoCobroNoValidoException {
-                            if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Método no válido. Para Otro, añade una descripción.',
-                                ),
-                              ),
-                            );
-                            return;
-                          }
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'No se ha encontrado la factura del cobro.',
+                                      ),
+                                    ),
+                                  );
+                                  return;
+                                } on FacturaNoCobrableException {
+                                  if (!context.mounted) {
+                                    return;
+                                  }
 
-                          if (!context.mounted) {
-                            return;
-                          }
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'El estado de la factura no permite registrar nuevos cobros.',
+                                      ),
+                                    ),
+                                  );
+                                  return;
+                                } on FechaMovimientoCobroNoValidaException {
+                                  if (!context.mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'La fecha debe estar entre la fecha de la factura y hoy.',
+                                      ),
+                                    ),
+                                  );
+                                  return;
+                                } on MetodoPagoCobroNoValidoException {
+                                  if (!context.mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Método no válido. Para Otro, añade una descripción.',
+                                      ),
+                                    ),
+                                  );
+                                  return;
+                                } finally {
+                                  if (mounted) {
+                                    setState(() => _guardando = false);
+                                  }
+                                }
 
-                          Navigator.of(context).pop();
-                        },
-                        icon: Icons.save,
-                        label: 'Guardar',
+                                if (!context.mounted) {
+                                  return;
+                                }
+
+                                Navigator.of(context).pop();
+                              },
+                        icon: _guardando ? null : Icons.save,
+                        label: _guardando ? 'Guardando...' : 'Guardar',
+                        loading: _guardando,
                       ),
                     ],
                   ),

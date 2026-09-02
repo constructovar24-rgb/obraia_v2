@@ -10,6 +10,7 @@ Este documento está preparado para registrar decisiones arquitectónicas, tecno
 - 2026-09-01: Clientes es el segundo patrón desktop profesional. Su ficha concentra identificación, contacto y expedientes reales; alta y edición comparten formulario, la UI consume providers de presentación y la navegación Cliente → Expediente continúa sobre `Navigator` dentro del shell.
 - 2026-09-01: El borrado de Clientes conserva la eliminación lógica existente y exige confirmación informativa, incluyendo la presencia de expedientes asociados, sin alterar reglas de persistencia.
 - 2026-09-01: Presupuestos es el tercer patrón desktop profesional. Presentation muestra base, IVA, total y facturación parcial exclusivamente desde valores y resúmenes existentes; no recalcula reservas, asignaciones ni disponibilidad con reglas nuevas.
+- 2026-09-02: Facturas es el cuarto patrón desktop profesional. La interfaz distingue estado documental y económico, y muestra importes, cobros, familia RECT y crédito solo desde repositorios y modelos existentes; la emisión conserva su transacción y añade confirmación visual sin reinterpretar reglas fiscales.
 
 ## Formato recomendado
 - Fecha
