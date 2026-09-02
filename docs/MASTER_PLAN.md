@@ -46,6 +46,8 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 
 **Rediseño global — incremento 6:** Proveedores queda integrado como directorio desktop profesional con búsqueda fiscal y de contacto, ficha adaptable, formulario compartido de alta/edición y eliminación lógica confirmada. No se inventan compras, actividad, métricas ni relaciones ausentes, y Fase 3 continúa sin comenzar.
 
+**Rediseño global — incremento 7:** Compras profesionaliza el apunte de gasto existente vinculado a una obra, con centro global, búsqueda/filtro, detalle, navegación real y formulario compartido. Se separa expresamente del futuro circuito Proveedor → Albarán → Obra → Factura recibida → Pago: no incorpora documentos, pagos, vencimientos, reparto multiobra ni automatización. Fase 3 continúa sin comenzar.
+
 ## Fase 3 — Gestión económica y rentabilidad por obra
 
 **Objetivo:** ofrecer costes, ingresos, desviaciones, tesorería y margen fiables por expediente.

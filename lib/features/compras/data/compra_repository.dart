@@ -31,7 +31,13 @@ class CompraRepository {
   }
 
   Stream<List<Compra>> observarCompras(String expedienteId) {
-    return _dao.observarPorExpediente(expedienteId).map(
+    return _dao
+        .observarPorExpediente(expedienteId)
+        .map((rows) => rows.map((row) => row.toDomain()).toList());
+  }
+
+  Stream<List<Compra>> observarTodas() {
+    return _dao.observarTodas().map(
       (rows) => rows.map((row) => row.toDomain()).toList(),
     );
   }

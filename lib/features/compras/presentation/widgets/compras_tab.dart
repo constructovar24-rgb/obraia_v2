@@ -9,14 +9,11 @@ import '../../../../core/widgets/app_error_state.dart';
 import '../../../../core/widgets/app_loading.dart';
 import '../../../../core/widgets/app_primary_button.dart';
 import '../providers/compra_providers.dart';
-import '../screens/editar_compra_screen.dart';
+import '../screens/compra_detail_screen.dart';
 import '../screens/nueva_compra_screen.dart';
 
 class ComprasTab extends ConsumerWidget {
-  const ComprasTab({
-    super.key,
-    required this.expedienteId,
-  });
+  const ComprasTab({super.key, required this.expedienteId});
 
   final String expedienteId;
 
@@ -40,9 +37,7 @@ class ComprasTab extends ConsumerWidget {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => NuevaCompraScreen(
-            expedienteId: expedienteId,
-          ),
+          builder: (_) => NuevaCompraScreen(expedienteId: expedienteId),
         ),
       );
     }
@@ -50,12 +45,8 @@ class ComprasTab extends ConsumerWidget {
     final comprasAsync = ref.watch(comprasProvider(expedienteId));
 
     return comprasAsync.when(
-      loading: () => const AppLoading(
-        message: 'Cargando compras...',
-      ),
-      error: (error, stackTrace) => AppErrorState(
-        message: 'ERROR:\n\n$error',
-      ),
+      loading: () => const AppLoading(message: 'Cargando compras...'),
+      error: (error, stackTrace) => AppErrorState(message: 'ERROR:\n\n$error'),
       data: (compras) {
         if (compras.isEmpty) {
           return AppEmptyState(
@@ -101,9 +92,8 @@ class ComprasTab extends ConsumerWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => EditarCompraScreen(
-                                compra: compra,
-                              ),
+                              builder: (_) =>
+                                  CompraDetailScreen(compra: compra),
                             ),
                           );
                         },

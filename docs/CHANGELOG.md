@@ -2,6 +2,14 @@
 
 ## No publicado
 
+### Rediseño profesional de Compras
+
+- Convertida la entrada global en un centro desktop de apuntes de gasto con búsqueda, filtro por estado registrado, obra, proveedor, fecha e importes reales.
+- Añadida una ficha profesional con navegación a Proveedor y Expediente, desglose de base, IVA y total, y aviso explícito sobre la ausencia de documento original y movimientos de pago.
+- Unificados alta y edición en un formulario responsive con validación, feedback y prevención de doble envío; la eliminación lógica exige confirmación.
+- Conservado el modelo existente: una compra pertenece a una obra y guarda proveedor/nombre histórico, fecha, factura opcional, concepto, importes, estado manual y observaciones.
+- No se han añadido albaranes, documentos, pagos, vencimientos, reparto multiobra, OCR, automatizaciones ni cambios de esquema.
+
 ### Rediseño profesional de Proveedores
 
 - Convertido el directorio global en un listado desktop denso con búsqueda por identidad fiscal, contacto y localidad, contador y estados de carga, error y vacío.

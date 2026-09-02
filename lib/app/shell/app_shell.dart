@@ -4,6 +4,7 @@ import '../../core/ui/app_spacing.dart';
 import '../../features/clientes/presentation/screens/clientes_screen.dart';
 import '../../features/cobros/presentation/screens/cobros_screen.dart';
 import '../../features/configuracion/presentation/screens/empresa_configuracion_screen.dart';
+import '../../features/compras/presentation/screens/compras_screen.dart';
 import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../../features/expedientes/presentation/screens/expedientes_screen.dart';
 import '../../features/facturas/presentation/screens/facturas_screen.dart';
@@ -88,6 +89,8 @@ class _AppShellState extends State<AppShell> {
         return const CobrosScreen.global();
       case AppSectionId.proveedores:
         return const ProveedoresScreen();
+      case AppSectionId.compras:
+        return const ComprasScreen();
       case AppSectionId.configuracion:
         return const EmpresaConfiguracionScreen();
       case AppSectionId.administracion:
@@ -95,7 +98,6 @@ class _AppShellState extends State<AppShell> {
           appBar: AppBar(title: const Text('Centro administrativo')),
           body: TimelinePage.global(),
         );
-      case AppSectionId.compras:
       case AppSectionId.certificaciones:
       case AppSectionId.documentos:
         return _ModuleAccessPage(section: section);
