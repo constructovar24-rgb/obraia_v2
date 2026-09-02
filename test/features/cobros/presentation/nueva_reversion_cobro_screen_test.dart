@@ -75,6 +75,11 @@ class _CobroRepositoryControlado extends CobroRepository {
   int llamadas = 0;
 
   @override
+  Future<double> obtenerImporteDisponibleParaReversion(String cobroId) async {
+    return 710;
+  }
+
+  @override
   Future<String> revertirCobro({
     required String cobroId,
     required DateTime fecha,

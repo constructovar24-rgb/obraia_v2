@@ -1314,6 +1314,7 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
                               facturaId: widget.factura.id,
                               facturaCodigo: _facturaActual.codigo,
                               facturaEstado: _estadoSeleccionado,
+                              facturaTotal: _facturaActual.total,
                             ),
                           ),
                         );

@@ -2,6 +2,14 @@
 
 ## No publicado
 
+### Rediseño profesional de Cobros
+
+- Convertida la entrada global del AppShell en un centro desktop de seguimiento por factura con búsqueda, filtros de situación, vencimiento, total, cobrado y pendiente.
+- Conservada la vista mensual utilizada por Dashboard y consolidado el detalle por factura con resumen económico y movimientos auditables diferenciando cobros y reversiones.
+- Mejoradas las pantallas de alta y reversión con contexto de factura, saldo pendiente, importe original, disponible para revertir y prevención de doble envío.
+- Expuesto desde el repositorio el importe disponible para reversión usando la misma regla validada, sin introducir cálculos económicos en presentación.
+- Añadida cobertura widget para vacío responsive, búsqueda, filtros, saldos, vencimiento y apertura de factura.
+
 ### Rediseño profesional de Facturas
 
 - Convertido el listado global en una vista desktop densa con búsqueda, filtros documentales, diferenciación FAC/RECT y lectura conjunta de total, cobrado, pendiente y vencimiento.

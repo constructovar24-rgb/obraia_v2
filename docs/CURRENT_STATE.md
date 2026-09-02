@@ -50,6 +50,8 @@ Presupuestos es el tercer módulo migrado al patrón profesional. Su vista globa
 
 Facturas es el cuarto módulo migrado al patrón profesional. El listado global diferencia FAC y RECT y reúne búsqueda, filtros, cliente, origen, fecha, vencimiento, total, cobrado, pendiente y estados documental/económico. La ficha presenta el documento emitido como congelado, mantiene líneas, PDF, familia rectificativa, crédito y acciones validadas, integra movimientos de cobro con saldo y permite navegar a Cliente, Expediente y Presupuesto. La emisión exige confirmación explícita y las operaciones sensibles tocadas evitan dobles activaciones. No se han modificado numeración, snapshots, PDF definitivo, reglas fiscales, cobros, rectificaciones ni crédito. Tres pruebas widget elevan la suite completa a 218. Fase 3 no ha comenzado.
 
+Cobros es el quinto módulo migrado al patrón profesional. Su entrada global funciona como centro de seguimiento por facturas emitidas, con búsqueda, filtros de pendiente/parcial/cobrada/vencida, cliente, expediente, vencimiento, total, cobrado y pendiente obtenidos del resumen económico validado. El detalle conserva los movimientos auditables y diferencia cobros y reversiones; alta y reversión muestran contexto económico real y bloquean dobles envíos. La vista mensual del Dashboard permanece disponible. Tres pruebas widget elevan la suite completa a 221 sin cambiar reglas, persistencia ni estados. Fase 3 no ha comenzado.
+
 ## Deuda y riesgos prioritarios
 
 1. La cobertura continúa siendo desigual y aún se concentra principalmente en Facturas; el primer tramo de Presupuestos ya cuenta con pruebas de persistencia y atomicidad.

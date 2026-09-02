@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/formatters/date_formatter.dart';
 import '../../../../core/ui/app_spacing.dart';
 import '../../../../core/widgets/app_primary_button.dart';
+import '../../../../core/widgets/money_text.dart';
+import '../../../../core/widgets/status_chip.dart';
 import '../../data/cobro_repository.dart';
 import '../../domain/cobro.dart';
 
@@ -23,6 +26,7 @@ class _NuevaReversionCobroScreenState
   final _motivoController = TextEditingController();
   DateTime _fecha = DateTime.now();
   bool _guardando = false;
+  double? _disponible;
 
   @override
   void initState() {
@@ -30,6 +34,18 @@ class _NuevaReversionCobroScreenState
     _importeController = TextEditingController(
       text: widget.cobro.importe.toStringAsFixed(2),
     );
+    _cargarDisponible();
+  }
+
+  Future<void> _cargarDisponible() async {
+    final disponible = await ref
+        .read(cobroRepositoryProvider)
+        .obtenerImporteDisponibleParaReversion(widget.cobro.id);
+    if (!mounted) return;
+    setState(() {
+      _disponible = disponible;
+      _importeController.text = disponible.toStringAsFixed(2);
+    });
   }
 
   @override
@@ -86,6 +102,47 @@ class _NuevaReversionCobroScreenState
         child: ListView(
           padding: const EdgeInsets.all(AppSpacing.md),
           children: [
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                child: Wrap(
+                  spacing: AppSpacing.xl,
+                  runSpacing: AppSpacing.sm,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    const StatusChip(
+                      label: 'Cobro confirmado',
+                      type: StatusType.success,
+                      icon: Icons.lock_outline,
+                    ),
+                    Text(DateFormatter.formatDdMmYyyy(widget.cobro.fecha)),
+                    Text(widget.cobro.metodoPago),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Importe original'),
+                        MoneyText(widget.cobro.importe),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Disponible para revertir'),
+                        _disponible == null
+                            ? const SizedBox.square(
+                                dimension: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : MoneyText(_disponible!),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.lg),
             TextFormField(
               controller: _importeController,
               keyboardType: const TextInputType.numberWithOptions(
@@ -93,6 +150,8 @@ class _NuevaReversionCobroScreenState
               ),
               decoration: const InputDecoration(
                 labelText: 'Importe a revertir',
+                helperText:
+                    'La reversión crea un movimiento nuevo; no modifica el cobro original.',
               ),
               validator: (value) {
                 final importe = double.tryParse(

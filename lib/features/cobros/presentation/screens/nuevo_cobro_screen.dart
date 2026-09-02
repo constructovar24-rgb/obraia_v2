@@ -6,8 +6,80 @@ import '../../../../core/shortcuts/app_shortcuts.dart';
 import '../../../../core/ui/app_spacing.dart';
 import '../../../../core/widgets/app_primary_button.dart';
 import '../../../../core/widgets/app_section.dart';
+import '../../../../core/widgets/money_text.dart';
+import '../../../../core/widgets/status_chip.dart';
+import '../../../facturas/data/factura_repository.dart';
 import '../../data/cobro_repository.dart';
+import '../../domain/factura_estado_economico.dart';
 import '../../domain/metodos_pago.dart';
+
+class _FacturaCobroContext extends ConsumerWidget {
+  const _FacturaCobroContext({required this.facturaId});
+
+  final String facturaId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return FutureBuilder(
+      future: ref.read(facturaRepositoryProvider).obtenerPorId(facturaId),
+      builder: (context, facturaSnapshot) {
+        final factura = facturaSnapshot.data;
+        if (factura == null) return const SizedBox.shrink();
+        return StreamBuilder<FacturaEstadoEconomico>(
+          stream: ref
+              .read(cobroRepositoryProvider)
+              .observarEstadoEconomicoFactura(
+                facturaId: factura.id,
+                totalFactura: factura.total,
+              ),
+          builder: (context, estadoSnapshot) {
+            final estado = estadoSnapshot.data;
+            if (estado == null) return const SizedBox.shrink();
+            return Card(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                child: Wrap(
+                  spacing: AppSpacing.xl,
+                  runSpacing: AppSpacing.sm,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Text(
+                      factura.codigo,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Total factura'),
+                        MoneyText(estado.totalFactura),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Pendiente de cobro'),
+                        MoneyText(estado.pendiente),
+                      ],
+                    ),
+                    StatusChip(
+                      label: estadoEconomicoFacturaToLabel(estado.estado),
+                      type: estado.estado == EstadoEconomicoFactura.cobrada
+                          ? StatusType.success
+                          : estado.estado ==
+                                EstadoEconomicoFactura.parcialmenteCobrada
+                          ? StatusType.info
+                          : StatusType.warning,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}
 
 class NuevoCobroScreen extends ConsumerStatefulWidget {
   const NuevoCobroScreen({super.key, required this.facturaId});
@@ -83,6 +155,8 @@ class _NuevoCobroScreenState extends ConsumerState<NuevoCobroScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      _FacturaCobroContext(facturaId: widget.facturaId),
+                      const SizedBox(height: AppSpacing.lg),
                       TextFormField(
                         readOnly: true,
                         controller: _fechaController,

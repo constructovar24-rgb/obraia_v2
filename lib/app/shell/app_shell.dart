@@ -85,7 +85,7 @@ class _AppShellState extends State<AppShell> {
       case AppSectionId.facturas:
         return const FacturasScreen();
       case AppSectionId.cobros:
-        return CobrosScreen.delMesActual();
+        return const CobrosScreen.global();
       case AppSectionId.proveedores:
         return const ProveedoresScreen();
       case AppSectionId.configuracion:

@@ -167,6 +167,29 @@ class CobroRepository {
     return database.cobrosDao.obtenerPorId(id);
   }
 
+  Future<double> obtenerImporteDisponibleParaReversion(String cobroId) async {
+    final original = await database.cobrosDao.obtenerPorId(cobroId);
+    if (original == null) {
+      throw CobroNoEncontradoException(cobroId: cobroId);
+    }
+    if (original.esReversion) throw const CobroNoReversibleException();
+    final movimientos = await database.cobrosDao.obtenerPorFactura(
+      original.facturaId,
+    );
+    final yaRevertido = normalizarImporteCobro(
+      movimientos
+          .where(
+            (movimiento) =>
+                movimiento.esReversion &&
+                movimiento.cobroOrigenId == original.id,
+          )
+          .fold<double>(0, (total, movimiento) => total + movimiento.importe),
+    );
+    return normalizarImporteCobro(
+      original.importe - yaRevertido,
+    ).clamp(0, double.infinity).toDouble();
+  }
+
   Future<void> crearCobro({
     required String facturaId,
     required DateTime fecha,
