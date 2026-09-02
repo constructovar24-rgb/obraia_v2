@@ -12,6 +12,7 @@ Este documento está preparado para registrar decisiones arquitectónicas, tecno
 - 2026-09-01: Presupuestos es el tercer patrón desktop profesional. Presentation muestra base, IVA, total y facturación parcial exclusivamente desde valores y resúmenes existentes; no recalcula reservas, asignaciones ni disponibilidad con reglas nuevas.
 - 2026-09-02: Facturas es el cuarto patrón desktop profesional. La interfaz distingue estado documental y económico, y muestra importes, cobros, familia RECT y crédito solo desde repositorios y modelos existentes; la emisión conserva su transacción y añade confirmación visual sin reinterpretar reglas fiscales.
 - 2026-09-02: Cobros es el quinto patrón desktop profesional. El centro global se organiza por facturas ordinarias operativas y consume `FacturaConEstadoEconomico`; las RECT continúan como ajustes documentales en Facturas y no se reinterpretan como cobros. El disponible de reversión se expone desde el repositorio para evitar duplicar reglas en presentación.
+- 2026-09-03: Proveedores es el sexto patrón desktop profesional. Su ficha se limita a identidad fiscal, contacto, domicilio y observaciones existentes; no muestra compras, actividad ni indicadores sin una relación real en el modelo. Alta y edición comparten formulario y el borrado conserva la eliminación lógica existente.
 
 ## Formato recomendado
 - Fecha

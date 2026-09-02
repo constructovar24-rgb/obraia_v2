@@ -52,12 +52,14 @@ Facturas es el cuarto módulo migrado al patrón profesional. El listado global 
 
 Cobros es el quinto módulo migrado al patrón profesional. Su entrada global funciona como centro de seguimiento por facturas emitidas, con búsqueda, filtros de pendiente/parcial/cobrada/vencida, cliente, expediente, vencimiento, total, cobrado y pendiente obtenidos del resumen económico validado. El detalle conserva los movimientos auditables y diferencia cobros y reversiones; alta y reversión muestran contexto económico real y bloquean dobles envíos. La vista mensual del Dashboard permanece disponible. Tres pruebas widget elevan la suite completa a 221 sin cambiar reglas, persistencia ni estados. Fase 3 no ha comenzado.
 
+Proveedores es el sexto módulo migrado al patrón profesional. Su directorio ofrece búsqueda inmediata por identidad fiscal, contacto y ubicación, contador y filas densas adaptables. La ficha organiza únicamente los datos fiscales, de contacto y observaciones existentes; alta y edición comparten formulario, bloquean dobles envíos y la eliminación lógica exige confirmación. La UI consume providers de presentación sin acceso directo a persistencia. Cinco pruebas widget elevan la suite completa a 226, sin introducir Compras, métricas económicas, relaciones ficticias ni cambios de esquema. Fase 3 no ha comenzado.
+
 ## Deuda y riesgos prioritarios
 
 1. La cobertura continúa siendo desigual y aún se concentra principalmente en Facturas; el primer tramo de Presupuestos ya cuenta con pruebas de persistencia y atomicidad.
 2. Persisten providers en `data/`, accesos de UI a `databaseProvider` fuera de las pantallas rediseñadas, métodos heredados en `AppDatabase` y archivos grandes.
 3. Las rectificativas sustitutivas y la integración de Certificaciones con las asignaciones parciales quedan aplazadas y no forman parte del alcance cerrado de Fase 2.
-4. Compras, proveedores, certificaciones, costes y rentabilidad se consolidarán en fases posteriores.
+4. Compras, certificaciones, costes y rentabilidad se consolidarán en fases posteriores; Proveedores dispone ya de gestión visual profesional, pero no adelanta esas reglas.
 5. Aún no se han verificado un instalador, firma, actualización ni reversión para una distribución publicable en Windows.
 
 ## Próximo hito

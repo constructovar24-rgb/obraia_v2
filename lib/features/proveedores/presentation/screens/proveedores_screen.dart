@@ -3,57 +3,76 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/shortcuts/app_shortcuts.dart';
 import '../../../../core/ui/app_spacing.dart';
-import '../../../../core/ui/app_typography.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/app_empty_state.dart';
 import '../../../../core/widgets/app_error_state.dart';
 import '../../../../core/widgets/app_loading.dart';
-import '../../../../core/widgets/app_primary_button.dart';
-import '../../../../core/widgets/app_section.dart';
 import '../../../../core/widgets/app_page_header.dart';
+import '../../domain/proveedor.dart';
 import '../providers/proveedor_providers.dart';
 import 'nuevo_proveedor_screen.dart';
+import 'proveedor_detail_screen.dart';
 
-class ProveedoresScreen extends ConsumerWidget {
+class ProveedoresScreen extends ConsumerStatefulWidget {
   const ProveedoresScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProveedoresScreen> createState() => _ProveedoresScreenState();
+}
+
+class _ProveedoresScreenState extends ConsumerState<ProveedoresScreen> {
+  final _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _abrirNuevoProveedor() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const NuevoProveedorScreen()),
+    );
+  }
+
+  List<Proveedor> _filtrar(List<Proveedor> proveedores) {
+    final query = _searchController.text.trim().toLowerCase();
+    if (query.isEmpty) return proveedores;
+    return proveedores.where((proveedor) {
+      return [
+        proveedor.nombre,
+        proveedor.nif,
+        proveedor.personaContacto ?? '',
+        proveedor.telefono,
+        proveedor.email,
+        proveedor.poblacion,
+        proveedor.provincia,
+      ].any((value) => value.toLowerCase().contains(query));
+    }).toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final proveedoresAsync = ref.watch(proveedoresProvider);
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = AppTypography.textTheme(colorScheme);
-
-    void abrirNuevoProveedor() {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const NuevoProveedorScreen(),
-        ),
-      );
-    }
-
     return AppShortcutScope(
       onBack: () => Navigator.maybePop(context),
-      onNew: abrirNuevoProveedor,
+      onNew: _abrirNuevoProveedor,
       child: Scaffold(
         appBar: AppPageHeader(
           title: 'Proveedores',
-          showBackButton: true,
-          onBackPressed: () => Navigator.maybePop(context),
-        ),
-        floatingActionButton: AppPrimaryButton(
-          label: 'Nuevo proveedor',
-          icon: Icons.add,
-          onPressed: abrirNuevoProveedor,
-          expand: false,
+          subtitle: 'Directorio fiscal y de contacto para aprovisionamiento',
+          actions: [
+            AppPageHeaderAction(
+              icon: Icons.add,
+              tooltip: 'Nuevo proveedor',
+              onPressed: _abrirNuevoProveedor,
+            ),
+          ],
         ),
         body: proveedoresAsync.when(
-          loading: () => const AppLoading(
-            message: 'Cargando proveedores...',
-          ),
-          error: (error, _) => AppErrorState(
-            message: 'ERROR:\n\n$error',
-          ),
+          loading: () => const AppLoading(message: 'Cargando proveedores...'),
+          error: (error, _) => AppErrorState(message: 'ERROR:\n\n$error'),
           data: (proveedores) {
             if (proveedores.isEmpty) {
               return AppEmptyState(
@@ -61,149 +80,147 @@ class ProveedoresScreen extends ConsumerWidget {
                 title: 'Todavía no hay proveedores',
                 subtitle: 'Añade el primero para empezar a trabajar.',
                 actionLabel: 'Nuevo proveedor',
-                onAction: abrirNuevoProveedor,
+                onAction: _abrirNuevoProveedor,
               );
             }
-
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                final isWide = constraints.maxWidth >= 900;
-                final horizontalPadding = isWide ? AppSpacing.xl : AppSpacing.md;
-
-                return Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 1180),
-                    child: SizedBox(
-                      height: constraints.maxHeight,
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(
-                              horizontalPadding,
-                              AppSpacing.md,
-                              horizontalPadding,
-                              AppSpacing.sm,
-                            ),
-                            child: AppCard(
-                              padding: const EdgeInsets.all(AppSpacing.xl),
-                              highlighted: true,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: 52,
-                                    height: 52,
-                                    decoration: BoxDecoration(
-                                      color: colorScheme.primaryContainer,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(
-                                      Icons.local_shipping,
-                                      color: colorScheme.onPrimaryContainer,
-                                    ),
-                                  ),
-                                  const SizedBox(width: AppSpacing.md),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Proveedores',
-                                          style: textTheme.headlineMedium,
-                                        ),
-                                        const SizedBox(height: AppSpacing.xs),
-                                        Text(
-                                          'Consulta y abre cada ficha de proveedor desde una vista más clara y ordenada.',
-                                          style: textTheme.bodyMedium,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(width: AppSpacing.md),
-                                  AppPrimaryButton(
-                                    label: 'Nuevo proveedor',
-                                    icon: Icons.add,
-                                    onPressed: abrirNuevoProveedor,
-                                    expand: false,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.fromLTRB(
-                                horizontalPadding,
-                                AppSpacing.sm,
-                                horizontalPadding,
-                                AppSpacing.lg,
-                              ),
-                              child: AppSection(
-                                title: 'Listado de proveedores',
-                                subtitle:
-                                    'Selecciona un proveedor para ver su detalle.',
-                                actionLabel: 'Nuevo proveedor',
-                                onAction: abrirNuevoProveedor,
-                                child: ListView.separated(
-                                  itemCount: proveedores.length,
-                                  separatorBuilder: (context, index) =>
-                                      const SizedBox(height: AppSpacing.sm),
-                                  itemBuilder: (context, index) {
-                                    final proveedor = proveedores[index];
-                                    final subtitleParts = <String>[
-                                      if (proveedor.personaContacto
-                                              ?.trim()
-                                              .isNotEmpty ??
-                                          false)
-                                        proveedor.personaContacto!.trim(),
-                                      if (proveedor.telefono.trim().isNotEmpty)
-                                        proveedor.telefono.trim(),
-                                    ];
-
-                                    return AppCard(
-                                      child: ListTile(
-                                        contentPadding: const EdgeInsets.all(
-                                          AppSpacing.md,
-                                        ),
-                                        leading: CircleAvatar(
-                                          backgroundColor:
-                                              colorScheme.primaryContainer,
-                                          foregroundColor:
-                                              colorScheme.onPrimaryContainer,
-                                          child: const Icon(Icons.person),
-                                        ),
-                                        title: Text(
-                                          proveedor.nombre,
-                                          style: textTheme.titleMedium,
-                                        ),
-                                        subtitle: Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: AppSpacing.xs,
-                                          ),
-                                          child: Text(
-                                            subtitleParts.isEmpty
-                                                ? 'Sin datos de contacto'
-                                                : subtitleParts.join(' · '),
-                                            style: textTheme.bodyMedium,
-                                          ),
-                                        ),
-                                        trailing: const Icon(
-                                          Icons.chevron_right,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+            final filtrados = _filtrar(proveedores);
+            return Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Column(
+                children: [
+                  AppCard(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    child: TextField(
+                      key: const Key('proveedores-search'),
+                      controller: _searchController,
+                      onChanged: (_) => setState(() {}),
+                      decoration: const InputDecoration(
+                        labelText:
+                            'Buscar por nombre, NIF/CIF, contacto o localidad',
+                        prefixIcon: Icon(Icons.search),
                       ),
                     ),
                   ),
-                );
-              },
+                  const SizedBox(height: AppSpacing.sm),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      '${filtrados.length} de ${proveedores.length} proveedores',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  Expanded(
+                    child: filtrados.isEmpty
+                        ? const AppEmptyState(
+                            icon: Icons.search_off_outlined,
+                            title: 'No hay coincidencias',
+                            subtitle:
+                                'Prueba con otro nombre, contacto o localidad.',
+                          )
+                        : AppCard(
+                            padding: EdgeInsets.zero,
+                            child: ListView.separated(
+                              itemCount: filtrados.length,
+                              separatorBuilder: (_, _) =>
+                                  const Divider(height: 1),
+                              itemBuilder: (context, index) =>
+                                  _ProveedorRow(proveedor: filtrados[index]),
+                            ),
+                          ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _ProveedorRow extends StatelessWidget {
+  const _ProveedorRow({required this.proveedor});
+
+  final Proveedor proveedor;
+
+  @override
+  Widget build(BuildContext context) {
+    final contacto = proveedor.personaContacto?.trim();
+    final localidad = [
+      proveedor.poblacion.trim(),
+      proveedor.provincia.trim(),
+    ].where((value) => value.isNotEmpty).join(', ');
+    return InkWell(
+      key: Key('proveedor-row-${proveedor.id}'),
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => ProveedorDetailScreen(proveedor: proveedor),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm + AppSpacing.xs,
+        ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final identity = Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  proveedor.nombre,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  proveedor.nif.trim().isEmpty ? 'Sin NIF/CIF' : proveedor.nif,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            );
+            final contact = Text(
+              [
+                    if (contacto?.isNotEmpty == true) contacto!,
+                    if (proveedor.telefono.trim().isNotEmpty)
+                      proveedor.telefono,
+                    if (proveedor.email.trim().isNotEmpty) proveedor.email,
+                  ].isEmpty
+                  ? 'Sin datos de contacto'
+                  : [
+                      if (contacto?.isNotEmpty == true) contacto!,
+                      if (proveedor.telefono.trim().isNotEmpty)
+                        proveedor.telefono,
+                      if (proveedor.email.trim().isNotEmpty) proveedor.email,
+                    ].join(' · '),
+              overflow: TextOverflow.ellipsis,
+            );
+            if (constraints.maxWidth < 720) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  identity,
+                  const SizedBox(height: AppSpacing.sm),
+                  contact,
+                  if (localidad.isNotEmpty) ...[
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(localidad),
+                  ],
+                ],
+              );
+            }
+            return Row(
+              children: [
+                Expanded(flex: 3, child: identity),
+                Expanded(flex: 4, child: contact),
+                Expanded(
+                  flex: 2,
+                  child: Text(localidad.isEmpty ? 'Sin localidad' : localidad),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                const Icon(Icons.chevron_right),
+              ],
             );
           },
         ),

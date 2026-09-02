@@ -44,6 +44,8 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 
 **Rediseño global — incremento 5:** Cobros queda integrado como centro desktop de seguimiento por factura, con búsqueda, filtros, vencimientos, saldos y movimientos auditables. Alta y reversión presentan el contexto económico calculado por repositorios existentes; la vista mensual del Dashboard se conserva. Fase 3 continúa sin comenzar.
 
+**Rediseño global — incremento 6:** Proveedores queda integrado como directorio desktop profesional con búsqueda fiscal y de contacto, ficha adaptable, formulario compartido de alta/edición y eliminación lógica confirmada. No se inventan compras, actividad, métricas ni relaciones ausentes, y Fase 3 continúa sin comenzar.
+
 ## Fase 3 — Gestión económica y rentabilidad por obra
 
 **Objetivo:** ofrecer costes, ingresos, desviaciones, tesorería y margen fiables por expediente.

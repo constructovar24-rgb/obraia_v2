@@ -2,6 +2,14 @@
 
 ## No publicado
 
+### Rediseño profesional de Proveedores
+
+- Convertido el directorio global en un listado desktop denso con búsqueda por identidad fiscal, contacto y localidad, contador y estados de carga, error y vacío.
+- Reorganizada la ficha en secciones fiscales, de contacto y observaciones que muestran exclusivamente datos reales disponibles.
+- Unificados alta y edición en un formulario adaptable con validación, feedback de error y prevención de doble envío.
+- Añadidas navegación a la ficha, edición reactiva y confirmación informativa antes de la eliminación lógica.
+- Añadida cobertura widget para vacío responsive, búsqueda, detalle, persistencia del formulario, eliminación y doble envío.
+
 ### Rediseño profesional de Cobros
 
 - Convertida la entrada global del AppShell en un centro desktop de seguimiento por factura con búsqueda, filtros de situación, vencimiento, total, cobrado y pendiente.

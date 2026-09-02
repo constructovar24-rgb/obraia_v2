@@ -13,3 +13,14 @@ final proveedoresProvider = StreamProvider<List<Proveedor>>((ref) {
   final proveedorRepository = ref.read(proveedorRepositoryProvider);
   return proveedorRepository.observarProveedores();
 });
+
+final proveedorProvider = StreamProvider.family<Proveedor?, String>((ref, id) {
+  return ref.watch(proveedorRepositoryProvider).observarProveedores().map((
+    proveedores,
+  ) {
+    for (final proveedor in proveedores) {
+      if (proveedor.id == id) return proveedor;
+    }
+    return null;
+  });
+});
