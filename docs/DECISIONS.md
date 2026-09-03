@@ -21,6 +21,18 @@ Este documento está preparado para registrar decisiones arquitectónicas, tecno
 - 2026-09-03: Configuración conserva el singleton por tenant, pero cada alta usa un UUID propio; un identificador global fijo produciría colisiones entre empresas.
 - 2026-09-03: P0-C/D se cierra con auditoría end-to-end y pruebas de dos tenants. El selector público y la autorización siguen siendo trabajo futuro y no forman parte de la puerta de aislamiento local.
 
+## Modelo económico de obra
+
+- 2026-09-03: rentabilidad se calcula sobre magnitudes netas de IVA recuperable y se separa estrictamente de facturación, cobro y caja; el IVA no recuperable sí forma parte del coste.
+- 2026-09-03: un presupuesto aceptado originará un plan económico inmutable y versionado. Sustituciones y modificados se registrarán explícitamente para conservar Previsto vs Real sin doble contabilización.
+- 2026-09-03: el coste real se apoyará en un hecho económico canónico por origen/asignación. Documentos de proveedor y pagos serán evidencia y liquidación, no costes adicionales.
+- 2026-09-04: aprobado que la mano de obra del titular tiene coste económico aunque no produzca salida de tesorería; usará una tarifa interna de coste/hora tenant-configurable, distinta del precio de venta y congelada en cada parte.
+- 2026-09-04: aprobado que los indirectos previstos se calculan como porcentaje tenant-configurable por costes directos previstos. No se hardcodea y queda congelado en cada plan; el reparto de indirectos reales queda fuera de la primera implementación.
+- 2026-09-04: aprobado que Compra solo genera coste real si documenta gasto incurrido. Pago no determina devengo; previsión y compromiso no son coste real. Como los estados actuales no bastan, Fase 3-C exigirá clasificación explícita antes de incorporarla al hecho canónico.
+- 2026-09-04: aprobado el cierre económico explícito con comprobaciones y advertencias registradas, snapshot auditable y reapertura explícita con motivo sin eliminar el historial.
+- 2026-09-03: durante una obra se distinguirán resultado realizado —solo con producción fiable— y beneficio final estimado; no se usará `facturado - coste acumulado` como beneficio actual.
+- 2026-09-03: Fase 3-A es exclusivamente diseño. La implementación propuesta comienza en Fase 3-B con schema v24, plan económico y categorías, sin modificar todavía el esquema.
+
 ## Interfaz y navegación
 
 - 2026-09-01: La interfaz prioriza Windows mediante un shell desktop persistente con barra lateral adaptable, cabecera de contexto y un navegador interno basado en `Navigator`; no se introduce GoRouter incidentalmente.

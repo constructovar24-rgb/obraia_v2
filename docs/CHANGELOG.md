@@ -2,6 +2,14 @@
 
 ## No publicado
 
+### Diseño del modelo económico de Fase 3
+
+- Auditadas las fuentes actuales de presupuesto, facturación, cobro, crédito, compras, certificaciones y resumen de obra, sin reinterpretar Compra como factura de proveedor.
+- Definidas magnitudes netas de IVA para venta, costes, beneficio, margen y desviaciones, separadas de facturación fiscal y caja.
+- Diseñados el plan económico inmutable, los hechos canónicos de coste, mano de obra propia/ajena, compromisos, estimaciones, cierres y trazabilidad.
+- Propuestos el modelo mínimo tenant-scoped, la migración conceptual v23 → v24, la secuencia de implementación y la matriz de aceptación, sin modificar código, esquema ni pruebas.
+- Cerradas las decisiones de negocio sobre tarifa interna del titular, indirectos previstos, devengo explícito de Compras y cierre/reapertura económica auditable.
+
 ### Cierre end-to-end de la puerta multi-tenant P0
 
 - Invalidados repositorios, streams y agregados tenant-scoped al cambiar el contexto activo, evitando cachés cruzadas.

@@ -76,6 +76,10 @@ La auditoría completa, prioridades P0–P3 y roadmap revisado están en `MULTI_
 
 **Prerequisito:** completar la puerta P0 multi-tenant. Un presupuesto aceptado será el plan económico versionado de la obra y todos los costes, tarifas, márgenes, históricos y métricas pertenecerán al tenant activo.
 
+**Estado:** Fase 3-A cerrada como diseño ejecutable aprobado en `PHASE_3_ECONOMIC_MODEL.md`; no hay implementación de persistencia ni UI. El modelo separa venta, coste previsto, coste real, facturación y caja, adopta hechos de coste canónicos y tiene resueltas las políticas de mano de obra propia, indirectos, devengo de Compra y cierre económico.
+
+**Secuencia:** 3-B plan económico/categorías y v24; 3-C hechos de coste/Compras; 3-D mano de obra; 3-E compromisos/estimaciones y motor de desviación; 3-F centro económico del Expediente; 3-G cierres, alertas e histórico.
+
 **Criterio de salida:** reglas económicas documentadas y probadas; compras, certificaciones, facturación y cobros concilian; informes reproducibles explican cada cifra con precisión y redondeo consistentes.
 
 **Bloque administrativo futuro aprobado:** facturas recibidas de proveedores; conservación del documento original recibido y del PDF exacto emitido; albaranes vinculados preferentemente a una obra con reparto entre varias obras; líneas exactas de materiales y vinculación posterior a materiales normalizados; histórico de precios reales de compra; conciliación albaranes–facturas; pagos y pendientes de proveedores; costes reales por expediente; IVA soportado/repercutido e IRPF; libros de facturas emitidas/recibidas y resúmenes trimestrales. Se prevé además recepción futura desde correo, extracción asistida por IA, detección de duplicados y propuesta de proveedor/obra. El backup deberá ampliarse para proteger también el archivo documental.
