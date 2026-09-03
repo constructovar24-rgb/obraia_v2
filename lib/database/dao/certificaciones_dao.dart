@@ -10,14 +10,21 @@ class CertificacionesDao extends DatabaseAccessor<AppDatabase>
     with _$CertificacionesDaoMixin {
   CertificacionesDao(super.db);
 
-  Future<void> insertarCertificacion(CertificacionesCompanion certificacion) async {
-    await into(certificaciones).insert(certificacion);
+  Future<void> insertarCertificacion(
+    CertificacionesCompanion certificacion,
+  ) async {
+    await into(certificaciones).insert(
+      certificacion.copyWith(tenantId: Value(attachedDatabase.activeTenantId)),
+    );
   }
 
   Stream<List<Certificacione>> observarPorExpediente(String expedienteId) {
     return (select(certificaciones)
           ..where(
-            (t) => t.expedienteId.equals(expedienteId) & t.eliminado.equals(false),
+            (t) =>
+                t.tenantId.equals(attachedDatabase.activeTenantId) &
+                t.expedienteId.equals(expedienteId) &
+                t.eliminado.equals(false),
           )
           ..orderBy([(t) => OrderingTerm.desc(t.fecha)]))
         .watch();
@@ -26,42 +33,65 @@ class CertificacionesDao extends DatabaseAccessor<AppDatabase>
   Future<List<Certificacione>> obtenerPorExpediente(String expedienteId) {
     return (select(certificaciones)
           ..where(
-            (t) => t.expedienteId.equals(expedienteId) & t.eliminado.equals(false),
+            (t) =>
+                t.tenantId.equals(attachedDatabase.activeTenantId) &
+                t.expedienteId.equals(expedienteId) &
+                t.eliminado.equals(false),
           )
           ..orderBy([(t) => OrderingTerm.desc(t.fecha)]))
         .get();
   }
 
   Stream<Certificacione?> observarCertificacion(String id) {
-    return (select(certificaciones)..where((t) => t.id.equals(id))).watchSingleOrNull();
+    return (select(certificaciones)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .watchSingleOrNull();
   }
 
   Future<Certificacione?> obtenerCertificacion(String id) {
-    return (select(certificaciones)..where((t) => t.id.equals(id))).getSingleOrNull();
+    return (select(certificaciones)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .getSingleOrNull();
   }
 
   Future<void> actualizarCertificacion(
     String id,
     CertificacionesCompanion certificacion,
   ) async {
-    await (update(certificaciones)..where((t) => t.id.equals(id))).write(certificacion);
+    await (update(certificaciones)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .write(certificacion);
   }
 
   Future<void> eliminarLogicamente(String id) async {
-    await (update(certificaciones)..where((t) => t.id.equals(id))).write(
-      const CertificacionesCompanion(
-        eliminado: Value(true),
-      ),
-    );
+    await (update(certificaciones)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .write(const CertificacionesCompanion(eliminado: Value(true)));
   }
 
   Future<bool> tieneCertificacionPorExpediente(String expedienteId) async {
-    final row = await (select(certificaciones)
-          ..where(
-            (t) => t.expedienteId.equals(expedienteId) & t.eliminado.equals(false),
-          )
-          ..limit(1))
-        .getSingleOrNull();
+    final row =
+        await (select(certificaciones)
+              ..where(
+                (t) =>
+                    t.tenantId.equals(attachedDatabase.activeTenantId) &
+                    t.expedienteId.equals(expedienteId) &
+                    t.eliminado.equals(false),
+              )
+              ..limit(1))
+            .getSingleOrNull();
 
     return row != null;
   }

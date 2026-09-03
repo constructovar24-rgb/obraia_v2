@@ -1,11 +1,18 @@
+// ignore_for_file: unused_import
+
 import 'package:drift/drift.dart';
 
 import 'facturas.dart';
+import 'tenants.dart';
 
 class Cobros extends Table {
+  TextColumn get tenantId => text()
+      .clientDefault(() => defaultTenantIdForTesting)
+      .references(Tenants, #id)();
+
   TextColumn get id => text()();
 
-  TextColumn get facturaId => text().references(Facturas, #id)();
+  TextColumn get facturaId => text()();
 
   DateTimeColumn get fecha => dateTime().withDefault(currentDateAndTime)();
 
@@ -21,7 +28,7 @@ class Cobros extends Table {
   TextColumn get tipoMovimiento =>
       text().withDefault(const Constant('cobro'))();
 
-  TextColumn get cobroOrigenId => text().nullable().references(Cobros, #id)();
+  TextColumn get cobroOrigenId => text().nullable()();
 
   TextColumn get motivo => text().withDefault(const Constant(''))();
 
@@ -33,4 +40,15 @@ class Cobros extends Table {
 
   @override
   Set<Column> get primaryKey => {id};
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {tenantId, id},
+  ];
+
+  @override
+  List<String> get customConstraints => [
+    'FOREIGN KEY (tenant_id, factura_id) REFERENCES facturas (tenant_id, id)',
+    'FOREIGN KEY (tenant_id, cobro_origen_id) REFERENCES cobros (tenant_id, id)',
+  ];
 }

@@ -10,20 +10,27 @@ class ComprasDao extends DatabaseAccessor<AppDatabase> with _$ComprasDaoMixin {
   ComprasDao(super.db);
 
   Future<void> insertarCompra(ComprasCompanion compra) async {
-    await into(compras).insert(compra);
+    await into(
+      compras,
+    ).insert(compra.copyWith(tenantId: Value(attachedDatabase.activeTenantId)));
   }
 
   Future<void> actualizarCompra(String id, ComprasCompanion compra) async {
-    await (update(compras)..where((t) => t.id.equals(id))).write(
-      compra.copyWith(fechaModificacion: Value(DateTime.now())),
-    );
+    await (update(compras)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .write(compra.copyWith(fechaModificacion: Value(DateTime.now())));
   }
 
   Stream<List<Compra>> observarPorExpediente(String expedienteId) {
     return (select(compras)
           ..where(
             (t) =>
-                t.expedienteId.equals(expedienteId) & t.eliminado.equals(false),
+                t.tenantId.equals(attachedDatabase.activeTenantId) &
+                t.expedienteId.equals(expedienteId) &
+                t.eliminado.equals(false),
           )
           ..orderBy([(t) => OrderingTerm.desc(t.fecha)]))
         .watch();
@@ -33,7 +40,9 @@ class ComprasDao extends DatabaseAccessor<AppDatabase> with _$ComprasDaoMixin {
     return (select(compras)
           ..where(
             (t) =>
-                t.expedienteId.equals(expedienteId) & t.eliminado.equals(false),
+                t.tenantId.equals(attachedDatabase.activeTenantId) &
+                t.expedienteId.equals(expedienteId) &
+                t.eliminado.equals(false),
           )
           ..orderBy([(t) => OrderingTerm.desc(t.fecha)]))
         .get();
@@ -41,15 +50,22 @@ class ComprasDao extends DatabaseAccessor<AppDatabase> with _$ComprasDaoMixin {
 
   Stream<List<Compra>> observarTodas() {
     return (select(compras)
-          ..where((t) => t.eliminado.equals(false))
+          ..where(
+            (t) =>
+                t.tenantId.equals(attachedDatabase.activeTenantId) &
+                t.eliminado.equals(false),
+          )
           ..orderBy([(t) => OrderingTerm.desc(t.fecha)]))
         .watch();
   }
 
   Future<void> eliminarLogicamente(String id) async {
-    await (update(compras)..where((t) => t.id.equals(id))).write(
-      const ComprasCompanion(eliminado: Value(true)),
-    );
+    await (update(compras)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .write(const ComprasCompanion(eliminado: Value(true)));
   }
 
   Future<bool> tieneCompraPorExpediente(String expedienteId) async {
@@ -57,6 +73,7 @@ class ComprasDao extends DatabaseAccessor<AppDatabase> with _$ComprasDaoMixin {
         await (select(compras)
               ..where(
                 (t) =>
+                    t.tenantId.equals(attachedDatabase.activeTenantId) &
                     t.expedienteId.equals(expedienteId) &
                     t.eliminado.equals(false),
               )

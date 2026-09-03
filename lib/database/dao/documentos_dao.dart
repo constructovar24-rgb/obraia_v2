@@ -11,13 +11,18 @@ class DocumentosDao extends DatabaseAccessor<AppDatabase>
   DocumentosDao(super.db);
 
   Future<void> insertarDocumento(DocumentosCompanion documento) async {
-    await into(documentos).insert(documento);
+    await into(documentos).insert(
+      documento.copyWith(tenantId: Value(attachedDatabase.activeTenantId)),
+    );
   }
 
   Stream<List<Documento>> observarPorExpediente(String expedienteId) {
     return (select(documentos)
           ..where(
-            (t) => t.expedienteId.equals(expedienteId) & t.eliminado.equals(false),
+            (t) =>
+                t.tenantId.equals(attachedDatabase.activeTenantId) &
+                t.expedienteId.equals(expedienteId) &
+                t.eliminado.equals(false),
           )
           ..orderBy([(t) => OrderingTerm.desc(t.fechaCreacion)]))
         .watch();
@@ -26,42 +31,65 @@ class DocumentosDao extends DatabaseAccessor<AppDatabase>
   Future<List<Documento>> obtenerPorExpediente(String expedienteId) {
     return (select(documentos)
           ..where(
-            (t) => t.expedienteId.equals(expedienteId) & t.eliminado.equals(false),
+            (t) =>
+                t.tenantId.equals(attachedDatabase.activeTenantId) &
+                t.expedienteId.equals(expedienteId) &
+                t.eliminado.equals(false),
           )
           ..orderBy([(t) => OrderingTerm.desc(t.fechaCreacion)]))
         .get();
   }
 
   Stream<Documento?> observarDocumento(String id) {
-    return (select(documentos)..where((t) => t.id.equals(id))).watchSingleOrNull();
+    return (select(documentos)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .watchSingleOrNull();
   }
 
   Future<Documento?> obtenerDocumento(String id) {
-    return (select(documentos)..where((t) => t.id.equals(id))).getSingleOrNull();
+    return (select(documentos)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .getSingleOrNull();
   }
 
   Future<void> actualizarDocumento(
     String id,
     DocumentosCompanion documento,
   ) async {
-    await (update(documentos)..where((t) => t.id.equals(id))).write(documento);
+    await (update(documentos)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .write(documento);
   }
 
   Future<void> eliminarLogicamente(String id) async {
-    await (update(documentos)..where((t) => t.id.equals(id))).write(
-      const DocumentosCompanion(
-        eliminado: Value(true),
-      ),
-    );
+    await (update(documentos)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .write(const DocumentosCompanion(eliminado: Value(true)));
   }
 
   Future<bool> tieneDocumentoPorExpediente(String expedienteId) async {
-    final row = await (select(documentos)
-          ..where(
-            (t) => t.expedienteId.equals(expedienteId) & t.eliminado.equals(false),
-          )
-          ..limit(1))
-        .getSingleOrNull();
+    final row =
+        await (select(documentos)
+              ..where(
+                (t) =>
+                    t.tenantId.equals(attachedDatabase.activeTenantId) &
+                    t.expedienteId.equals(expedienteId) &
+                    t.eliminado.equals(false),
+              )
+              ..limit(1))
+            .getSingleOrNull();
 
     return row != null;
   }

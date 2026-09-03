@@ -66,17 +66,25 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<List<String>> obtenerCodigosPorCliente(String clienteId) async {
-    final rows = await (select(
-      facturas,
-    )..where((t) => t.clienteId.equals(clienteId))).get();
+    final rows =
+        await (select(facturas)..where(
+              (t) =>
+                  t.tenantId.equals(attachedDatabase.activeTenantId) &
+                  t.clienteId.equals(clienteId),
+            ))
+            .get();
 
     return rows.map((row) => row.codigo).toList();
   }
 
   Future<List<String>> obtenerCodigosPorPrefijo(String prefijo) async {
-    final rows = await (select(
-      facturas,
-    )..where((t) => t.codigo.like('$prefijo%'))).get();
+    final rows =
+        await (select(facturas)..where(
+              (t) =>
+                  t.tenantId.equals(attachedDatabase.activeTenantId) &
+                  t.codigo.like('$prefijo%'),
+            ))
+            .get();
 
     return rows.map((row) => row.codigo).toList();
   }
@@ -84,8 +92,12 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
   Future<int> obtenerMayorNumeroLegal(int anio, {String serie = 'FAC'}) async {
     final result = await customSelect(
       'SELECT MAX(numero_legal) AS maximo FROM facturas '
-      'WHERE anio_numeracion = ? AND serie = ?',
-      variables: [Variable<int>(anio), Variable<String>(serie)],
+      'WHERE tenant_id = ? AND anio_numeracion = ? AND serie = ?',
+      variables: [
+        Variable<String>(attachedDatabase.activeTenantId),
+        Variable<int>(anio),
+        Variable<String>(serie),
+      ],
     ).getSingle();
     return result.readNullable<int>('maximo') ?? 0;
   }
@@ -94,12 +106,17 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
     final tableFacturas = attachedDatabase.facturas;
     final tableClientes = attachedDatabase.clientes;
 
-    final query = select(tableFacturas).join([
-      leftOuterJoin(
-        tableClientes,
-        tableClientes.id.equalsExp(tableFacturas.clienteId),
-      ),
-    ])..orderBy([OrderingTerm.desc(tableFacturas.fecha)]);
+    final query =
+        select(tableFacturas).join([
+            leftOuterJoin(
+              tableClientes,
+              tableClientes.id.equalsExp(tableFacturas.clienteId),
+            ),
+          ])
+          ..where(
+            tableFacturas.tenantId.equals(attachedDatabase.activeTenantId),
+          )
+          ..orderBy([OrderingTerm.desc(tableFacturas.fecha)]);
 
     return query.watch().map((rows) {
       return rows.map((row) {
@@ -125,7 +142,10 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
               tableClientes.id.equalsExp(tableFacturas.clienteId),
             ),
           ])
-          ..where(tableFacturas.clienteId.equals(clienteId))
+          ..where(
+            tableFacturas.tenantId.equals(attachedDatabase.activeTenantId) &
+                tableFacturas.clienteId.equals(clienteId),
+          )
           ..orderBy([OrderingTerm.desc(tableFacturas.fecha)]);
 
     return query.watch().map((rows) {
@@ -159,7 +179,10 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
               tableClientes.id.equalsExp(tableFacturas.clienteId),
             ),
           ])
-          ..where(tablePresupuestos.expedienteId.equals(expedienteId))
+          ..where(
+            tableFacturas.tenantId.equals(attachedDatabase.activeTenantId) &
+                tablePresupuestos.expedienteId.equals(expedienteId),
+          )
           ..orderBy([OrderingTerm.desc(tableFacturas.fecha)]);
 
     return query.watch().map((rows) {
@@ -179,12 +202,17 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
     final tableFacturas = attachedDatabase.facturas;
     final tableClientes = attachedDatabase.clientes;
 
-    final row = await (select(tableFacturas).join([
-      leftOuterJoin(
-        tableClientes,
-        tableClientes.id.equalsExp(tableFacturas.clienteId),
-      ),
-    ])..where(tableFacturas.id.equals(id))).getSingleOrNull();
+    final row =
+        await (select(tableFacturas).join([
+              leftOuterJoin(
+                tableClientes,
+                tableClientes.id.equalsExp(tableFacturas.clienteId),
+              ),
+            ])..where(
+              tableFacturas.tenantId.equals(attachedDatabase.activeTenantId) &
+                  tableFacturas.id.equals(id),
+            ))
+            .getSingleOrNull();
 
     if (row == null) {
       return null;
@@ -204,7 +232,11 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
   ) async {
     final rows =
         await (select(facturas)
-              ..where((t) => t.presupuestoOrigenId.equals(presupuestoId))
+              ..where(
+                (t) =>
+                    t.tenantId.equals(attachedDatabase.activeTenantId) &
+                    t.presupuestoOrigenId.equals(presupuestoId),
+              )
               ..orderBy([(t) => OrderingTerm.desc(t.fechaCreacion)]))
             .get();
     return rows.map((row) => _toDomain(row)).toList();
@@ -215,7 +247,11 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
   ) async {
     final rows =
         await (select(facturas)
-              ..where((t) => t.facturaRectificadaId.equals(facturaId))
+              ..where(
+                (t) =>
+                    t.tenantId.equals(attachedDatabase.activeTenantId) &
+                    t.facturaRectificadaId.equals(facturaId),
+              )
               ..orderBy([(t) => OrderingTerm.asc(t.fechaCreacion)]))
             .get();
     return rows.map((row) => _toDomain(row)).toList();
@@ -225,7 +261,11 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
     String facturaId,
   ) =>
       (select(facturas)
-            ..where((t) => t.facturaRectificadaId.equals(facturaId))
+            ..where(
+              (t) =>
+                  t.tenantId.equals(attachedDatabase.activeTenantId) &
+                  t.facturaRectificadaId.equals(facturaId),
+            )
             ..orderBy([(t) => OrderingTerm.asc(t.fechaCreacion)]))
           .watch()
           .map((rows) => rows.map((row) => _toDomain(row)).toList());
@@ -235,7 +275,9 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
   ) async {
     final rows =
         await (select(facturas)..where(
-              (t) => t.id.equals(raizId) | t.facturaRaizId.equals(raizId),
+              (t) =>
+                  t.tenantId.equals(attachedDatabase.activeTenantId) &
+                  (t.id.equals(raizId) | t.facturaRaizId.equals(raizId)),
             ))
             .get();
     return rows.map((row) => _toDomain(row)).toList();
@@ -245,7 +287,11 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
     String presupuestoId,
   ) =>
       (select(facturas)
-            ..where((t) => t.presupuestoOrigenId.equals(presupuestoId))
+            ..where(
+              (t) =>
+                  t.tenantId.equals(attachedDatabase.activeTenantId) &
+                  t.presupuestoOrigenId.equals(presupuestoId),
+            )
             ..orderBy([(t) => OrderingTerm.desc(t.fechaCreacion)]))
           .watch()
           .map((rows) => rows.map((row) => _toDomain(row)).toList());
@@ -263,7 +309,10 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
                   ),
                 ),
               ])
-              ..where(tablePresupuestos.expedienteId.equals(expedienteId))
+              ..where(
+                tableFacturas.tenantId.equals(attachedDatabase.activeTenantId) &
+                    tablePresupuestos.expedienteId.equals(expedienteId),
+              )
               ..limit(1))
             .getSingleOrNull();
 
@@ -271,7 +320,9 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<void> insertarFactura(FacturasCompanion factura) async {
-    await into(facturas).insert(factura);
+    await into(facturas).insert(
+      factura.copyWith(tenantId: Value(attachedDatabase.activeTenantId)),
+    );
   }
 
   Future<void> actualizarTotales({
@@ -280,32 +331,45 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
     required double iva,
     required double total,
   }) async {
-    await (update(facturas)..where((t) => t.id.equals(facturaId))).write(
-      FacturasCompanion(
-        subtotal: Value(subtotal),
-        iva: Value(iva),
-        total: Value(total),
-        fechaModificacion: Value(DateTime.now()),
-      ),
-    );
+    await (update(facturas)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(facturaId),
+        ))
+        .write(
+          FacturasCompanion(
+            subtotal: Value(subtotal),
+            iva: Value(iva),
+            total: Value(total),
+            fechaModificacion: Value(DateTime.now()),
+          ),
+        );
   }
 
   Future<void> actualizarEstado(String facturaId, String estado) async {
-    await (update(facturas)..where((t) => t.id.equals(facturaId))).write(
-      FacturasCompanion(
-        estado: Value(estado),
-        fechaModificacion: Value(DateTime.now()),
-      ),
-    );
+    await (update(facturas)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(facturaId),
+        ))
+        .write(
+          FacturasCompanion(
+            estado: Value(estado),
+            fechaModificacion: Value(DateTime.now()),
+          ),
+        );
   }
 
   Future<void> actualizarEmision(
     String facturaId,
     FacturasCompanion companion,
   ) async {
-    await (update(
-      facturas,
-    )..where((t) => t.id.equals(facturaId))).write(companion);
+    await (update(facturas)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(facturaId),
+        ))
+        .write(companion);
   }
 
   Future<void> actualizarFactura({
@@ -316,19 +380,29 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
     required String estado,
     required String observaciones,
   }) async {
-    await (update(facturas)..where((t) => t.id.equals(id))).write(
-      FacturasCompanion(
-        clienteId: Value(clienteId),
-        fecha: Value(fecha),
-        fechaVencimiento: Value(fechaVencimiento),
-        estado: Value(estado),
-        observaciones: Value(observaciones),
-        fechaModificacion: Value(DateTime.now()),
-      ),
-    );
+    await (update(facturas)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .write(
+          FacturasCompanion(
+            clienteId: Value(clienteId),
+            fecha: Value(fecha),
+            fechaVencimiento: Value(fechaVencimiento),
+            estado: Value(estado),
+            observaciones: Value(observaciones),
+            fechaModificacion: Value(DateTime.now()),
+          ),
+        );
   }
 
   Future<void> eliminarFactura(String id) async {
-    await (delete(facturas)..where((t) => t.id.equals(id))).go();
+    await (delete(facturas)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .go();
   }
 }

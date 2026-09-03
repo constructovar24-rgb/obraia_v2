@@ -67,6 +67,7 @@ class ExpedienteRepository {
 
     await database.expedientesDao.insertarExpediente(
       ExpedientesCompanion.insert(
+        tenantId: Value(database.activeTenantId),
         id: expedienteId,
         codigo: codigo,
         nombre: nombre,

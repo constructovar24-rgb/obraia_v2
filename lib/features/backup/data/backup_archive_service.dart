@@ -22,6 +22,7 @@ class BackupArchiveService {
   static const maxCompressionRatio = 500;
 
   static const _expectedTables = <String>{
+    'tenants',
     'certificaciones',
     'clientes',
     'cobros',
@@ -400,6 +401,7 @@ class BackupArchiveService {
           .whereType<String>()
           .toSet();
       final expectedTables = _expectedTables.difference({
+        if (schemaVersion < 23) 'tenants',
         if (schemaVersion < 20) 'factura_asignaciones_presupuesto',
         if (schemaVersion < 21) 'factura_documentos_emitidos',
         if (schemaVersion < 22) 'movimientos_credito_cliente',

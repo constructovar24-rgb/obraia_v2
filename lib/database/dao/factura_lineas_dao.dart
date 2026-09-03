@@ -30,9 +30,13 @@ class FacturaLineasDao extends DatabaseAccessor<AppDatabase>
   Future<List<factura_linea_domain.FacturaLinea>> obtenerPorFactura(
     String facturaId,
   ) async {
-    final rows = await (select(
-      facturaLineas,
-    )..where((t) => t.facturaId.equals(facturaId))).get();
+    final rows =
+        await (select(facturaLineas)..where(
+              (t) =>
+                  t.tenantId.equals(attachedDatabase.activeTenantId) &
+                  t.facturaId.equals(facturaId),
+            ))
+            .get();
 
     return rows.map(_toDomain).toList();
   }
@@ -42,35 +46,58 @@ class FacturaLineasDao extends DatabaseAccessor<AppDatabase>
   ) async {
     final ids = facturaIds.toList();
     if (ids.isEmpty) return const [];
-    final rows = await (select(
-      facturaLineas,
-    )..where((t) => t.facturaId.isIn(ids))).get();
+    final rows =
+        await (select(facturaLineas)..where(
+              (t) =>
+                  t.tenantId.equals(attachedDatabase.activeTenantId) &
+                  t.facturaId.isIn(ids),
+            ))
+            .get();
     return rows.map(_toDomain).toList();
   }
 
   Stream<List<factura_linea_domain.FacturaLinea>> observarPorFactura(
     String facturaId,
   ) {
-    return (select(facturaLineas)..where((t) => t.facturaId.equals(facturaId)))
+    return (select(facturaLineas)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.facturaId.equals(facturaId),
+        ))
         .watch()
         .map((rows) => rows.map(_toDomain).toList());
   }
 
   Future<void> insertarLinea(FacturaLineasCompanion linea) async {
-    await into(facturaLineas).insert(linea);
+    await into(
+      facturaLineas,
+    ).insert(linea.copyWith(tenantId: Value(attachedDatabase.activeTenantId)));
   }
 
   Future<void> actualizarLinea(String id, FacturaLineasCompanion linea) async {
-    await (update(facturaLineas)..where((t) => t.id.equals(id))).write(linea);
+    await (update(facturaLineas)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .write(linea);
   }
 
   Future<void> eliminarLinea(String id) async {
-    await (delete(facturaLineas)..where((t) => t.id.equals(id))).go();
+    await (delete(facturaLineas)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .go();
   }
 
   Future<void> eliminarPorFactura(String facturaId) async {
-    await (delete(
-      facturaLineas,
-    )..where((t) => t.facturaId.equals(facturaId))).go();
+    await (delete(facturaLineas)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.facturaId.equals(facturaId),
+        ))
+        .go();
   }
 }

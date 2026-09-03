@@ -460,6 +460,7 @@ class CreditoClienteRepository {
     String observaciones = '',
   }) => database.movimientosCreditoClienteDao.insertar(
     MovimientosCreditoClienteCompanion.insert(
+      tenantId: Value(database.activeTenantId),
       id: id,
       clienteId: clienteId,
       facturaRaizOrigenId: origenId,

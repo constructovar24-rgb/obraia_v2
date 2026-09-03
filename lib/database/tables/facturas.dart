@@ -1,9 +1,16 @@
+// ignore_for_file: unused_import
+
 import 'package:drift/drift.dart';
 
 import 'clientes.dart';
 import 'presupuestos.dart';
+import 'tenants.dart';
 
 class Facturas extends Table {
+  TextColumn get tenantId => text()
+      .clientDefault(() => defaultTenantIdForTesting)
+      .references(Tenants, #id)();
+
   TextColumn get id => text()();
 
   TextColumn get codigo => text().withDefault(const Constant(''))();
@@ -17,10 +24,9 @@ class Facturas extends Table {
 
   TextColumn get serie => text().withDefault(const Constant('FAC'))();
 
-  TextColumn get facturaRectificadaId =>
-      text().nullable().references(Facturas, #id)();
+  TextColumn get facturaRectificadaId => text().nullable()();
 
-  TextColumn get facturaRaizId => text().nullable().references(Facturas, #id)();
+  TextColumn get facturaRaizId => text().nullable()();
 
   TextColumn get modalidadRectificacion => text().nullable()();
 
@@ -33,7 +39,7 @@ class Facturas extends Table {
 
   RealColumn get efectoTotal => real().withDefault(const Constant(0))();
 
-  TextColumn get clienteId => text().references(Clientes, #id)();
+  TextColumn get clienteId => text()();
 
   DateTimeColumn get fecha => dateTime().withDefault(currentDateAndTime)();
 
@@ -52,8 +58,7 @@ class Facturas extends Table {
 
   TextColumn get observaciones => text().withDefault(const Constant(''))();
 
-  TextColumn get presupuestoOrigenId =>
-      text().nullable().references(Presupuestos, #id)();
+  TextColumn get presupuestoOrigenId => text().nullable()();
 
   DateTimeColumn get fechaEmision => dateTime().nullable()();
 
@@ -104,4 +109,17 @@ class Facturas extends Table {
 
   @override
   Set<Column> get primaryKey => {id};
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {tenantId, id},
+  ];
+
+  @override
+  List<String> get customConstraints => [
+    'FOREIGN KEY (tenant_id, cliente_id) REFERENCES clientes (tenant_id, id)',
+    'FOREIGN KEY (tenant_id, presupuesto_origen_id) REFERENCES presupuestos (tenant_id, id)',
+    'FOREIGN KEY (tenant_id, factura_rectificada_id) REFERENCES facturas (tenant_id, id)',
+    'FOREIGN KEY (tenant_id, factura_raiz_id) REFERENCES facturas (tenant_id, id)',
+  ];
 }

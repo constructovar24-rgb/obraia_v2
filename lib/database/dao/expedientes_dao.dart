@@ -34,7 +34,9 @@ class ExpedientesDao extends DatabaseAccessor<AppDatabase>
             leftOuterJoin(clientes, clientes.id.equalsExp(table.clienteId)),
           ])
           ..where(
-            table.eliminado.equals(false) & table.clienteId.equals(clienteId),
+            table.tenantId.equals(attachedDatabase.activeTenantId) &
+                table.eliminado.equals(false) &
+                table.clienteId.equals(clienteId),
           )
           ..orderBy([OrderingTerm.desc(table.fechaCreacion)]);
 
@@ -64,9 +66,13 @@ class ExpedientesDao extends DatabaseAccessor<AppDatabase>
     final table = attachedDatabase.expedientes;
     final clientes = attachedDatabase.clientes;
 
-    final query = select(table).join([
-      leftOuterJoin(clientes, clientes.id.equalsExp(table.clienteId)),
-    ])..where(table.id.equals(id));
+    final query =
+        select(table).join([
+          leftOuterJoin(clientes, clientes.id.equalsExp(table.clienteId)),
+        ])..where(
+          table.tenantId.equals(attachedDatabase.activeTenantId) &
+              table.id.equals(id),
+        );
 
     return query.watchSingleOrNull().map((row) {
       if (row == null) {
@@ -92,51 +98,71 @@ class ExpedientesDao extends DatabaseAccessor<AppDatabase>
   Future<void> archivarExpediente(String id) async {
     final table = attachedDatabase.expedientes;
 
-    await (update(table)..where((t) => t.id.equals(id))).write(
-      ExpedientesCompanion(
-        estado: Value(
-          expediente_domain.expedienteEstadoCicloToDbValue(
-            expediente_domain.ExpedienteEstadoCiclo.archivado,
+    await (update(table)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .write(
+          ExpedientesCompanion(
+            estado: Value(
+              expediente_domain.expedienteEstadoCicloToDbValue(
+                expediente_domain.ExpedienteEstadoCiclo.archivado,
+              ),
+            ),
+            fechaModificacion: Value(DateTime.now()),
           ),
-        ),
-        fechaModificacion: Value(DateTime.now()),
-      ),
-    );
+        );
   }
 
   Future<void> restaurarExpediente(String id) async {
     final table = attachedDatabase.expedientes;
 
-    await (update(table)..where((t) => t.id.equals(id))).write(
-      ExpedientesCompanion(
-        estado: Value(
-          expediente_domain.expedienteEstadoCicloToDbValue(
-            expediente_domain.ExpedienteEstadoCiclo.activo,
+    await (update(table)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .write(
+          ExpedientesCompanion(
+            estado: Value(
+              expediente_domain.expedienteEstadoCicloToDbValue(
+                expediente_domain.ExpedienteEstadoCiclo.activo,
+              ),
+            ),
+            fechaModificacion: Value(DateTime.now()),
           ),
-        ),
-        fechaModificacion: Value(DateTime.now()),
-      ),
-    );
+        );
   }
 
   Future<void> insertarExpediente(ExpedientesCompanion expediente) async {
     final table = attachedDatabase.expedientes;
 
-    await into(table).insert(expediente);
+    await into(table).insert(
+      expediente.copyWith(tenantId: Value(attachedDatabase.activeTenantId)),
+    );
   }
 
   Future<int> actualizarExpediente(String id, ExpedientesCompanion companion) {
     final table = attachedDatabase.expedientes;
 
-    return (update(table)..where((t) => t.id.equals(id))).write(companion);
+    return (update(table)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .write(companion);
   }
 
   Future<void> eliminarLogicamente(String id) async {
     final table = attachedDatabase.expedientes;
 
-    await (update(table)..where((t) => t.id.equals(id))).write(
-      const ExpedientesCompanion(eliminado: Value(true)),
-    );
+    await (update(table)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .write(const ExpedientesCompanion(eliminado: Value(true)));
   }
 
   Stream<List<expediente_domain.Expediente>> _observarExpedientesPorEstado(
@@ -152,7 +178,11 @@ class ExpedientesDao extends DatabaseAccessor<AppDatabase>
         select(table).join([
             leftOuterJoin(clientes, clientes.id.equalsExp(table.clienteId)),
           ])
-          ..where(table.eliminado.equals(false) & table.estado.equals(estadoDb))
+          ..where(
+            table.tenantId.equals(attachedDatabase.activeTenantId) &
+                table.eliminado.equals(false) &
+                table.estado.equals(estadoDb),
+          )
           ..orderBy([OrderingTerm.desc(table.fechaCreacion)]);
 
     return query.watch().map((rows) {

@@ -277,6 +277,7 @@ class FacturacionParcialRepository {
     final ivaCentimos = monedaACentimos(centimosAMoneda(total) * iva / 100);
     await database.facturasDao.insertarFactura(
       FacturasCompanion.insert(
+        tenantId: Value(database.activeTenantId),
         id: facturaId,
         clienteId: contexto.clienteId,
         fecha: Value(ahora),
@@ -297,6 +298,7 @@ class FacturacionParcialRepository {
           : asignacion.linea.precioUnitario;
       await database.facturaLineasDao.insertarLinea(
         FacturaLineasCompanion.insert(
+          tenantId: Value(database.activeTenantId),
           id: lineaId,
           facturaId: facturaId,
           descripcion: asignacion.linea.concepto,
@@ -310,6 +312,7 @@ class FacturacionParcialRepository {
       );
       await database.facturaAsignacionesPresupuestoDao.insertar(
         FacturaAsignacionesPresupuestoCompanion.insert(
+          tenantId: Value(database.activeTenantId),
           id: const Uuid().v4(),
           facturaId: facturaId,
           facturaLineaId: lineaId,

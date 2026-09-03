@@ -11,26 +11,39 @@ class ProveedoresDao extends DatabaseAccessor<AppDatabase>
   ProveedoresDao(super.db);
 
   Future<void> insertarProveedor(ProveedoresCompanion proveedor) async {
-    await into(proveedores).insert(proveedor);
+    await into(proveedores).insert(
+      proveedor.copyWith(tenantId: Value(attachedDatabase.activeTenantId)),
+    );
   }
 
   Stream<List<Proveedore>> observarProveedores() {
     return (select(proveedores)
-          ..where((t) => t.eliminado.equals(false))
+          ..where(
+            (t) =>
+                t.tenantId.equals(attachedDatabase.activeTenantId) &
+                t.eliminado.equals(false),
+          )
           ..orderBy([(t) => OrderingTerm.desc(t.fechaCreacion)]))
         .watch();
   }
 
   Future<List<Proveedore>> obtenerProveedores() {
     return (select(proveedores)
-          ..where((t) => t.eliminado.equals(false))
+          ..where(
+            (t) =>
+                t.tenantId.equals(attachedDatabase.activeTenantId) &
+                t.eliminado.equals(false),
+          )
           ..orderBy([(t) => OrderingTerm.desc(t.fechaCreacion)]))
         .get();
   }
 
   Future<Proveedore?> obtenerProveedor(String id) {
-    return (select(proveedores)
-          ..where((t) => t.id.equals(id)))
+    return (select(proveedores)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
         .getSingleOrNull();
   }
 
@@ -38,18 +51,20 @@ class ProveedoresDao extends DatabaseAccessor<AppDatabase>
     String id,
     ProveedoresCompanion proveedor,
   ) async {
-    await (update(proveedores)..where((t) => t.id.equals(id))).write(
-      proveedor.copyWith(
-        fechaModificacion: Value(DateTime.now()),
-      ),
-    );
+    await (update(proveedores)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .write(proveedor.copyWith(fechaModificacion: Value(DateTime.now())));
   }
 
   Future<void> eliminarLogicamente(String id) async {
-    await (update(proveedores)..where((t) => t.id.equals(id))).write(
-      const ProveedoresCompanion(
-        eliminado: Value(true),
-      ),
-    );
+    await (update(proveedores)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .write(const ProveedoresCompanion(eliminado: Value(true)));
   }
 }

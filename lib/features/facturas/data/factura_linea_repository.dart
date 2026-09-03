@@ -150,6 +150,7 @@ class FacturaLineaRepository {
 
       await database.facturaLineasDao.insertarLinea(
         FacturaLineasCompanion.insert(
+          tenantId: Value(database.activeTenantId),
           id: nuevaLinea.id,
           facturaId: facturaId,
           descripcion: descripcion,

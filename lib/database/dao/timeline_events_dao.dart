@@ -13,13 +13,16 @@ class TimelineEventsDao extends DatabaseAccessor<AppDatabase>
   static const int defaultGlobalLimit = 100;
 
   Future<void> insertar(TimelineEventsCompanion event) async {
-    await into(timelineEvents).insert(event);
+    await into(
+      timelineEvents,
+    ).insert(event.copyWith(tenantId: Value(attachedDatabase.activeTenantId)));
   }
 
   Future<List<TimelineEvent>> obtenerRecientesGlobales({
     int limit = defaultGlobalLimit,
   }) {
     return (select(timelineEvents)
+          ..where((t) => t.tenantId.equals(attachedDatabase.activeTenantId))
           ..orderBy([(t) => OrderingTerm.desc(t.fecha)])
           ..limit(limit))
         .get();
@@ -29,46 +32,54 @@ class TimelineEventsDao extends DatabaseAccessor<AppDatabase>
     int limit = defaultGlobalLimit,
   }) {
     return (select(timelineEvents)
+          ..where((t) => t.tenantId.equals(attachedDatabase.activeTenantId))
           ..orderBy([(t) => OrderingTerm.desc(t.fecha)])
           ..limit(limit))
         .watch();
   }
 
-        Future<List<TimelineEvent>> obtenerTodosLosEventosGlobales() {
-          return (select(timelineEvents)
-            ..orderBy([(t) => OrderingTerm.desc(t.fecha)]))
-          .get();
-        }
-
-        Stream<List<TimelineEvent>> observarTodosLosEventosGlobales() {
-          return (select(timelineEvents)
-            ..orderBy([(t) => OrderingTerm.desc(t.fecha)]))
-          .watch();
-        }
-
-  Future<List<TimelineEvent>> obtenerPorExpediente(
-    String expedienteId,
-  ) {
+  Future<List<TimelineEvent>> obtenerTodosLosEventosGlobales() {
     return (select(timelineEvents)
-          ..where((t) => t.expedienteId.equals(expedienteId))
+          ..where((t) => t.tenantId.equals(attachedDatabase.activeTenantId))
           ..orderBy([(t) => OrderingTerm.desc(t.fecha)]))
         .get();
   }
 
-  Stream<List<TimelineEvent>> observarPorExpediente(
-    String expedienteId,
-  ) {
+  Stream<List<TimelineEvent>> observarTodosLosEventosGlobales() {
     return (select(timelineEvents)
-          ..where((t) => t.expedienteId.equals(expedienteId))
+          ..where((t) => t.tenantId.equals(attachedDatabase.activeTenantId))
           ..orderBy([(t) => OrderingTerm.desc(t.fecha)]))
         .watch();
   }
 
-  Future<void> eliminarPorExpediente(
-    String expedienteId,
-  ) async {
-    await (delete(timelineEvents)
-          ..where((t) => t.expedienteId.equals(expedienteId)))
+  Future<List<TimelineEvent>> obtenerPorExpediente(String expedienteId) {
+    return (select(timelineEvents)
+          ..where(
+            (t) =>
+                t.tenantId.equals(attachedDatabase.activeTenantId) &
+                t.expedienteId.equals(expedienteId),
+          )
+          ..orderBy([(t) => OrderingTerm.desc(t.fecha)]))
+        .get();
+  }
+
+  Stream<List<TimelineEvent>> observarPorExpediente(String expedienteId) {
+    return (select(timelineEvents)
+          ..where(
+            (t) =>
+                t.tenantId.equals(attachedDatabase.activeTenantId) &
+                t.expedienteId.equals(expedienteId),
+          )
+          ..orderBy([(t) => OrderingTerm.desc(t.fecha)]))
+        .watch();
+  }
+
+  Future<void> eliminarPorExpediente(String expedienteId) async {
+    await (delete(timelineEvents)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.expedienteId.equals(expedienteId),
+        ))
         .go();
   }
 }

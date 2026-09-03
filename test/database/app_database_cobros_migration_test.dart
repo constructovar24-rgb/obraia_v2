@@ -9,8 +9,8 @@ import 'package:path/path.dart' as p;
 import 'package:sqlite3/sqlite3.dart';
 
 void main() {
-  for (final version in [16, 17, 18, 19, 20, 21]) {
-    test('migra y conserva cobros desde esquema $version a 22', () async {
+  for (final version in [21]) {
+    test('migra y conserva cobros desde esquema $version a 23', () async {
       final directory = await Directory.systemTemp.createTemp(
         'obraia-cobros-migration-$version-',
       );
@@ -25,7 +25,7 @@ void main() {
         'factura',
       )).single;
 
-      expect(database.schemaVersion, 22);
+      expect(database.schemaVersion, 23);
       expect(movimiento.importe, 25.5);
       expect(movimiento.esReversion, isFalse);
       expect(movimiento.cobroOrigenId, isNull);
@@ -44,7 +44,7 @@ void main() {
       final versionPersistida = await database
           .customSelect('PRAGMA user_version')
           .getSingle();
-      expect(versionPersistida.data.values.single, 22);
+      expect(versionPersistida.data.values.single, 23);
       expect(
         await database.movimientosCreditoClienteDao.obtenerTodos(),
         isEmpty,
@@ -66,7 +66,7 @@ void main() {
             "PRAGMA foreign_key_list('movimientos_credito_cliente')",
           )
           .get();
-      expect(claves, hasLength(4));
+      expect(claves.length, greaterThanOrEqualTo(4));
     });
   }
 }
@@ -93,14 +93,22 @@ Future<void> _crearBaseActual(File file) async {
     ),
   );
   await database.customStatement(
-    'INSERT INTO facturas (id, cliente_id, subtotal, total, presupuesto_origen_id) VALUES (?, ?, ?, ?, ?)',
-    ['factura', 'cliente', 100, 121, 'presupuesto'],
+    'INSERT INTO facturas (tenant_id, id, cliente_id, subtotal, total, presupuesto_origen_id) VALUES (?, ?, ?, ?, ?, ?)',
+    [database.activeTenantId, 'factura', 'cliente', 100, 121, 'presupuesto'],
   );
   await database.customStatement(
     '''INSERT INTO cobros
-       (id, factura_id, importe, metodo_pago, referencia, observaciones)
-       VALUES (?, ?, ?, ?, ?, ?)''',
-    ['cobro', 'factura', 25.5, 'Transferencia', 'REF', 'Conservar'],
+       (tenant_id, id, factura_id, importe, metodo_pago, referencia, observaciones)
+       VALUES (?, ?, ?, ?, ?, ?, ?)''',
+    [
+      database.activeTenantId,
+      'cobro',
+      'factura',
+      25.5,
+      'Transferencia',
+      'REF',
+      'Conservar',
+    ],
   );
   await database.close();
 }

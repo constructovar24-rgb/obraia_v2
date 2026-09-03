@@ -4,6 +4,7 @@ part of 'empresa_configuracion_dao.dart';
 
 // ignore_for_file: type=lint
 mixin _$EmpresaConfiguracionDaoMixin on DatabaseAccessor<AppDatabase> {
+  $TenantsTable get tenants => attachedDatabase.tenants;
   $EmpresaConfiguracionTable get empresaConfiguracion =>
       attachedDatabase.empresaConfiguracion;
   EmpresaConfiguracionDaoManager get managers =>
@@ -13,6 +14,8 @@ mixin _$EmpresaConfiguracionDaoMixin on DatabaseAccessor<AppDatabase> {
 class EmpresaConfiguracionDaoManager {
   final _$EmpresaConfiguracionDaoMixin _db;
   EmpresaConfiguracionDaoManager(this._db);
+  $$TenantsTableTableManager get tenants =>
+      $$TenantsTableTableManager(_db.attachedDatabase, _db.tenants);
   $$EmpresaConfiguracionTableTableManager get empresaConfiguracion =>
       $$EmpresaConfiguracionTableTableManager(
         _db.attachedDatabase,

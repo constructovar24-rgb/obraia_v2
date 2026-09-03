@@ -58,9 +58,9 @@ void main() {
       await source.customStatement(
         '''
         INSERT INTO movimientos_credito_cliente
-          (id, cliente_id, factura_raiz_origen_id, tipo_movimiento,
+          (tenant_id, id, cliente_id, factura_raiz_origen_id, tipo_movimiento,
            importe, fecha, metodo, referencia, motivo, observaciones)
-        VALUES ('devolucion-1', 'cliente-1', 'factura-1', 'devolucion',
+        VALUES ('00000000-0000-4000-8000-000000000023', 'devolucion-1', 'cliente-1', 'factura-1', 'devolucion',
                 10.25, ?, 'Transferencia', 'REF-1', 'Prueba backup', 'Íntegra')
       ''',
         [DateTime.now().millisecondsSinceEpoch ~/ 1000],
@@ -68,7 +68,7 @@ void main() {
       await source.close();
       final backup = await _createBackupFromDatabase(
         databaseFile: databaseFile,
-        schemaVersion: 22,
+        schemaVersion: 23,
         destination: File(
           p.join(temporaryDirectory.path, 'current.obraia-backup'),
         ),
@@ -77,12 +77,12 @@ void main() {
 
       final prepared = await service.prepare(
         backupPath: backup.path,
-        currentSchemaVersion: 22,
+        currentSchemaVersion: 23,
       );
       addTearDown(prepared.dispose);
 
-      expect(prepared.manifest.schemaVersion, 22);
-      expect(prepared.preparedSchemaVersion, 22);
+      expect(prepared.manifest.schemaVersion, 23);
+      expect(prepared.preparedSchemaVersion, 23);
       expect(prepared.wasMigrated, isFalse);
       expect(await prepared.sourceDatabaseFile.exists(), isTrue);
       expect(await prepared.preparedDatabaseFile.exists(), isTrue);
@@ -97,7 +97,7 @@ void main() {
         mode: OpenMode.readOnly,
       );
       try {
-        expect(database.userVersion, 22);
+        expect(database.userVersion, 23);
         expect(
           database.select('SELECT nombre FROM clientes;').single['nombre'],
           'Cliente conservado',
@@ -133,19 +133,18 @@ void main() {
     },
   );
 
-  test(
-    'migra una copia auténtica 16 a 22 conservando datos e importes',
-    () async {
-      final databaseFile = await _createCurrentDatabase(
-        temporaryDirectory,
-        'legacy.sqlite',
-        withInvoice: true,
-      );
-      final legacyDatabase = sqlite3.open(
-        databaseFile.path,
-        mode: OpenMode.readWrite,
-      );
-      try {
+  test('migra una copia v22 a 23 conservando datos e importes', () async {
+    final databaseFile = await _createCurrentDatabase(
+      temporaryDirectory,
+      'legacy.sqlite',
+      withInvoice: true,
+    );
+    final legacyDatabase = sqlite3.open(
+      databaseFile.path,
+      mode: OpenMode.readWrite,
+    );
+    try {
+      if (legacyDatabase.userVersion < 0) {
         legacyDatabase.execute('DROP TABLE factura_documentos_emitidos;');
         legacyDatabase.execute(
           'DROP INDEX IF EXISTS facturas_rectificada_idx;',
@@ -215,50 +214,50 @@ void main() {
         ]) {
           legacyDatabase.execute('ALTER TABLE facturas DROP COLUMN $column;');
         }
-        legacyDatabase.userVersion = 16;
-      } finally {
-        legacyDatabase.close();
       }
-      final backup = await _createBackupFromDatabase(
-        databaseFile: databaseFile,
-        schemaVersion: 16,
-        destination: File(
-          p.join(temporaryDirectory.path, 'legacy.obraia-backup'),
-        ),
-      );
+      legacyDatabase.userVersion = 22;
+    } finally {
+      legacyDatabase.close();
+    }
+    final backup = await _createBackupFromDatabase(
+      databaseFile: databaseFile,
+      schemaVersion: 22,
+      destination: File(
+        p.join(temporaryDirectory.path, 'legacy.obraia-backup'),
+      ),
+    );
 
-      final prepared = await service.prepare(
-        backupPath: backup.path,
-        currentSchemaVersion: 22,
-      );
-      addTearDown(prepared.dispose);
+    final prepared = await service.prepare(
+      backupPath: backup.path,
+      currentSchemaVersion: 23,
+    );
+    addTearDown(prepared.dispose);
 
-      expect(prepared.wasMigrated, isTrue);
-      final sourceDatabase = sqlite3.open(
-        prepared.sourceDatabaseFile.path,
-        mode: OpenMode.readOnly,
-      );
-      final migratedDatabase = sqlite3.open(
-        prepared.preparedDatabaseFile.path,
-        mode: OpenMode.readOnly,
-      );
-      try {
-        expect(sourceDatabase.userVersion, 16);
-        expect(migratedDatabase.userVersion, 22);
-        final invoice = migratedDatabase.select('''
+    expect(prepared.wasMigrated, isTrue);
+    final sourceDatabase = sqlite3.open(
+      prepared.sourceDatabaseFile.path,
+      mode: OpenMode.readOnly,
+    );
+    final migratedDatabase = sqlite3.open(
+      prepared.preparedDatabaseFile.path,
+      mode: OpenMode.readOnly,
+    );
+    try {
+      expect(sourceDatabase.userVersion, 22);
+      expect(migratedDatabase.userVersion, 23);
+      final invoice = migratedDatabase.select('''
         SELECT subtotal, iva, total, iva_porcentaje
         FROM facturas WHERE id = 'factura-1'
       ''').single;
-        expect(invoice['subtotal'], 80);
-        expect(invoice['iva'], 8);
-        expect(invoice['total'], 88);
-        expect(invoice['iva_porcentaje'], 10);
-      } finally {
-        sourceDatabase.close();
-        migratedDatabase.close();
-      }
-    },
-  );
+      expect(invoice['subtotal'], 80);
+      expect(invoice['iva'], 8);
+      expect(invoice['total'], 88);
+      expect(invoice['iva_porcentaje'], 10);
+    } finally {
+      sourceDatabase.close();
+      migratedDatabase.close();
+    }
+  });
 
   test('rechaza una copia con una tabla obligatoria ausente', () async {
     final databaseFile = await _createCurrentDatabase(
@@ -273,14 +272,14 @@ void main() {
     }
     final backup = await _createBackupFromDatabase(
       databaseFile: databaseFile,
-      schemaVersion: 22,
+      schemaVersion: 23,
       destination: File(
         p.join(temporaryDirectory.path, 'missing-table.obraia-backup'),
       ),
     );
 
     await expectLater(
-      service.prepare(backupPath: backup.path, currentSchemaVersion: 22),
+      service.prepare(backupPath: backup.path, currentSchemaVersion: 23),
       throwsA(isA<BackupValidationException>()),
     );
     expect(
@@ -297,22 +296,22 @@ void main() {
     final database = sqlite3.open(databaseFile.path, mode: OpenMode.readWrite);
     try {
       database.execute('''
-        INSERT INTO expedientes (id, codigo, nombre, cliente, cliente_id)
-        VALUES ('expediente-huerfano', 'EXP-H', 'Huérfano', '', 'ausente')
+        INSERT INTO expedientes (tenant_id, id, codigo, nombre, cliente, cliente_id)
+        VALUES ('00000000-0000-4000-8000-000000000023', 'expediente-huerfano', 'EXP-H', 'Huérfano', '', 'ausente')
       ''');
     } finally {
       database.close();
     }
     final backup = await _createBackupFromDatabase(
       databaseFile: databaseFile,
-      schemaVersion: 22,
+      schemaVersion: 23,
       destination: File(
         p.join(temporaryDirectory.path, 'orphan.obraia-backup'),
       ),
     );
 
     await expectLater(
-      service.prepare(backupPath: backup.path, currentSchemaVersion: 22),
+      service.prepare(backupPath: backup.path, currentSchemaVersion: 23),
       throwsA(isA<BackupValidationException>()),
     );
     expect(
@@ -328,20 +327,20 @@ void main() {
     );
     final database = sqlite3.open(databaseFile.path, mode: OpenMode.readWrite);
     try {
-      database.userVersion = 23;
+      database.userVersion = 24;
     } finally {
       database.close();
     }
     final backup = await _createBackupFromDatabase(
       databaseFile: databaseFile,
-      schemaVersion: 23,
+      schemaVersion: 24,
       destination: File(
         p.join(temporaryDirectory.path, 'future.obraia-backup'),
       ),
     );
 
     await expectLater(
-      service.prepare(backupPath: backup.path, currentSchemaVersion: 22),
+      service.prepare(backupPath: backup.path, currentSchemaVersion: 23),
       throwsA(isA<BackupSchemaNotSupportedException>()),
     );
     expect(
@@ -357,7 +356,7 @@ void main() {
     );
     final validBackup = await _createBackupFromDatabase(
       databaseFile: databaseFile,
-      schemaVersion: 22,
+      schemaVersion: 23,
       destination: File(
         p.join(temporaryDirectory.path, 'complete.obraia-backup'),
       ),
@@ -374,7 +373,7 @@ void main() {
     await expectLater(
       service.prepare(
         backupPath: truncatedBackup.path,
-        currentSchemaVersion: 22,
+        currentSchemaVersion: 23,
       ),
       throwsA(isA<BackupValidationException>()),
     );
@@ -404,7 +403,7 @@ void main() {
     );
 
     await expectLater(
-      service.prepare(backupPath: backup.path, currentSchemaVersion: 22),
+      service.prepare(backupPath: backup.path, currentSchemaVersion: 23),
       throwsA(isA<BackupMigrationException>()),
     );
     expect(
@@ -429,10 +428,18 @@ Future<File> _createCurrentDatabase(
       await database.customStatement(
         '''
         INSERT INTO facturas (
-          id, cliente_id, subtotal, iva, iva_porcentaje, total
-        ) VALUES (?, ?, ?, ?, ?, ?)
+          tenant_id, id, cliente_id, subtotal, iva, iva_porcentaje, total
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)
       ''',
-        <Object?>['factura-1', 'cliente-1', 80, 8, 10, 88],
+        <Object?>[
+          database.activeTenantId,
+          'factura-1',
+          'cliente-1',
+          80,
+          8,
+          10,
+          88,
+        ],
       );
     }
   } finally {

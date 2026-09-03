@@ -221,6 +221,7 @@ class PresupuestoRepository {
 
     await database.presupuestosDao.insertarPresupuesto(
       PresupuestosCompanion.insert(
+        tenantId: Value(database.activeTenantId),
         id: presupuestoId,
         expedienteId: expedienteId,
         titulo: Value(codigo),

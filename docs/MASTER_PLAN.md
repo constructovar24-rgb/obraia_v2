@@ -54,11 +54,11 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 
 **Visión:** OBRA IA es un producto multiempresa y un empleado digital para autónomos y pequeñas empresas de construcción y oficios relacionados. Construcciones Tovar es el primer tenant y banco de pruebas, nunca una dependencia del core.
 
-**Estado:** auditoría completada documentalmente. El producto actual es monoempresa: una SQLite, configuración singleton, consultas globales y ausencia de tenant/usuario/rol. No se ha modificado `schemaVersion` 22 ni se ha implementado aislamiento.
+**Estado:** P0-B implementado sobre `schemaVersion` 23. Una SQLite puede contener tenants aislados mediante contexto obligatorio, consultas tenant-scoped y relaciones compuestas. Siguen pendientes usuario, rol, autorización, selector público, cloud y sincronización.
 
 **P0-A — diseño ejecutable:** completado documentalmente en `MULTI_TENANT_MIGRATION_PLAN.md`. Define tenant inicial, las 16 tablas, rebuild v22 → v23, constraints/FKs e índices compuestos, `TenantContext`, accesos, rollback, validaciones y pruebas. No hay implementación.
 
-**P0-B — migración vertical segura:** migrar las 16 tablas con `tenantId`, regenerar Drift e introducir conjuntamente contexto local mínimo y accesos tenant-scoped. Debe demostrar conservación y rechazo de relaciones cruzadas.
+**P0-B — migración vertical segura:** implementado. Las 16 tablas incorporan `tenantId`, Drift está regenerado, v22 se protege y migra a v23, y contexto/accesos, numeración fiscal y backup están cubiertos con dos tenants y rechazo de relaciones cruzadas.
 
 **P0-C — ciclo de tenant y endurecimiento:** preparar selección/cambio futuro, invalidación de sesión, retirada de accesos heredados y consolidación de casos de uso. No habilitar multiempresa pública sin autorización/membresías.
 

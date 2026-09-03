@@ -132,10 +132,11 @@ void main() {
     await sourceDatabase.customStatement('PRAGMA foreign_keys = OFF');
     await sourceDatabase.customStatement(
       '''
-      INSERT INTO expedientes (id, codigo, nombre, cliente, cliente_id)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO expedientes (tenant_id, id, codigo, nombre, cliente, cliente_id)
+      VALUES (?, ?, ?, ?, ?, ?)
     ''',
       <Object?>[
+        sourceDatabase.activeTenantId,
         'expediente-huerfano',
         'EXP-H',
         'Expediente huérfano',

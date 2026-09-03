@@ -16,13 +16,18 @@ class FacturaDocumentosEmitidosDao extends DatabaseAccessor<AppDatabase>
     required String sha256,
   }) => into(facturaDocumentosEmitidos).insert(
     FacturaDocumentosEmitidosCompanion.insert(
+      tenantId: Value(attachedDatabase.activeTenantId),
       facturaId: facturaId,
       pdf: pdf,
       sha256: sha256,
     ),
   );
 
-  Future<FacturaDocumentosEmitido?> obtener(String facturaId) => (select(
-    facturaDocumentosEmitidos,
-  )..where((t) => t.facturaId.equals(facturaId))).getSingleOrNull();
+  Future<FacturaDocumentosEmitido?> obtener(String facturaId) =>
+      (select(facturaDocumentosEmitidos)..where(
+            (t) =>
+                t.tenantId.equals(attachedDatabase.activeTenantId) &
+                t.facturaId.equals(facturaId),
+          ))
+          .getSingleOrNull();
 }

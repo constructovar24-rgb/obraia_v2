@@ -13,13 +13,19 @@ class EmpresaConfiguracionDao extends DatabaseAccessor<AppDatabase>
   EmpresaConfiguracionDao(super.db);
 
   Stream<empresa_domain.EmpresaConfiguracion?> observarConfiguracion() {
-    return (select(empresaConfiguracion)..limit(1)).watchSingleOrNull().map(
-      (row) => row == null ? null : _toDomain(row),
-    );
+    return (select(empresaConfiguracion)
+          ..where((t) => t.tenantId.equals(attachedDatabase.activeTenantId))
+          ..limit(1))
+        .watchSingleOrNull()
+        .map((row) => row == null ? null : _toDomain(row));
   }
 
   Future<empresa_domain.EmpresaConfiguracion?> obtenerConfiguracion() async {
-    final row = await (select(empresaConfiguracion)..limit(1)).getSingleOrNull();
+    final row =
+        await (select(empresaConfiguracion)
+              ..where((t) => t.tenantId.equals(attachedDatabase.activeTenantId))
+              ..limit(1))
+            .getSingleOrNull();
     if (row == null) {
       return null;
     }
@@ -30,16 +36,21 @@ class EmpresaConfiguracionDao extends DatabaseAccessor<AppDatabase>
   Future<void> insertarConfiguracion(
     EmpresaConfiguracionCompanion companion,
   ) async {
-    await into(empresaConfiguracion).insert(companion);
+    await into(empresaConfiguracion).insert(
+      companion.copyWith(tenantId: Value(attachedDatabase.activeTenantId)),
+    );
   }
 
   Future<void> actualizarConfiguracion(
     String id,
     EmpresaConfiguracionCompanion companion,
   ) async {
-    await (update(empresaConfiguracion)..where((t) => t.id.equals(id))).write(
-      companion,
-    );
+    await (update(empresaConfiguracion)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .write(companion);
   }
 
   empresa_domain.EmpresaConfiguracion _toDomain(EmpresaConfiguracionData row) {

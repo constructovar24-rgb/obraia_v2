@@ -30,17 +30,28 @@ class MovimientosCreditoClienteDao extends DatabaseAccessor<AppDatabase>
       );
 
   Future<void> insertar(MovimientosCreditoClienteCompanion movimiento) =>
-      into(movimientosCreditoCliente).insert(movimiento);
+      into(movimientosCreditoCliente).insert(
+        movimiento.copyWith(tenantId: Value(attachedDatabase.activeTenantId)),
+      );
 
   Future<domain.MovimientoCreditoCliente?> obtener(String id) async {
-    final row = await (select(
-      movimientosCreditoCliente,
-    )..where((t) => t.id.equals(id))).getSingleOrNull();
+    final row =
+        await (select(movimientosCreditoCliente)..where(
+              (t) =>
+                  t.tenantId.equals(attachedDatabase.activeTenantId) &
+                  t.id.equals(id),
+            ))
+            .getSingleOrNull();
     return row == null ? null : _map(row);
   }
 
   Future<List<domain.MovimientoCreditoCliente>> obtenerTodos() async =>
-      (await select(movimientosCreditoCliente).get()).map(_map).toList();
+      (await (select(movimientosCreditoCliente)..where(
+                (t) => t.tenantId.equals(attachedDatabase.activeTenantId),
+              ))
+              .get())
+          .map(_map)
+          .toList();
 
   Stream<List<domain.MovimientoCreditoCliente>> observarPorFamilia(
     String facturaRaizId,
@@ -48,8 +59,9 @@ class MovimientosCreditoClienteDao extends DatabaseAccessor<AppDatabase>
       (select(movimientosCreditoCliente)
             ..where(
               (t) =>
-                  t.facturaRaizOrigenId.equals(facturaRaizId) |
-                  t.facturaRaizDestinoId.equals(facturaRaizId),
+                  t.tenantId.equals(attachedDatabase.activeTenantId) &
+                  (t.facturaRaizOrigenId.equals(facturaRaizId) |
+                      t.facturaRaizDestinoId.equals(facturaRaizId)),
             )
             ..orderBy([(t) => OrderingTerm.desc(t.fechaCreacion)]))
           .watch()

@@ -230,6 +230,7 @@ class CobroRepository {
       );
       await database.cobrosDao.insertarCobro(
         CobrosCompanion.insert(
+          tenantId: Value(database.activeTenantId),
           id: cobroId,
           facturaId: facturaId,
           fecha: Value(fecha),
@@ -329,6 +330,7 @@ class CobroRepository {
       reversionId = const Uuid().v4();
       await database.cobrosDao.insertarCobro(
         CobrosCompanion.insert(
+          tenantId: Value(database.activeTenantId),
           id: reversionId,
           facturaId: factura.id,
           fecha: Value(fecha),

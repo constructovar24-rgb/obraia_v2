@@ -1,6 +1,6 @@
 # Diseño ejecutable de migración multi-tenant v22 → v23
 
-Estado del documento: **diseño propuesto para futura aceptación; no implementado**. Elaborado el 3 de septiembre de 2026 sobre `main` en `e815611b2d3ae69e2157bf21735226db90800ef3`. El código continúa en `schemaVersion` 22 y no existe todavía ninguna tabla, columna, migración ni contexto de tenant.
+Estado del documento: **P0-B implementado y pendiente de aceptación/publicación**. Diseñado e implementado el 3 de septiembre de 2026. El código usa `schemaVersion` 23, tabla `tenants`, `tenant_id` obligatorio, contexto local y accesos tenant-scoped; selector público, usuarios, autenticación, cloud y sincronización siguen fuera de alcance.
 
 Este documento especifica el contrato que deberá implementar P0-B. La auditoría y prioridades generales permanecen en `MULTI_TENANT_ARCHITECTURE_AUDIT.md`.
 
@@ -435,6 +435,8 @@ Todas las pruebas de persistencia usan memoria o archivos temporales; nunca la b
 
 ## 21. Criterios de aceptación de P0-B
 
+Implementación verificada: Drift usa constraints SQL personalizados para las FKs compuestas que su API declarativa no expresa en esta versión; el DDL real y los rechazos SQLite se prueban directamente. El contexto se resuelve antes de publicar la base y no existe fallback empresarial silencioso. La copia previa usa `VACUUM INTO` sobre el archivo v22 cerrado, valida integridad/relaciones y genera nombres únicos. Los defaults de `tenantId` en companions existen únicamente para compatibilidad de fixtures; DAOs y producción inyectan siempre el tenant activo. El backup v23 conserva deliberadamente todos los tenants de la instalación y el restore parcial continúa fuera de alcance.
+
 - [ ] `schemaVersion` aumenta exactamente a 23 y el código Drift se regenera, sin ediciones manuales del generado.
 - [ ] Migración desde cada versión soportada y apertura v23 directa están probadas.
 - [ ] Backup de recuperación previo y rollback ante fallos están demostrados.
@@ -485,4 +487,4 @@ P0-B será mayor que una migración aislada, pero constituye el mínimo estado s
 
 ## 25. Siguiente incremento exacto
 
-Implementar **P0-B — migración vertical segura multi-tenant v23** conforme a este documento: primero pruebas/fixtures v22 y preflight; después esquema/rebuild/backfill e inspección de DDL; a continuación `TenantContext` local mínimo y todos los accesos tenant-scoped; finalmente aislamiento fiscal, backup/restauración, suite completa y build Windows. No habilitar usuarios, selector multiempresa público, cloud, sincronización ni Fase 3.
+Tras la aceptación y publicación de P0-B, preparar **P0-C — ciclo de tenant y limpieza de frontera** conforme a este documento. No habilitar usuarios, selector multiempresa público, cloud, sincronización ni Fase 3 sin un incremento expresamente autorizado.

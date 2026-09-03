@@ -29,22 +29,32 @@ class CobrosDao extends DatabaseAccessor<AppDatabase> with _$CobrosDaoMixin {
 
   Stream<List<cobro_domain.Cobro>> observarPorFactura(String facturaId) {
     return (select(cobros)
-          ..where((t) => t.facturaId.equals(facturaId))
+          ..where(
+            (t) =>
+                t.tenantId.equals(attachedDatabase.activeTenantId) &
+                t.facturaId.equals(facturaId),
+          )
           ..orderBy([(t) => OrderingTerm.desc(t.fecha)]))
         .watch()
         .map((rows) => rows.map(_toDomain).toList());
   }
 
   Stream<List<cobro_domain.Cobro>> observarCobros() {
-    return (select(cobros)..orderBy([(t) => OrderingTerm.desc(t.fecha)]))
+    return (select(cobros)
+          ..where((t) => t.tenantId.equals(attachedDatabase.activeTenantId))
+          ..orderBy([(t) => OrderingTerm.desc(t.fecha)]))
         .watch()
         .map((rows) => rows.map(_toDomain).toList());
   }
 
   Future<cobro_domain.Cobro?> obtenerPorId(String id) async {
-    final row = await (select(
-      cobros,
-    )..where((t) => t.id.equals(id))).getSingleOrNull();
+    final row =
+        await (select(cobros)..where(
+              (t) =>
+                  t.tenantId.equals(attachedDatabase.activeTenantId) &
+                  t.id.equals(id),
+            ))
+            .getSingleOrNull();
     if (row == null) {
       return null;
     }
@@ -52,13 +62,19 @@ class CobrosDao extends DatabaseAccessor<AppDatabase> with _$CobrosDaoMixin {
   }
 
   Future<void> insertarCobro(CobrosCompanion cobro) async {
-    await into(cobros).insert(cobro);
+    await into(
+      cobros,
+    ).insert(cobro.copyWith(tenantId: Value(attachedDatabase.activeTenantId)));
   }
 
   Future<List<cobro_domain.Cobro>> obtenerPorFactura(String facturaId) async {
     final rows =
         await (select(cobros)
-              ..where((t) => t.facturaId.equals(facturaId))
+              ..where(
+                (t) =>
+                    t.tenantId.equals(attachedDatabase.activeTenantId) &
+                    t.facturaId.equals(facturaId),
+              )
               ..orderBy([(t) => OrderingTerm.desc(t.fecha)]))
             .get();
     return rows.map(_toDomain).toList();
@@ -72,23 +88,38 @@ class CobrosDao extends DatabaseAccessor<AppDatabase> with _$CobrosDaoMixin {
     required String referencia,
     required String observaciones,
   }) async {
-    await (update(cobros)..where((t) => t.id.equals(id))).write(
-      CobrosCompanion(
-        fecha: Value(fecha),
-        importe: Value(importe),
-        metodoPago: Value(metodoPago),
-        referencia: Value(referencia),
-        observaciones: Value(observaciones),
-        fechaModificacion: Value(DateTime.now()),
-      ),
-    );
+    await (update(cobros)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .write(
+          CobrosCompanion(
+            fecha: Value(fecha),
+            importe: Value(importe),
+            metodoPago: Value(metodoPago),
+            referencia: Value(referencia),
+            observaciones: Value(observaciones),
+            fechaModificacion: Value(DateTime.now()),
+          ),
+        );
   }
 
   Future<void> eliminarCobro(String id) async {
-    await (delete(cobros)..where((t) => t.id.equals(id))).go();
+    await (delete(cobros)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .go();
   }
 
   Future<void> eliminarPorFactura(String facturaId) async {
-    await (delete(cobros)..where((t) => t.facturaId.equals(facturaId))).go();
+    await (delete(cobros)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.facturaId.equals(facturaId),
+        ))
+        .go();
   }
 }

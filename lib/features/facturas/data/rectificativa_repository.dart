@@ -215,6 +215,7 @@ class RectificativaRepository {
     final ahora = DateTime.now();
     await database.facturasDao.insertarFactura(
       FacturasCompanion.insert(
+        tenantId: Value(database.activeTenantId),
         id: facturaId,
         clienteId: raiz.clienteId,
         fecha: Value(ahora),
@@ -247,6 +248,7 @@ class RectificativaRepository {
           ajuste.cantidad ?? (ajuste.baseCentimos < 0 ? -1.0 : 1.0);
       await database.facturaLineasDao.insertarLinea(
         FacturaLineasCompanion.insert(
+          tenantId: Value(database.activeTenantId),
           id: lineaId,
           facturaId: facturaId,
           descripcion: ajuste.raiz.descripcion,
@@ -264,6 +266,7 @@ class RectificativaRepository {
       if (asignacionRaiz != null) {
         await database.facturaAsignacionesPresupuestoDao.insertar(
           FacturaAsignacionesPresupuestoCompanion.insert(
+            tenantId: Value(database.activeTenantId),
             id: const Uuid().v4(),
             facturaId: facturaId,
             facturaLineaId: lineaId,

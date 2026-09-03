@@ -1,6 +1,12 @@
 import 'package:drift/drift.dart';
 
+import 'tenants.dart';
+
 class Clientes extends Table {
+  TextColumn get tenantId => text()
+      .clientDefault(() => defaultTenantIdForTesting)
+      .references(Tenants, #id)();
+
   TextColumn get id => text()();
 
   TextColumn get nombre => text()();
@@ -31,10 +37,17 @@ class Clientes extends Table {
 
   BoolColumn get eliminado => boolean().withDefault(const Constant(false))();
 
-  DateTimeColumn get fechaCreacion => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get fechaCreacion =>
+      dateTime().withDefault(currentDateAndTime)();
 
-  DateTimeColumn get fechaModificacion => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get fechaModificacion =>
+      dateTime().withDefault(currentDateAndTime)();
 
   @override
   Set<Column> get primaryKey => {id};
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {tenantId, id},
+  ];
 }

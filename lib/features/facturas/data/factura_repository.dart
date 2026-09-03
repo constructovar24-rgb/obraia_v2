@@ -347,6 +347,7 @@ class FacturaRepository {
     );
     await database.facturasDao.insertarFactura(
       FacturasCompanion.insert(
+        tenantId: Value(database.activeTenantId),
         id: facturaId,
         clienteId: clienteId,
         fecha: Value(fecha),
@@ -437,6 +438,7 @@ class FacturaRepository {
       for (final linea in lineas) {
         await database.facturaLineasDao.insertarLinea(
           FacturaLineasCompanion.insert(
+            tenantId: Value(database.activeTenantId),
             id: const Uuid().v4(),
             facturaId: facturaId,
             descripcion: linea.concepto,

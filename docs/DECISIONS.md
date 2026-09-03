@@ -15,6 +15,8 @@ Este documento está preparado para registrar decisiones arquitectónicas, tecno
 - 2026-09-03: Una instalación v22 crea transaccionalmente un UUID v4 de tenant inicial. Su nombre procede de la configuración si es inequívoca y no vacía; en otro caso usa “Empresa inicial”. No se deriva identidad de Construcciones Tovar ni se usa un UUID común entre instalaciones.
 - 2026-09-03: P0-B será una migración vertical: esquema v23, contexto local mínimo y accesos tenant-scoped se implementarán juntos. Separar persistencia y consultas dejaría escrituras incompatibles o lecturas globales inseguras.
 - 2026-09-03: v23 mantiene temporalmente `MAX(numeroLegal) + 1` dentro de la transacción de emisión, aislado por tenant, serie y ejercicio. Una tabla de secuencias se aplaza; un futuro servidor será autoridad del número fiscal definitivo.
+- 2026-09-03: P0-B materializa la defensa en profundidad con `TenantContext` obligatorio, claves candidatas `(tenantId, id)` y FKs compuestas expresadas mediante constraints SQL de Drift e inspeccionadas en SQLite. Los defaults de tenant solo facilitan fixtures de prueba; producción resuelve el contexto antes de operar.
+- 2026-09-03: una base v22 cerrada recibe antes de abrir Drift un snapshot SQLite validado y no sobrescribible. El restore sigue siendo de instalación completa; exportación o fusión por tenant quedan fuera de P0-B.
 
 ## Interfaz y navegación
 

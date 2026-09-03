@@ -1,6 +1,12 @@
 import 'package:drift/drift.dart';
 
+import 'tenants.dart';
+
 class EmpresaConfiguracion extends Table {
+  TextColumn get tenantId => text()
+      .clientDefault(() => defaultTenantIdForTesting)
+      .references(Tenants, #id)();
+
   TextColumn get id => text()();
 
   TextColumn get nombreEmpresa => text().withDefault(const Constant(''))();
@@ -25,4 +31,10 @@ class EmpresaConfiguracion extends Table {
 
   @override
   Set<Column> get primaryKey => {id};
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {tenantId},
+    {tenantId, id},
+  ];
 }

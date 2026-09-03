@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
-import 'package:obraia_v2/features/clientes/domain/cliente.dart' as cliente_domain;
+import 'package:obraia_v2/features/clientes/domain/cliente.dart'
+    as cliente_domain;
 
 import '../app_database.dart';
 import '../tables/clientes.dart';
@@ -13,10 +14,12 @@ class ClientesDao extends DatabaseAccessor<AppDatabase>
 
   Stream<List<cliente_domain.Cliente>> observarClientes() {
     return (select(clientes)
-          ..where((t) => t.eliminado.equals(false))
-          ..orderBy([
-            (t) => OrderingTerm.desc(t.fechaCreacion),
-          ]))
+          ..where(
+            (t) =>
+                t.tenantId.equals(attachedDatabase.activeTenantId) &
+                t.eliminado.equals(false),
+          )
+          ..orderBy([(t) => OrderingTerm.desc(t.fechaCreacion)]))
         .watch()
         .map(
           (rows) => rows
@@ -46,9 +49,13 @@ class ClientesDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<cliente_domain.Cliente?> obtenerCliente(String id) async {
-    final row = await (select(clientes)
-          ..where((t) => t.id.equals(id)))
-        .getSingleOrNull();
+    final row =
+        await (select(clientes)..where(
+              (t) =>
+                  t.tenantId.equals(attachedDatabase.activeTenantId) &
+                  t.id.equals(id),
+            ))
+            .getSingleOrNull();
 
     if (row == null) {
       return null;
@@ -76,25 +83,26 @@ class ClientesDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<void> insertarCliente(ClientesCompanion cliente) async {
-    await into(clientes).insert(cliente);
+    await into(clientes).insert(
+      cliente.copyWith(tenantId: Value(attachedDatabase.activeTenantId)),
+    );
   }
 
-  Future<void> actualizarCliente(
-    String id,
-    ClientesCompanion companion,
-  ) async {
-    await (update(clientes)
-          ..where((t) => t.id.equals(id)))
+  Future<void> actualizarCliente(String id, ClientesCompanion companion) async {
+    await (update(clientes)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
         .write(companion);
   }
 
   Future<void> eliminarLogicamente(String id) async {
-    await (update(clientes)
-          ..where((t) => t.id.equals(id)))
-        .write(
-      const ClientesCompanion(
-        eliminado: Value(true),
-      ),
-    );
+    await (update(clientes)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .write(const ClientesCompanion(eliminado: Value(true)));
   }
 }

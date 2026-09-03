@@ -4,6 +4,7 @@ part of 'factura_lineas_dao.dart';
 
 // ignore_for_file: type=lint
 mixin _$FacturaLineasDaoMixin on DatabaseAccessor<AppDatabase> {
+  $TenantsTable get tenants => attachedDatabase.tenants;
   $ClientesTable get clientes => attachedDatabase.clientes;
   $ExpedientesTable get expedientes => attachedDatabase.expedientes;
   $PresupuestosTable get presupuestos => attachedDatabase.presupuestos;
@@ -15,6 +16,8 @@ mixin _$FacturaLineasDaoMixin on DatabaseAccessor<AppDatabase> {
 class FacturaLineasDaoManager {
   final _$FacturaLineasDaoMixin _db;
   FacturaLineasDaoManager(this._db);
+  $$TenantsTableTableManager get tenants =>
+      $$TenantsTableTableManager(_db.attachedDatabase, _db.tenants);
   $$ClientesTableTableManager get clientes =>
       $$ClientesTableTableManager(_db.attachedDatabase, _db.clientes);
   $$ExpedientesTableTableManager get expedientes =>

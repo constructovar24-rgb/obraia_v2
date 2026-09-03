@@ -5,7 +5,7 @@ Fotografía verificada el **3 de septiembre de 2026**. Debe actualizarse cuando 
 ## Base tecnológica
 
 - Flutter/Dart con Riverpod.
-- Drift sobre SQLite; 16 tablas y `schemaVersion` 22. Las conexiones activan claves foráneas.
+- Drift sobre SQLite; 17 tablas y `schemaVersion` 23. Las conexiones activan claves foráneas y las 16 tablas empresariales exigen `tenantId`.
 - `pdf` y `printing` para generación documental.
 - Windows como plataforma prioritaria.
 - 171 archivos Dart en la auditoría de esta línea base.
@@ -34,7 +34,9 @@ Con análisis, pruebas y compilación Windows superados, Expedientes queda técn
 
 ## Fase actual
 
-La auditoría arquitectónica está en `MULTI_TENANT_ARCHITECTURE_AUDIT.md` y el diseño ejecutable v22 → v23 en `MULTI_TENANT_MIGRATION_PLAN.md`. P0-A está completado solo como documentación. OBRA IA sigue siendo técnicamente monoempresa: no existen tenant, usuarios, roles ni aislamiento, y las 16 tablas, consultas, configuración, numeraciones, búsqueda, dashboard y backup usan un ámbito global implícito. No se ha cambiado producción, `schemaVersion` 22 ni las reglas validadas. Fase 3 continúa sin comenzar.
+La auditoría arquitectónica está en `MULTI_TENANT_ARCHITECTURE_AUDIT.md` y el diseño ejecutable v22 → v23 en `MULTI_TENANT_MIGRATION_PLAN.md`. P0-B está implementado: existe Tenant, el esquema v23 migra y backfillea v22 de forma transaccional, las relaciones críticas impiden cruces entre tenants y DAOs, repositorios, búsqueda, dashboard, configuración, numeraciones FAC/RECT y backup quedan aislados por un `TenantContext` obligatorio. Antes de migrar una base v22 se crea y valida una copia SQLite de recuperación sin sobrescritura. No existen aún selector público, usuarios, roles, autenticación, cloud ni sincronización. Fase 3 continúa sin comenzar.
+
+La verificación de P0-B supera 237 pruebas en SQLite aislado, incluidas conservación v22 → v23 poblada y vacía, rollback por anomalía, contexto ausente, relaciones cross-tenant, numeraciones FAC/RECT independientes, concurrencia fiscal previa, búsqueda/dashboard y backup/restore completo. `flutter analyze --no-pub`, `git diff --check` y `flutter build windows --debug --no-pub` también superan.
 
 La fase 1 está cerrada. Las restauraciones admiten los esquemas 16, 17, 18, 19, 20, 21 y 22, comprobados con integridad, relaciones, documentos emitidos, movimientos económicos y conservación de importes. Se rechazan versiones anteriores o futuras. La aceptación manual Windows con datos ficticios confirmó crear una copia, modificar un cliente y restaurar correctamente el estado anterior. Las pruebas automatizadas nunca tocaron datos reales.
 
@@ -71,4 +73,4 @@ Expediente/Obra es el octavo incremento y actúa como centro operativo. Su resum
 
 ## Próximo hito
 
-Tras la aceptación expresa de P0-A, realizar **P0-B — migración vertical segura multi-tenant v23** conforme a `MULTI_TENANT_MIGRATION_PLAN.md`: esquema, backfill, constraints, contexto local mínimo y accesos tenant-scoped como un único estado seguro. No iniciar usuarios, cloud, sincronización ni Fase 3.
+Tras la aceptación expresa de P0-B, abordar **P0-C — ciclo de tenant y limpieza de frontera**: endurecer bootstrap/cambio de contexto, invalidación y accesos heredados sin habilitar todavía multiempresa pública. No iniciar usuarios, cloud, sincronización ni Fase 3.

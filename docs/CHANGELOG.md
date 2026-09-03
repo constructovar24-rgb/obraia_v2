@@ -2,6 +2,14 @@
 
 ## No publicado
 
+### Aislamiento multi-tenant v23
+
+- Incorporada la tabla Tenant y `tenantId` obligatorio en las 16 tablas empresariales, con claves y relaciones compuestas que impiden referencias entre empresas.
+- Añadida migración transaccional v22 → v23 con tenant inicial neutral, backfill íntegro, validación y copia SQLite previa de recuperación sin sobrescritura.
+- Aisladas por tenant las lecturas y escrituras de DAOs/repositorios, búsqueda, dashboard, Timeline, configuración y numeraciones FAC/RECT.
+- Adaptados backup y restore al esquema 23 como copia completa de la instalación, conservando la migración segura de copias v22.
+- Añadidas pruebas con dos tenants para migración, rollback, relaciones cruzadas, numeración fiscal, contexto ausente, agregados y backup/restauración.
+
 ### Expediente / Obra como centro operativo
 
 - Añadida una pestaña Resumen que consolida presupuestos, facturación, cobros, pendiente y compras mediante agregados existentes, sin calcular rentabilidad ni márgenes.

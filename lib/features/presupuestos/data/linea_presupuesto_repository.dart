@@ -47,6 +47,7 @@ class LineaPresupuestoRepository {
     await database.transaction(() async {
       await database.lineasPresupuestoDao.insertarLinea(
         LineasPresupuestoCompanion.insert(
+          tenantId: Value(database.activeTenantId),
           id: const Uuid().v4(),
           presupuestoId: presupuestoId,
           concepto: concepto,

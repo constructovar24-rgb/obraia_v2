@@ -15,9 +15,13 @@ class PresupuestosDao extends DatabaseAccessor<AppDatabase>
   Future<List<String>> obtenerCodigosPorExpediente(String expedienteId) async {
     final table = attachedDatabase.presupuestos;
 
-    final rows = await (select(
-      table,
-    )..where((t) => t.expedienteId.equals(expedienteId))).get();
+    final rows =
+        await (select(table)..where(
+              (t) =>
+                  t.tenantId.equals(attachedDatabase.activeTenantId) &
+                  t.expedienteId.equals(expedienteId),
+            ))
+            .get();
 
     return rows.map((row) => row.codigo).toList();
   }
@@ -30,7 +34,9 @@ class PresupuestosDao extends DatabaseAccessor<AppDatabase>
     return (select(table)
           ..where(
             (t) =>
-                t.expedienteId.equals(expedienteId) & t.eliminado.equals(false),
+                t.tenantId.equals(attachedDatabase.activeTenantId) &
+                t.expedienteId.equals(expedienteId) &
+                t.eliminado.equals(false),
           )
           ..orderBy([(t) => OrderingTerm.desc(t.fecha)]))
         .watch()
@@ -59,7 +65,11 @@ class PresupuestosDao extends DatabaseAccessor<AppDatabase>
     final table = attachedDatabase.presupuestos;
 
     return (select(table)
-          ..where((t) => t.eliminado.equals(false))
+          ..where(
+            (t) =>
+                t.tenantId.equals(attachedDatabase.activeTenantId) &
+                t.eliminado.equals(false),
+          )
           ..orderBy([(t) => OrderingTerm.desc(t.fecha)]))
         .watch()
         .map(
@@ -84,18 +94,27 @@ class PresupuestosDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<void> insertarPresupuesto(PresupuestosCompanion presupuesto) async {
-    await into(presupuestos).insert(presupuesto);
+    await into(presupuestos).insert(
+      presupuesto.copyWith(tenantId: Value(attachedDatabase.activeTenantId)),
+    );
   }
 
   Future<Presupuesto?> obtenerPorId(String id) {
-    return (select(
-      presupuestos,
-    )..where((t) => t.id.equals(id))).getSingleOrNull();
+    return (select(presupuestos)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .getSingleOrNull();
   }
 
   Future<int> aceptarBorrador(String id) {
-    return (update(presupuestos)
-          ..where((t) => t.id.equals(id) & t.estado.lower().equals('borrador')))
+    return (update(presupuestos)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id) &
+              t.estado.lower().equals('borrador'),
+        ))
         .write(
           PresupuestosCompanion(
             estado: const Value('Aceptado'),
@@ -108,34 +127,43 @@ class PresupuestosDao extends DatabaseAccessor<AppDatabase>
     String presupuestoId,
     double importeTotal,
   ) async {
-    await (update(
-      presupuestos,
-    )..where((t) => t.id.equals(presupuestoId))).write(
-      PresupuestosCompanion(
-        importeTotal: Value(importeTotal),
-        fechaModificacion: Value(DateTime.now()),
-      ),
-    );
+    await (update(presupuestos)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(presupuestoId),
+        ))
+        .write(
+          PresupuestosCompanion(
+            importeTotal: Value(importeTotal),
+            fechaModificacion: Value(DateTime.now()),
+          ),
+        );
   }
 
   Future<void> actualizarIvaPorcentaje(
     String presupuestoId,
     double ivaPorcentaje,
   ) async {
-    await (update(
-      presupuestos,
-    )..where((t) => t.id.equals(presupuestoId))).write(
-      PresupuestosCompanion(
-        ivaPorcentaje: Value(ivaPorcentaje),
-        fechaModificacion: Value(DateTime.now()),
-      ),
-    );
+    await (update(presupuestos)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(presupuestoId),
+        ))
+        .write(
+          PresupuestosCompanion(
+            ivaPorcentaje: Value(ivaPorcentaje),
+            fechaModificacion: Value(DateTime.now()),
+          ),
+        );
   }
 
   Future<void> eliminarLogicamente(String id) async {
-    await (update(presupuestos)..where((t) => t.id.equals(id))).write(
-      const PresupuestosCompanion(eliminado: Value(true)),
-    );
+    await (update(presupuestos)..where(
+          (t) =>
+              t.tenantId.equals(attachedDatabase.activeTenantId) &
+              t.id.equals(id),
+        ))
+        .write(const PresupuestosCompanion(eliminado: Value(true)));
   }
 
   Future<bool> tienePresupuestoPorExpediente(String expedienteId) async {
@@ -143,6 +171,7 @@ class PresupuestosDao extends DatabaseAccessor<AppDatabase>
         await (select(presupuestos)
               ..where(
                 (t) =>
+                    t.tenantId.equals(attachedDatabase.activeTenantId) &
                     t.expedienteId.equals(expedienteId) &
                     t.eliminado.equals(false),
               )
@@ -157,7 +186,11 @@ class PresupuestosDao extends DatabaseAccessor<AppDatabase>
 
     final factura =
         await (select(tableFacturas)
-              ..where((t) => t.presupuestoOrigenId.equals(presupuestoId))
+              ..where(
+                (t) =>
+                    t.tenantId.equals(attachedDatabase.activeTenantId) &
+                    t.presupuestoOrigenId.equals(presupuestoId),
+              )
               ..limit(1))
             .getSingleOrNull();
 
