@@ -23,7 +23,8 @@ import 'package:obraia_v2/features/timeline/data/timeline_repository.dart';
 import 'package:uuid/uuid.dart';
 
 final facturaRepositoryProvider = Provider<FacturaRepository>((ref) {
-  final database = ref.read(databaseProvider);
+  ref.watch(activeTenantIdProvider);
+  final database = ref.watch(databaseProvider);
   return FacturaRepository(database);
 });
 

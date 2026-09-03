@@ -1,15 +1,15 @@
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../../database/app_database.dart';
 import '../../../../database/database_provider.dart';
 import '../domain/empresa_configuracion.dart' as empresa_domain;
 
-const String _empresaConfiguracionId = 'empresa_principal';
-
 final empresaConfiguracionRepositoryProvider =
     Provider<EmpresaConfiguracionRepository>((ref) {
-      final database = ref.read(databaseProvider);
+      ref.watch(activeTenantIdProvider);
+      final database = ref.watch(databaseProvider);
       return EmpresaConfiguracionRepository(database);
     });
 
@@ -22,25 +22,27 @@ class EmpresaConfiguracionRepository {
     return database.empresaConfiguracionDao.observarConfiguracion();
   }
 
-  Future<empresa_domain.EmpresaConfiguracion> obtenerOCrearConfiguracion() async {
-    final existente = await database.empresaConfiguracionDao.obtenerConfiguracion();
+  Future<empresa_domain.EmpresaConfiguracion>
+  obtenerOCrearConfiguracion() async {
+    final existente = await database.empresaConfiguracionDao
+        .obtenerConfiguracion();
     if (existente != null) {
       return existente;
     }
 
     await database.empresaConfiguracionDao.insertarConfiguracion(
-      const EmpresaConfiguracionCompanion(
-        id: Value(_empresaConfiguracionId),
-        nombreEmpresa: Value(''),
-        cif: Value(''),
-        direccion: Value(''),
-        codigoPostal: Value(''),
-        poblacion: Value(''),
-        provincia: Value(''),
-        telefono: Value(''),
-        email: Value(''),
-        web: Value(''),
-        logoPath: Value(null),
+      EmpresaConfiguracionCompanion(
+        id: Value(const Uuid().v4()),
+        nombreEmpresa: const Value(''),
+        cif: const Value(''),
+        direccion: const Value(''),
+        codigoPostal: const Value(''),
+        poblacion: const Value(''),
+        provincia: const Value(''),
+        telefono: const Value(''),
+        email: const Value(''),
+        web: const Value(''),
+        logoPath: const Value(null),
       ),
     );
 

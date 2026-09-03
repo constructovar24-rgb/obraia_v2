@@ -17,6 +17,9 @@ Este documento está preparado para registrar decisiones arquitectónicas, tecno
 - 2026-09-03: v23 mantiene temporalmente `MAX(numeroLegal) + 1` dentro de la transacción de emisión, aislado por tenant, serie y ejercicio. Una tabla de secuencias se aplaza; un futuro servidor será autoridad del número fiscal definitivo.
 - 2026-09-03: P0-B materializa la defensa en profundidad con `TenantContext` obligatorio, claves candidatas `(tenantId, id)` y FKs compuestas expresadas mediante constraints SQL de Drift e inspeccionadas en SQLite. Los defaults de tenant solo facilitan fixtures de prueba; producción resuelve el contexto antes de operar.
 - 2026-09-03: una base v22 cerrada recibe antes de abrir Drift un snapshot SQLite validado y no sobrescribible. El restore sigue siendo de instalación completa; exportación o fusión por tenant quedan fuera de P0-B.
+- 2026-09-03: los providers que publican repositorios o streams empresariales dependen explícitamente del tenant activo; cambiar `TenantContext` invalida su caché sin transferir la propiedad del contexto a Riverpod.
+- 2026-09-03: Configuración conserva el singleton por tenant, pero cada alta usa un UUID propio; un identificador global fijo produciría colisiones entre empresas.
+- 2026-09-03: P0-C/D se cierra con auditoría end-to-end y pruebas de dos tenants. El selector público y la autorización siguen siendo trabajo futuro y no forman parte de la puerta de aislamiento local.
 
 ## Interfaz y navegación
 

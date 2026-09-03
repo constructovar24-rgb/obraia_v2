@@ -1,4 +1,4 @@
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' hide isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -6,11 +6,31 @@ import 'package:obraia_v2/core/tenant/tenant_context.dart';
 import 'package:obraia_v2/database/app_database.dart';
 import 'package:obraia_v2/database/database_lifecycle_controller.dart';
 import 'package:obraia_v2/database/database_provider.dart';
+import 'package:obraia_v2/features/clientes/presentation/providers/cliente_providers.dart';
+import 'package:obraia_v2/features/configuracion/data/empresa_configuracion_repository.dart';
 import 'package:obraia_v2/features/dashboard/data/dashboard_repository.dart';
 import 'package:obraia_v2/features/search/data/search_repository.dart';
 
 const tenantA = '00000000-0000-4000-8000-000000000023';
 const tenantB = '00000000-0000-4000-8000-000000000024';
+const businessTables = <String>[
+  'clientes',
+  'expedientes',
+  'presupuestos',
+  'lineas_presupuesto',
+  'empresa_configuracion',
+  'facturas',
+  'factura_lineas',
+  'cobros',
+  'proveedores',
+  'compras',
+  'certificaciones',
+  'documentos',
+  'timeline_events',
+  'factura_asignaciones_presupuesto',
+  'factura_documentos_emitidos',
+  'movimientos_credito_cliente',
+];
 
 void main() {
   late AppDatabase database;
@@ -34,6 +54,52 @@ void main() {
   });
 
   tearDown(() => database.close());
+
+  test(
+    'las 16 tablas tienen tenant obligatorio, FK e índice tenant-first',
+    () async {
+      for (final table in businessTables) {
+        final columns = await database
+            .customSelect('PRAGMA table_info($table)')
+            .get();
+        final tenantColumn = columns.singleWhere(
+          (row) => row.read<String>('name') == 'tenant_id',
+        );
+        expect(tenantColumn.read<int>('notnull'), 1, reason: table);
+
+        final foreignKeys = await database
+            .customSelect("PRAGMA foreign_key_list('$table')")
+            .get();
+        expect(
+          foreignKeys.any(
+            (row) =>
+                row.read<String>('table') == 'tenants' &&
+                row.read<String>('from') == 'tenant_id' &&
+                row.read<String>('to') == 'id',
+          ),
+          isTrue,
+          reason: table,
+        );
+
+        final indexes = await database
+            .customSelect("PRAGMA index_list('$table')")
+            .get();
+        var tenantFirst = false;
+        for (final index in indexes) {
+          final name = index.read<String>('name');
+          final indexedColumns = await database
+              .customSelect("PRAGMA index_info('$name')")
+              .get();
+          if (indexedColumns.isNotEmpty &&
+              indexedColumns.first.read<String>('name') == 'tenant_id') {
+            tenantFirst = true;
+            break;
+          }
+        }
+        expect(tenantFirst, isTrue, reason: table);
+      }
+    },
+  );
 
   test(
     'los DAOs aíslan lecturas, ids y numeración fiscal por tenant',
@@ -122,6 +188,67 @@ void main() {
     );
   });
 
+  test(
+    'conocer ids de otro tenant no permite leer, actualizar ni borrar',
+    () async {
+      await _crearBaseTenant(database, tenantA, 'A', 100);
+      await _crearBaseTenant(database, tenantB, 'B', 250);
+
+      database.tenantContext.activate(tenantA);
+      expect(await database.clientesDao.obtenerCliente('cliente-b'), isNull);
+      expect(
+        await database.expedientesDao.obtenerExpediente('expediente-b'),
+        isNull,
+      );
+      expect(
+        await database.presupuestosDao.obtenerPorId('presupuesto-b'),
+        isNull,
+      );
+      expect(await database.facturasDao.obtenerPorId('factura-b'), isNull);
+      expect(await database.cobrosDao.obtenerPorId('cobro-b'), isNull);
+      expect(
+        await database.proveedoresDao.obtenerProveedor('proveedor-b'),
+        isNull,
+      );
+      expect(
+        await database.comprasDao.obtenerPorExpediente('expediente-b'),
+        isEmpty,
+      );
+      expect(
+        await database.certificacionesDao.obtenerCertificacion(
+          'certificacion-b',
+        ),
+        isNull,
+      );
+      expect(
+        await database.documentosDao.obtenerDocumento('documento-b'),
+        isNull,
+      );
+      expect(
+        await database.timelineEventsDao.obtenerPorExpediente('expediente-b'),
+        isEmpty,
+      );
+
+      await database.clientesDao.actualizarCliente(
+        'cliente-b',
+        const ClientesCompanion(nombre: Value('Intrusión')),
+      );
+      await database.comprasDao.eliminarLogicamente('compra-b');
+
+      database.tenantContext.activate(tenantB);
+      expect(
+        (await database.clientesDao.obtenerCliente('cliente-b'))!.nombre,
+        'Construcciones Ejemplo B',
+      );
+      expect(
+        (await database.comprasDao.obtenerPorExpediente(
+          'expediente-b',
+        )).single.eliminado,
+        isFalse,
+      );
+    },
+  );
+
   test('búsqueda y dashboard solo agregan el tenant activo', () async {
     await _crearBaseTenant(database, tenantA, 'A', 100);
     database.tenantContext.activate(tenantB);
@@ -166,6 +293,76 @@ void main() {
         .first;
     expect(dashboard.numeroExpedientes, 1);
     expect(dashboard.totalPresupuestado, 100);
+  });
+
+  test(
+    'los providers invalidan sus streams al cambiar TenantContext',
+    () async {
+      await _crearBaseTenant(database, tenantA, 'A', 100);
+      await _crearBaseTenant(database, tenantB, 'B', 250);
+      final lifecycle = DatabaseLifecycleController(
+        initialDatabase: database,
+        databaseFactory: () => database,
+        activeDatabasePathResolver: () async => '',
+      );
+      final container = ProviderContainer(
+        overrides: [
+          databaseLifecycleControllerProvider.overrideWith((ref) => lifecycle),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      expect(
+        (await container.read(clientesProvider.future)).single.id,
+        'cliente-b',
+      );
+      database.tenantContext.activate(tenantA);
+      expect(
+        (await container.read(clientesProvider.future)).single.id,
+        'cliente-a',
+      );
+    },
+  );
+
+  test('cada tenant crea y resuelve su configuración empresarial', () async {
+    final repository = EmpresaConfiguracionRepository(database);
+    final configuracionA = await repository.obtenerOCrearConfiguracion();
+    await repository.guardarConfiguracion(
+      nombreEmpresa: 'Empresa A',
+      cif: 'A00000001',
+      direccion: '',
+      codigoPostal: '',
+      poblacion: '',
+      provincia: '',
+      telefono: '',
+      email: '',
+      web: '',
+    );
+
+    database.tenantContext.activate(tenantB);
+    final configuracionB = await repository.obtenerOCrearConfiguracion();
+    await repository.guardarConfiguracion(
+      nombreEmpresa: 'Empresa B',
+      cif: 'B00000002',
+      direccion: '',
+      codigoPostal: '',
+      poblacion: '',
+      provincia: '',
+      telefono: '',
+      email: '',
+      web: '',
+    );
+
+    expect(configuracionB.id, isNot(configuracionA.id));
+    expect(
+      (await repository.obtenerOCrearConfiguracion()).nombreEmpresa,
+      'Empresa B',
+    );
+    database.tenantContext.activate(tenantA);
+    expect(
+      (await repository.obtenerOCrearConfiguracion()).nombreEmpresa,
+      'Empresa A',
+    );
   });
 }
 
@@ -226,6 +423,47 @@ Future<void> _crearBaseTenant(
       numeroLegal: const Value(1),
       facturaRectificadaId: Value('factura-$lower'),
       facturaRaizId: Value('factura-$lower'),
+    ),
+  );
+  await database.cobrosDao.insertarCobro(
+    CobrosCompanion.insert(
+      id: 'cobro-$lower',
+      facturaId: 'factura-$lower',
+      importe: const Value(10),
+    ),
+  );
+  await database.comprasDao.insertarCompra(
+    ComprasCompanion.insert(
+      id: 'compra-$lower',
+      expedienteId: 'expediente-$lower',
+      proveedorId: Value('proveedor-$lower'),
+      concepto: Value('Compra $suffix'),
+      importeTotal: Value(presupuesto / 2),
+    ),
+  );
+  await database.certificacionesDao.insertarCertificacion(
+    CertificacionesCompanion.insert(
+      id: 'certificacion-$lower',
+      expedienteId: 'expediente-$lower',
+      presupuestoId: Value('presupuesto-$lower'),
+    ),
+  );
+  await database.documentosDao.insertarDocumento(
+    DocumentosCompanion.insert(
+      id: 'documento-$lower',
+      expedienteId: 'expediente-$lower',
+      titulo: 'Documento $suffix',
+      nombreArchivo: '$lower.pdf',
+      rutaArchivo: '$lower.pdf',
+      tamanoBytes: 1,
+    ),
+  );
+  await database.timelineEventsDao.insertar(
+    TimelineEventsCompanion.insert(
+      id: 'timeline-$lower',
+      expedienteId: 'expediente-$lower',
+      tipo: 'notaCreada',
+      titulo: Value('Evento $suffix'),
     ),
   );
 }

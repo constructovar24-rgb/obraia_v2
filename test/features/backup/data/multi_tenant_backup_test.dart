@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:obraia_v2/database/app_database.dart';
@@ -32,13 +33,9 @@ void main() {
             fechaModificacion: DateTime.utc(2026),
           ),
         );
-    await source.clientesDao.insertarCliente(
-      ClientesCompanion.insert(id: 'a', nombre: 'Cliente A'),
-    );
+    await _seedTenant(source, 'a', 'Empresa A');
     source.tenantContext.activate(_tenantB);
-    await source.clientesDao.insertarCliente(
-      ClientesCompanion.insert(id: 'b', nombre: 'Cliente B'),
-    );
+    await _seedTenant(source, 'b', 'Empresa B');
 
     await const DatabaseSnapshotService().createSnapshot(
       database: source,
@@ -56,10 +53,22 @@ void main() {
       (await restored.clientesDao.observarClientes().first).single.nombre,
       'Cliente B',
     );
+    expect((await restored.facturasDao.observarFacturas().first), hasLength(2));
+    expect(
+      (await restored.empresaConfiguracionDao.obtenerConfiguracion())!
+          .nombreEmpresa,
+      'Empresa B',
+    );
     restored.tenantContext.activate(_tenantA);
     expect(
       (await restored.clientesDao.observarClientes().first).single.nombre,
       'Cliente A',
+    );
+    expect((await restored.facturasDao.observarFacturas().first), hasLength(2));
+    expect(
+      (await restored.empresaConfiguracionDao.obtenerConfiguracion())!
+          .nombreEmpresa,
+      'Empresa A',
     );
     expect(
       await restored.customSelect('PRAGMA foreign_key_check').get(),
@@ -67,4 +76,59 @@ void main() {
     );
     await restored.close();
   });
+}
+
+Future<void> _seedTenant(
+  AppDatabase database,
+  String suffix,
+  String empresa,
+) async {
+  await database.clientesDao.insertarCliente(
+    ClientesCompanion.insert(
+      id: 'cliente-$suffix',
+      nombre: 'Cliente ${suffix.toUpperCase()}',
+    ),
+  );
+  await database.expedientesDao.insertarExpediente(
+    ExpedientesCompanion.insert(
+      id: 'expediente-$suffix',
+      codigo: 'EXP-${suffix.toUpperCase()}',
+      nombre: 'Obra ${suffix.toUpperCase()}',
+      clienteId: Value('cliente-$suffix'),
+    ),
+  );
+  await database.presupuestosDao.insertarPresupuesto(
+    PresupuestosCompanion.insert(
+      id: 'presupuesto-$suffix',
+      expedienteId: 'expediente-$suffix',
+    ),
+  );
+  await database.facturasDao.insertarFactura(
+    FacturasCompanion.insert(
+      id: 'factura-$suffix',
+      clienteId: 'cliente-$suffix',
+      presupuestoOrigenId: Value('presupuesto-$suffix'),
+      serie: const Value('FAC'),
+      anioNumeracion: const Value(2026),
+      numeroLegal: const Value(1),
+    ),
+  );
+  await database.facturasDao.insertarFactura(
+    FacturasCompanion.insert(
+      id: 'rect-$suffix',
+      clienteId: 'cliente-$suffix',
+      tipoDocumento: const Value('rectificativa'),
+      serie: const Value('RECT'),
+      anioNumeracion: const Value(2026),
+      numeroLegal: const Value(1),
+      facturaRectificadaId: Value('factura-$suffix'),
+      facturaRaizId: Value('factura-$suffix'),
+    ),
+  );
+  await database.empresaConfiguracionDao.insertarConfiguracion(
+    EmpresaConfiguracionCompanion.insert(
+      id: 'config-$suffix',
+      nombreEmpresa: Value(empresa),
+    ),
+  );
 }

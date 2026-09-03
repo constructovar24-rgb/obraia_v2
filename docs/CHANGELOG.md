@@ -2,6 +2,14 @@
 
 ## No publicado
 
+### Cierre end-to-end de la puerta multi-tenant P0
+
+- Invalidados repositorios, streams y agregados tenant-scoped al cambiar el contexto activo, evitando cachés cruzadas.
+- Retirado el acceso directo a base de datos de la pestaña Cliente del expediente y encapsulado mediante providers/repositorios.
+- Sustituido el identificador global de Configuración por UUID independientes, manteniendo una configuración por tenant.
+- Ampliada la cobertura a las 16 tablas empresariales, operaciones por ID, configuración, FAC/RECT, relaciones cruzadas, cambio de contexto y backup/reapertura con dos tenants.
+- Cerrada P0-C/D con 241 pruebas, análisis estático y compilación Windows debug superados, sin iniciar selector multiempresa, autenticación, cloud, sincronización ni Fase 3.
+
 ### Aislamiento multi-tenant v23
 
 - Incorporada la tabla Tenant y `tenantId` obligatorio en las 16 tablas empresariales, con claves y relaciones compuestas que impiden referencias entre empresas.

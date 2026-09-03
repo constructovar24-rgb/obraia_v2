@@ -54,7 +54,7 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 
 **Visión:** OBRA IA es un producto multiempresa y un empleado digital para autónomos y pequeñas empresas de construcción y oficios relacionados. Construcciones Tovar es el primer tenant y banco de pruebas, nunca una dependencia del core.
 
-**Estado:** P0-B implementado sobre `schemaVersion` 23. Una SQLite puede contener tenants aislados mediante contexto obligatorio, consultas tenant-scoped y relaciones compuestas. Siguen pendientes usuario, rol, autorización, selector público, cloud y sincronización.
+**Estado:** puerta P0 cerrada sobre `schemaVersion` 23. Una SQLite puede contener tenants aislados mediante contexto obligatorio, consultas tenant-scoped, relaciones compuestas, invalidación de providers al cambiar contexto y numeraciones FAC/RECT independientes. Siguen fuera de alcance usuario, rol, autorización, selector público, cloud y sincronización.
 
 **P0-A — diseño ejecutable:** completado documentalmente en `MULTI_TENANT_MIGRATION_PLAN.md`. Define tenant inicial, las 16 tablas, rebuild v22 → v23, constraints/FKs e índices compuestos, `TenantContext`, accesos, rollback, validaciones y pruebas. No hay implementación.
 
@@ -63,6 +63,8 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 **P0-C — ciclo de tenant y endurecimiento:** preparar selección/cambio futuro, invalidación de sesión, retirada de accesos heredados y consolidación de casos de uso. No habilitar multiempresa pública sin autorización/membresías.
 
 **P0-D — fiscal:** aislar secuencias FAC/RECT, snapshots, PDFs, familias, cobros, rectificaciones y crédito, con concurrencia probada entre tenants.
+
+**Cierre P0-C/D:** verificación end-to-end completada con dos tenants, 16 tablas empresariales inspeccionadas, relaciones cruzadas rechazadas, configuración y cachés aisladas, backup/reapertura conservados y suite completa de 241 pruebas. Fase 3 queda técnicamente desbloqueada, pero no iniciada.
 
 **Criterio de salida:** dos tenants de prueba no pueden leer, modificar, relacionar ni eliminar datos entre sí; la migración conserva los datos previos en el tenant inicial; numeraciones y operaciones económicas mantienen las garantías de Fase 2; backup/restauración tienen alcance explícito y probado.
 

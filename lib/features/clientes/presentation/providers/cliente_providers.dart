@@ -7,6 +7,7 @@ import '../../data/cliente_repository.dart';
 import '../../domain/cliente.dart';
 
 final clienteRepositoryProvider = Provider<ClienteRepository>((ref) {
+  ref.watch(activeTenantIdProvider);
   return ClienteRepository(ref.watch(databaseProvider));
 });
 

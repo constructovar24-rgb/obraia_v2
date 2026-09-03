@@ -5,12 +5,13 @@ import '../../data/proveedor_repository.dart';
 import '../../domain/proveedor.dart';
 
 final proveedorRepositoryProvider = Provider<ProveedorRepository>((ref) {
-  final database = ref.read(databaseProvider);
+  ref.watch(activeTenantIdProvider);
+  final database = ref.watch(databaseProvider);
   return ProveedorRepository(database.proveedoresDao);
 });
 
 final proveedoresProvider = StreamProvider<List<Proveedor>>((ref) {
-  final proveedorRepository = ref.read(proveedorRepositoryProvider);
+  final proveedorRepository = ref.watch(proveedorRepositoryProvider);
   return proveedorRepository.observarProveedores();
 });
 

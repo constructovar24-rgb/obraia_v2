@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../database/database_provider.dart';
+
 import '../../cobros/domain/cobro.dart' as cobro_domain;
 import '../../cobros/domain/factura_estado_economico.dart';
 import '../../expedientes/domain/expediente.dart' as expediente_domain;
@@ -17,11 +19,12 @@ import '../../presupuestos/presentation/providers/presupuesto_providers.dart';
 import '../domain/dashboard_resumen.dart';
 
 final dashboardRepositoryProvider = Provider<DashboardRepository>((ref) {
+  ref.watch(activeTenantIdProvider);
   return DashboardRepository(
-    expedienteRepository: ref.read(expedienteRepositoryProvider),
-    presupuestoRepository: ref.read(presupuestoRepositoryProvider),
-    facturaRepository: ref.read(facturaRepositoryProvider),
-    cobroRepository: ref.read(cobroRepositoryProvider),
+    expedienteRepository: ref.watch(expedienteRepositoryProvider),
+    presupuestoRepository: ref.watch(presupuestoRepositoryProvider),
+    facturaRepository: ref.watch(facturaRepositoryProvider),
+    cobroRepository: ref.watch(cobroRepositoryProvider),
   );
 });
 

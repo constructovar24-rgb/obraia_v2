@@ -485,6 +485,17 @@ P0-B será mayor que una migración aislada, pero constituye el mínimo estado s
 - IDs legacy no UUID se conservan; la política UUID solo rige nuevas altas.
 - La atomicidad Compra–Timeline, ruta documental, branding dinámico, tarifas de piscinas y sync siguen como deudas separadas.
 
-## 25. Siguiente incremento exacto
+## 25. Estado de cierre
 
-Tras la aceptación y publicación de P0-B, preparar **P0-C — ciclo de tenant y limpieza de frontera** conforme a este documento. No habilitar usuarios, selector multiempresa público, cloud, sincronización ni Fase 3 sin un incremento expresamente autorizado.
+P0-A, P0-B, P0-C y P0-D están completados. La verificación end-to-end confirma aislamiento por tenant en las 16 tablas empresariales, consultas por ID, relaciones compuestas, configuración, búsqueda, dashboard, expediente, Timeline, providers, numeración y concurrencia FAC/RECT, y backup/reapertura con dos tenants. La suite completa alcanza 241 pruebas y se mantienen `schemaVersion` 23 y la restauración de instalación completa.
+
+El siguiente hito recomendado es definir expresamente la Fase 3. No se habilitan por este cierre usuarios, autenticación, selector multiempresa público, cloud, sincronización, web ni IA.
+
+## 26. Clasificación final de accesos
+
+- **A — tenant-scoped correcto:** operaciones empresariales de DAOs y repositorios, consultas por ID, agregados, búsquedas, streams y numeraciones filtran por el tenant capturado; las relaciones críticas usan claves compuestas.
+- **B — global interno legítimo:** PRAGMAs, inspección de `sqlite_master`, salud de SQLite, migraciones y coordinación de copias completas de instalación.
+- **C — deuda aceptada fuera de P0:** selector/autorización, exportación parcial, storage documental, branding, tarifas, cloud/sync/web/IA, circuito administrativo de compras, atomicidad Compra–Timeline y métricas de Fase 3.
+- **D — fuga corregida:** cachés de providers sin dependencia explícita del tenant, acceso directo de `ClienteTab` a la base y el identificador fijo de Configuración.
+
+La evidencia ejecutable cubre tenant ausente, dos tenants con IDs conocidos, lectura/actualización/eliminación negativas, constraints cruzadas, FAC/RECT realistas y concurrentes, cambio de contexto, configuración independiente, búsqueda/dashboard/expediente/Timeline y snapshot/reapertura. No se detectan fugas D pendientes dentro del alcance auditado.

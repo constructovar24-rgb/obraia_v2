@@ -6,5 +6,6 @@ import '../../data/rectificativa_repository.dart';
 final rectificativaRepositoryProvider = Provider<RectificativaRepository>((
   ref,
 ) {
+  ref.watch(activeTenantIdProvider);
   return RectificativaRepository(ref.watch(databaseProvider));
 });

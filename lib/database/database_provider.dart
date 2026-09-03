@@ -22,10 +22,14 @@ final databaseProvider = Provider<AppDatabase>((ref) {
   return ref.watch(databaseLifecycleControllerProvider).activeDatabase;
 });
 
-final tenantContextProvider = ChangeNotifierProvider<TenantContext>((ref) {
+final tenantContextProvider = Provider<TenantContext>((ref) {
   return ref.watch(databaseProvider).tenantContext;
 });
 
 final activeTenantIdProvider = Provider<String>((ref) {
-  return ref.watch(tenantContextProvider).requireTenantId();
+  final context = ref.watch(tenantContextProvider);
+  void invalidate() => ref.invalidateSelf();
+  context.addListener(invalidate);
+  ref.onDispose(() => context.removeListener(invalidate));
+  return context.requireTenantId();
 });

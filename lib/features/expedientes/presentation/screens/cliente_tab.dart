@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../database/database_provider.dart';
 import '../../../clientes/data/cliente_repository.dart';
 import '../../../clientes/domain/cliente.dart' as cliente_domain;
 import '../../data/expediente_repository.dart';
 
 class ClienteTab extends ConsumerStatefulWidget {
-  const ClienteTab({
-    super.key,
-    required this.expedienteId,
-  });
+  const ClienteTab({super.key, required this.expedienteId});
 
   final String expedienteId;
 
@@ -28,9 +24,8 @@ class _ClienteTabState extends ConsumerState<ClienteTab> {
   }
 
   Future<cliente_domain.Cliente?> _cargarCliente() async {
-    final db = ref.read(databaseProvider);
-    final expedienteRepository = ExpedienteRepository(db);
-    final clienteRepository = ClienteRepository(db);
+    final expedienteRepository = ref.read(expedienteRepositoryProvider);
+    final clienteRepository = ref.read(clienteRepositoryProvider);
 
     final expediente = await expedienteRepository.obtenerExpediente(
       widget.expedienteId,
@@ -50,9 +45,7 @@ class _ClienteTabState extends ConsumerState<ClienteTab> {
       future: _clienteFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const Center(child: CircularProgressIndicator());
         }
 
         if (snapshot.hasError) {
@@ -69,9 +62,7 @@ class _ClienteTabState extends ConsumerState<ClienteTab> {
 
         final cliente = snapshot.data;
         if (cliente == null) {
-          return const Center(
-            child: Text('No hay cliente asociado'),
-          );
+          return const Center(child: Text('No hay cliente asociado'));
         }
 
         final nombreCompleto = '${cliente.nombre} ${cliente.apellidos}'.trim();
@@ -80,30 +71,15 @@ class _ClienteTabState extends ConsumerState<ClienteTab> {
           padding: const EdgeInsets.all(16),
           children: [
             if (nombreCompleto.isNotEmpty)
-              _InfoRow(
-                etiqueta: 'Nombre',
-                valor: nombreCompleto,
-              ),
+              _InfoRow(etiqueta: 'Nombre', valor: nombreCompleto),
             if (cliente.nif.trim().isNotEmpty)
-              _InfoRow(
-                etiqueta: 'CIF/NIF',
-                valor: cliente.nif,
-              ),
+              _InfoRow(etiqueta: 'CIF/NIF', valor: cliente.nif),
             if (cliente.telefono.trim().isNotEmpty)
-              _InfoRow(
-                etiqueta: 'Teléfono',
-                valor: cliente.telefono,
-              ),
+              _InfoRow(etiqueta: 'Teléfono', valor: cliente.telefono),
             if (cliente.email.trim().isNotEmpty)
-              _InfoRow(
-                etiqueta: 'Email',
-                valor: cliente.email,
-              ),
+              _InfoRow(etiqueta: 'Email', valor: cliente.email),
             if (cliente.direccion.trim().isNotEmpty)
-              _InfoRow(
-                etiqueta: 'Dirección',
-                valor: cliente.direccion,
-              ),
+              _InfoRow(etiqueta: 'Dirección', valor: cliente.direccion),
           ],
         );
       },
@@ -112,10 +88,7 @@ class _ClienteTabState extends ConsumerState<ClienteTab> {
 }
 
 class _InfoRow extends StatelessWidget {
-  const _InfoRow({
-    required this.etiqueta,
-    required this.valor,
-  });
+  const _InfoRow({required this.etiqueta, required this.valor});
 
   final String etiqueta;
   final String valor;
@@ -127,15 +100,9 @@ class _InfoRow extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            etiqueta,
-            style: Theme.of(context).textTheme.labelLarge,
-          ),
+          Text(etiqueta, style: Theme.of(context).textTheme.labelLarge),
           const SizedBox(height: 4),
-          Text(
-            valor,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
+          Text(valor, style: Theme.of(context).textTheme.bodyLarge),
         ],
       ),
     );

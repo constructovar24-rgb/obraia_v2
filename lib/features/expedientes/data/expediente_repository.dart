@@ -20,13 +20,14 @@ import 'package:obraia_v2/features/timeline/domain/timeline_event.dart'
 import 'package:uuid/uuid.dart';
 
 final expedienteRepositoryProvider = Provider<ExpedienteRepository>((ref) {
-  final database = ref.read(databaseProvider);
+  ref.watch(activeTenantIdProvider);
+  final database = ref.watch(databaseProvider);
   return ExpedienteRepository(database);
 });
 
 final expedienteGestionAccionProvider =
     StreamProvider.family<ExpedienteGestionAccion, String>((ref, expedienteId) {
-      final repository = ref.read(expedienteRepositoryProvider);
+      final repository = ref.watch(expedienteRepositoryProvider);
       return repository.observarAccionGestionExpediente(expedienteId);
     });
 
@@ -35,13 +36,13 @@ final expedienteAtencionEstadoProvider =
       ref,
       expedienteId,
     ) {
-      final repository = ref.read(expedienteRepositoryProvider);
+      final repository = ref.watch(expedienteRepositoryProvider);
       return repository.observarEstadoAtencionExpediente(expedienteId);
     });
 
 final expedienteProvider =
     StreamProvider.family<expediente_domain.Expediente?, String>((ref, id) {
-      return ref.read(expedienteRepositoryProvider).observarExpediente(id);
+      return ref.watch(expedienteRepositoryProvider).observarExpediente(id);
     });
 
 enum ExpedienteGestionAccion { eliminar, archivar }

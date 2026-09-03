@@ -4,5 +4,5 @@ import '../../../clientes/data/cliente_repository.dart';
 import '../../../clientes/domain/cliente.dart';
 
 final clientesEdicionExpedienteProvider = StreamProvider<List<Cliente>>((ref) {
-  return ref.read(clienteRepositoryProvider).observarClientes();
+  return ref.watch(clienteRepositoryProvider).observarClientes();
 });

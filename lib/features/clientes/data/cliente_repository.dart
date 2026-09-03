@@ -9,7 +9,8 @@ import 'package:uuid/uuid.dart';
 // Compatibilidad para consumidores todavía no migrados. Las pantallas de
 // Clientes usan exclusivamente los providers de presentation/providers.
 final clienteRepositoryProvider = Provider<ClienteRepository>((ref) {
-  return ClienteRepository(ref.read(databaseProvider));
+  ref.watch(activeTenantIdProvider);
+  return ClienteRepository(ref.watch(databaseProvider));
 });
 
 class ClienteRepository {

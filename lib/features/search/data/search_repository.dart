@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:obraia_v2/database/database_provider.dart';
 import 'package:obraia_v2/features/clientes/data/cliente_repository.dart';
 import 'package:obraia_v2/features/clientes/domain/cliente.dart';
 import 'package:obraia_v2/features/expedientes/data/expediente_repository.dart';
@@ -15,11 +16,12 @@ import 'package:obraia_v2/features/presupuestos/presentation/providers/presupues
 import '../domain/search_result.dart';
 
 final searchRepositoryProvider = Provider<SearchRepository>((ref) {
+  ref.watch(activeTenantIdProvider);
   return SearchRepository(
-    clienteRepository: ref.read(clienteRepositoryProvider),
-    expedienteRepository: ref.read(expedienteRepositoryProvider),
-    presupuestoRepository: ref.read(presupuestoRepositoryProvider),
-    facturaRepository: ref.read(facturaRepositoryProvider),
+    clienteRepository: ref.watch(clienteRepositoryProvider),
+    expedienteRepository: ref.watch(expedienteRepositoryProvider),
+    presupuestoRepository: ref.watch(presupuestoRepositoryProvider),
+    facturaRepository: ref.watch(facturaRepositoryProvider),
   );
 });
 
@@ -60,7 +62,10 @@ class SearchRepository {
     StreamSubscription<List<Factura>>? facturasSubscription;
 
     void emitirResultados() {
-      if (!clientesReady || !expedientesReady || !presupuestosReady || !facturasReady) {
+      if (!clientesReady ||
+          !expedientesReady ||
+          !presupuestosReady ||
+          !facturasReady) {
         return;
       }
 
@@ -77,50 +82,48 @@ class SearchRepository {
     }
 
     controller.onListen = () {
-      clientesSubscription = _clienteRepository.observarClientes().listen(
-        (value) {
-          clientes = value;
-          clientesReady = true;
-          emitirResultados();
-        },
-        onError: controller.addError,
-      );
+      clientesSubscription = _clienteRepository.observarClientes().listen((
+        value,
+      ) {
+        clientes = value;
+        clientesReady = true;
+        emitirResultados();
+      }, onError: controller.addError);
 
-      expedientesSubscription = _expedienteRepository.observarExpedientes().listen(
-        (value) {
-          expedientes = value;
-          expedientesReady = true;
-          emitirResultados();
-        },
-        onError: controller.addError,
-      );
+      expedientesSubscription = _expedienteRepository
+          .observarExpedientes()
+          .listen((value) {
+            expedientes = value;
+            expedientesReady = true;
+            emitirResultados();
+          }, onError: controller.addError);
 
-      presupuestosSubscription = _presupuestoRepository.observarPresupuestos().listen(
-        (value) {
-          presupuestos = value;
-          presupuestosReady = true;
-          emitirResultados();
-        },
-        onError: controller.addError,
-      );
+      presupuestosSubscription = _presupuestoRepository
+          .observarPresupuestos()
+          .listen((value) {
+            presupuestos = value;
+            presupuestosReady = true;
+            emitirResultados();
+          }, onError: controller.addError);
 
-      facturasSubscription = _facturaRepository.observarFacturas().listen(
-        (value) {
-          facturas = value;
-          facturasReady = true;
-          emitirResultados();
-        },
-        onError: controller.addError,
-      );
+      facturasSubscription = _facturaRepository.observarFacturas().listen((
+        value,
+      ) {
+        facturas = value;
+        facturasReady = true;
+        emitirResultados();
+      }, onError: controller.addError);
     };
 
     controller.onCancel = () async {
-      await Future.wait([
-        clientesSubscription?.cancel(),
-        expedientesSubscription?.cancel(),
-        presupuestosSubscription?.cancel(),
-        facturasSubscription?.cancel(),
-      ].whereType<Future<void>>());
+      await Future.wait(
+        [
+          clientesSubscription?.cancel(),
+          expedientesSubscription?.cancel(),
+          presupuestosSubscription?.cancel(),
+          facturasSubscription?.cancel(),
+        ].whereType<Future<void>>(),
+      );
 
       if (!controller.isClosed) {
         await controller.close();
@@ -132,22 +135,24 @@ class SearchRepository {
 
   SearchResultsSection _buscarClientes(List<Cliente> clientes, String query) {
     final results = clientes
-        .where((cliente) => _matches(
-              [
-                cliente.nombre,
-                cliente.apellidos,
-                cliente.nif,
-                cliente.telefono,
-                cliente.email,
-                cliente.direccion,
-                cliente.poblacion,
-                cliente.provincia,
-                cliente.codigoPostal,
-                cliente.empresa,
-                cliente.observaciones,
-              ].join(' '),
-              query,
-            ))
+        .where(
+          (cliente) => _matches(
+            [
+              cliente.nombre,
+              cliente.apellidos,
+              cliente.nif,
+              cliente.telefono,
+              cliente.email,
+              cliente.direccion,
+              cliente.poblacion,
+              cliente.provincia,
+              cliente.codigoPostal,
+              cliente.empresa,
+              cliente.observaciones,
+            ].join(' '),
+            query,
+          ),
+        )
         .map(
           (cliente) => ClienteSearchResult(
             cliente: cliente,
@@ -155,10 +160,10 @@ class SearchRepository {
             subtitle: cliente.empresa.isNotEmpty
                 ? cliente.empresa
                 : cliente.email.isNotEmpty
-                    ? cliente.email
-                    : cliente.telefono.isNotEmpty
-                        ? cliente.telefono
-                        : 'Sin datos',
+                ? cliente.email
+                : cliente.telefono.isNotEmpty
+                ? cliente.telefono
+                : 'Sin datos',
           ),
         )
         .toList(growable: false);
@@ -175,14 +180,16 @@ class SearchRepository {
     String query,
   ) {
     final results = expedientes
-        .where((expediente) => _matches(
-              [
-                expediente.codigo,
-                expediente.nombre,
-                expediente.clienteNombre ?? '',
-              ].join(' '),
-              query,
-            ))
+        .where(
+          (expediente) => _matches(
+            [
+              expediente.codigo,
+              expediente.nombre,
+              expediente.clienteNombre ?? '',
+            ].join(' '),
+            query,
+          ),
+        )
         .map(
           (expediente) => ExpedienteSearchResult(
             expediente: expediente,
@@ -206,15 +213,17 @@ class SearchRepository {
     String query,
   ) {
     final results = presupuestos
-        .where((presupuesto) => _matches(
-              [
-                presupuesto.codigo,
-                presupuesto.descripcion,
-                presupuesto.estado,
-                presupuesto.importeTotal.toStringAsFixed(2),
-              ].join(' '),
-              query,
-            ))
+        .where(
+          (presupuesto) => _matches(
+            [
+              presupuesto.codigo,
+              presupuesto.descripcion,
+              presupuesto.estado,
+              presupuesto.importeTotal.toStringAsFixed(2),
+            ].join(' '),
+            query,
+          ),
+        )
         .map(
           (presupuesto) => PresupuestoSearchResult(
             presupuesto: presupuesto,
@@ -235,16 +244,18 @@ class SearchRepository {
 
   SearchResultsSection _buscarFacturas(List<Factura> facturas, String query) {
     final results = facturas
-        .where((factura) => _matches(
-              [
-                factura.codigo,
-                factura.clienteNombre,
-                factura.observaciones,
-                estadoFacturaToLabel(factura.estado),
-                factura.total.toStringAsFixed(2),
-              ].join(' '),
-              query,
-            ))
+        .where(
+          (factura) => _matches(
+            [
+              factura.codigo,
+              factura.clienteNombre,
+              factura.observaciones,
+              estadoFacturaToLabel(factura.estado),
+              factura.total.toStringAsFixed(2),
+            ].join(' '),
+            query,
+          ),
+        )
         .map(
           (factura) => FacturaSearchResult(
             factura: factura,

@@ -4,9 +4,12 @@ import '../../../../database/database_provider.dart';
 import '../../data/credito_cliente_repository.dart';
 import '../../domain/credito_cliente.dart';
 
-final creditoClienteRepositoryProvider = Provider<CreditoClienteRepository>(
-  (ref) => CreditoClienteRepository(ref.watch(databaseProvider)),
-);
+final creditoClienteRepositoryProvider = Provider<CreditoClienteRepository>((
+  ref,
+) {
+  ref.watch(activeTenantIdProvider);
+  return CreditoClienteRepository(ref.watch(databaseProvider));
+});
 
 final creditoFamiliaProvider =
     StreamProvider.family<CreditoClienteFamilia, String>(

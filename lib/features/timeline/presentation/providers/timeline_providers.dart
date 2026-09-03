@@ -24,18 +24,19 @@ class TimelineScope {
 }
 
 final timelineRepositoryProvider = Provider<TimelineRepository>((ref) {
-  final database = ref.read(databaseProvider);
+  ref.watch(activeTenantIdProvider);
+  final database = ref.watch(databaseProvider);
   return TimelineRepository(database.timelineEventsDao);
 });
 
 final timelineEventsProvider =
     StreamProvider.family<List<TimelineEvent>, String>((ref, expedienteId) {
-      final timelineRepository = ref.read(timelineRepositoryProvider);
+      final timelineRepository = ref.watch(timelineRepositoryProvider);
       return timelineRepository.observarEventos(expedienteId);
     });
 
 final timelineGlobalEventsProvider = StreamProvider<List<TimelineEvent>>((ref) {
-  final timelineRepository = ref.read(timelineRepositoryProvider);
+  final timelineRepository = ref.watch(timelineRepositoryProvider);
   return timelineRepository.observarEventosGlobales();
 });
 

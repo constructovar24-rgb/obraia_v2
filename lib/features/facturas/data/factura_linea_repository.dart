@@ -12,7 +12,8 @@ import 'package:obraia_v2/features/facturas/domain/redondeo_monetario.dart';
 import 'package:uuid/uuid.dart';
 
 final facturaLineaRepositoryProvider = Provider<FacturaLineaRepository>((ref) {
-  final database = ref.read(databaseProvider);
+  ref.watch(activeTenantIdProvider);
+  final database = ref.watch(databaseProvider);
   return FacturaLineaRepository(database);
 });
 

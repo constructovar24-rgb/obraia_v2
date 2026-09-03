@@ -34,9 +34,9 @@ Con análisis, pruebas y compilación Windows superados, Expedientes queda técn
 
 ## Fase actual
 
-La auditoría arquitectónica está en `MULTI_TENANT_ARCHITECTURE_AUDIT.md` y el diseño ejecutable v22 → v23 en `MULTI_TENANT_MIGRATION_PLAN.md`. P0-B está implementado: existe Tenant, el esquema v23 migra y backfillea v22 de forma transaccional, las relaciones críticas impiden cruces entre tenants y DAOs, repositorios, búsqueda, dashboard, configuración, numeraciones FAC/RECT y backup quedan aislados por un `TenantContext` obligatorio. Antes de migrar una base v22 se crea y valida una copia SQLite de recuperación sin sobrescritura. No existen aún selector público, usuarios, roles, autenticación, cloud ni sincronización. Fase 3 continúa sin comenzar.
+La auditoría arquitectónica está en `MULTI_TENANT_ARCHITECTURE_AUDIT.md` y el diseño ejecutable v22 → v23 en `MULTI_TENANT_MIGRATION_PLAN.md`. La puerta P0 multi-tenant está cerrada: existe Tenant, el esquema v23 migra y backfillea v22 de forma transaccional, las relaciones críticas impiden cruces entre tenants y DAOs, repositorios, búsqueda, dashboard, configuración, numeraciones FAC/RECT y backup quedan aislados por un `TenantContext` obligatorio. El cambio de contexto invalida los providers tenant-scoped y Configuración admite una identidad independiente por tenant. Antes de migrar una base v22 se crea y valida una copia SQLite de recuperación sin sobrescritura. No existen aún selector público, usuarios, roles, autenticación, cloud ni sincronización. Fase 3 continúa sin comenzar.
 
-La verificación de P0-B supera 237 pruebas en SQLite aislado, incluidas conservación v22 → v23 poblada y vacía, rollback por anomalía, contexto ausente, relaciones cross-tenant, numeraciones FAC/RECT independientes, concurrencia fiscal previa, búsqueda/dashboard y backup/restore completo. `flutter analyze --no-pub`, `git diff --check` y `flutter build windows --debug --no-pub` también superan.
+La verificación final de P0 supera 241 pruebas, incluidas conservación v22 → v23 poblada y vacía, rollback por anomalía, contexto ausente, las 16 tablas empresariales, relaciones cross-tenant, cambio de contexto sin caché cruzada, configuración independiente, numeraciones FAC/RECT, concurrencia, búsqueda/dashboard y backup/restore con dos tenants. `flutter analyze --no-pub`, `git diff --check` y `flutter build windows --debug --no-pub` también superan.
 
 La fase 1 está cerrada. Las restauraciones admiten los esquemas 16, 17, 18, 19, 20, 21 y 22, comprobados con integridad, relaciones, documentos emitidos, movimientos económicos y conservación de importes. Se rechazan versiones anteriores o futuras. La aceptación manual Windows con datos ficticios confirmó crear una copia, modificar un cliente y restaurar correctamente el estado anterior. Las pruebas automatizadas nunca tocaron datos reales.
 
@@ -65,7 +65,7 @@ Expediente/Obra es el octavo incremento y actúa como centro operativo. Su resum
 ## Deuda y riesgos prioritarios
 
 1. La cobertura continúa siendo desigual y aún se concentra principalmente en Facturas; el primer tramo de Presupuestos ya cuenta con pruebas de persistencia y atomicidad.
-2. Persisten providers en `data/`, accesos de UI a `databaseProvider` fuera de las pantallas rediseñadas, métodos heredados en `AppDatabase` y archivos grandes.
+2. Persisten providers en `data/`, métodos heredados en `AppDatabase` y archivos grandes; los accesos directos de Presentation revisados quedan encapsulados en providers o coordinadores de infraestructura.
 3. Las rectificativas sustitutivas y la integración de Certificaciones con las asignaciones parciales quedan aplazadas y no forman parte del alcance cerrado de Fase 2.
 4. El futuro circuito administrativo de Compras sigue pendiente: albaranes, facturas recibidas con original documental, pagos, vencimientos, reparto multiobra, discrepancias, almacén, histórico de materiales/precios y automatización asistida. El registro actual no acredita por sí solo un pago ni sustituye el documento original.
 5. El alta de Compra y su evento de Timeline aún no forman una única transacción atómica; esta deuda no se corrige en el incremento visual de Expediente.
@@ -73,4 +73,4 @@ Expediente/Obra es el octavo incremento y actúa como centro operativo. Su resum
 
 ## Próximo hito
 
-Tras la aceptación expresa de P0-B, abordar **P0-C — ciclo de tenant y limpieza de frontera**: endurecer bootstrap/cambio de contexto, invalidación y accesos heredados sin habilitar todavía multiempresa pública. No iniciar usuarios, cloud, sincronización ni Fase 3.
+La puerta P0 multi-tenant puede declararse cerrada. El siguiente hito recomendado es definir expresamente la Fase 3; no se han iniciado usuarios, selector multiempresa público, cloud, sincronización ni nuevas reglas económicas.
