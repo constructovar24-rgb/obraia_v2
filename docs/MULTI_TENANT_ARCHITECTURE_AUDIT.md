@@ -306,4 +306,4 @@ No se encontraron en producción nombres, NIF/CIF, domicilios, teléfonos, email
 
 ## Recomendación exacta del siguiente incremento
 
-Realizar **P0-A — Diseño ejecutable de tenant y migración v22 → v23**, todavía sin modificar producción: documento técnico con DDL objetivo de las 16 tablas, tabla `tenants`, backfill de todos los datos a un UUID inicial, constraints e índices compuestos, contrato de `TenantContext`, inventario de consultas y plan de pruebas de migración, aislamiento, facturación concurrente y backup. Solo después de aprobarlo debe implementarse la migración en otro incremento.
+P0-A está diseñado en `MULTI_TENANT_MIGRATION_PLAN.md`, sin implementación. El siguiente incremento propuesto es **P0-B — migración vertical segura multi-tenant v23**: esquema, backfill, constraints, contexto local mínimo y todos los accesos tenant-scoped deben aterrizar juntos para no dejar un estado intermedio inseguro. No incluye usuarios, selector multiempresa público, cloud, sincronización ni Fase 3.

@@ -56,11 +56,11 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 
 **Estado:** auditoría completada documentalmente. El producto actual es monoempresa: una SQLite, configuración singleton, consultas globales y ausencia de tenant/usuario/rol. No se ha modificado `schemaVersion` 22 ni se ha implementado aislamiento.
 
-**P0-A — diseño ejecutable:** definir DDL objetivo, tenant inicial, backfill v22 → v23, constraints/FKs e índices compuestos, `TenantContext`, inventario de consultas y pruebas.
+**P0-A — diseño ejecutable:** completado documentalmente en `MULTI_TENANT_MIGRATION_PLAN.md`. Define tenant inicial, las 16 tablas, rebuild v22 → v23, constraints/FKs e índices compuestos, `TenantContext`, accesos, rollback, validaciones y pruebas. No hay implementación.
 
-**P0-B — persistencia:** migrar las 16 tablas empresariales con `tenantId`, regenerar Drift y demostrar conservación y rechazo de relaciones cruzadas.
+**P0-B — migración vertical segura:** migrar las 16 tablas con `tenantId`, regenerar Drift e introducir conjuntamente contexto local mínimo y accesos tenant-scoped. Debe demostrar conservación y rechazo de relaciones cruzadas.
 
-**P0-C — acceso:** hacer tenant-scoped DAOs, repositorios, providers, configuración, búsqueda, dashboard, Timeline y backup completo.
+**P0-C — ciclo de tenant y endurecimiento:** preparar selección/cambio futuro, invalidación de sesión, retirada de accesos heredados y consolidación de casos de uso. No habilitar multiempresa pública sin autorización/membresías.
 
 **P0-D — fiscal:** aislar secuencias FAC/RECT, snapshots, PDFs, familias, cobros, rectificaciones y crédito, con concurrencia probada entre tenants.
 

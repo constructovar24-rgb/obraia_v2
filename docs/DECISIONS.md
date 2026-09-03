@@ -11,6 +11,10 @@ Este documento está preparado para registrar decisiones arquitectónicas, tecno
 - 2026-09-03: El documento original es inmutable e independiente de los datos extraídos. Su identidad de dominio no será una ruta física; almacenamiento, branding, plantillas, integraciones y credenciales serán configurables por tenant.
 - 2026-09-03: UI, automatización, lenguaje natural y voz compartirán casos de uso con autorización, tenant, validaciones, transacciones, idempotencia cuando corresponda y confirmación humana para acciones relevantes.
 - 2026-09-03: El producto se compondrá de core, configuración de tenant, módulos por oficio y plantillas/workflows; no habrá forks por gremio ni tarifas o históricos privados en el core.
+- 2026-09-03: El diseño v23 mantiene PK e IDs históricos, añade `tenantId` obligatorio a las 16 tablas empresariales y protege cada relación con FK compuesta hacia `UNIQUE (tenantId, id)`. Las acciones `ON DELETE` siguen siendo `NO ACTION`.
+- 2026-09-03: Una instalación v22 crea transaccionalmente un UUID v4 de tenant inicial. Su nombre procede de la configuración si es inequívoca y no vacía; en otro caso usa “Empresa inicial”. No se deriva identidad de Construcciones Tovar ni se usa un UUID común entre instalaciones.
+- 2026-09-03: P0-B será una migración vertical: esquema v23, contexto local mínimo y accesos tenant-scoped se implementarán juntos. Separar persistencia y consultas dejaría escrituras incompatibles o lecturas globales inseguras.
+- 2026-09-03: v23 mantiene temporalmente `MAX(numeroLegal) + 1` dentro de la transacción de emisión, aislado por tenant, serie y ejercicio. Una tabla de secuencias se aplaza; un futuro servidor será autoridad del número fiscal definitivo.
 
 ## Interfaz y navegación
 
