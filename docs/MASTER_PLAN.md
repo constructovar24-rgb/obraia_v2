@@ -50,9 +50,29 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 
 **Rediseño global — incremento 8:** Expediente/Obra queda consolidado como workspace operativo con resumen administrativo basado en agregados reales y accesos a Cliente, Presupuestos, Facturas/Cobros, Compras, Certificaciones, Documentos/fotos, Timeline y Datos generales. No incorpora rentabilidad, margen, beneficio, desviaciones ni reglas nuevas. Fase 3 continúa sin comenzar.
 
+## Puerta arquitectónica multi-tenant — antes de Fase 3
+
+**Visión:** OBRA IA es un producto multiempresa y un empleado digital para autónomos y pequeñas empresas de construcción y oficios relacionados. Construcciones Tovar es el primer tenant y banco de pruebas, nunca una dependencia del core.
+
+**Estado:** auditoría completada documentalmente. El producto actual es monoempresa: una SQLite, configuración singleton, consultas globales y ausencia de tenant/usuario/rol. No se ha modificado `schemaVersion` 22 ni se ha implementado aislamiento.
+
+**P0-A — diseño ejecutable:** definir DDL objetivo, tenant inicial, backfill v22 → v23, constraints/FKs e índices compuestos, `TenantContext`, inventario de consultas y pruebas.
+
+**P0-B — persistencia:** migrar las 16 tablas empresariales con `tenantId`, regenerar Drift y demostrar conservación y rechazo de relaciones cruzadas.
+
+**P0-C — acceso:** hacer tenant-scoped DAOs, repositorios, providers, configuración, búsqueda, dashboard, Timeline y backup completo.
+
+**P0-D — fiscal:** aislar secuencias FAC/RECT, snapshots, PDFs, familias, cobros, rectificaciones y crédito, con concurrencia probada entre tenants.
+
+**Criterio de salida:** dos tenants de prueba no pueden leer, modificar, relacionar ni eliminar datos entre sí; la migración conserva los datos previos en el tenant inicial; numeraciones y operaciones económicas mantienen las garantías de Fase 2; backup/restauración tienen alcance explícito y probado.
+
+La auditoría completa, prioridades P0–P3 y roadmap revisado están en `MULTI_TENANT_ARCHITECTURE_AUDIT.md`.
+
 ## Fase 3 — Gestión económica y rentabilidad por obra
 
 **Objetivo:** ofrecer costes, ingresos, desviaciones, tesorería y margen fiables por expediente.
+
+**Prerequisito:** completar la puerta P0 multi-tenant. Un presupuesto aceptado será el plan económico versionado de la obra y todos los costes, tarifas, márgenes, históricos y métricas pertenecerán al tenant activo.
 
 **Criterio de salida:** reglas económicas documentadas y probadas; compras, certificaciones, facturación y cobros concilian; informes reproducibles explican cada cifra con precisión y redondeo consistentes.
 
@@ -74,6 +94,8 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 
 **Objetivo:** incorporar asistencia de IA sin delegar decisiones críticas ni comprometer información empresarial.
 
+**Dirección:** interfaz gráfica, voz, lenguaje natural y automatizaciones invocarán los mismos casos de uso tenant-aware; no automatizarán widgets ni accederán directamente a persistencia.
+
 **Criterio de salida:** casos de uso delimitados, minimización de datos, entradas y salidas auditables, resultados explicables, confirmación humana y pruebas contra acciones incorrectas o no autorizadas.
 
 ## Fase 7 — Preparación profesional para Windows
@@ -81,3 +103,9 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 **Objetivo:** entregar una aplicación instalable, identificable, actualizable y recuperable.
 
 **Criterio de salida:** identidad definitiva, compilación reproducible, instalador probado en limpio, firma gestionada con secretos seguros, actualización y reversión verificadas, recuperación validada y guía de publicación completa.
+
+## Evolución posterior — identidad, cloud, móvil y producto multigremio
+
+**Objetivo:** incorporar usuarios con membresías/roles y tenant activo, backend autoritativo, sincronización y offline delimitado, almacenamiento e integraciones por tenant, solicitudes web configurables, branding y módulos por oficio sin forks.
+
+**Condición:** conflictos, timestamps UTC, revisiones, tombstones, idempotencia, secuencias fiscales y documentos por identidad estable deberán definirse antes de habilitar escritura multi-dispositivo.

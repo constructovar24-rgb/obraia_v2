@@ -2,6 +2,16 @@
 
 Este documento está preparado para registrar decisiones arquitectónicas, tecnológicas y de producto del proyecto OBRA IA v3.
 
+## Producto multi-tenant
+
+- 2026-09-03: OBRA IA se diseña como producto multiempresa y empleado digital para autónomos y pequeñas empresas de construcción y oficios relacionados. Construcciones Tovar es el primer tenant y banco de pruebas, no una dependencia del core.
+- 2026-09-03: La frontera de tenant se aplicará con defensa en profundidad: contexto obligatorio en casos de uso, consultas tenant-scoped y constraints compuestos en persistencia. Filtrar solo la interfaz no constituye aislamiento.
+- 2026-09-03: Antes de Fase 3 se resolverán tenant inicial, `tenantId` en todas las filas empresariales, relaciones dentro del mismo tenant, configuración, búsqueda, dashboard, Timeline, backup y numeraciones FAC/RECT por tenant.
+- 2026-09-03: Los UUID se conservan como identidad técnica. La numeración fiscal definitiva pertenece a tenant, serie y ejercicio y necesitará una autoridad transaccional compatible con concurrencia y futura sincronización.
+- 2026-09-03: El documento original es inmutable e independiente de los datos extraídos. Su identidad de dominio no será una ruta física; almacenamiento, branding, plantillas, integraciones y credenciales serán configurables por tenant.
+- 2026-09-03: UI, automatización, lenguaje natural y voz compartirán casos de uso con autorización, tenant, validaciones, transacciones, idempotencia cuando corresponda y confirmación humana para acciones relevantes.
+- 2026-09-03: El producto se compondrá de core, configuración de tenant, módulos por oficio y plantillas/workflows; no habrá forks por gremio ni tarifas o históricos privados en el core.
+
 ## Interfaz y navegación
 
 - 2026-09-01: La interfaz prioriza Windows mediante un shell desktop persistente con barra lateral adaptable, cabecera de contexto y un navegador interno basado en `Navigator`; no se introduce GoRouter incidentalmente.

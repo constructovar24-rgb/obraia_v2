@@ -1,6 +1,6 @@
 # Estado actual de OBRA IA
 
-Fotografía verificada el **1 de septiembre de 2026**. Debe actualizarse cuando cambien de forma relevante el producto, la arquitectura, la persistencia o las prioridades. No sustituye a Git, al código ni a las pruebas.
+Fotografía verificada el **3 de septiembre de 2026**. Debe actualizarse cuando cambien de forma relevante el producto, la arquitectura, la persistencia o las prioridades. No sustituye a Git, al código ni a las pruebas.
 
 ## Base tecnológica
 
@@ -33,6 +33,8 @@ Flutter está instalado en `C:\src\flutter`, aunque no está incluido globalment
 Con análisis, pruebas y compilación Windows superados, Expedientes queda técnicamente validado y la fase 0 cumple sus comprobaciones técnicas. Esto no acredita todavía una versión publicable ni la existencia de un instalador.
 
 ## Fase actual
+
+La auditoría arquitectónica multi-tenant está documentada en `MULTI_TENANT_ARCHITECTURE_AUDIT.md`. OBRA IA sigue siendo técnicamente monoempresa: no existen tenant, usuarios, roles ni aislamiento, y las 16 tablas, consultas, configuración, numeraciones, búsqueda, dashboard y backup usan un ámbito global implícito. La auditoría no ha cambiado producción, `schemaVersion` 22 ni las reglas validadas. Fase 3 continúa sin comenzar.
 
 La fase 1 está cerrada. Las restauraciones admiten los esquemas 16, 17, 18, 19, 20, 21 y 22, comprobados con integridad, relaciones, documentos emitidos, movimientos económicos y conservación de importes. Se rechazan versiones anteriores o futuras. La aceptación manual Windows con datos ficticios confirmó crear una copia, modificar un cliente y restaurar correctamente el estado anterior. Las pruebas automatizadas nunca tocaron datos reales.
 
@@ -69,4 +71,4 @@ Expediente/Obra es el octavo incremento y actúa como centro operativo. Su resum
 
 ## Próximo hito
 
-Continuar el rediseño profesional con el siguiente módulo visual priorizado, sin iniciar cambios económicos de Fase 3.
+Realizar **P0-A — Diseño ejecutable de tenant y migración v22 → v23**: DDL objetivo, backfill seguro del tenant inicial, constraints e índices compuestos, contrato de `TenantContext`, inventario de consultas y plan de pruebas. No implementar la migración hasta aprobar ese diseño y no iniciar Fase 3 antes de completar los requisitos P0 de aislamiento.
