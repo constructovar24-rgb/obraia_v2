@@ -16,6 +16,8 @@ import '../../../../core/widgets/status_chip.dart';
 import '../../data/expediente_repository.dart';
 import '../../domain/expediente.dart' as expediente_domain;
 import '../../../certificaciones/domain/certificacion.dart';
+import '../../../clientes/presentation/providers/cliente_providers.dart';
+import '../../../clientes/presentation/screens/cliente_detail_screen.dart';
 import '../../../certificaciones/presentation/providers/certificacion_providers.dart';
 import '../../../certificaciones/presentation/screens/nueva_certificacion_screen.dart';
 import '../../../certificaciones/presentation/screens/editar_certificacion_screen.dart';
@@ -26,6 +28,7 @@ import '../../../documentos/presentation/screens/nuevo_documento_screen.dart';
 import '../../../facturas/presentation/widgets/facturas_tab.dart';
 import '../../../compras/presentation/widgets/compras_tab.dart';
 import '../../../timeline/presentation/timeline_page.dart';
+import '../widgets/expediente_resumen_tab.dart';
 import 'cliente_tab.dart';
 import 'datos_generales_screen.dart';
 import 'editar_expediente_screen.dart';
@@ -128,6 +131,30 @@ class ExpedienteDetailScreen extends ConsumerWidget {
                         label: _labelEstadoCiclo(expediente?.estadoCiclo),
                         type: _tipoEstadoCiclo(expediente?.estadoCiclo),
                       ),
+                      trailing:
+                          expediente?.clienteId == null ||
+                              expediente!.clienteId!.isEmpty
+                          ? null
+                          : IconButton(
+                              tooltip: 'Abrir cliente',
+                              icon: const Icon(Icons.open_in_new),
+                              onPressed: () {
+                                final cliente = ref
+                                    .read(
+                                      clienteProvider(expediente.clienteId!),
+                                    )
+                                    .value;
+                                if (cliente != null) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          ClienteDetailScreen(cliente: cliente),
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
                     ),
                   ),
                   const ExpedienteWorkspaceTabs(),
@@ -141,6 +168,7 @@ class ExpedienteDetailScreen extends ConsumerWidget {
               Expanded(
                 child: TabBarView(
                   children: [
+                    ExpedienteResumenTab(expedienteId: id),
                     PresupuestosTab(expedienteId: id),
                     ComprasTab(expedienteId: id),
                     _CertificacionesTab(expedienteId: id),

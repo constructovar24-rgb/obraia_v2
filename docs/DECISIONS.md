@@ -15,6 +15,7 @@ Este documento está preparado para registrar decisiones arquitectónicas, tecno
 - 2026-09-03: Proveedores es el sexto patrón desktop profesional. Su ficha se limita a identidad fiscal, contacto, domicilio y observaciones existentes; no muestra compras, actividad ni indicadores sin una relación real en el modelo. Alta y edición comparten formulario y el borrado conserva la eliminación lógica existente.
 - 2026-09-03: Compras es el séptimo patrón desktop profesional y conserva su significado actual de apunte de gasto asociado a un único expediente. El estado pendiente/pagada/anulada es un valor manual existente, no un libro de pagos. El número de factura opcional no convierte el registro en una factura recibida documental.
 - 2026-09-03: El futuro circuito administrativo mantendrá el documento original como evidencia independiente de los datos estructurados extraídos. Albaranes, facturas recibidas, pagos, vencimientos, reparto multiobra, almacén, precios históricos, email, OCR e IA quedan fuera de este incremento.
+- 2026-09-03: Expediente/Obra es el octavo patrón profesional y centro operativo. Su resumen consume agregados de repositorio para presupuestos y estado económico de facturas; Presentation solo compone la información y enlaza las áreas existentes. Quedan expresamente excluidas las métricas de rentabilidad de Fase 3.
 
 ## Formato recomendado
 - Fecha

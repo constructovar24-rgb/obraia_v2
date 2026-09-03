@@ -48,6 +48,8 @@ El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas
 
 **Rediseño global — incremento 7:** Compras profesionaliza el apunte de gasto existente vinculado a una obra, con centro global, búsqueda/filtro, detalle, navegación real y formulario compartido. Se separa expresamente del futuro circuito Proveedor → Albarán → Obra → Factura recibida → Pago: no incorpora documentos, pagos, vencimientos, reparto multiobra ni automatización. Fase 3 continúa sin comenzar.
 
+**Rediseño global — incremento 8:** Expediente/Obra queda consolidado como workspace operativo con resumen administrativo basado en agregados reales y accesos a Cliente, Presupuestos, Facturas/Cobros, Compras, Certificaciones, Documentos/fotos, Timeline y Datos generales. No incorpora rentabilidad, margen, beneficio, desviaciones ni reglas nuevas. Fase 3 continúa sin comenzar.
+
 ## Fase 3 — Gestión económica y rentabilidad por obra
 
 **Objetivo:** ofrecer costes, ingresos, desviaciones, tesorería y margen fiables por expediente.

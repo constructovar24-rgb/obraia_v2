@@ -56,13 +56,16 @@ Proveedores es el sexto módulo migrado al patrón profesional. Su directorio of
 
 Compras es el séptimo módulo migrado al patrón profesional. Actualmente una Compra es un apunte de gasto ligado obligatoriamente a un único Expediente, con proveedor opcional y nombre histórico, fecha, número de factura opcional, concepto, base, porcentaje de IVA, total, estado manual y observaciones. El centro global permite buscar, filtrar y navegar; la ficha enlaza Proveedor y Expediente cuando siguen disponibles, y alta/edición comparten formulario protegido contra doble envío. No existen documentos originales, pagos trazables, vencimientos, albaranes, líneas ni reparto multiobra. Cinco pruebas widget elevan la suite completa a 231. Fase 3 no ha comenzado.
 
+Expediente/Obra es el octavo incremento y actúa como centro operativo. Su resumen muestra importes de presupuestos, facturado, cobrado, pendiente y compras desde repositorios y estados económicos existentes, junto con recuentos reales de certificaciones, documentos, fotografías y Timeline. La cabecera conserva identidad, cliente y estado y permite abrir el Cliente; cada bloque lleva a la pestaña operativa correspondiente. No se muestran beneficio, margen, rentabilidad, desviaciones ni previsiones. Una prueba widget adicional eleva la suite a 232. Fase 3 no ha comenzado.
+
 ## Deuda y riesgos prioritarios
 
 1. La cobertura continúa siendo desigual y aún se concentra principalmente en Facturas; el primer tramo de Presupuestos ya cuenta con pruebas de persistencia y atomicidad.
 2. Persisten providers en `data/`, accesos de UI a `databaseProvider` fuera de las pantallas rediseñadas, métodos heredados en `AppDatabase` y archivos grandes.
 3. Las rectificativas sustitutivas y la integración de Certificaciones con las asignaciones parciales quedan aplazadas y no forman parte del alcance cerrado de Fase 2.
 4. El futuro circuito administrativo de Compras sigue pendiente: albaranes, facturas recibidas con original documental, pagos, vencimientos, reparto multiobra, discrepancias, almacén, histórico de materiales/precios y automatización asistida. El registro actual no acredita por sí solo un pago ni sustituye el documento original.
-5. Aún no se han verificado un instalador, firma, actualización ni reversión para una distribución publicable en Windows.
+5. El alta de Compra y su evento de Timeline aún no forman una única transacción atómica; esta deuda no se corrige en el incremento visual de Expediente.
+6. Aún no se han verificado un instalador, firma, actualización ni reversión para una distribución publicable en Windows.
 
 ## Próximo hito
 

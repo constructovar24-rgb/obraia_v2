@@ -2,6 +2,13 @@
 
 ## No publicado
 
+### Expediente / Obra como centro operativo
+
+- Añadida una pestaña Resumen que consolida presupuestos, facturación, cobros, pendiente y compras mediante agregados existentes, sin calcular rentabilidad ni márgenes.
+- Reorganizados los accesos del workspace a Presupuestos, Compras, Certificaciones, Facturas, Documentos/fotos, Timeline, Cliente y Datos generales.
+- Añadida navegación directa desde la cabecera al Cliente y accesos desde cada bloque del resumen a su área real.
+- Conservadas las compras como apuntes de gasto y diferenciados documentos, fotografías, certificaciones y eventos realmente registrados.
+
 ### Rediseño profesional de Compras
 
 - Convertida la entrada global en un centro desktop de apuntes de gasto con búsqueda, filtro por estado registrado, obra, proveedor, fecha e importes reales.
