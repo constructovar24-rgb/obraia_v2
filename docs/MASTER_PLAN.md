@@ -76,7 +76,7 @@ La auditoría completa, prioridades P0–P3 y roadmap revisado están en `MULTI_
 
 **Prerequisito:** completar la puerta P0 multi-tenant. Un presupuesto aceptado será el plan económico versionado de la obra y todos los costes, tarifas, márgenes, históricos y métricas pertenecerán al tenant activo.
 
-**Estado:** Fase 3-A cerrada como diseño ejecutable aprobado en `PHASE_3_ECONOMIC_MODEL.md`; no hay implementación de persistencia ni UI. El modelo separa venta, coste previsto, coste real, facturación y caja, adopta hechos de coste canónicos y tiene resueltas las políticas de mano de obra propia, indirectos, devengo de Compra y cierre económico.
+**Estado:** Fase 3-A está cerrada y Fase 3-B implementada técnicamente sobre schema v24. Existen categorías y configuración económica tenant-scoped, costes previstos internos por partida y planes inmutables creados atómicamente al aceptar. La migración no inventa planes legacy. Fase 3-C y los costes reales canónicos no se han iniciado.
 
 **Secuencia:** 3-B plan económico/categorías y v24; 3-C hechos de coste/Compras; 3-D mano de obra; 3-E compromisos/estimaciones y motor de desviación; 3-F centro económico del Expediente; 3-G cierres, alertas e histórico.
 

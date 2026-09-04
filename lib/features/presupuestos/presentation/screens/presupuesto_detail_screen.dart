@@ -21,6 +21,8 @@ import '../../../expedientes/data/expediente_repository.dart';
 import '../../../expedientes/presentation/screens/expediente_detail_screen.dart';
 import '../../../clientes/presentation/providers/cliente_providers.dart';
 import '../../../clientes/presentation/screens/cliente_detail_screen.dart';
+import '../../../economia/domain/plan_economico.dart';
+import '../../../economia/presentation/providers/plan_economico_providers.dart';
 import '../../domain/linea_presupuesto.dart' as linea_domain;
 import '../../domain/presupuesto.dart' as presupuesto_domain;
 import '../../domain/estado_presupuesto.dart';
@@ -268,11 +270,35 @@ class PresupuestoDetailScreen extends ConsumerWidget {
                                   padding: const EdgeInsets.only(
                                     top: AppSpacing.xs,
                                   ),
-                                  child: Text(
-                                    '${_formatearCantidad(linea.cantidad)} ${linea.unidad} × ${_formatearMoneda(linea.precioUnitario)} = ${_formatearMoneda(linea.importe)}',
-                                    style: textTheme.bodyMedium,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${_formatearCantidad(linea.cantidad)} ${linea.unidad} × ${_formatearMoneda(linea.precioUnitario)} = ${_formatearMoneda(linea.importe)}',
+                                        style: textTheme.bodyMedium,
+                                      ),
+                                      _CostePrevistoLineaResumen(
+                                        lineaId: linea.id,
+                                      ),
+                                    ],
                                   ),
                                 ),
+                                trailing:
+                                    puedeAceptarPresupuesto(presupuesto.estado)
+                                    ? IconButton(
+                                        tooltip: 'Coste interno previsto',
+                                        onPressed: () =>
+                                            _editarCostePrevistoLinea(
+                                              context,
+                                              ref,
+                                              linea.id,
+                                            ),
+                                        icon: const Icon(
+                                          Icons.price_change_outlined,
+                                        ),
+                                      )
+                                    : null,
                                 onTap: () {
                                   Navigator.push(
                                     context,
@@ -321,6 +347,8 @@ class PresupuestoDetailScreen extends ConsumerWidget {
             },
           ),
           const SizedBox(height: AppSpacing.md),
+          _ResumenPlanEconomico(presupuestoId: presupuesto.id),
+          const SizedBox(height: AppSpacing.md),
           _ResumenFacturacionParcial(presupuesto: presupuesto),
           const SizedBox(height: AppSpacing.md),
           if (puedeAceptarPresupuesto(presupuesto.estado)) ...[
@@ -331,7 +359,7 @@ class PresupuestoDetailScreen extends ConsumerWidget {
                     context,
                     title: 'Aceptar presupuesto',
                     message:
-                        '¿Quieres aceptar este presupuesto y habilitar su facturación?',
+                        'Se congelará el plan económico interno. Los costes no informados quedarán marcados como incompletos. ¿Quieres aceptar el presupuesto?',
                     confirmLabel: 'Aceptar presupuesto',
                     cancelLabel: 'Cancelar',
                   );
@@ -498,6 +526,220 @@ class PresupuestoDetailScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+Future<void> _editarCostePrevistoLinea(
+  BuildContext context,
+  WidgetRef ref,
+  String lineaId,
+) async {
+  final repository = ref.read(planEconomicoRepositoryProvider);
+  final categorias = await repository.observarCategorias().first;
+  final actual = await repository.obtenerCosteLinea(lineaId);
+  if (!context.mounted) return;
+  if (categorias.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('No hay categorías económicas activas.')),
+    );
+    return;
+  }
+  final resultado = await showDialog<_EdicionCosteResult>(
+    context: context,
+    builder: (_) =>
+        _CostePrevistoDialog(categorias: categorias, actual: actual),
+  );
+  if (resultado == null) return;
+  if (resultado.eliminar) {
+    await repository.eliminarCosteLinea(lineaId);
+  } else {
+    await repository.guardarCosteLinea(
+      lineaId: lineaId,
+      categoriaId: resultado.categoriaId!,
+      coste: resultado.coste!,
+    );
+  }
+}
+
+class _CostePrevistoLineaResumen extends ConsumerWidget {
+  const _CostePrevistoLineaResumen({required this.lineaId});
+  final String lineaId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final repository = ref.watch(planEconomicoRepositoryProvider);
+    return StreamBuilder<CostePrevistoLinea?>(
+      stream: repository.observarCosteLinea(lineaId),
+      builder: (context, snapshot) {
+        final coste = snapshot.data;
+        return Padding(
+          padding: const EdgeInsets.only(top: AppSpacing.xs),
+          child: Text(
+            coste == null
+                ? 'Coste interno: sin informar'
+                : 'Coste interno: ${(coste.costeCentimos / 100).toStringAsFixed(2)} €',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _ResumenPlanEconomico extends ConsumerWidget {
+  const _ResumenPlanEconomico({required this.presupuestoId});
+  final String presupuestoId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final repository = ref.watch(planEconomicoRepositoryProvider);
+    return StreamBuilder<PlanEconomico?>(
+      stream: repository.observarPlanPorPresupuesto(presupuestoId),
+      builder: (context, snapshot) {
+        final plan = snapshot.data;
+        if (plan == null) {
+          return const AppCard(
+            child: Text(
+              'Plan económico interno: se congelará al aceptar. Los costes no informados no se interpretan como 0 €.',
+            ),
+          );
+        }
+        final magnitudes = plan.magnitudes;
+        String dinero(int? value) => value == null
+            ? 'No disponible'
+            : '${(value / 100).toStringAsFixed(2)} €';
+        return AppSection(
+          title: 'Plan económico interno',
+          subtitle: 'Snapshot inmutable creado al aceptar el presupuesto.',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Cobertura: ${magnitudes.cobertura.name}'),
+              Text('Venta prevista: ${dinero(magnitudes.ventaNetaCentimos)}'),
+              Text('Coste directo: ${dinero(magnitudes.costeDirectoCentimos)}'),
+              Text(
+                'Indirectos: ${dinero(magnitudes.costesIndirectosCentimos)}',
+              ),
+              Text(
+                'Beneficio previsto: ${dinero(magnitudes.beneficioPrevistoCentimos)}',
+              ),
+              Text(
+                'Margen previsto: ${magnitudes.margenPrevistoPorcentaje?.toStringAsFixed(2) ?? 'No disponible'}${magnitudes.margenPrevistoPorcentaje == null ? '' : ' %'}',
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _EdicionCosteResult {
+  const _EdicionCosteResult.guardar(this.categoriaId, this.coste)
+    : eliminar = false;
+  const _EdicionCosteResult.eliminar()
+    : categoriaId = null,
+      coste = null,
+      eliminar = true;
+  final String? categoriaId;
+  final double? coste;
+  final bool eliminar;
+}
+
+class _CostePrevistoDialog extends StatefulWidget {
+  const _CostePrevistoDialog({required this.categorias, this.actual});
+  final List<CategoriaEconomica> categorias;
+  final CostePrevistoLinea? actual;
+
+  @override
+  State<_CostePrevistoDialog> createState() => _CostePrevistoDialogState();
+}
+
+class _CostePrevistoDialogState extends State<_CostePrevistoDialog> {
+  final _formKey = GlobalKey<FormState>();
+  late String _categoriaId;
+  late final TextEditingController _costeController;
+
+  @override
+  void initState() {
+    super.initState();
+    _categoriaId =
+        widget.actual?.categoriaEconomicaId ?? widget.categorias.first.id;
+    _costeController = TextEditingController(
+      text: widget.actual == null
+          ? ''
+          : (widget.actual!.costeCentimos / 100).toStringAsFixed(2),
+    );
+  }
+
+  @override
+  void dispose() {
+    _costeController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+    title: const Text('Coste interno previsto'),
+    content: Form(
+      key: _formKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          DropdownButtonFormField<String>(
+            initialValue: _categoriaId,
+            items: widget.categorias
+                .map(
+                  (categoria) => DropdownMenuItem(
+                    value: categoria.id,
+                    child: Text(categoria.nombre),
+                  ),
+                )
+                .toList(),
+            onChanged: (value) => _categoriaId = value ?? _categoriaId,
+            decoration: const InputDecoration(labelText: 'Categoría'),
+          ),
+          TextFormField(
+            controller: _costeController,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            decoration: const InputDecoration(labelText: 'Coste previsto (€)'),
+            validator: (value) {
+              final coste = double.tryParse((value ?? '').replaceAll(',', '.'));
+              return coste == null || coste < 0
+                  ? 'Introduce un coste válido.'
+                  : null;
+            },
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          const Text('Dato interno: nunca aparece en el PDF comercial.'),
+        ],
+      ),
+    ),
+    actions: [
+      if (widget.actual != null)
+        TextButton(
+          onPressed: () =>
+              Navigator.pop(context, const _EdicionCosteResult.eliminar()),
+          child: const Text('Dejar sin informar'),
+        ),
+      TextButton(
+        onPressed: () => Navigator.pop(context),
+        child: const Text('Cancelar'),
+      ),
+      FilledButton(
+        onPressed: () {
+          if (!_formKey.currentState!.validate()) return;
+          Navigator.pop(
+            context,
+            _EdicionCosteResult.guardar(
+              _categoriaId,
+              double.parse(_costeController.text.replaceAll(',', '.')),
+            ),
+          );
+        },
+        child: const Text('Guardar'),
+      ),
+    ],
+  );
 }
 
 class _ResumenFacturacionParcial extends ConsumerWidget {

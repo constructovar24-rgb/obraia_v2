@@ -14203,6 +14203,3493 @@ class MovimientosCreditoClienteCompanion
   }
 }
 
+class $CategoriasEconomicasTable extends CategoriasEconomicas
+    with TableInfo<$CategoriasEconomicasTable, CategoriasEconomica> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CategoriasEconomicasTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _codigoMeta = const VerificationMeta('codigo');
+  @override
+  late final GeneratedColumn<String> codigo = GeneratedColumn<String>(
+    'codigo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nombreMeta = const VerificationMeta('nombre');
+  @override
+  late final GeneratedColumn<String> nombre = GeneratedColumn<String>(
+    'nombre',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _tipoMeta = const VerificationMeta('tipo');
+  @override
+  late final GeneratedColumn<String> tipo = GeneratedColumn<String>(
+    'tipo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('directo'),
+  );
+  static const VerificationMeta _ordenMeta = const VerificationMeta('orden');
+  @override
+  late final GeneratedColumn<int> orden = GeneratedColumn<int>(
+    'orden',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _activaMeta = const VerificationMeta('activa');
+  @override
+  late final GeneratedColumn<bool> activa = GeneratedColumn<bool>(
+    'activa',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("activa" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _fechaCreacionMeta = const VerificationMeta(
+    'fechaCreacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaCreacion =
+      GeneratedColumn<DateTime>(
+        'fecha_creacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _fechaModificacionMeta = const VerificationMeta(
+    'fechaModificacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaModificacion =
+      GeneratedColumn<DateTime>(
+        'fecha_modificacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    id,
+    codigo,
+    nombre,
+    tipo,
+    orden,
+    activa,
+    fechaCreacion,
+    fechaModificacion,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'categorias_economicas';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CategoriasEconomica> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('codigo')) {
+      context.handle(
+        _codigoMeta,
+        codigo.isAcceptableOrUnknown(data['codigo']!, _codigoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_codigoMeta);
+    }
+    if (data.containsKey('nombre')) {
+      context.handle(
+        _nombreMeta,
+        nombre.isAcceptableOrUnknown(data['nombre']!, _nombreMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nombreMeta);
+    }
+    if (data.containsKey('tipo')) {
+      context.handle(
+        _tipoMeta,
+        tipo.isAcceptableOrUnknown(data['tipo']!, _tipoMeta),
+      );
+    }
+    if (data.containsKey('orden')) {
+      context.handle(
+        _ordenMeta,
+        orden.isAcceptableOrUnknown(data['orden']!, _ordenMeta),
+      );
+    }
+    if (data.containsKey('activa')) {
+      context.handle(
+        _activaMeta,
+        activa.isAcceptableOrUnknown(data['activa']!, _activaMeta),
+      );
+    }
+    if (data.containsKey('fecha_creacion')) {
+      context.handle(
+        _fechaCreacionMeta,
+        fechaCreacion.isAcceptableOrUnknown(
+          data['fecha_creacion']!,
+          _fechaCreacionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaCreacionMeta);
+    }
+    if (data.containsKey('fecha_modificacion')) {
+      context.handle(
+        _fechaModificacionMeta,
+        fechaModificacion.isAcceptableOrUnknown(
+          data['fecha_modificacion']!,
+          _fechaModificacionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaModificacionMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {tenantId, id},
+    {tenantId, codigo},
+  ];
+  @override
+  CategoriasEconomica map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CategoriasEconomica(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      codigo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}codigo'],
+      )!,
+      nombre: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}nombre'],
+      )!,
+      tipo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tipo'],
+      )!,
+      orden: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}orden'],
+      )!,
+      activa: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}activa'],
+      )!,
+      fechaCreacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_creacion'],
+      )!,
+      fechaModificacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_modificacion'],
+      )!,
+    );
+  }
+
+  @override
+  $CategoriasEconomicasTable createAlias(String alias) {
+    return $CategoriasEconomicasTable(attachedDatabase, alias);
+  }
+}
+
+class CategoriasEconomica extends DataClass
+    implements Insertable<CategoriasEconomica> {
+  final String tenantId;
+  final String id;
+  final String codigo;
+  final String nombre;
+  final String tipo;
+  final int orden;
+  final bool activa;
+  final DateTime fechaCreacion;
+  final DateTime fechaModificacion;
+  const CategoriasEconomica({
+    required this.tenantId,
+    required this.id,
+    required this.codigo,
+    required this.nombre,
+    required this.tipo,
+    required this.orden,
+    required this.activa,
+    required this.fechaCreacion,
+    required this.fechaModificacion,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['id'] = Variable<String>(id);
+    map['codigo'] = Variable<String>(codigo);
+    map['nombre'] = Variable<String>(nombre);
+    map['tipo'] = Variable<String>(tipo);
+    map['orden'] = Variable<int>(orden);
+    map['activa'] = Variable<bool>(activa);
+    map['fecha_creacion'] = Variable<DateTime>(fechaCreacion);
+    map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion);
+    return map;
+  }
+
+  CategoriasEconomicasCompanion toCompanion(bool nullToAbsent) {
+    return CategoriasEconomicasCompanion(
+      tenantId: Value(tenantId),
+      id: Value(id),
+      codigo: Value(codigo),
+      nombre: Value(nombre),
+      tipo: Value(tipo),
+      orden: Value(orden),
+      activa: Value(activa),
+      fechaCreacion: Value(fechaCreacion),
+      fechaModificacion: Value(fechaModificacion),
+    );
+  }
+
+  factory CategoriasEconomica.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CategoriasEconomica(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      id: serializer.fromJson<String>(json['id']),
+      codigo: serializer.fromJson<String>(json['codigo']),
+      nombre: serializer.fromJson<String>(json['nombre']),
+      tipo: serializer.fromJson<String>(json['tipo']),
+      orden: serializer.fromJson<int>(json['orden']),
+      activa: serializer.fromJson<bool>(json['activa']),
+      fechaCreacion: serializer.fromJson<DateTime>(json['fechaCreacion']),
+      fechaModificacion: serializer.fromJson<DateTime>(
+        json['fechaModificacion'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'id': serializer.toJson<String>(id),
+      'codigo': serializer.toJson<String>(codigo),
+      'nombre': serializer.toJson<String>(nombre),
+      'tipo': serializer.toJson<String>(tipo),
+      'orden': serializer.toJson<int>(orden),
+      'activa': serializer.toJson<bool>(activa),
+      'fechaCreacion': serializer.toJson<DateTime>(fechaCreacion),
+      'fechaModificacion': serializer.toJson<DateTime>(fechaModificacion),
+    };
+  }
+
+  CategoriasEconomica copyWith({
+    String? tenantId,
+    String? id,
+    String? codigo,
+    String? nombre,
+    String? tipo,
+    int? orden,
+    bool? activa,
+    DateTime? fechaCreacion,
+    DateTime? fechaModificacion,
+  }) => CategoriasEconomica(
+    tenantId: tenantId ?? this.tenantId,
+    id: id ?? this.id,
+    codigo: codigo ?? this.codigo,
+    nombre: nombre ?? this.nombre,
+    tipo: tipo ?? this.tipo,
+    orden: orden ?? this.orden,
+    activa: activa ?? this.activa,
+    fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+    fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+  );
+  CategoriasEconomica copyWithCompanion(CategoriasEconomicasCompanion data) {
+    return CategoriasEconomica(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      id: data.id.present ? data.id.value : this.id,
+      codigo: data.codigo.present ? data.codigo.value : this.codigo,
+      nombre: data.nombre.present ? data.nombre.value : this.nombre,
+      tipo: data.tipo.present ? data.tipo.value : this.tipo,
+      orden: data.orden.present ? data.orden.value : this.orden,
+      activa: data.activa.present ? data.activa.value : this.activa,
+      fechaCreacion: data.fechaCreacion.present
+          ? data.fechaCreacion.value
+          : this.fechaCreacion,
+      fechaModificacion: data.fechaModificacion.present
+          ? data.fechaModificacion.value
+          : this.fechaModificacion,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CategoriasEconomica(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('codigo: $codigo, ')
+          ..write('nombre: $nombre, ')
+          ..write('tipo: $tipo, ')
+          ..write('orden: $orden, ')
+          ..write('activa: $activa, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    tenantId,
+    id,
+    codigo,
+    nombre,
+    tipo,
+    orden,
+    activa,
+    fechaCreacion,
+    fechaModificacion,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CategoriasEconomica &&
+          other.tenantId == this.tenantId &&
+          other.id == this.id &&
+          other.codigo == this.codigo &&
+          other.nombre == this.nombre &&
+          other.tipo == this.tipo &&
+          other.orden == this.orden &&
+          other.activa == this.activa &&
+          other.fechaCreacion == this.fechaCreacion &&
+          other.fechaModificacion == this.fechaModificacion);
+}
+
+class CategoriasEconomicasCompanion
+    extends UpdateCompanion<CategoriasEconomica> {
+  final Value<String> tenantId;
+  final Value<String> id;
+  final Value<String> codigo;
+  final Value<String> nombre;
+  final Value<String> tipo;
+  final Value<int> orden;
+  final Value<bool> activa;
+  final Value<DateTime> fechaCreacion;
+  final Value<DateTime> fechaModificacion;
+  final Value<int> rowid;
+  const CategoriasEconomicasCompanion({
+    this.tenantId = const Value.absent(),
+    this.id = const Value.absent(),
+    this.codigo = const Value.absent(),
+    this.nombre = const Value.absent(),
+    this.tipo = const Value.absent(),
+    this.orden = const Value.absent(),
+    this.activa = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.fechaModificacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CategoriasEconomicasCompanion.insert({
+    required String tenantId,
+    required String id,
+    required String codigo,
+    required String nombre,
+    this.tipo = const Value.absent(),
+    this.orden = const Value.absent(),
+    this.activa = const Value.absent(),
+    required DateTime fechaCreacion,
+    required DateTime fechaModificacion,
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       id = Value(id),
+       codigo = Value(codigo),
+       nombre = Value(nombre),
+       fechaCreacion = Value(fechaCreacion),
+       fechaModificacion = Value(fechaModificacion);
+  static Insertable<CategoriasEconomica> custom({
+    Expression<String>? tenantId,
+    Expression<String>? id,
+    Expression<String>? codigo,
+    Expression<String>? nombre,
+    Expression<String>? tipo,
+    Expression<int>? orden,
+    Expression<bool>? activa,
+    Expression<DateTime>? fechaCreacion,
+    Expression<DateTime>? fechaModificacion,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (id != null) 'id': id,
+      if (codigo != null) 'codigo': codigo,
+      if (nombre != null) 'nombre': nombre,
+      if (tipo != null) 'tipo': tipo,
+      if (orden != null) 'orden': orden,
+      if (activa != null) 'activa': activa,
+      if (fechaCreacion != null) 'fecha_creacion': fechaCreacion,
+      if (fechaModificacion != null) 'fecha_modificacion': fechaModificacion,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CategoriasEconomicasCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? id,
+    Value<String>? codigo,
+    Value<String>? nombre,
+    Value<String>? tipo,
+    Value<int>? orden,
+    Value<bool>? activa,
+    Value<DateTime>? fechaCreacion,
+    Value<DateTime>? fechaModificacion,
+    Value<int>? rowid,
+  }) {
+    return CategoriasEconomicasCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      id: id ?? this.id,
+      codigo: codigo ?? this.codigo,
+      nombre: nombre ?? this.nombre,
+      tipo: tipo ?? this.tipo,
+      orden: orden ?? this.orden,
+      activa: activa ?? this.activa,
+      fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+      fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (codigo.present) {
+      map['codigo'] = Variable<String>(codigo.value);
+    }
+    if (nombre.present) {
+      map['nombre'] = Variable<String>(nombre.value);
+    }
+    if (tipo.present) {
+      map['tipo'] = Variable<String>(tipo.value);
+    }
+    if (orden.present) {
+      map['orden'] = Variable<int>(orden.value);
+    }
+    if (activa.present) {
+      map['activa'] = Variable<bool>(activa.value);
+    }
+    if (fechaCreacion.present) {
+      map['fecha_creacion'] = Variable<DateTime>(fechaCreacion.value);
+    }
+    if (fechaModificacion.present) {
+      map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CategoriasEconomicasCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('codigo: $codigo, ')
+          ..write('nombre: $nombre, ')
+          ..write('tipo: $tipo, ')
+          ..write('orden: $orden, ')
+          ..write('activa: $activa, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ConfiguracionEconomicaTable extends ConfiguracionEconomica
+    with TableInfo<$ConfiguracionEconomicaTable, ConfiguracionEconomicaData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ConfiguracionEconomicaTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _porcentajeIndirectosMeta =
+      const VerificationMeta('porcentajeIndirectos');
+  @override
+  late final GeneratedColumn<double> porcentajeIndirectos =
+      GeneratedColumn<double>(
+        'porcentaje_indirectos',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _fechaCreacionMeta = const VerificationMeta(
+    'fechaCreacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaCreacion =
+      GeneratedColumn<DateTime>(
+        'fecha_creacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _fechaModificacionMeta = const VerificationMeta(
+    'fechaModificacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaModificacion =
+      GeneratedColumn<DateTime>(
+        'fecha_modificacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    id,
+    porcentajeIndirectos,
+    fechaCreacion,
+    fechaModificacion,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'configuracion_economica';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ConfiguracionEconomicaData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('porcentaje_indirectos')) {
+      context.handle(
+        _porcentajeIndirectosMeta,
+        porcentajeIndirectos.isAcceptableOrUnknown(
+          data['porcentaje_indirectos']!,
+          _porcentajeIndirectosMeta,
+        ),
+      );
+    }
+    if (data.containsKey('fecha_creacion')) {
+      context.handle(
+        _fechaCreacionMeta,
+        fechaCreacion.isAcceptableOrUnknown(
+          data['fecha_creacion']!,
+          _fechaCreacionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaCreacionMeta);
+    }
+    if (data.containsKey('fecha_modificacion')) {
+      context.handle(
+        _fechaModificacionMeta,
+        fechaModificacion.isAcceptableOrUnknown(
+          data['fecha_modificacion']!,
+          _fechaModificacionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaModificacionMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {tenantId},
+    {tenantId, id},
+  ];
+  @override
+  ConfiguracionEconomicaData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ConfiguracionEconomicaData(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      porcentajeIndirectos: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}porcentaje_indirectos'],
+      ),
+      fechaCreacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_creacion'],
+      )!,
+      fechaModificacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_modificacion'],
+      )!,
+    );
+  }
+
+  @override
+  $ConfiguracionEconomicaTable createAlias(String alias) {
+    return $ConfiguracionEconomicaTable(attachedDatabase, alias);
+  }
+}
+
+class ConfiguracionEconomicaData extends DataClass
+    implements Insertable<ConfiguracionEconomicaData> {
+  final String tenantId;
+  final String id;
+  final double? porcentajeIndirectos;
+  final DateTime fechaCreacion;
+  final DateTime fechaModificacion;
+  const ConfiguracionEconomicaData({
+    required this.tenantId,
+    required this.id,
+    this.porcentajeIndirectos,
+    required this.fechaCreacion,
+    required this.fechaModificacion,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['id'] = Variable<String>(id);
+    if (!nullToAbsent || porcentajeIndirectos != null) {
+      map['porcentaje_indirectos'] = Variable<double>(porcentajeIndirectos);
+    }
+    map['fecha_creacion'] = Variable<DateTime>(fechaCreacion);
+    map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion);
+    return map;
+  }
+
+  ConfiguracionEconomicaCompanion toCompanion(bool nullToAbsent) {
+    return ConfiguracionEconomicaCompanion(
+      tenantId: Value(tenantId),
+      id: Value(id),
+      porcentajeIndirectos: porcentajeIndirectos == null && nullToAbsent
+          ? const Value.absent()
+          : Value(porcentajeIndirectos),
+      fechaCreacion: Value(fechaCreacion),
+      fechaModificacion: Value(fechaModificacion),
+    );
+  }
+
+  factory ConfiguracionEconomicaData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ConfiguracionEconomicaData(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      id: serializer.fromJson<String>(json['id']),
+      porcentajeIndirectos: serializer.fromJson<double?>(
+        json['porcentajeIndirectos'],
+      ),
+      fechaCreacion: serializer.fromJson<DateTime>(json['fechaCreacion']),
+      fechaModificacion: serializer.fromJson<DateTime>(
+        json['fechaModificacion'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'id': serializer.toJson<String>(id),
+      'porcentajeIndirectos': serializer.toJson<double?>(porcentajeIndirectos),
+      'fechaCreacion': serializer.toJson<DateTime>(fechaCreacion),
+      'fechaModificacion': serializer.toJson<DateTime>(fechaModificacion),
+    };
+  }
+
+  ConfiguracionEconomicaData copyWith({
+    String? tenantId,
+    String? id,
+    Value<double?> porcentajeIndirectos = const Value.absent(),
+    DateTime? fechaCreacion,
+    DateTime? fechaModificacion,
+  }) => ConfiguracionEconomicaData(
+    tenantId: tenantId ?? this.tenantId,
+    id: id ?? this.id,
+    porcentajeIndirectos: porcentajeIndirectos.present
+        ? porcentajeIndirectos.value
+        : this.porcentajeIndirectos,
+    fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+    fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+  );
+  ConfiguracionEconomicaData copyWithCompanion(
+    ConfiguracionEconomicaCompanion data,
+  ) {
+    return ConfiguracionEconomicaData(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      id: data.id.present ? data.id.value : this.id,
+      porcentajeIndirectos: data.porcentajeIndirectos.present
+          ? data.porcentajeIndirectos.value
+          : this.porcentajeIndirectos,
+      fechaCreacion: data.fechaCreacion.present
+          ? data.fechaCreacion.value
+          : this.fechaCreacion,
+      fechaModificacion: data.fechaModificacion.present
+          ? data.fechaModificacion.value
+          : this.fechaModificacion,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ConfiguracionEconomicaData(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('porcentajeIndirectos: $porcentajeIndirectos, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    tenantId,
+    id,
+    porcentajeIndirectos,
+    fechaCreacion,
+    fechaModificacion,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ConfiguracionEconomicaData &&
+          other.tenantId == this.tenantId &&
+          other.id == this.id &&
+          other.porcentajeIndirectos == this.porcentajeIndirectos &&
+          other.fechaCreacion == this.fechaCreacion &&
+          other.fechaModificacion == this.fechaModificacion);
+}
+
+class ConfiguracionEconomicaCompanion
+    extends UpdateCompanion<ConfiguracionEconomicaData> {
+  final Value<String> tenantId;
+  final Value<String> id;
+  final Value<double?> porcentajeIndirectos;
+  final Value<DateTime> fechaCreacion;
+  final Value<DateTime> fechaModificacion;
+  final Value<int> rowid;
+  const ConfiguracionEconomicaCompanion({
+    this.tenantId = const Value.absent(),
+    this.id = const Value.absent(),
+    this.porcentajeIndirectos = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.fechaModificacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ConfiguracionEconomicaCompanion.insert({
+    required String tenantId,
+    required String id,
+    this.porcentajeIndirectos = const Value.absent(),
+    required DateTime fechaCreacion,
+    required DateTime fechaModificacion,
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       id = Value(id),
+       fechaCreacion = Value(fechaCreacion),
+       fechaModificacion = Value(fechaModificacion);
+  static Insertable<ConfiguracionEconomicaData> custom({
+    Expression<String>? tenantId,
+    Expression<String>? id,
+    Expression<double>? porcentajeIndirectos,
+    Expression<DateTime>? fechaCreacion,
+    Expression<DateTime>? fechaModificacion,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (id != null) 'id': id,
+      if (porcentajeIndirectos != null)
+        'porcentaje_indirectos': porcentajeIndirectos,
+      if (fechaCreacion != null) 'fecha_creacion': fechaCreacion,
+      if (fechaModificacion != null) 'fecha_modificacion': fechaModificacion,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ConfiguracionEconomicaCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? id,
+    Value<double?>? porcentajeIndirectos,
+    Value<DateTime>? fechaCreacion,
+    Value<DateTime>? fechaModificacion,
+    Value<int>? rowid,
+  }) {
+    return ConfiguracionEconomicaCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      id: id ?? this.id,
+      porcentajeIndirectos: porcentajeIndirectos ?? this.porcentajeIndirectos,
+      fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+      fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (porcentajeIndirectos.present) {
+      map['porcentaje_indirectos'] = Variable<double>(
+        porcentajeIndirectos.value,
+      );
+    }
+    if (fechaCreacion.present) {
+      map['fecha_creacion'] = Variable<DateTime>(fechaCreacion.value);
+    }
+    if (fechaModificacion.present) {
+      map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ConfiguracionEconomicaCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('porcentajeIndirectos: $porcentajeIndirectos, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $LineaPresupuestoCostesPrevistosTable
+    extends LineaPresupuestoCostesPrevistos
+    with
+        TableInfo<
+          $LineaPresupuestoCostesPrevistosTable,
+          LineaPresupuestoCostesPrevisto
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LineaPresupuestoCostesPrevistosTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lineaPresupuestoIdMeta =
+      const VerificationMeta('lineaPresupuestoId');
+  @override
+  late final GeneratedColumn<String> lineaPresupuestoId =
+      GeneratedColumn<String>(
+        'linea_presupuesto_id',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _categoriaEconomicaIdMeta =
+      const VerificationMeta('categoriaEconomicaId');
+  @override
+  late final GeneratedColumn<String> categoriaEconomicaId =
+      GeneratedColumn<String>(
+        'categoria_economica_id',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _costePrevistoCentimosMeta =
+      const VerificationMeta('costePrevistoCentimos');
+  @override
+  late final GeneratedColumn<int> costePrevistoCentimos = GeneratedColumn<int>(
+    'coste_previsto_centimos',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fechaCreacionMeta = const VerificationMeta(
+    'fechaCreacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaCreacion =
+      GeneratedColumn<DateTime>(
+        'fecha_creacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _fechaModificacionMeta = const VerificationMeta(
+    'fechaModificacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaModificacion =
+      GeneratedColumn<DateTime>(
+        'fecha_modificacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    id,
+    lineaPresupuestoId,
+    categoriaEconomicaId,
+    costePrevistoCentimos,
+    fechaCreacion,
+    fechaModificacion,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'linea_presupuesto_costes_previstos';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LineaPresupuestoCostesPrevisto> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('linea_presupuesto_id')) {
+      context.handle(
+        _lineaPresupuestoIdMeta,
+        lineaPresupuestoId.isAcceptableOrUnknown(
+          data['linea_presupuesto_id']!,
+          _lineaPresupuestoIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_lineaPresupuestoIdMeta);
+    }
+    if (data.containsKey('categoria_economica_id')) {
+      context.handle(
+        _categoriaEconomicaIdMeta,
+        categoriaEconomicaId.isAcceptableOrUnknown(
+          data['categoria_economica_id']!,
+          _categoriaEconomicaIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_categoriaEconomicaIdMeta);
+    }
+    if (data.containsKey('coste_previsto_centimos')) {
+      context.handle(
+        _costePrevistoCentimosMeta,
+        costePrevistoCentimos.isAcceptableOrUnknown(
+          data['coste_previsto_centimos']!,
+          _costePrevistoCentimosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_costePrevistoCentimosMeta);
+    }
+    if (data.containsKey('fecha_creacion')) {
+      context.handle(
+        _fechaCreacionMeta,
+        fechaCreacion.isAcceptableOrUnknown(
+          data['fecha_creacion']!,
+          _fechaCreacionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaCreacionMeta);
+    }
+    if (data.containsKey('fecha_modificacion')) {
+      context.handle(
+        _fechaModificacionMeta,
+        fechaModificacion.isAcceptableOrUnknown(
+          data['fecha_modificacion']!,
+          _fechaModificacionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaModificacionMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {tenantId, id},
+    {tenantId, lineaPresupuestoId},
+  ];
+  @override
+  LineaPresupuestoCostesPrevisto map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LineaPresupuestoCostesPrevisto(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      lineaPresupuestoId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}linea_presupuesto_id'],
+      )!,
+      categoriaEconomicaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}categoria_economica_id'],
+      )!,
+      costePrevistoCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}coste_previsto_centimos'],
+      )!,
+      fechaCreacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_creacion'],
+      )!,
+      fechaModificacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_modificacion'],
+      )!,
+    );
+  }
+
+  @override
+  $LineaPresupuestoCostesPrevistosTable createAlias(String alias) {
+    return $LineaPresupuestoCostesPrevistosTable(attachedDatabase, alias);
+  }
+}
+
+class LineaPresupuestoCostesPrevisto extends DataClass
+    implements Insertable<LineaPresupuestoCostesPrevisto> {
+  final String tenantId;
+  final String id;
+  final String lineaPresupuestoId;
+  final String categoriaEconomicaId;
+  final int costePrevistoCentimos;
+  final DateTime fechaCreacion;
+  final DateTime fechaModificacion;
+  const LineaPresupuestoCostesPrevisto({
+    required this.tenantId,
+    required this.id,
+    required this.lineaPresupuestoId,
+    required this.categoriaEconomicaId,
+    required this.costePrevistoCentimos,
+    required this.fechaCreacion,
+    required this.fechaModificacion,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['id'] = Variable<String>(id);
+    map['linea_presupuesto_id'] = Variable<String>(lineaPresupuestoId);
+    map['categoria_economica_id'] = Variable<String>(categoriaEconomicaId);
+    map['coste_previsto_centimos'] = Variable<int>(costePrevistoCentimos);
+    map['fecha_creacion'] = Variable<DateTime>(fechaCreacion);
+    map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion);
+    return map;
+  }
+
+  LineaPresupuestoCostesPrevistosCompanion toCompanion(bool nullToAbsent) {
+    return LineaPresupuestoCostesPrevistosCompanion(
+      tenantId: Value(tenantId),
+      id: Value(id),
+      lineaPresupuestoId: Value(lineaPresupuestoId),
+      categoriaEconomicaId: Value(categoriaEconomicaId),
+      costePrevistoCentimos: Value(costePrevistoCentimos),
+      fechaCreacion: Value(fechaCreacion),
+      fechaModificacion: Value(fechaModificacion),
+    );
+  }
+
+  factory LineaPresupuestoCostesPrevisto.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LineaPresupuestoCostesPrevisto(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      id: serializer.fromJson<String>(json['id']),
+      lineaPresupuestoId: serializer.fromJson<String>(
+        json['lineaPresupuestoId'],
+      ),
+      categoriaEconomicaId: serializer.fromJson<String>(
+        json['categoriaEconomicaId'],
+      ),
+      costePrevistoCentimos: serializer.fromJson<int>(
+        json['costePrevistoCentimos'],
+      ),
+      fechaCreacion: serializer.fromJson<DateTime>(json['fechaCreacion']),
+      fechaModificacion: serializer.fromJson<DateTime>(
+        json['fechaModificacion'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'id': serializer.toJson<String>(id),
+      'lineaPresupuestoId': serializer.toJson<String>(lineaPresupuestoId),
+      'categoriaEconomicaId': serializer.toJson<String>(categoriaEconomicaId),
+      'costePrevistoCentimos': serializer.toJson<int>(costePrevistoCentimos),
+      'fechaCreacion': serializer.toJson<DateTime>(fechaCreacion),
+      'fechaModificacion': serializer.toJson<DateTime>(fechaModificacion),
+    };
+  }
+
+  LineaPresupuestoCostesPrevisto copyWith({
+    String? tenantId,
+    String? id,
+    String? lineaPresupuestoId,
+    String? categoriaEconomicaId,
+    int? costePrevistoCentimos,
+    DateTime? fechaCreacion,
+    DateTime? fechaModificacion,
+  }) => LineaPresupuestoCostesPrevisto(
+    tenantId: tenantId ?? this.tenantId,
+    id: id ?? this.id,
+    lineaPresupuestoId: lineaPresupuestoId ?? this.lineaPresupuestoId,
+    categoriaEconomicaId: categoriaEconomicaId ?? this.categoriaEconomicaId,
+    costePrevistoCentimos: costePrevistoCentimos ?? this.costePrevistoCentimos,
+    fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+    fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+  );
+  LineaPresupuestoCostesPrevisto copyWithCompanion(
+    LineaPresupuestoCostesPrevistosCompanion data,
+  ) {
+    return LineaPresupuestoCostesPrevisto(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      id: data.id.present ? data.id.value : this.id,
+      lineaPresupuestoId: data.lineaPresupuestoId.present
+          ? data.lineaPresupuestoId.value
+          : this.lineaPresupuestoId,
+      categoriaEconomicaId: data.categoriaEconomicaId.present
+          ? data.categoriaEconomicaId.value
+          : this.categoriaEconomicaId,
+      costePrevistoCentimos: data.costePrevistoCentimos.present
+          ? data.costePrevistoCentimos.value
+          : this.costePrevistoCentimos,
+      fechaCreacion: data.fechaCreacion.present
+          ? data.fechaCreacion.value
+          : this.fechaCreacion,
+      fechaModificacion: data.fechaModificacion.present
+          ? data.fechaModificacion.value
+          : this.fechaModificacion,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LineaPresupuestoCostesPrevisto(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('lineaPresupuestoId: $lineaPresupuestoId, ')
+          ..write('categoriaEconomicaId: $categoriaEconomicaId, ')
+          ..write('costePrevistoCentimos: $costePrevistoCentimos, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    tenantId,
+    id,
+    lineaPresupuestoId,
+    categoriaEconomicaId,
+    costePrevistoCentimos,
+    fechaCreacion,
+    fechaModificacion,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LineaPresupuestoCostesPrevisto &&
+          other.tenantId == this.tenantId &&
+          other.id == this.id &&
+          other.lineaPresupuestoId == this.lineaPresupuestoId &&
+          other.categoriaEconomicaId == this.categoriaEconomicaId &&
+          other.costePrevistoCentimos == this.costePrevistoCentimos &&
+          other.fechaCreacion == this.fechaCreacion &&
+          other.fechaModificacion == this.fechaModificacion);
+}
+
+class LineaPresupuestoCostesPrevistosCompanion
+    extends UpdateCompanion<LineaPresupuestoCostesPrevisto> {
+  final Value<String> tenantId;
+  final Value<String> id;
+  final Value<String> lineaPresupuestoId;
+  final Value<String> categoriaEconomicaId;
+  final Value<int> costePrevistoCentimos;
+  final Value<DateTime> fechaCreacion;
+  final Value<DateTime> fechaModificacion;
+  final Value<int> rowid;
+  const LineaPresupuestoCostesPrevistosCompanion({
+    this.tenantId = const Value.absent(),
+    this.id = const Value.absent(),
+    this.lineaPresupuestoId = const Value.absent(),
+    this.categoriaEconomicaId = const Value.absent(),
+    this.costePrevistoCentimos = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.fechaModificacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LineaPresupuestoCostesPrevistosCompanion.insert({
+    required String tenantId,
+    required String id,
+    required String lineaPresupuestoId,
+    required String categoriaEconomicaId,
+    required int costePrevistoCentimos,
+    required DateTime fechaCreacion,
+    required DateTime fechaModificacion,
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       id = Value(id),
+       lineaPresupuestoId = Value(lineaPresupuestoId),
+       categoriaEconomicaId = Value(categoriaEconomicaId),
+       costePrevistoCentimos = Value(costePrevistoCentimos),
+       fechaCreacion = Value(fechaCreacion),
+       fechaModificacion = Value(fechaModificacion);
+  static Insertable<LineaPresupuestoCostesPrevisto> custom({
+    Expression<String>? tenantId,
+    Expression<String>? id,
+    Expression<String>? lineaPresupuestoId,
+    Expression<String>? categoriaEconomicaId,
+    Expression<int>? costePrevistoCentimos,
+    Expression<DateTime>? fechaCreacion,
+    Expression<DateTime>? fechaModificacion,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (id != null) 'id': id,
+      if (lineaPresupuestoId != null)
+        'linea_presupuesto_id': lineaPresupuestoId,
+      if (categoriaEconomicaId != null)
+        'categoria_economica_id': categoriaEconomicaId,
+      if (costePrevistoCentimos != null)
+        'coste_previsto_centimos': costePrevistoCentimos,
+      if (fechaCreacion != null) 'fecha_creacion': fechaCreacion,
+      if (fechaModificacion != null) 'fecha_modificacion': fechaModificacion,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LineaPresupuestoCostesPrevistosCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? id,
+    Value<String>? lineaPresupuestoId,
+    Value<String>? categoriaEconomicaId,
+    Value<int>? costePrevistoCentimos,
+    Value<DateTime>? fechaCreacion,
+    Value<DateTime>? fechaModificacion,
+    Value<int>? rowid,
+  }) {
+    return LineaPresupuestoCostesPrevistosCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      id: id ?? this.id,
+      lineaPresupuestoId: lineaPresupuestoId ?? this.lineaPresupuestoId,
+      categoriaEconomicaId: categoriaEconomicaId ?? this.categoriaEconomicaId,
+      costePrevistoCentimos:
+          costePrevistoCentimos ?? this.costePrevistoCentimos,
+      fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+      fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (lineaPresupuestoId.present) {
+      map['linea_presupuesto_id'] = Variable<String>(lineaPresupuestoId.value);
+    }
+    if (categoriaEconomicaId.present) {
+      map['categoria_economica_id'] = Variable<String>(
+        categoriaEconomicaId.value,
+      );
+    }
+    if (costePrevistoCentimos.present) {
+      map['coste_previsto_centimos'] = Variable<int>(
+        costePrevistoCentimos.value,
+      );
+    }
+    if (fechaCreacion.present) {
+      map['fecha_creacion'] = Variable<DateTime>(fechaCreacion.value);
+    }
+    if (fechaModificacion.present) {
+      map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LineaPresupuestoCostesPrevistosCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('lineaPresupuestoId: $lineaPresupuestoId, ')
+          ..write('categoriaEconomicaId: $categoriaEconomicaId, ')
+          ..write('costePrevistoCentimos: $costePrevistoCentimos, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PlanesEconomicosTable extends PlanesEconomicos
+    with TableInfo<$PlanesEconomicosTable, PlanesEconomico> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PlanesEconomicosTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _expedienteIdMeta = const VerificationMeta(
+    'expedienteId',
+  );
+  @override
+  late final GeneratedColumn<String> expedienteId = GeneratedColumn<String>(
+    'expediente_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _presupuestoIdMeta = const VerificationMeta(
+    'presupuestoId',
+  );
+  @override
+  late final GeneratedColumn<String> presupuestoId = GeneratedColumn<String>(
+    'presupuesto_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _tipoMeta = const VerificationMeta('tipo');
+  @override
+  late final GeneratedColumn<String> tipo = GeneratedColumn<String>(
+    'tipo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('base'),
+  );
+  static const VerificationMeta _versionMeta = const VerificationMeta(
+    'version',
+  );
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+    'version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _estadoMeta = const VerificationMeta('estado');
+  @override
+  late final GeneratedColumn<String> estado = GeneratedColumn<String>(
+    'estado',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('vigente'),
+  );
+  static const VerificationMeta _fechaAceptacionMeta = const VerificationMeta(
+    'fechaAceptacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaAceptacion =
+      GeneratedColumn<DateTime>(
+        'fecha_aceptacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _ventaNetaCentimosMeta = const VerificationMeta(
+    'ventaNetaCentimos',
+  );
+  @override
+  late final GeneratedColumn<int> ventaNetaCentimos = GeneratedColumn<int>(
+    'venta_neta_centimos',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _costeDirectoCentimosMeta =
+      const VerificationMeta('costeDirectoCentimos');
+  @override
+  late final GeneratedColumn<int> costeDirectoCentimos = GeneratedColumn<int>(
+    'coste_directo_centimos',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _porcentajeIndirectosMeta =
+      const VerificationMeta('porcentajeIndirectos');
+  @override
+  late final GeneratedColumn<double> porcentajeIndirectos =
+      GeneratedColumn<double>(
+        'porcentaje_indirectos',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _costesIndirectosCentimosMeta =
+      const VerificationMeta('costesIndirectosCentimos');
+  @override
+  late final GeneratedColumn<int> costesIndirectosCentimos =
+      GeneratedColumn<int>(
+        'costes_indirectos_centimos',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _costeTotalCentimosMeta =
+      const VerificationMeta('costeTotalCentimos');
+  @override
+  late final GeneratedColumn<int> costeTotalCentimos = GeneratedColumn<int>(
+    'coste_total_centimos',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _beneficioPrevistoCentimosMeta =
+      const VerificationMeta('beneficioPrevistoCentimos');
+  @override
+  late final GeneratedColumn<int> beneficioPrevistoCentimos =
+      GeneratedColumn<int>(
+        'beneficio_previsto_centimos',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _margenPrevistoPorcentajeMeta =
+      const VerificationMeta('margenPrevistoPorcentaje');
+  @override
+  late final GeneratedColumn<double> margenPrevistoPorcentaje =
+      GeneratedColumn<double>(
+        'margen_previsto_porcentaje',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _coberturaCostesMeta = const VerificationMeta(
+    'coberturaCostes',
+  );
+  @override
+  late final GeneratedColumn<String> coberturaCostes = GeneratedColumn<String>(
+    'cobertura_costes',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fechaCreacionMeta = const VerificationMeta(
+    'fechaCreacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaCreacion =
+      GeneratedColumn<DateTime>(
+        'fecha_creacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    id,
+    expedienteId,
+    presupuestoId,
+    tipo,
+    version,
+    estado,
+    fechaAceptacion,
+    ventaNetaCentimos,
+    costeDirectoCentimos,
+    porcentajeIndirectos,
+    costesIndirectosCentimos,
+    costeTotalCentimos,
+    beneficioPrevistoCentimos,
+    margenPrevistoPorcentaje,
+    coberturaCostes,
+    fechaCreacion,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'planes_economicos';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PlanesEconomico> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('expediente_id')) {
+      context.handle(
+        _expedienteIdMeta,
+        expedienteId.isAcceptableOrUnknown(
+          data['expediente_id']!,
+          _expedienteIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_expedienteIdMeta);
+    }
+    if (data.containsKey('presupuesto_id')) {
+      context.handle(
+        _presupuestoIdMeta,
+        presupuestoId.isAcceptableOrUnknown(
+          data['presupuesto_id']!,
+          _presupuestoIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_presupuestoIdMeta);
+    }
+    if (data.containsKey('tipo')) {
+      context.handle(
+        _tipoMeta,
+        tipo.isAcceptableOrUnknown(data['tipo']!, _tipoMeta),
+      );
+    }
+    if (data.containsKey('version')) {
+      context.handle(
+        _versionMeta,
+        version.isAcceptableOrUnknown(data['version']!, _versionMeta),
+      );
+    }
+    if (data.containsKey('estado')) {
+      context.handle(
+        _estadoMeta,
+        estado.isAcceptableOrUnknown(data['estado']!, _estadoMeta),
+      );
+    }
+    if (data.containsKey('fecha_aceptacion')) {
+      context.handle(
+        _fechaAceptacionMeta,
+        fechaAceptacion.isAcceptableOrUnknown(
+          data['fecha_aceptacion']!,
+          _fechaAceptacionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaAceptacionMeta);
+    }
+    if (data.containsKey('venta_neta_centimos')) {
+      context.handle(
+        _ventaNetaCentimosMeta,
+        ventaNetaCentimos.isAcceptableOrUnknown(
+          data['venta_neta_centimos']!,
+          _ventaNetaCentimosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_ventaNetaCentimosMeta);
+    }
+    if (data.containsKey('coste_directo_centimos')) {
+      context.handle(
+        _costeDirectoCentimosMeta,
+        costeDirectoCentimos.isAcceptableOrUnknown(
+          data['coste_directo_centimos']!,
+          _costeDirectoCentimosMeta,
+        ),
+      );
+    }
+    if (data.containsKey('porcentaje_indirectos')) {
+      context.handle(
+        _porcentajeIndirectosMeta,
+        porcentajeIndirectos.isAcceptableOrUnknown(
+          data['porcentaje_indirectos']!,
+          _porcentajeIndirectosMeta,
+        ),
+      );
+    }
+    if (data.containsKey('costes_indirectos_centimos')) {
+      context.handle(
+        _costesIndirectosCentimosMeta,
+        costesIndirectosCentimos.isAcceptableOrUnknown(
+          data['costes_indirectos_centimos']!,
+          _costesIndirectosCentimosMeta,
+        ),
+      );
+    }
+    if (data.containsKey('coste_total_centimos')) {
+      context.handle(
+        _costeTotalCentimosMeta,
+        costeTotalCentimos.isAcceptableOrUnknown(
+          data['coste_total_centimos']!,
+          _costeTotalCentimosMeta,
+        ),
+      );
+    }
+    if (data.containsKey('beneficio_previsto_centimos')) {
+      context.handle(
+        _beneficioPrevistoCentimosMeta,
+        beneficioPrevistoCentimos.isAcceptableOrUnknown(
+          data['beneficio_previsto_centimos']!,
+          _beneficioPrevistoCentimosMeta,
+        ),
+      );
+    }
+    if (data.containsKey('margen_previsto_porcentaje')) {
+      context.handle(
+        _margenPrevistoPorcentajeMeta,
+        margenPrevistoPorcentaje.isAcceptableOrUnknown(
+          data['margen_previsto_porcentaje']!,
+          _margenPrevistoPorcentajeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('cobertura_costes')) {
+      context.handle(
+        _coberturaCostesMeta,
+        coberturaCostes.isAcceptableOrUnknown(
+          data['cobertura_costes']!,
+          _coberturaCostesMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_coberturaCostesMeta);
+    }
+    if (data.containsKey('fecha_creacion')) {
+      context.handle(
+        _fechaCreacionMeta,
+        fechaCreacion.isAcceptableOrUnknown(
+          data['fecha_creacion']!,
+          _fechaCreacionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaCreacionMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {tenantId, id},
+    {tenantId, presupuestoId},
+  ];
+  @override
+  PlanesEconomico map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PlanesEconomico(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      expedienteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}expediente_id'],
+      )!,
+      presupuestoId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}presupuesto_id'],
+      )!,
+      tipo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tipo'],
+      )!,
+      version: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}version'],
+      )!,
+      estado: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}estado'],
+      )!,
+      fechaAceptacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_aceptacion'],
+      )!,
+      ventaNetaCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}venta_neta_centimos'],
+      )!,
+      costeDirectoCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}coste_directo_centimos'],
+      ),
+      porcentajeIndirectos: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}porcentaje_indirectos'],
+      ),
+      costesIndirectosCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}costes_indirectos_centimos'],
+      ),
+      costeTotalCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}coste_total_centimos'],
+      ),
+      beneficioPrevistoCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}beneficio_previsto_centimos'],
+      ),
+      margenPrevistoPorcentaje: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}margen_previsto_porcentaje'],
+      ),
+      coberturaCostes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cobertura_costes'],
+      )!,
+      fechaCreacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_creacion'],
+      )!,
+    );
+  }
+
+  @override
+  $PlanesEconomicosTable createAlias(String alias) {
+    return $PlanesEconomicosTable(attachedDatabase, alias);
+  }
+}
+
+class PlanesEconomico extends DataClass implements Insertable<PlanesEconomico> {
+  final String tenantId;
+  final String id;
+  final String expedienteId;
+  final String presupuestoId;
+  final String tipo;
+  final int version;
+  final String estado;
+  final DateTime fechaAceptacion;
+  final int ventaNetaCentimos;
+  final int? costeDirectoCentimos;
+  final double? porcentajeIndirectos;
+  final int? costesIndirectosCentimos;
+  final int? costeTotalCentimos;
+  final int? beneficioPrevistoCentimos;
+  final double? margenPrevistoPorcentaje;
+  final String coberturaCostes;
+  final DateTime fechaCreacion;
+  const PlanesEconomico({
+    required this.tenantId,
+    required this.id,
+    required this.expedienteId,
+    required this.presupuestoId,
+    required this.tipo,
+    required this.version,
+    required this.estado,
+    required this.fechaAceptacion,
+    required this.ventaNetaCentimos,
+    this.costeDirectoCentimos,
+    this.porcentajeIndirectos,
+    this.costesIndirectosCentimos,
+    this.costeTotalCentimos,
+    this.beneficioPrevistoCentimos,
+    this.margenPrevistoPorcentaje,
+    required this.coberturaCostes,
+    required this.fechaCreacion,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['id'] = Variable<String>(id);
+    map['expediente_id'] = Variable<String>(expedienteId);
+    map['presupuesto_id'] = Variable<String>(presupuestoId);
+    map['tipo'] = Variable<String>(tipo);
+    map['version'] = Variable<int>(version);
+    map['estado'] = Variable<String>(estado);
+    map['fecha_aceptacion'] = Variable<DateTime>(fechaAceptacion);
+    map['venta_neta_centimos'] = Variable<int>(ventaNetaCentimos);
+    if (!nullToAbsent || costeDirectoCentimos != null) {
+      map['coste_directo_centimos'] = Variable<int>(costeDirectoCentimos);
+    }
+    if (!nullToAbsent || porcentajeIndirectos != null) {
+      map['porcentaje_indirectos'] = Variable<double>(porcentajeIndirectos);
+    }
+    if (!nullToAbsent || costesIndirectosCentimos != null) {
+      map['costes_indirectos_centimos'] = Variable<int>(
+        costesIndirectosCentimos,
+      );
+    }
+    if (!nullToAbsent || costeTotalCentimos != null) {
+      map['coste_total_centimos'] = Variable<int>(costeTotalCentimos);
+    }
+    if (!nullToAbsent || beneficioPrevistoCentimos != null) {
+      map['beneficio_previsto_centimos'] = Variable<int>(
+        beneficioPrevistoCentimos,
+      );
+    }
+    if (!nullToAbsent || margenPrevistoPorcentaje != null) {
+      map['margen_previsto_porcentaje'] = Variable<double>(
+        margenPrevistoPorcentaje,
+      );
+    }
+    map['cobertura_costes'] = Variable<String>(coberturaCostes);
+    map['fecha_creacion'] = Variable<DateTime>(fechaCreacion);
+    return map;
+  }
+
+  PlanesEconomicosCompanion toCompanion(bool nullToAbsent) {
+    return PlanesEconomicosCompanion(
+      tenantId: Value(tenantId),
+      id: Value(id),
+      expedienteId: Value(expedienteId),
+      presupuestoId: Value(presupuestoId),
+      tipo: Value(tipo),
+      version: Value(version),
+      estado: Value(estado),
+      fechaAceptacion: Value(fechaAceptacion),
+      ventaNetaCentimos: Value(ventaNetaCentimos),
+      costeDirectoCentimos: costeDirectoCentimos == null && nullToAbsent
+          ? const Value.absent()
+          : Value(costeDirectoCentimos),
+      porcentajeIndirectos: porcentajeIndirectos == null && nullToAbsent
+          ? const Value.absent()
+          : Value(porcentajeIndirectos),
+      costesIndirectosCentimos: costesIndirectosCentimos == null && nullToAbsent
+          ? const Value.absent()
+          : Value(costesIndirectosCentimos),
+      costeTotalCentimos: costeTotalCentimos == null && nullToAbsent
+          ? const Value.absent()
+          : Value(costeTotalCentimos),
+      beneficioPrevistoCentimos:
+          beneficioPrevistoCentimos == null && nullToAbsent
+          ? const Value.absent()
+          : Value(beneficioPrevistoCentimos),
+      margenPrevistoPorcentaje: margenPrevistoPorcentaje == null && nullToAbsent
+          ? const Value.absent()
+          : Value(margenPrevistoPorcentaje),
+      coberturaCostes: Value(coberturaCostes),
+      fechaCreacion: Value(fechaCreacion),
+    );
+  }
+
+  factory PlanesEconomico.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PlanesEconomico(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      id: serializer.fromJson<String>(json['id']),
+      expedienteId: serializer.fromJson<String>(json['expedienteId']),
+      presupuestoId: serializer.fromJson<String>(json['presupuestoId']),
+      tipo: serializer.fromJson<String>(json['tipo']),
+      version: serializer.fromJson<int>(json['version']),
+      estado: serializer.fromJson<String>(json['estado']),
+      fechaAceptacion: serializer.fromJson<DateTime>(json['fechaAceptacion']),
+      ventaNetaCentimos: serializer.fromJson<int>(json['ventaNetaCentimos']),
+      costeDirectoCentimos: serializer.fromJson<int?>(
+        json['costeDirectoCentimos'],
+      ),
+      porcentajeIndirectos: serializer.fromJson<double?>(
+        json['porcentajeIndirectos'],
+      ),
+      costesIndirectosCentimos: serializer.fromJson<int?>(
+        json['costesIndirectosCentimos'],
+      ),
+      costeTotalCentimos: serializer.fromJson<int?>(json['costeTotalCentimos']),
+      beneficioPrevistoCentimos: serializer.fromJson<int?>(
+        json['beneficioPrevistoCentimos'],
+      ),
+      margenPrevistoPorcentaje: serializer.fromJson<double?>(
+        json['margenPrevistoPorcentaje'],
+      ),
+      coberturaCostes: serializer.fromJson<String>(json['coberturaCostes']),
+      fechaCreacion: serializer.fromJson<DateTime>(json['fechaCreacion']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'id': serializer.toJson<String>(id),
+      'expedienteId': serializer.toJson<String>(expedienteId),
+      'presupuestoId': serializer.toJson<String>(presupuestoId),
+      'tipo': serializer.toJson<String>(tipo),
+      'version': serializer.toJson<int>(version),
+      'estado': serializer.toJson<String>(estado),
+      'fechaAceptacion': serializer.toJson<DateTime>(fechaAceptacion),
+      'ventaNetaCentimos': serializer.toJson<int>(ventaNetaCentimos),
+      'costeDirectoCentimos': serializer.toJson<int?>(costeDirectoCentimos),
+      'porcentajeIndirectos': serializer.toJson<double?>(porcentajeIndirectos),
+      'costesIndirectosCentimos': serializer.toJson<int?>(
+        costesIndirectosCentimos,
+      ),
+      'costeTotalCentimos': serializer.toJson<int?>(costeTotalCentimos),
+      'beneficioPrevistoCentimos': serializer.toJson<int?>(
+        beneficioPrevistoCentimos,
+      ),
+      'margenPrevistoPorcentaje': serializer.toJson<double?>(
+        margenPrevistoPorcentaje,
+      ),
+      'coberturaCostes': serializer.toJson<String>(coberturaCostes),
+      'fechaCreacion': serializer.toJson<DateTime>(fechaCreacion),
+    };
+  }
+
+  PlanesEconomico copyWith({
+    String? tenantId,
+    String? id,
+    String? expedienteId,
+    String? presupuestoId,
+    String? tipo,
+    int? version,
+    String? estado,
+    DateTime? fechaAceptacion,
+    int? ventaNetaCentimos,
+    Value<int?> costeDirectoCentimos = const Value.absent(),
+    Value<double?> porcentajeIndirectos = const Value.absent(),
+    Value<int?> costesIndirectosCentimos = const Value.absent(),
+    Value<int?> costeTotalCentimos = const Value.absent(),
+    Value<int?> beneficioPrevistoCentimos = const Value.absent(),
+    Value<double?> margenPrevistoPorcentaje = const Value.absent(),
+    String? coberturaCostes,
+    DateTime? fechaCreacion,
+  }) => PlanesEconomico(
+    tenantId: tenantId ?? this.tenantId,
+    id: id ?? this.id,
+    expedienteId: expedienteId ?? this.expedienteId,
+    presupuestoId: presupuestoId ?? this.presupuestoId,
+    tipo: tipo ?? this.tipo,
+    version: version ?? this.version,
+    estado: estado ?? this.estado,
+    fechaAceptacion: fechaAceptacion ?? this.fechaAceptacion,
+    ventaNetaCentimos: ventaNetaCentimos ?? this.ventaNetaCentimos,
+    costeDirectoCentimos: costeDirectoCentimos.present
+        ? costeDirectoCentimos.value
+        : this.costeDirectoCentimos,
+    porcentajeIndirectos: porcentajeIndirectos.present
+        ? porcentajeIndirectos.value
+        : this.porcentajeIndirectos,
+    costesIndirectosCentimos: costesIndirectosCentimos.present
+        ? costesIndirectosCentimos.value
+        : this.costesIndirectosCentimos,
+    costeTotalCentimos: costeTotalCentimos.present
+        ? costeTotalCentimos.value
+        : this.costeTotalCentimos,
+    beneficioPrevistoCentimos: beneficioPrevistoCentimos.present
+        ? beneficioPrevistoCentimos.value
+        : this.beneficioPrevistoCentimos,
+    margenPrevistoPorcentaje: margenPrevistoPorcentaje.present
+        ? margenPrevistoPorcentaje.value
+        : this.margenPrevistoPorcentaje,
+    coberturaCostes: coberturaCostes ?? this.coberturaCostes,
+    fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+  );
+  PlanesEconomico copyWithCompanion(PlanesEconomicosCompanion data) {
+    return PlanesEconomico(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      id: data.id.present ? data.id.value : this.id,
+      expedienteId: data.expedienteId.present
+          ? data.expedienteId.value
+          : this.expedienteId,
+      presupuestoId: data.presupuestoId.present
+          ? data.presupuestoId.value
+          : this.presupuestoId,
+      tipo: data.tipo.present ? data.tipo.value : this.tipo,
+      version: data.version.present ? data.version.value : this.version,
+      estado: data.estado.present ? data.estado.value : this.estado,
+      fechaAceptacion: data.fechaAceptacion.present
+          ? data.fechaAceptacion.value
+          : this.fechaAceptacion,
+      ventaNetaCentimos: data.ventaNetaCentimos.present
+          ? data.ventaNetaCentimos.value
+          : this.ventaNetaCentimos,
+      costeDirectoCentimos: data.costeDirectoCentimos.present
+          ? data.costeDirectoCentimos.value
+          : this.costeDirectoCentimos,
+      porcentajeIndirectos: data.porcentajeIndirectos.present
+          ? data.porcentajeIndirectos.value
+          : this.porcentajeIndirectos,
+      costesIndirectosCentimos: data.costesIndirectosCentimos.present
+          ? data.costesIndirectosCentimos.value
+          : this.costesIndirectosCentimos,
+      costeTotalCentimos: data.costeTotalCentimos.present
+          ? data.costeTotalCentimos.value
+          : this.costeTotalCentimos,
+      beneficioPrevistoCentimos: data.beneficioPrevistoCentimos.present
+          ? data.beneficioPrevistoCentimos.value
+          : this.beneficioPrevistoCentimos,
+      margenPrevistoPorcentaje: data.margenPrevistoPorcentaje.present
+          ? data.margenPrevistoPorcentaje.value
+          : this.margenPrevistoPorcentaje,
+      coberturaCostes: data.coberturaCostes.present
+          ? data.coberturaCostes.value
+          : this.coberturaCostes,
+      fechaCreacion: data.fechaCreacion.present
+          ? data.fechaCreacion.value
+          : this.fechaCreacion,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PlanesEconomico(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('presupuestoId: $presupuestoId, ')
+          ..write('tipo: $tipo, ')
+          ..write('version: $version, ')
+          ..write('estado: $estado, ')
+          ..write('fechaAceptacion: $fechaAceptacion, ')
+          ..write('ventaNetaCentimos: $ventaNetaCentimos, ')
+          ..write('costeDirectoCentimos: $costeDirectoCentimos, ')
+          ..write('porcentajeIndirectos: $porcentajeIndirectos, ')
+          ..write('costesIndirectosCentimos: $costesIndirectosCentimos, ')
+          ..write('costeTotalCentimos: $costeTotalCentimos, ')
+          ..write('beneficioPrevistoCentimos: $beneficioPrevistoCentimos, ')
+          ..write('margenPrevistoPorcentaje: $margenPrevistoPorcentaje, ')
+          ..write('coberturaCostes: $coberturaCostes, ')
+          ..write('fechaCreacion: $fechaCreacion')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    tenantId,
+    id,
+    expedienteId,
+    presupuestoId,
+    tipo,
+    version,
+    estado,
+    fechaAceptacion,
+    ventaNetaCentimos,
+    costeDirectoCentimos,
+    porcentajeIndirectos,
+    costesIndirectosCentimos,
+    costeTotalCentimos,
+    beneficioPrevistoCentimos,
+    margenPrevistoPorcentaje,
+    coberturaCostes,
+    fechaCreacion,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PlanesEconomico &&
+          other.tenantId == this.tenantId &&
+          other.id == this.id &&
+          other.expedienteId == this.expedienteId &&
+          other.presupuestoId == this.presupuestoId &&
+          other.tipo == this.tipo &&
+          other.version == this.version &&
+          other.estado == this.estado &&
+          other.fechaAceptacion == this.fechaAceptacion &&
+          other.ventaNetaCentimos == this.ventaNetaCentimos &&
+          other.costeDirectoCentimos == this.costeDirectoCentimos &&
+          other.porcentajeIndirectos == this.porcentajeIndirectos &&
+          other.costesIndirectosCentimos == this.costesIndirectosCentimos &&
+          other.costeTotalCentimos == this.costeTotalCentimos &&
+          other.beneficioPrevistoCentimos == this.beneficioPrevistoCentimos &&
+          other.margenPrevistoPorcentaje == this.margenPrevistoPorcentaje &&
+          other.coberturaCostes == this.coberturaCostes &&
+          other.fechaCreacion == this.fechaCreacion);
+}
+
+class PlanesEconomicosCompanion extends UpdateCompanion<PlanesEconomico> {
+  final Value<String> tenantId;
+  final Value<String> id;
+  final Value<String> expedienteId;
+  final Value<String> presupuestoId;
+  final Value<String> tipo;
+  final Value<int> version;
+  final Value<String> estado;
+  final Value<DateTime> fechaAceptacion;
+  final Value<int> ventaNetaCentimos;
+  final Value<int?> costeDirectoCentimos;
+  final Value<double?> porcentajeIndirectos;
+  final Value<int?> costesIndirectosCentimos;
+  final Value<int?> costeTotalCentimos;
+  final Value<int?> beneficioPrevistoCentimos;
+  final Value<double?> margenPrevistoPorcentaje;
+  final Value<String> coberturaCostes;
+  final Value<DateTime> fechaCreacion;
+  final Value<int> rowid;
+  const PlanesEconomicosCompanion({
+    this.tenantId = const Value.absent(),
+    this.id = const Value.absent(),
+    this.expedienteId = const Value.absent(),
+    this.presupuestoId = const Value.absent(),
+    this.tipo = const Value.absent(),
+    this.version = const Value.absent(),
+    this.estado = const Value.absent(),
+    this.fechaAceptacion = const Value.absent(),
+    this.ventaNetaCentimos = const Value.absent(),
+    this.costeDirectoCentimos = const Value.absent(),
+    this.porcentajeIndirectos = const Value.absent(),
+    this.costesIndirectosCentimos = const Value.absent(),
+    this.costeTotalCentimos = const Value.absent(),
+    this.beneficioPrevistoCentimos = const Value.absent(),
+    this.margenPrevistoPorcentaje = const Value.absent(),
+    this.coberturaCostes = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PlanesEconomicosCompanion.insert({
+    required String tenantId,
+    required String id,
+    required String expedienteId,
+    required String presupuestoId,
+    this.tipo = const Value.absent(),
+    this.version = const Value.absent(),
+    this.estado = const Value.absent(),
+    required DateTime fechaAceptacion,
+    required int ventaNetaCentimos,
+    this.costeDirectoCentimos = const Value.absent(),
+    this.porcentajeIndirectos = const Value.absent(),
+    this.costesIndirectosCentimos = const Value.absent(),
+    this.costeTotalCentimos = const Value.absent(),
+    this.beneficioPrevistoCentimos = const Value.absent(),
+    this.margenPrevistoPorcentaje = const Value.absent(),
+    required String coberturaCostes,
+    required DateTime fechaCreacion,
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       id = Value(id),
+       expedienteId = Value(expedienteId),
+       presupuestoId = Value(presupuestoId),
+       fechaAceptacion = Value(fechaAceptacion),
+       ventaNetaCentimos = Value(ventaNetaCentimos),
+       coberturaCostes = Value(coberturaCostes),
+       fechaCreacion = Value(fechaCreacion);
+  static Insertable<PlanesEconomico> custom({
+    Expression<String>? tenantId,
+    Expression<String>? id,
+    Expression<String>? expedienteId,
+    Expression<String>? presupuestoId,
+    Expression<String>? tipo,
+    Expression<int>? version,
+    Expression<String>? estado,
+    Expression<DateTime>? fechaAceptacion,
+    Expression<int>? ventaNetaCentimos,
+    Expression<int>? costeDirectoCentimos,
+    Expression<double>? porcentajeIndirectos,
+    Expression<int>? costesIndirectosCentimos,
+    Expression<int>? costeTotalCentimos,
+    Expression<int>? beneficioPrevistoCentimos,
+    Expression<double>? margenPrevistoPorcentaje,
+    Expression<String>? coberturaCostes,
+    Expression<DateTime>? fechaCreacion,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (id != null) 'id': id,
+      if (expedienteId != null) 'expediente_id': expedienteId,
+      if (presupuestoId != null) 'presupuesto_id': presupuestoId,
+      if (tipo != null) 'tipo': tipo,
+      if (version != null) 'version': version,
+      if (estado != null) 'estado': estado,
+      if (fechaAceptacion != null) 'fecha_aceptacion': fechaAceptacion,
+      if (ventaNetaCentimos != null) 'venta_neta_centimos': ventaNetaCentimos,
+      if (costeDirectoCentimos != null)
+        'coste_directo_centimos': costeDirectoCentimos,
+      if (porcentajeIndirectos != null)
+        'porcentaje_indirectos': porcentajeIndirectos,
+      if (costesIndirectosCentimos != null)
+        'costes_indirectos_centimos': costesIndirectosCentimos,
+      if (costeTotalCentimos != null)
+        'coste_total_centimos': costeTotalCentimos,
+      if (beneficioPrevistoCentimos != null)
+        'beneficio_previsto_centimos': beneficioPrevistoCentimos,
+      if (margenPrevistoPorcentaje != null)
+        'margen_previsto_porcentaje': margenPrevistoPorcentaje,
+      if (coberturaCostes != null) 'cobertura_costes': coberturaCostes,
+      if (fechaCreacion != null) 'fecha_creacion': fechaCreacion,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PlanesEconomicosCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? id,
+    Value<String>? expedienteId,
+    Value<String>? presupuestoId,
+    Value<String>? tipo,
+    Value<int>? version,
+    Value<String>? estado,
+    Value<DateTime>? fechaAceptacion,
+    Value<int>? ventaNetaCentimos,
+    Value<int?>? costeDirectoCentimos,
+    Value<double?>? porcentajeIndirectos,
+    Value<int?>? costesIndirectosCentimos,
+    Value<int?>? costeTotalCentimos,
+    Value<int?>? beneficioPrevistoCentimos,
+    Value<double?>? margenPrevistoPorcentaje,
+    Value<String>? coberturaCostes,
+    Value<DateTime>? fechaCreacion,
+    Value<int>? rowid,
+  }) {
+    return PlanesEconomicosCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      id: id ?? this.id,
+      expedienteId: expedienteId ?? this.expedienteId,
+      presupuestoId: presupuestoId ?? this.presupuestoId,
+      tipo: tipo ?? this.tipo,
+      version: version ?? this.version,
+      estado: estado ?? this.estado,
+      fechaAceptacion: fechaAceptacion ?? this.fechaAceptacion,
+      ventaNetaCentimos: ventaNetaCentimos ?? this.ventaNetaCentimos,
+      costeDirectoCentimos: costeDirectoCentimos ?? this.costeDirectoCentimos,
+      porcentajeIndirectos: porcentajeIndirectos ?? this.porcentajeIndirectos,
+      costesIndirectosCentimos:
+          costesIndirectosCentimos ?? this.costesIndirectosCentimos,
+      costeTotalCentimos: costeTotalCentimos ?? this.costeTotalCentimos,
+      beneficioPrevistoCentimos:
+          beneficioPrevistoCentimos ?? this.beneficioPrevistoCentimos,
+      margenPrevistoPorcentaje:
+          margenPrevistoPorcentaje ?? this.margenPrevistoPorcentaje,
+      coberturaCostes: coberturaCostes ?? this.coberturaCostes,
+      fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (expedienteId.present) {
+      map['expediente_id'] = Variable<String>(expedienteId.value);
+    }
+    if (presupuestoId.present) {
+      map['presupuesto_id'] = Variable<String>(presupuestoId.value);
+    }
+    if (tipo.present) {
+      map['tipo'] = Variable<String>(tipo.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (estado.present) {
+      map['estado'] = Variable<String>(estado.value);
+    }
+    if (fechaAceptacion.present) {
+      map['fecha_aceptacion'] = Variable<DateTime>(fechaAceptacion.value);
+    }
+    if (ventaNetaCentimos.present) {
+      map['venta_neta_centimos'] = Variable<int>(ventaNetaCentimos.value);
+    }
+    if (costeDirectoCentimos.present) {
+      map['coste_directo_centimos'] = Variable<int>(costeDirectoCentimos.value);
+    }
+    if (porcentajeIndirectos.present) {
+      map['porcentaje_indirectos'] = Variable<double>(
+        porcentajeIndirectos.value,
+      );
+    }
+    if (costesIndirectosCentimos.present) {
+      map['costes_indirectos_centimos'] = Variable<int>(
+        costesIndirectosCentimos.value,
+      );
+    }
+    if (costeTotalCentimos.present) {
+      map['coste_total_centimos'] = Variable<int>(costeTotalCentimos.value);
+    }
+    if (beneficioPrevistoCentimos.present) {
+      map['beneficio_previsto_centimos'] = Variable<int>(
+        beneficioPrevistoCentimos.value,
+      );
+    }
+    if (margenPrevistoPorcentaje.present) {
+      map['margen_previsto_porcentaje'] = Variable<double>(
+        margenPrevistoPorcentaje.value,
+      );
+    }
+    if (coberturaCostes.present) {
+      map['cobertura_costes'] = Variable<String>(coberturaCostes.value);
+    }
+    if (fechaCreacion.present) {
+      map['fecha_creacion'] = Variable<DateTime>(fechaCreacion.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PlanesEconomicosCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('presupuestoId: $presupuestoId, ')
+          ..write('tipo: $tipo, ')
+          ..write('version: $version, ')
+          ..write('estado: $estado, ')
+          ..write('fechaAceptacion: $fechaAceptacion, ')
+          ..write('ventaNetaCentimos: $ventaNetaCentimos, ')
+          ..write('costeDirectoCentimos: $costeDirectoCentimos, ')
+          ..write('porcentajeIndirectos: $porcentajeIndirectos, ')
+          ..write('costesIndirectosCentimos: $costesIndirectosCentimos, ')
+          ..write('costeTotalCentimos: $costeTotalCentimos, ')
+          ..write('beneficioPrevistoCentimos: $beneficioPrevistoCentimos, ')
+          ..write('margenPrevistoPorcentaje: $margenPrevistoPorcentaje, ')
+          ..write('coberturaCostes: $coberturaCostes, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PlanEconomicoPartidasTable extends PlanEconomicoPartidas
+    with TableInfo<$PlanEconomicoPartidasTable, PlanEconomicoPartida> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PlanEconomicoPartidasTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _planEconomicoIdMeta = const VerificationMeta(
+    'planEconomicoId',
+  );
+  @override
+  late final GeneratedColumn<String> planEconomicoId = GeneratedColumn<String>(
+    'plan_economico_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lineaPresupuestoOrigenIdMeta =
+      const VerificationMeta('lineaPresupuestoOrigenId');
+  @override
+  late final GeneratedColumn<String> lineaPresupuestoOrigenId =
+      GeneratedColumn<String>(
+        'linea_presupuesto_origen_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _categoriaEconomicaIdMeta =
+      const VerificationMeta('categoriaEconomicaId');
+  @override
+  late final GeneratedColumn<String> categoriaEconomicaId =
+      GeneratedColumn<String>(
+        'categoria_economica_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _categoriaCodigoSnapshotMeta =
+      const VerificationMeta('categoriaCodigoSnapshot');
+  @override
+  late final GeneratedColumn<String> categoriaCodigoSnapshot =
+      GeneratedColumn<String>(
+        'categoria_codigo_snapshot',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _categoriaNombreSnapshotMeta =
+      const VerificationMeta('categoriaNombreSnapshot');
+  @override
+  late final GeneratedColumn<String> categoriaNombreSnapshot =
+      GeneratedColumn<String>(
+        'categoria_nombre_snapshot',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _descripcionMeta = const VerificationMeta(
+    'descripcion',
+  );
+  @override
+  late final GeneratedColumn<String> descripcion = GeneratedColumn<String>(
+    'descripcion',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _unidadMeta = const VerificationMeta('unidad');
+  @override
+  late final GeneratedColumn<String> unidad = GeneratedColumn<String>(
+    'unidad',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _cantidadMeta = const VerificationMeta(
+    'cantidad',
+  );
+  @override
+  late final GeneratedColumn<double> cantidad = GeneratedColumn<double>(
+    'cantidad',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _precioVentaUnitarioCentimosMeta =
+      const VerificationMeta('precioVentaUnitarioCentimos');
+  @override
+  late final GeneratedColumn<int> precioVentaUnitarioCentimos =
+      GeneratedColumn<int>(
+        'precio_venta_unitario_centimos',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _importeVentaCentimosMeta =
+      const VerificationMeta('importeVentaCentimos');
+  @override
+  late final GeneratedColumn<int> importeVentaCentimos = GeneratedColumn<int>(
+    'importe_venta_centimos',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _costePrevistoCentimosMeta =
+      const VerificationMeta('costePrevistoCentimos');
+  @override
+  late final GeneratedColumn<int> costePrevistoCentimos = GeneratedColumn<int>(
+    'coste_previsto_centimos',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _ordenMeta = const VerificationMeta('orden');
+  @override
+  late final GeneratedColumn<int> orden = GeneratedColumn<int>(
+    'orden',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    id,
+    planEconomicoId,
+    lineaPresupuestoOrigenId,
+    categoriaEconomicaId,
+    categoriaCodigoSnapshot,
+    categoriaNombreSnapshot,
+    descripcion,
+    unidad,
+    cantidad,
+    precioVentaUnitarioCentimos,
+    importeVentaCentimos,
+    costePrevistoCentimos,
+    orden,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'plan_economico_partidas';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PlanEconomicoPartida> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('plan_economico_id')) {
+      context.handle(
+        _planEconomicoIdMeta,
+        planEconomicoId.isAcceptableOrUnknown(
+          data['plan_economico_id']!,
+          _planEconomicoIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_planEconomicoIdMeta);
+    }
+    if (data.containsKey('linea_presupuesto_origen_id')) {
+      context.handle(
+        _lineaPresupuestoOrigenIdMeta,
+        lineaPresupuestoOrigenId.isAcceptableOrUnknown(
+          data['linea_presupuesto_origen_id']!,
+          _lineaPresupuestoOrigenIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('categoria_economica_id')) {
+      context.handle(
+        _categoriaEconomicaIdMeta,
+        categoriaEconomicaId.isAcceptableOrUnknown(
+          data['categoria_economica_id']!,
+          _categoriaEconomicaIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('categoria_codigo_snapshot')) {
+      context.handle(
+        _categoriaCodigoSnapshotMeta,
+        categoriaCodigoSnapshot.isAcceptableOrUnknown(
+          data['categoria_codigo_snapshot']!,
+          _categoriaCodigoSnapshotMeta,
+        ),
+      );
+    }
+    if (data.containsKey('categoria_nombre_snapshot')) {
+      context.handle(
+        _categoriaNombreSnapshotMeta,
+        categoriaNombreSnapshot.isAcceptableOrUnknown(
+          data['categoria_nombre_snapshot']!,
+          _categoriaNombreSnapshotMeta,
+        ),
+      );
+    }
+    if (data.containsKey('descripcion')) {
+      context.handle(
+        _descripcionMeta,
+        descripcion.isAcceptableOrUnknown(
+          data['descripcion']!,
+          _descripcionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_descripcionMeta);
+    }
+    if (data.containsKey('unidad')) {
+      context.handle(
+        _unidadMeta,
+        unidad.isAcceptableOrUnknown(data['unidad']!, _unidadMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_unidadMeta);
+    }
+    if (data.containsKey('cantidad')) {
+      context.handle(
+        _cantidadMeta,
+        cantidad.isAcceptableOrUnknown(data['cantidad']!, _cantidadMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_cantidadMeta);
+    }
+    if (data.containsKey('precio_venta_unitario_centimos')) {
+      context.handle(
+        _precioVentaUnitarioCentimosMeta,
+        precioVentaUnitarioCentimos.isAcceptableOrUnknown(
+          data['precio_venta_unitario_centimos']!,
+          _precioVentaUnitarioCentimosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_precioVentaUnitarioCentimosMeta);
+    }
+    if (data.containsKey('importe_venta_centimos')) {
+      context.handle(
+        _importeVentaCentimosMeta,
+        importeVentaCentimos.isAcceptableOrUnknown(
+          data['importe_venta_centimos']!,
+          _importeVentaCentimosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_importeVentaCentimosMeta);
+    }
+    if (data.containsKey('coste_previsto_centimos')) {
+      context.handle(
+        _costePrevistoCentimosMeta,
+        costePrevistoCentimos.isAcceptableOrUnknown(
+          data['coste_previsto_centimos']!,
+          _costePrevistoCentimosMeta,
+        ),
+      );
+    }
+    if (data.containsKey('orden')) {
+      context.handle(
+        _ordenMeta,
+        orden.isAcceptableOrUnknown(data['orden']!, _ordenMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_ordenMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {tenantId, id},
+    {tenantId, planEconomicoId, orden},
+  ];
+  @override
+  PlanEconomicoPartida map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PlanEconomicoPartida(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      planEconomicoId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}plan_economico_id'],
+      )!,
+      lineaPresupuestoOrigenId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}linea_presupuesto_origen_id'],
+      ),
+      categoriaEconomicaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}categoria_economica_id'],
+      ),
+      categoriaCodigoSnapshot: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}categoria_codigo_snapshot'],
+      ),
+      categoriaNombreSnapshot: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}categoria_nombre_snapshot'],
+      ),
+      descripcion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}descripcion'],
+      )!,
+      unidad: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}unidad'],
+      )!,
+      cantidad: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}cantidad'],
+      )!,
+      precioVentaUnitarioCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}precio_venta_unitario_centimos'],
+      )!,
+      importeVentaCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}importe_venta_centimos'],
+      )!,
+      costePrevistoCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}coste_previsto_centimos'],
+      ),
+      orden: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}orden'],
+      )!,
+    );
+  }
+
+  @override
+  $PlanEconomicoPartidasTable createAlias(String alias) {
+    return $PlanEconomicoPartidasTable(attachedDatabase, alias);
+  }
+}
+
+class PlanEconomicoPartida extends DataClass
+    implements Insertable<PlanEconomicoPartida> {
+  final String tenantId;
+  final String id;
+  final String planEconomicoId;
+  final String? lineaPresupuestoOrigenId;
+  final String? categoriaEconomicaId;
+  final String? categoriaCodigoSnapshot;
+  final String? categoriaNombreSnapshot;
+  final String descripcion;
+  final String unidad;
+  final double cantidad;
+  final int precioVentaUnitarioCentimos;
+  final int importeVentaCentimos;
+  final int? costePrevistoCentimos;
+  final int orden;
+  const PlanEconomicoPartida({
+    required this.tenantId,
+    required this.id,
+    required this.planEconomicoId,
+    this.lineaPresupuestoOrigenId,
+    this.categoriaEconomicaId,
+    this.categoriaCodigoSnapshot,
+    this.categoriaNombreSnapshot,
+    required this.descripcion,
+    required this.unidad,
+    required this.cantidad,
+    required this.precioVentaUnitarioCentimos,
+    required this.importeVentaCentimos,
+    this.costePrevistoCentimos,
+    required this.orden,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['id'] = Variable<String>(id);
+    map['plan_economico_id'] = Variable<String>(planEconomicoId);
+    if (!nullToAbsent || lineaPresupuestoOrigenId != null) {
+      map['linea_presupuesto_origen_id'] = Variable<String>(
+        lineaPresupuestoOrigenId,
+      );
+    }
+    if (!nullToAbsent || categoriaEconomicaId != null) {
+      map['categoria_economica_id'] = Variable<String>(categoriaEconomicaId);
+    }
+    if (!nullToAbsent || categoriaCodigoSnapshot != null) {
+      map['categoria_codigo_snapshot'] = Variable<String>(
+        categoriaCodigoSnapshot,
+      );
+    }
+    if (!nullToAbsent || categoriaNombreSnapshot != null) {
+      map['categoria_nombre_snapshot'] = Variable<String>(
+        categoriaNombreSnapshot,
+      );
+    }
+    map['descripcion'] = Variable<String>(descripcion);
+    map['unidad'] = Variable<String>(unidad);
+    map['cantidad'] = Variable<double>(cantidad);
+    map['precio_venta_unitario_centimos'] = Variable<int>(
+      precioVentaUnitarioCentimos,
+    );
+    map['importe_venta_centimos'] = Variable<int>(importeVentaCentimos);
+    if (!nullToAbsent || costePrevistoCentimos != null) {
+      map['coste_previsto_centimos'] = Variable<int>(costePrevistoCentimos);
+    }
+    map['orden'] = Variable<int>(orden);
+    return map;
+  }
+
+  PlanEconomicoPartidasCompanion toCompanion(bool nullToAbsent) {
+    return PlanEconomicoPartidasCompanion(
+      tenantId: Value(tenantId),
+      id: Value(id),
+      planEconomicoId: Value(planEconomicoId),
+      lineaPresupuestoOrigenId: lineaPresupuestoOrigenId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lineaPresupuestoOrigenId),
+      categoriaEconomicaId: categoriaEconomicaId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(categoriaEconomicaId),
+      categoriaCodigoSnapshot: categoriaCodigoSnapshot == null && nullToAbsent
+          ? const Value.absent()
+          : Value(categoriaCodigoSnapshot),
+      categoriaNombreSnapshot: categoriaNombreSnapshot == null && nullToAbsent
+          ? const Value.absent()
+          : Value(categoriaNombreSnapshot),
+      descripcion: Value(descripcion),
+      unidad: Value(unidad),
+      cantidad: Value(cantidad),
+      precioVentaUnitarioCentimos: Value(precioVentaUnitarioCentimos),
+      importeVentaCentimos: Value(importeVentaCentimos),
+      costePrevistoCentimos: costePrevistoCentimos == null && nullToAbsent
+          ? const Value.absent()
+          : Value(costePrevistoCentimos),
+      orden: Value(orden),
+    );
+  }
+
+  factory PlanEconomicoPartida.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PlanEconomicoPartida(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      id: serializer.fromJson<String>(json['id']),
+      planEconomicoId: serializer.fromJson<String>(json['planEconomicoId']),
+      lineaPresupuestoOrigenId: serializer.fromJson<String?>(
+        json['lineaPresupuestoOrigenId'],
+      ),
+      categoriaEconomicaId: serializer.fromJson<String?>(
+        json['categoriaEconomicaId'],
+      ),
+      categoriaCodigoSnapshot: serializer.fromJson<String?>(
+        json['categoriaCodigoSnapshot'],
+      ),
+      categoriaNombreSnapshot: serializer.fromJson<String?>(
+        json['categoriaNombreSnapshot'],
+      ),
+      descripcion: serializer.fromJson<String>(json['descripcion']),
+      unidad: serializer.fromJson<String>(json['unidad']),
+      cantidad: serializer.fromJson<double>(json['cantidad']),
+      precioVentaUnitarioCentimos: serializer.fromJson<int>(
+        json['precioVentaUnitarioCentimos'],
+      ),
+      importeVentaCentimos: serializer.fromJson<int>(
+        json['importeVentaCentimos'],
+      ),
+      costePrevistoCentimos: serializer.fromJson<int?>(
+        json['costePrevistoCentimos'],
+      ),
+      orden: serializer.fromJson<int>(json['orden']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'id': serializer.toJson<String>(id),
+      'planEconomicoId': serializer.toJson<String>(planEconomicoId),
+      'lineaPresupuestoOrigenId': serializer.toJson<String?>(
+        lineaPresupuestoOrigenId,
+      ),
+      'categoriaEconomicaId': serializer.toJson<String?>(categoriaEconomicaId),
+      'categoriaCodigoSnapshot': serializer.toJson<String?>(
+        categoriaCodigoSnapshot,
+      ),
+      'categoriaNombreSnapshot': serializer.toJson<String?>(
+        categoriaNombreSnapshot,
+      ),
+      'descripcion': serializer.toJson<String>(descripcion),
+      'unidad': serializer.toJson<String>(unidad),
+      'cantidad': serializer.toJson<double>(cantidad),
+      'precioVentaUnitarioCentimos': serializer.toJson<int>(
+        precioVentaUnitarioCentimos,
+      ),
+      'importeVentaCentimos': serializer.toJson<int>(importeVentaCentimos),
+      'costePrevistoCentimos': serializer.toJson<int?>(costePrevistoCentimos),
+      'orden': serializer.toJson<int>(orden),
+    };
+  }
+
+  PlanEconomicoPartida copyWith({
+    String? tenantId,
+    String? id,
+    String? planEconomicoId,
+    Value<String?> lineaPresupuestoOrigenId = const Value.absent(),
+    Value<String?> categoriaEconomicaId = const Value.absent(),
+    Value<String?> categoriaCodigoSnapshot = const Value.absent(),
+    Value<String?> categoriaNombreSnapshot = const Value.absent(),
+    String? descripcion,
+    String? unidad,
+    double? cantidad,
+    int? precioVentaUnitarioCentimos,
+    int? importeVentaCentimos,
+    Value<int?> costePrevistoCentimos = const Value.absent(),
+    int? orden,
+  }) => PlanEconomicoPartida(
+    tenantId: tenantId ?? this.tenantId,
+    id: id ?? this.id,
+    planEconomicoId: planEconomicoId ?? this.planEconomicoId,
+    lineaPresupuestoOrigenId: lineaPresupuestoOrigenId.present
+        ? lineaPresupuestoOrigenId.value
+        : this.lineaPresupuestoOrigenId,
+    categoriaEconomicaId: categoriaEconomicaId.present
+        ? categoriaEconomicaId.value
+        : this.categoriaEconomicaId,
+    categoriaCodigoSnapshot: categoriaCodigoSnapshot.present
+        ? categoriaCodigoSnapshot.value
+        : this.categoriaCodigoSnapshot,
+    categoriaNombreSnapshot: categoriaNombreSnapshot.present
+        ? categoriaNombreSnapshot.value
+        : this.categoriaNombreSnapshot,
+    descripcion: descripcion ?? this.descripcion,
+    unidad: unidad ?? this.unidad,
+    cantidad: cantidad ?? this.cantidad,
+    precioVentaUnitarioCentimos:
+        precioVentaUnitarioCentimos ?? this.precioVentaUnitarioCentimos,
+    importeVentaCentimos: importeVentaCentimos ?? this.importeVentaCentimos,
+    costePrevistoCentimos: costePrevistoCentimos.present
+        ? costePrevistoCentimos.value
+        : this.costePrevistoCentimos,
+    orden: orden ?? this.orden,
+  );
+  PlanEconomicoPartida copyWithCompanion(PlanEconomicoPartidasCompanion data) {
+    return PlanEconomicoPartida(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      id: data.id.present ? data.id.value : this.id,
+      planEconomicoId: data.planEconomicoId.present
+          ? data.planEconomicoId.value
+          : this.planEconomicoId,
+      lineaPresupuestoOrigenId: data.lineaPresupuestoOrigenId.present
+          ? data.lineaPresupuestoOrigenId.value
+          : this.lineaPresupuestoOrigenId,
+      categoriaEconomicaId: data.categoriaEconomicaId.present
+          ? data.categoriaEconomicaId.value
+          : this.categoriaEconomicaId,
+      categoriaCodigoSnapshot: data.categoriaCodigoSnapshot.present
+          ? data.categoriaCodigoSnapshot.value
+          : this.categoriaCodigoSnapshot,
+      categoriaNombreSnapshot: data.categoriaNombreSnapshot.present
+          ? data.categoriaNombreSnapshot.value
+          : this.categoriaNombreSnapshot,
+      descripcion: data.descripcion.present
+          ? data.descripcion.value
+          : this.descripcion,
+      unidad: data.unidad.present ? data.unidad.value : this.unidad,
+      cantidad: data.cantidad.present ? data.cantidad.value : this.cantidad,
+      precioVentaUnitarioCentimos: data.precioVentaUnitarioCentimos.present
+          ? data.precioVentaUnitarioCentimos.value
+          : this.precioVentaUnitarioCentimos,
+      importeVentaCentimos: data.importeVentaCentimos.present
+          ? data.importeVentaCentimos.value
+          : this.importeVentaCentimos,
+      costePrevistoCentimos: data.costePrevistoCentimos.present
+          ? data.costePrevistoCentimos.value
+          : this.costePrevistoCentimos,
+      orden: data.orden.present ? data.orden.value : this.orden,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PlanEconomicoPartida(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('planEconomicoId: $planEconomicoId, ')
+          ..write('lineaPresupuestoOrigenId: $lineaPresupuestoOrigenId, ')
+          ..write('categoriaEconomicaId: $categoriaEconomicaId, ')
+          ..write('categoriaCodigoSnapshot: $categoriaCodigoSnapshot, ')
+          ..write('categoriaNombreSnapshot: $categoriaNombreSnapshot, ')
+          ..write('descripcion: $descripcion, ')
+          ..write('unidad: $unidad, ')
+          ..write('cantidad: $cantidad, ')
+          ..write('precioVentaUnitarioCentimos: $precioVentaUnitarioCentimos, ')
+          ..write('importeVentaCentimos: $importeVentaCentimos, ')
+          ..write('costePrevistoCentimos: $costePrevistoCentimos, ')
+          ..write('orden: $orden')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    tenantId,
+    id,
+    planEconomicoId,
+    lineaPresupuestoOrigenId,
+    categoriaEconomicaId,
+    categoriaCodigoSnapshot,
+    categoriaNombreSnapshot,
+    descripcion,
+    unidad,
+    cantidad,
+    precioVentaUnitarioCentimos,
+    importeVentaCentimos,
+    costePrevistoCentimos,
+    orden,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PlanEconomicoPartida &&
+          other.tenantId == this.tenantId &&
+          other.id == this.id &&
+          other.planEconomicoId == this.planEconomicoId &&
+          other.lineaPresupuestoOrigenId == this.lineaPresupuestoOrigenId &&
+          other.categoriaEconomicaId == this.categoriaEconomicaId &&
+          other.categoriaCodigoSnapshot == this.categoriaCodigoSnapshot &&
+          other.categoriaNombreSnapshot == this.categoriaNombreSnapshot &&
+          other.descripcion == this.descripcion &&
+          other.unidad == this.unidad &&
+          other.cantidad == this.cantidad &&
+          other.precioVentaUnitarioCentimos ==
+              this.precioVentaUnitarioCentimos &&
+          other.importeVentaCentimos == this.importeVentaCentimos &&
+          other.costePrevistoCentimos == this.costePrevistoCentimos &&
+          other.orden == this.orden);
+}
+
+class PlanEconomicoPartidasCompanion
+    extends UpdateCompanion<PlanEconomicoPartida> {
+  final Value<String> tenantId;
+  final Value<String> id;
+  final Value<String> planEconomicoId;
+  final Value<String?> lineaPresupuestoOrigenId;
+  final Value<String?> categoriaEconomicaId;
+  final Value<String?> categoriaCodigoSnapshot;
+  final Value<String?> categoriaNombreSnapshot;
+  final Value<String> descripcion;
+  final Value<String> unidad;
+  final Value<double> cantidad;
+  final Value<int> precioVentaUnitarioCentimos;
+  final Value<int> importeVentaCentimos;
+  final Value<int?> costePrevistoCentimos;
+  final Value<int> orden;
+  final Value<int> rowid;
+  const PlanEconomicoPartidasCompanion({
+    this.tenantId = const Value.absent(),
+    this.id = const Value.absent(),
+    this.planEconomicoId = const Value.absent(),
+    this.lineaPresupuestoOrigenId = const Value.absent(),
+    this.categoriaEconomicaId = const Value.absent(),
+    this.categoriaCodigoSnapshot = const Value.absent(),
+    this.categoriaNombreSnapshot = const Value.absent(),
+    this.descripcion = const Value.absent(),
+    this.unidad = const Value.absent(),
+    this.cantidad = const Value.absent(),
+    this.precioVentaUnitarioCentimos = const Value.absent(),
+    this.importeVentaCentimos = const Value.absent(),
+    this.costePrevistoCentimos = const Value.absent(),
+    this.orden = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PlanEconomicoPartidasCompanion.insert({
+    required String tenantId,
+    required String id,
+    required String planEconomicoId,
+    this.lineaPresupuestoOrigenId = const Value.absent(),
+    this.categoriaEconomicaId = const Value.absent(),
+    this.categoriaCodigoSnapshot = const Value.absent(),
+    this.categoriaNombreSnapshot = const Value.absent(),
+    required String descripcion,
+    required String unidad,
+    required double cantidad,
+    required int precioVentaUnitarioCentimos,
+    required int importeVentaCentimos,
+    this.costePrevistoCentimos = const Value.absent(),
+    required int orden,
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       id = Value(id),
+       planEconomicoId = Value(planEconomicoId),
+       descripcion = Value(descripcion),
+       unidad = Value(unidad),
+       cantidad = Value(cantidad),
+       precioVentaUnitarioCentimos = Value(precioVentaUnitarioCentimos),
+       importeVentaCentimos = Value(importeVentaCentimos),
+       orden = Value(orden);
+  static Insertable<PlanEconomicoPartida> custom({
+    Expression<String>? tenantId,
+    Expression<String>? id,
+    Expression<String>? planEconomicoId,
+    Expression<String>? lineaPresupuestoOrigenId,
+    Expression<String>? categoriaEconomicaId,
+    Expression<String>? categoriaCodigoSnapshot,
+    Expression<String>? categoriaNombreSnapshot,
+    Expression<String>? descripcion,
+    Expression<String>? unidad,
+    Expression<double>? cantidad,
+    Expression<int>? precioVentaUnitarioCentimos,
+    Expression<int>? importeVentaCentimos,
+    Expression<int>? costePrevistoCentimos,
+    Expression<int>? orden,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (id != null) 'id': id,
+      if (planEconomicoId != null) 'plan_economico_id': planEconomicoId,
+      if (lineaPresupuestoOrigenId != null)
+        'linea_presupuesto_origen_id': lineaPresupuestoOrigenId,
+      if (categoriaEconomicaId != null)
+        'categoria_economica_id': categoriaEconomicaId,
+      if (categoriaCodigoSnapshot != null)
+        'categoria_codigo_snapshot': categoriaCodigoSnapshot,
+      if (categoriaNombreSnapshot != null)
+        'categoria_nombre_snapshot': categoriaNombreSnapshot,
+      if (descripcion != null) 'descripcion': descripcion,
+      if (unidad != null) 'unidad': unidad,
+      if (cantidad != null) 'cantidad': cantidad,
+      if (precioVentaUnitarioCentimos != null)
+        'precio_venta_unitario_centimos': precioVentaUnitarioCentimos,
+      if (importeVentaCentimos != null)
+        'importe_venta_centimos': importeVentaCentimos,
+      if (costePrevistoCentimos != null)
+        'coste_previsto_centimos': costePrevistoCentimos,
+      if (orden != null) 'orden': orden,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PlanEconomicoPartidasCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? id,
+    Value<String>? planEconomicoId,
+    Value<String?>? lineaPresupuestoOrigenId,
+    Value<String?>? categoriaEconomicaId,
+    Value<String?>? categoriaCodigoSnapshot,
+    Value<String?>? categoriaNombreSnapshot,
+    Value<String>? descripcion,
+    Value<String>? unidad,
+    Value<double>? cantidad,
+    Value<int>? precioVentaUnitarioCentimos,
+    Value<int>? importeVentaCentimos,
+    Value<int?>? costePrevistoCentimos,
+    Value<int>? orden,
+    Value<int>? rowid,
+  }) {
+    return PlanEconomicoPartidasCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      id: id ?? this.id,
+      planEconomicoId: planEconomicoId ?? this.planEconomicoId,
+      lineaPresupuestoOrigenId:
+          lineaPresupuestoOrigenId ?? this.lineaPresupuestoOrigenId,
+      categoriaEconomicaId: categoriaEconomicaId ?? this.categoriaEconomicaId,
+      categoriaCodigoSnapshot:
+          categoriaCodigoSnapshot ?? this.categoriaCodigoSnapshot,
+      categoriaNombreSnapshot:
+          categoriaNombreSnapshot ?? this.categoriaNombreSnapshot,
+      descripcion: descripcion ?? this.descripcion,
+      unidad: unidad ?? this.unidad,
+      cantidad: cantidad ?? this.cantidad,
+      precioVentaUnitarioCentimos:
+          precioVentaUnitarioCentimos ?? this.precioVentaUnitarioCentimos,
+      importeVentaCentimos: importeVentaCentimos ?? this.importeVentaCentimos,
+      costePrevistoCentimos:
+          costePrevistoCentimos ?? this.costePrevistoCentimos,
+      orden: orden ?? this.orden,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (planEconomicoId.present) {
+      map['plan_economico_id'] = Variable<String>(planEconomicoId.value);
+    }
+    if (lineaPresupuestoOrigenId.present) {
+      map['linea_presupuesto_origen_id'] = Variable<String>(
+        lineaPresupuestoOrigenId.value,
+      );
+    }
+    if (categoriaEconomicaId.present) {
+      map['categoria_economica_id'] = Variable<String>(
+        categoriaEconomicaId.value,
+      );
+    }
+    if (categoriaCodigoSnapshot.present) {
+      map['categoria_codigo_snapshot'] = Variable<String>(
+        categoriaCodigoSnapshot.value,
+      );
+    }
+    if (categoriaNombreSnapshot.present) {
+      map['categoria_nombre_snapshot'] = Variable<String>(
+        categoriaNombreSnapshot.value,
+      );
+    }
+    if (descripcion.present) {
+      map['descripcion'] = Variable<String>(descripcion.value);
+    }
+    if (unidad.present) {
+      map['unidad'] = Variable<String>(unidad.value);
+    }
+    if (cantidad.present) {
+      map['cantidad'] = Variable<double>(cantidad.value);
+    }
+    if (precioVentaUnitarioCentimos.present) {
+      map['precio_venta_unitario_centimos'] = Variable<int>(
+        precioVentaUnitarioCentimos.value,
+      );
+    }
+    if (importeVentaCentimos.present) {
+      map['importe_venta_centimos'] = Variable<int>(importeVentaCentimos.value);
+    }
+    if (costePrevistoCentimos.present) {
+      map['coste_previsto_centimos'] = Variable<int>(
+        costePrevistoCentimos.value,
+      );
+    }
+    if (orden.present) {
+      map['orden'] = Variable<int>(orden.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PlanEconomicoPartidasCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('planEconomicoId: $planEconomicoId, ')
+          ..write('lineaPresupuestoOrigenId: $lineaPresupuestoOrigenId, ')
+          ..write('categoriaEconomicaId: $categoriaEconomicaId, ')
+          ..write('categoriaCodigoSnapshot: $categoriaCodigoSnapshot, ')
+          ..write('categoriaNombreSnapshot: $categoriaNombreSnapshot, ')
+          ..write('descripcion: $descripcion, ')
+          ..write('unidad: $unidad, ')
+          ..write('cantidad: $cantidad, ')
+          ..write('precioVentaUnitarioCentimos: $precioVentaUnitarioCentimos, ')
+          ..write('importeVentaCentimos: $importeVentaCentimos, ')
+          ..write('costePrevistoCentimos: $costePrevistoCentimos, ')
+          ..write('orden: $orden, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -14230,6 +17717,17 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $FacturaDocumentosEmitidosTable(this);
   late final $MovimientosCreditoClienteTable movimientosCreditoCliente =
       $MovimientosCreditoClienteTable(this);
+  late final $CategoriasEconomicasTable categoriasEconomicas =
+      $CategoriasEconomicasTable(this);
+  late final $ConfiguracionEconomicaTable configuracionEconomica =
+      $ConfiguracionEconomicaTable(this);
+  late final $LineaPresupuestoCostesPrevistosTable
+  lineaPresupuestoCostesPrevistos = $LineaPresupuestoCostesPrevistosTable(this);
+  late final $PlanesEconomicosTable planesEconomicos = $PlanesEconomicosTable(
+    this,
+  );
+  late final $PlanEconomicoPartidasTable planEconomicoPartidas =
+      $PlanEconomicoPartidasTable(this);
   late final ExpedientesDao expedientesDao = ExpedientesDao(
     this as AppDatabase,
   );
@@ -14266,6 +17764,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       FacturaDocumentosEmitidosDao(this as AppDatabase);
   late final MovimientosCreditoClienteDao movimientosCreditoClienteDao =
       MovimientosCreditoClienteDao(this as AppDatabase);
+  late final EconomiaPrevistaDao economiaPrevistaDao = EconomiaPrevistaDao(
+    this as AppDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -14288,6 +17789,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     facturaAsignacionesPresupuesto,
     facturaDocumentosEmitidos,
     movimientosCreditoCliente,
+    categoriasEconomicas,
+    configuracionEconomica,
+    lineaPresupuestoCostesPrevistos,
+    planesEconomicos,
+    planEconomicoPartidas,
   ];
 }
 
@@ -14634,6 +18140,126 @@ final class $$TenantsTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _movimientosCreditoClienteRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $CategoriasEconomicasTable,
+    List<CategoriasEconomica>
+  >
+  _categoriasEconomicasRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.categoriasEconomicas,
+        aliasName: 'tenants__id__categorias_economicas__tenant_id',
+      );
+
+  $$CategoriasEconomicasTableProcessedTableManager
+  get categoriasEconomicasRefs {
+    final manager = $$CategoriasEconomicasTableTableManager(
+      $_db,
+      $_db.categoriasEconomicas,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _categoriasEconomicasRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $ConfiguracionEconomicaTable,
+    List<ConfiguracionEconomicaData>
+  >
+  _configuracionEconomicaRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.configuracionEconomica,
+        aliasName: 'tenants__id__configuracion_economica__tenant_id',
+      );
+
+  $$ConfiguracionEconomicaTableProcessedTableManager
+  get configuracionEconomicaRefs {
+    final manager = $$ConfiguracionEconomicaTableTableManager(
+      $_db,
+      $_db.configuracionEconomica,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _configuracionEconomicaRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $LineaPresupuestoCostesPrevistosTable,
+    List<LineaPresupuestoCostesPrevisto>
+  >
+  _lineaPresupuestoCostesPrevistosRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.lineaPresupuestoCostesPrevistos,
+        aliasName: 'tenants__id__linea_presupuesto_costes_previstos__tenant_id',
+      );
+
+  $$LineaPresupuestoCostesPrevistosTableProcessedTableManager
+  get lineaPresupuestoCostesPrevistosRefs {
+    final manager = $$LineaPresupuestoCostesPrevistosTableTableManager(
+      $_db,
+      $_db.lineaPresupuestoCostesPrevistos,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _lineaPresupuestoCostesPrevistosRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$PlanesEconomicosTable, List<PlanesEconomico>>
+  _planesEconomicosRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.planesEconomicos,
+    aliasName: 'tenants__id__planes_economicos__tenant_id',
+  );
+
+  $$PlanesEconomicosTableProcessedTableManager get planesEconomicosRefs {
+    final manager = $$PlanesEconomicosTableTableManager(
+      $_db,
+      $_db.planesEconomicos,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _planesEconomicosRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $PlanEconomicoPartidasTable,
+    List<PlanEconomicoPartida>
+  >
+  _planEconomicoPartidasRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.planEconomicoPartidas,
+        aliasName: 'tenants__id__plan_economico_partidas__tenant_id',
+      );
+
+  $$PlanEconomicoPartidasTableProcessedTableManager
+  get planEconomicoPartidasRefs {
+    final manager = $$PlanEconomicoPartidasTableTableManager(
+      $_db,
+      $_db.planEconomicoPartidas,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _planEconomicoPartidasRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -15069,6 +18695,137 @@ class $$TenantsTableFilterComposer
               }) => $$MovimientosCreditoClienteTableFilterComposer(
                 $db: $db,
                 $table: $db.movimientosCreditoCliente,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<bool> categoriasEconomicasRefs(
+    Expression<bool> Function($$CategoriasEconomicasTableFilterComposer f) f,
+  ) {
+    final $$CategoriasEconomicasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.categoriasEconomicas,
+      getReferencedColumn: (t) => t.tenantId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CategoriasEconomicasTableFilterComposer(
+            $db: $db,
+            $table: $db.categoriasEconomicas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> configuracionEconomicaRefs(
+    Expression<bool> Function($$ConfiguracionEconomicaTableFilterComposer f) f,
+  ) {
+    final $$ConfiguracionEconomicaTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.configuracionEconomica,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ConfiguracionEconomicaTableFilterComposer(
+                $db: $db,
+                $table: $db.configuracionEconomica,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<bool> lineaPresupuestoCostesPrevistosRefs(
+    Expression<bool> Function(
+      $$LineaPresupuestoCostesPrevistosTableFilterComposer f,
+    )
+    f,
+  ) {
+    final $$LineaPresupuestoCostesPrevistosTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.lineaPresupuestoCostesPrevistos,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$LineaPresupuestoCostesPrevistosTableFilterComposer(
+                $db: $db,
+                $table: $db.lineaPresupuestoCostesPrevistos,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<bool> planesEconomicosRefs(
+    Expression<bool> Function($$PlanesEconomicosTableFilterComposer f) f,
+  ) {
+    final $$PlanesEconomicosTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.planesEconomicos,
+      getReferencedColumn: (t) => t.tenantId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PlanesEconomicosTableFilterComposer(
+            $db: $db,
+            $table: $db.planesEconomicos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> planEconomicoPartidasRefs(
+    Expression<bool> Function($$PlanEconomicoPartidasTableFilterComposer f) f,
+  ) {
+    final $$PlanEconomicoPartidasTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.planEconomicoPartidas,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$PlanEconomicoPartidasTableFilterComposer(
+                $db: $db,
+                $table: $db.planEconomicoPartidas,
                 $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
                 joinBuilder: joinBuilder,
                 $removeJoinBuilderFromRootComposer:
@@ -15543,6 +19300,138 @@ class $$TenantsTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> categoriasEconomicasRefs<T extends Object>(
+    Expression<T> Function($$CategoriasEconomicasTableAnnotationComposer a) f,
+  ) {
+    final $$CategoriasEconomicasTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.categoriasEconomicas,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$CategoriasEconomicasTableAnnotationComposer(
+                $db: $db,
+                $table: $db.categoriasEconomicas,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> configuracionEconomicaRefs<T extends Object>(
+    Expression<T> Function($$ConfiguracionEconomicaTableAnnotationComposer a) f,
+  ) {
+    final $$ConfiguracionEconomicaTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.configuracionEconomica,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ConfiguracionEconomicaTableAnnotationComposer(
+                $db: $db,
+                $table: $db.configuracionEconomica,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> lineaPresupuestoCostesPrevistosRefs<T extends Object>(
+    Expression<T> Function(
+      $$LineaPresupuestoCostesPrevistosTableAnnotationComposer a,
+    )
+    f,
+  ) {
+    final $$LineaPresupuestoCostesPrevistosTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.lineaPresupuestoCostesPrevistos,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$LineaPresupuestoCostesPrevistosTableAnnotationComposer(
+                $db: $db,
+                $table: $db.lineaPresupuestoCostesPrevistos,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> planesEconomicosRefs<T extends Object>(
+    Expression<T> Function($$PlanesEconomicosTableAnnotationComposer a) f,
+  ) {
+    final $$PlanesEconomicosTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.planesEconomicos,
+      getReferencedColumn: (t) => t.tenantId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PlanesEconomicosTableAnnotationComposer(
+            $db: $db,
+            $table: $db.planesEconomicos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> planEconomicoPartidasRefs<T extends Object>(
+    Expression<T> Function($$PlanEconomicoPartidasTableAnnotationComposer a) f,
+  ) {
+    final $$PlanEconomicoPartidasTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.planEconomicoPartidas,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$PlanEconomicoPartidasTableAnnotationComposer(
+                $db: $db,
+                $table: $db.planEconomicoPartidas,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$TenantsTableTableManager
@@ -15575,6 +19464,11 @@ class $$TenantsTableTableManager
             bool facturaAsignacionesPresupuestoRefs,
             bool facturaDocumentosEmitidosRefs,
             bool movimientosCreditoClienteRefs,
+            bool categoriasEconomicasRefs,
+            bool configuracionEconomicaRefs,
+            bool lineaPresupuestoCostesPrevistosRefs,
+            bool planesEconomicosRefs,
+            bool planEconomicoPartidasRefs,
           })
         > {
   $$TenantsTableTableManager(_$AppDatabase db, $TenantsTable table)
@@ -15642,6 +19536,11 @@ class $$TenantsTableTableManager
                 facturaAsignacionesPresupuestoRefs = false,
                 facturaDocumentosEmitidosRefs = false,
                 movimientosCreditoClienteRefs = false,
+                categoriasEconomicasRefs = false,
+                configuracionEconomicaRefs = false,
+                lineaPresupuestoCostesPrevistosRefs = false,
+                planesEconomicosRefs = false,
+                planEconomicoPartidasRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -15665,6 +19564,12 @@ class $$TenantsTableTableManager
                       db.facturaDocumentosEmitidos,
                     if (movimientosCreditoClienteRefs)
                       db.movimientosCreditoCliente,
+                    if (categoriasEconomicasRefs) db.categoriasEconomicas,
+                    if (configuracionEconomicaRefs) db.configuracionEconomica,
+                    if (lineaPresupuestoCostesPrevistosRefs)
+                      db.lineaPresupuestoCostesPrevistos,
+                    if (planesEconomicosRefs) db.planesEconomicos,
+                    if (planEconomicoPartidasRefs) db.planEconomicoPartidas,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -16001,6 +19906,111 @@ class $$TenantsTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (categoriasEconomicasRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          CategoriasEconomica
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._categoriasEconomicasRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).categoriasEconomicasRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (configuracionEconomicaRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          ConfiguracionEconomicaData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._configuracionEconomicaRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).configuracionEconomicaRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (lineaPresupuestoCostesPrevistosRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          LineaPresupuestoCostesPrevisto
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._lineaPresupuestoCostesPrevistosRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).lineaPresupuestoCostesPrevistosRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (planesEconomicosRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          PlanesEconomico
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._planesEconomicosRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).planesEconomicosRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (planEconomicoPartidasRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          PlanEconomicoPartida
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._planEconomicoPartidasRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).planEconomicoPartidasRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -16038,6 +20048,11 @@ typedef $$TenantsTableProcessedTableManager =
         bool facturaAsignacionesPresupuestoRefs,
         bool facturaDocumentosEmitidosRefs,
         bool movimientosCreditoClienteRefs,
+        bool categoriasEconomicasRefs,
+        bool configuracionEconomicaRefs,
+        bool lineaPresupuestoCostesPrevistosRefs,
+        bool planesEconomicosRefs,
+        bool planEconomicoPartidasRefs,
       })
     >;
 typedef $$ClientesTableCreateCompanionBuilder =
@@ -24383,6 +28398,2272 @@ typedef $$MovimientosCreditoClienteTableProcessedTableManager =
       MovimientosCreditoClienteData,
       PrefetchHooks Function({bool tenantId})
     >;
+typedef $$CategoriasEconomicasTableCreateCompanionBuilder =
+    CategoriasEconomicasCompanion Function({
+      required String tenantId,
+      required String id,
+      required String codigo,
+      required String nombre,
+      Value<String> tipo,
+      Value<int> orden,
+      Value<bool> activa,
+      required DateTime fechaCreacion,
+      required DateTime fechaModificacion,
+      Value<int> rowid,
+    });
+typedef $$CategoriasEconomicasTableUpdateCompanionBuilder =
+    CategoriasEconomicasCompanion Function({
+      Value<String> tenantId,
+      Value<String> id,
+      Value<String> codigo,
+      Value<String> nombre,
+      Value<String> tipo,
+      Value<int> orden,
+      Value<bool> activa,
+      Value<DateTime> fechaCreacion,
+      Value<DateTime> fechaModificacion,
+      Value<int> rowid,
+    });
+
+final class $$CategoriasEconomicasTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $CategoriasEconomicasTable,
+          CategoriasEconomica
+        > {
+  $$CategoriasEconomicasTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) =>
+      db.tenants.createAlias('categorias_economicas__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$CategoriasEconomicasTableFilterComposer
+    extends Composer<_$AppDatabase, $CategoriasEconomicasTable> {
+  $$CategoriasEconomicasTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get codigo => $composableBuilder(
+    column: $table.codigo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nombre => $composableBuilder(
+    column: $table.nombre,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tipo => $composableBuilder(
+    column: $table.tipo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get orden => $composableBuilder(
+    column: $table.orden,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get activa => $composableBuilder(
+    column: $table.activa,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CategoriasEconomicasTableOrderingComposer
+    extends Composer<_$AppDatabase, $CategoriasEconomicasTable> {
+  $$CategoriasEconomicasTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get codigo => $composableBuilder(
+    column: $table.codigo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nombre => $composableBuilder(
+    column: $table.nombre,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tipo => $composableBuilder(
+    column: $table.tipo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get orden => $composableBuilder(
+    column: $table.orden,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get activa => $composableBuilder(
+    column: $table.activa,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CategoriasEconomicasTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CategoriasEconomicasTable> {
+  $$CategoriasEconomicasTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get codigo =>
+      $composableBuilder(column: $table.codigo, builder: (column) => column);
+
+  GeneratedColumn<String> get nombre =>
+      $composableBuilder(column: $table.nombre, builder: (column) => column);
+
+  GeneratedColumn<String> get tipo =>
+      $composableBuilder(column: $table.tipo, builder: (column) => column);
+
+  GeneratedColumn<int> get orden =>
+      $composableBuilder(column: $table.orden, builder: (column) => column);
+
+  GeneratedColumn<bool> get activa =>
+      $composableBuilder(column: $table.activa, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => column,
+  );
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CategoriasEconomicasTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CategoriasEconomicasTable,
+          CategoriasEconomica,
+          $$CategoriasEconomicasTableFilterComposer,
+          $$CategoriasEconomicasTableOrderingComposer,
+          $$CategoriasEconomicasTableAnnotationComposer,
+          $$CategoriasEconomicasTableCreateCompanionBuilder,
+          $$CategoriasEconomicasTableUpdateCompanionBuilder,
+          (CategoriasEconomica, $$CategoriasEconomicasTableReferences),
+          CategoriasEconomica,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$CategoriasEconomicasTableTableManager(
+    _$AppDatabase db,
+    $CategoriasEconomicasTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CategoriasEconomicasTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CategoriasEconomicasTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CategoriasEconomicasTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> id = const Value.absent(),
+                Value<String> codigo = const Value.absent(),
+                Value<String> nombre = const Value.absent(),
+                Value<String> tipo = const Value.absent(),
+                Value<int> orden = const Value.absent(),
+                Value<bool> activa = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<DateTime> fechaModificacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CategoriasEconomicasCompanion(
+                tenantId: tenantId,
+                id: id,
+                codigo: codigo,
+                nombre: nombre,
+                tipo: tipo,
+                orden: orden,
+                activa: activa,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String id,
+                required String codigo,
+                required String nombre,
+                Value<String> tipo = const Value.absent(),
+                Value<int> orden = const Value.absent(),
+                Value<bool> activa = const Value.absent(),
+                required DateTime fechaCreacion,
+                required DateTime fechaModificacion,
+                Value<int> rowid = const Value.absent(),
+              }) => CategoriasEconomicasCompanion.insert(
+                tenantId: tenantId,
+                id: id,
+                codigo: codigo,
+                nombre: nombre,
+                tipo: tipo,
+                orden: orden,
+                activa: activa,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$CategoriasEconomicasTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable:
+                                    $$CategoriasEconomicasTableReferences
+                                        ._tenantIdTable(db),
+                                referencedColumn:
+                                    $$CategoriasEconomicasTableReferences
+                                        ._tenantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$CategoriasEconomicasTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CategoriasEconomicasTable,
+      CategoriasEconomica,
+      $$CategoriasEconomicasTableFilterComposer,
+      $$CategoriasEconomicasTableOrderingComposer,
+      $$CategoriasEconomicasTableAnnotationComposer,
+      $$CategoriasEconomicasTableCreateCompanionBuilder,
+      $$CategoriasEconomicasTableUpdateCompanionBuilder,
+      (CategoriasEconomica, $$CategoriasEconomicasTableReferences),
+      CategoriasEconomica,
+      PrefetchHooks Function({bool tenantId})
+    >;
+typedef $$ConfiguracionEconomicaTableCreateCompanionBuilder =
+    ConfiguracionEconomicaCompanion Function({
+      required String tenantId,
+      required String id,
+      Value<double?> porcentajeIndirectos,
+      required DateTime fechaCreacion,
+      required DateTime fechaModificacion,
+      Value<int> rowid,
+    });
+typedef $$ConfiguracionEconomicaTableUpdateCompanionBuilder =
+    ConfiguracionEconomicaCompanion Function({
+      Value<String> tenantId,
+      Value<String> id,
+      Value<double?> porcentajeIndirectos,
+      Value<DateTime> fechaCreacion,
+      Value<DateTime> fechaModificacion,
+      Value<int> rowid,
+    });
+
+final class $$ConfiguracionEconomicaTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $ConfiguracionEconomicaTable,
+          ConfiguracionEconomicaData
+        > {
+  $$ConfiguracionEconomicaTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) =>
+      db.tenants.createAlias('configuracion_economica__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ConfiguracionEconomicaTableFilterComposer
+    extends Composer<_$AppDatabase, $ConfiguracionEconomicaTable> {
+  $$ConfiguracionEconomicaTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get porcentajeIndirectos => $composableBuilder(
+    column: $table.porcentajeIndirectos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ConfiguracionEconomicaTableOrderingComposer
+    extends Composer<_$AppDatabase, $ConfiguracionEconomicaTable> {
+  $$ConfiguracionEconomicaTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get porcentajeIndirectos => $composableBuilder(
+    column: $table.porcentajeIndirectos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ConfiguracionEconomicaTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ConfiguracionEconomicaTable> {
+  $$ConfiguracionEconomicaTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<double> get porcentajeIndirectos => $composableBuilder(
+    column: $table.porcentajeIndirectos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => column,
+  );
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ConfiguracionEconomicaTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ConfiguracionEconomicaTable,
+          ConfiguracionEconomicaData,
+          $$ConfiguracionEconomicaTableFilterComposer,
+          $$ConfiguracionEconomicaTableOrderingComposer,
+          $$ConfiguracionEconomicaTableAnnotationComposer,
+          $$ConfiguracionEconomicaTableCreateCompanionBuilder,
+          $$ConfiguracionEconomicaTableUpdateCompanionBuilder,
+          (ConfiguracionEconomicaData, $$ConfiguracionEconomicaTableReferences),
+          ConfiguracionEconomicaData,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$ConfiguracionEconomicaTableTableManager(
+    _$AppDatabase db,
+    $ConfiguracionEconomicaTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ConfiguracionEconomicaTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$ConfiguracionEconomicaTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$ConfiguracionEconomicaTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> id = const Value.absent(),
+                Value<double?> porcentajeIndirectos = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<DateTime> fechaModificacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ConfiguracionEconomicaCompanion(
+                tenantId: tenantId,
+                id: id,
+                porcentajeIndirectos: porcentajeIndirectos,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String id,
+                Value<double?> porcentajeIndirectos = const Value.absent(),
+                required DateTime fechaCreacion,
+                required DateTime fechaModificacion,
+                Value<int> rowid = const Value.absent(),
+              }) => ConfiguracionEconomicaCompanion.insert(
+                tenantId: tenantId,
+                id: id,
+                porcentajeIndirectos: porcentajeIndirectos,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ConfiguracionEconomicaTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable:
+                                    $$ConfiguracionEconomicaTableReferences
+                                        ._tenantIdTable(db),
+                                referencedColumn:
+                                    $$ConfiguracionEconomicaTableReferences
+                                        ._tenantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ConfiguracionEconomicaTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ConfiguracionEconomicaTable,
+      ConfiguracionEconomicaData,
+      $$ConfiguracionEconomicaTableFilterComposer,
+      $$ConfiguracionEconomicaTableOrderingComposer,
+      $$ConfiguracionEconomicaTableAnnotationComposer,
+      $$ConfiguracionEconomicaTableCreateCompanionBuilder,
+      $$ConfiguracionEconomicaTableUpdateCompanionBuilder,
+      (ConfiguracionEconomicaData, $$ConfiguracionEconomicaTableReferences),
+      ConfiguracionEconomicaData,
+      PrefetchHooks Function({bool tenantId})
+    >;
+typedef $$LineaPresupuestoCostesPrevistosTableCreateCompanionBuilder =
+    LineaPresupuestoCostesPrevistosCompanion Function({
+      required String tenantId,
+      required String id,
+      required String lineaPresupuestoId,
+      required String categoriaEconomicaId,
+      required int costePrevistoCentimos,
+      required DateTime fechaCreacion,
+      required DateTime fechaModificacion,
+      Value<int> rowid,
+    });
+typedef $$LineaPresupuestoCostesPrevistosTableUpdateCompanionBuilder =
+    LineaPresupuestoCostesPrevistosCompanion Function({
+      Value<String> tenantId,
+      Value<String> id,
+      Value<String> lineaPresupuestoId,
+      Value<String> categoriaEconomicaId,
+      Value<int> costePrevistoCentimos,
+      Value<DateTime> fechaCreacion,
+      Value<DateTime> fechaModificacion,
+      Value<int> rowid,
+    });
+
+final class $$LineaPresupuestoCostesPrevistosTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $LineaPresupuestoCostesPrevistosTable,
+          LineaPresupuestoCostesPrevisto
+        > {
+  $$LineaPresupuestoCostesPrevistosTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) =>
+      db.tenants.createAlias(
+        'linea_presupuesto_costes_previstos__tenant_id__tenants__id',
+      );
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$LineaPresupuestoCostesPrevistosTableFilterComposer
+    extends Composer<_$AppDatabase, $LineaPresupuestoCostesPrevistosTable> {
+  $$LineaPresupuestoCostesPrevistosTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lineaPresupuestoId => $composableBuilder(
+    column: $table.lineaPresupuestoId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get categoriaEconomicaId => $composableBuilder(
+    column: $table.categoriaEconomicaId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get costePrevistoCentimos => $composableBuilder(
+    column: $table.costePrevistoCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$LineaPresupuestoCostesPrevistosTableOrderingComposer
+    extends Composer<_$AppDatabase, $LineaPresupuestoCostesPrevistosTable> {
+  $$LineaPresupuestoCostesPrevistosTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lineaPresupuestoId => $composableBuilder(
+    column: $table.lineaPresupuestoId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get categoriaEconomicaId => $composableBuilder(
+    column: $table.categoriaEconomicaId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get costePrevistoCentimos => $composableBuilder(
+    column: $table.costePrevistoCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$LineaPresupuestoCostesPrevistosTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LineaPresupuestoCostesPrevistosTable> {
+  $$LineaPresupuestoCostesPrevistosTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get lineaPresupuestoId => $composableBuilder(
+    column: $table.lineaPresupuestoId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get categoriaEconomicaId => $composableBuilder(
+    column: $table.categoriaEconomicaId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get costePrevistoCentimos => $composableBuilder(
+    column: $table.costePrevistoCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => column,
+  );
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$LineaPresupuestoCostesPrevistosTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LineaPresupuestoCostesPrevistosTable,
+          LineaPresupuestoCostesPrevisto,
+          $$LineaPresupuestoCostesPrevistosTableFilterComposer,
+          $$LineaPresupuestoCostesPrevistosTableOrderingComposer,
+          $$LineaPresupuestoCostesPrevistosTableAnnotationComposer,
+          $$LineaPresupuestoCostesPrevistosTableCreateCompanionBuilder,
+          $$LineaPresupuestoCostesPrevistosTableUpdateCompanionBuilder,
+          (
+            LineaPresupuestoCostesPrevisto,
+            $$LineaPresupuestoCostesPrevistosTableReferences,
+          ),
+          LineaPresupuestoCostesPrevisto,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$LineaPresupuestoCostesPrevistosTableTableManager(
+    _$AppDatabase db,
+    $LineaPresupuestoCostesPrevistosTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LineaPresupuestoCostesPrevistosTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$LineaPresupuestoCostesPrevistosTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$LineaPresupuestoCostesPrevistosTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> id = const Value.absent(),
+                Value<String> lineaPresupuestoId = const Value.absent(),
+                Value<String> categoriaEconomicaId = const Value.absent(),
+                Value<int> costePrevistoCentimos = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<DateTime> fechaModificacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LineaPresupuestoCostesPrevistosCompanion(
+                tenantId: tenantId,
+                id: id,
+                lineaPresupuestoId: lineaPresupuestoId,
+                categoriaEconomicaId: categoriaEconomicaId,
+                costePrevistoCentimos: costePrevistoCentimos,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String id,
+                required String lineaPresupuestoId,
+                required String categoriaEconomicaId,
+                required int costePrevistoCentimos,
+                required DateTime fechaCreacion,
+                required DateTime fechaModificacion,
+                Value<int> rowid = const Value.absent(),
+              }) => LineaPresupuestoCostesPrevistosCompanion.insert(
+                tenantId: tenantId,
+                id: id,
+                lineaPresupuestoId: lineaPresupuestoId,
+                categoriaEconomicaId: categoriaEconomicaId,
+                costePrevistoCentimos: costePrevistoCentimos,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$LineaPresupuestoCostesPrevistosTableReferences(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable:
+                                    $$LineaPresupuestoCostesPrevistosTableReferences
+                                        ._tenantIdTable(db),
+                                referencedColumn:
+                                    $$LineaPresupuestoCostesPrevistosTableReferences
+                                        ._tenantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$LineaPresupuestoCostesPrevistosTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LineaPresupuestoCostesPrevistosTable,
+      LineaPresupuestoCostesPrevisto,
+      $$LineaPresupuestoCostesPrevistosTableFilterComposer,
+      $$LineaPresupuestoCostesPrevistosTableOrderingComposer,
+      $$LineaPresupuestoCostesPrevistosTableAnnotationComposer,
+      $$LineaPresupuestoCostesPrevistosTableCreateCompanionBuilder,
+      $$LineaPresupuestoCostesPrevistosTableUpdateCompanionBuilder,
+      (
+        LineaPresupuestoCostesPrevisto,
+        $$LineaPresupuestoCostesPrevistosTableReferences,
+      ),
+      LineaPresupuestoCostesPrevisto,
+      PrefetchHooks Function({bool tenantId})
+    >;
+typedef $$PlanesEconomicosTableCreateCompanionBuilder =
+    PlanesEconomicosCompanion Function({
+      required String tenantId,
+      required String id,
+      required String expedienteId,
+      required String presupuestoId,
+      Value<String> tipo,
+      Value<int> version,
+      Value<String> estado,
+      required DateTime fechaAceptacion,
+      required int ventaNetaCentimos,
+      Value<int?> costeDirectoCentimos,
+      Value<double?> porcentajeIndirectos,
+      Value<int?> costesIndirectosCentimos,
+      Value<int?> costeTotalCentimos,
+      Value<int?> beneficioPrevistoCentimos,
+      Value<double?> margenPrevistoPorcentaje,
+      required String coberturaCostes,
+      required DateTime fechaCreacion,
+      Value<int> rowid,
+    });
+typedef $$PlanesEconomicosTableUpdateCompanionBuilder =
+    PlanesEconomicosCompanion Function({
+      Value<String> tenantId,
+      Value<String> id,
+      Value<String> expedienteId,
+      Value<String> presupuestoId,
+      Value<String> tipo,
+      Value<int> version,
+      Value<String> estado,
+      Value<DateTime> fechaAceptacion,
+      Value<int> ventaNetaCentimos,
+      Value<int?> costeDirectoCentimos,
+      Value<double?> porcentajeIndirectos,
+      Value<int?> costesIndirectosCentimos,
+      Value<int?> costeTotalCentimos,
+      Value<int?> beneficioPrevistoCentimos,
+      Value<double?> margenPrevistoPorcentaje,
+      Value<String> coberturaCostes,
+      Value<DateTime> fechaCreacion,
+      Value<int> rowid,
+    });
+
+final class $$PlanesEconomicosTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $PlanesEconomicosTable, PlanesEconomico> {
+  $$PlanesEconomicosTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) =>
+      db.tenants.createAlias('planes_economicos__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$PlanesEconomicosTableFilterComposer
+    extends Composer<_$AppDatabase, $PlanesEconomicosTable> {
+  $$PlanesEconomicosTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get presupuestoId => $composableBuilder(
+    column: $table.presupuestoId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tipo => $composableBuilder(
+    column: $table.tipo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get estado => $composableBuilder(
+    column: $table.estado,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaAceptacion => $composableBuilder(
+    column: $table.fechaAceptacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get ventaNetaCentimos => $composableBuilder(
+    column: $table.ventaNetaCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get costeDirectoCentimos => $composableBuilder(
+    column: $table.costeDirectoCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get porcentajeIndirectos => $composableBuilder(
+    column: $table.porcentajeIndirectos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get costesIndirectosCentimos => $composableBuilder(
+    column: $table.costesIndirectosCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get costeTotalCentimos => $composableBuilder(
+    column: $table.costeTotalCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get beneficioPrevistoCentimos => $composableBuilder(
+    column: $table.beneficioPrevistoCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get margenPrevistoPorcentaje => $composableBuilder(
+    column: $table.margenPrevistoPorcentaje,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get coberturaCostes => $composableBuilder(
+    column: $table.coberturaCostes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PlanesEconomicosTableOrderingComposer
+    extends Composer<_$AppDatabase, $PlanesEconomicosTable> {
+  $$PlanesEconomicosTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get presupuestoId => $composableBuilder(
+    column: $table.presupuestoId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tipo => $composableBuilder(
+    column: $table.tipo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get estado => $composableBuilder(
+    column: $table.estado,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaAceptacion => $composableBuilder(
+    column: $table.fechaAceptacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get ventaNetaCentimos => $composableBuilder(
+    column: $table.ventaNetaCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get costeDirectoCentimos => $composableBuilder(
+    column: $table.costeDirectoCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get porcentajeIndirectos => $composableBuilder(
+    column: $table.porcentajeIndirectos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get costesIndirectosCentimos => $composableBuilder(
+    column: $table.costesIndirectosCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get costeTotalCentimos => $composableBuilder(
+    column: $table.costeTotalCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get beneficioPrevistoCentimos => $composableBuilder(
+    column: $table.beneficioPrevistoCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get margenPrevistoPorcentaje => $composableBuilder(
+    column: $table.margenPrevistoPorcentaje,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get coberturaCostes => $composableBuilder(
+    column: $table.coberturaCostes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PlanesEconomicosTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PlanesEconomicosTable> {
+  $$PlanesEconomicosTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get presupuestoId => $composableBuilder(
+    column: $table.presupuestoId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get tipo =>
+      $composableBuilder(column: $table.tipo, builder: (column) => column);
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+
+  GeneratedColumn<String> get estado =>
+      $composableBuilder(column: $table.estado, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get fechaAceptacion => $composableBuilder(
+    column: $table.fechaAceptacion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get ventaNetaCentimos => $composableBuilder(
+    column: $table.ventaNetaCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get costeDirectoCentimos => $composableBuilder(
+    column: $table.costeDirectoCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get porcentajeIndirectos => $composableBuilder(
+    column: $table.porcentajeIndirectos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get costesIndirectosCentimos => $composableBuilder(
+    column: $table.costesIndirectosCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get costeTotalCentimos => $composableBuilder(
+    column: $table.costeTotalCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get beneficioPrevistoCentimos => $composableBuilder(
+    column: $table.beneficioPrevistoCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get margenPrevistoPorcentaje => $composableBuilder(
+    column: $table.margenPrevistoPorcentaje,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get coberturaCostes => $composableBuilder(
+    column: $table.coberturaCostes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => column,
+  );
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PlanesEconomicosTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PlanesEconomicosTable,
+          PlanesEconomico,
+          $$PlanesEconomicosTableFilterComposer,
+          $$PlanesEconomicosTableOrderingComposer,
+          $$PlanesEconomicosTableAnnotationComposer,
+          $$PlanesEconomicosTableCreateCompanionBuilder,
+          $$PlanesEconomicosTableUpdateCompanionBuilder,
+          (PlanesEconomico, $$PlanesEconomicosTableReferences),
+          PlanesEconomico,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$PlanesEconomicosTableTableManager(
+    _$AppDatabase db,
+    $PlanesEconomicosTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PlanesEconomicosTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PlanesEconomicosTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PlanesEconomicosTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> id = const Value.absent(),
+                Value<String> expedienteId = const Value.absent(),
+                Value<String> presupuestoId = const Value.absent(),
+                Value<String> tipo = const Value.absent(),
+                Value<int> version = const Value.absent(),
+                Value<String> estado = const Value.absent(),
+                Value<DateTime> fechaAceptacion = const Value.absent(),
+                Value<int> ventaNetaCentimos = const Value.absent(),
+                Value<int?> costeDirectoCentimos = const Value.absent(),
+                Value<double?> porcentajeIndirectos = const Value.absent(),
+                Value<int?> costesIndirectosCentimos = const Value.absent(),
+                Value<int?> costeTotalCentimos = const Value.absent(),
+                Value<int?> beneficioPrevistoCentimos = const Value.absent(),
+                Value<double?> margenPrevistoPorcentaje = const Value.absent(),
+                Value<String> coberturaCostes = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PlanesEconomicosCompanion(
+                tenantId: tenantId,
+                id: id,
+                expedienteId: expedienteId,
+                presupuestoId: presupuestoId,
+                tipo: tipo,
+                version: version,
+                estado: estado,
+                fechaAceptacion: fechaAceptacion,
+                ventaNetaCentimos: ventaNetaCentimos,
+                costeDirectoCentimos: costeDirectoCentimos,
+                porcentajeIndirectos: porcentajeIndirectos,
+                costesIndirectosCentimos: costesIndirectosCentimos,
+                costeTotalCentimos: costeTotalCentimos,
+                beneficioPrevistoCentimos: beneficioPrevistoCentimos,
+                margenPrevistoPorcentaje: margenPrevistoPorcentaje,
+                coberturaCostes: coberturaCostes,
+                fechaCreacion: fechaCreacion,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String id,
+                required String expedienteId,
+                required String presupuestoId,
+                Value<String> tipo = const Value.absent(),
+                Value<int> version = const Value.absent(),
+                Value<String> estado = const Value.absent(),
+                required DateTime fechaAceptacion,
+                required int ventaNetaCentimos,
+                Value<int?> costeDirectoCentimos = const Value.absent(),
+                Value<double?> porcentajeIndirectos = const Value.absent(),
+                Value<int?> costesIndirectosCentimos = const Value.absent(),
+                Value<int?> costeTotalCentimos = const Value.absent(),
+                Value<int?> beneficioPrevistoCentimos = const Value.absent(),
+                Value<double?> margenPrevistoPorcentaje = const Value.absent(),
+                required String coberturaCostes,
+                required DateTime fechaCreacion,
+                Value<int> rowid = const Value.absent(),
+              }) => PlanesEconomicosCompanion.insert(
+                tenantId: tenantId,
+                id: id,
+                expedienteId: expedienteId,
+                presupuestoId: presupuestoId,
+                tipo: tipo,
+                version: version,
+                estado: estado,
+                fechaAceptacion: fechaAceptacion,
+                ventaNetaCentimos: ventaNetaCentimos,
+                costeDirectoCentimos: costeDirectoCentimos,
+                porcentajeIndirectos: porcentajeIndirectos,
+                costesIndirectosCentimos: costesIndirectosCentimos,
+                costeTotalCentimos: costeTotalCentimos,
+                beneficioPrevistoCentimos: beneficioPrevistoCentimos,
+                margenPrevistoPorcentaje: margenPrevistoPorcentaje,
+                coberturaCostes: coberturaCostes,
+                fechaCreacion: fechaCreacion,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$PlanesEconomicosTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable:
+                                    $$PlanesEconomicosTableReferences
+                                        ._tenantIdTable(db),
+                                referencedColumn:
+                                    $$PlanesEconomicosTableReferences
+                                        ._tenantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$PlanesEconomicosTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PlanesEconomicosTable,
+      PlanesEconomico,
+      $$PlanesEconomicosTableFilterComposer,
+      $$PlanesEconomicosTableOrderingComposer,
+      $$PlanesEconomicosTableAnnotationComposer,
+      $$PlanesEconomicosTableCreateCompanionBuilder,
+      $$PlanesEconomicosTableUpdateCompanionBuilder,
+      (PlanesEconomico, $$PlanesEconomicosTableReferences),
+      PlanesEconomico,
+      PrefetchHooks Function({bool tenantId})
+    >;
+typedef $$PlanEconomicoPartidasTableCreateCompanionBuilder =
+    PlanEconomicoPartidasCompanion Function({
+      required String tenantId,
+      required String id,
+      required String planEconomicoId,
+      Value<String?> lineaPresupuestoOrigenId,
+      Value<String?> categoriaEconomicaId,
+      Value<String?> categoriaCodigoSnapshot,
+      Value<String?> categoriaNombreSnapshot,
+      required String descripcion,
+      required String unidad,
+      required double cantidad,
+      required int precioVentaUnitarioCentimos,
+      required int importeVentaCentimos,
+      Value<int?> costePrevistoCentimos,
+      required int orden,
+      Value<int> rowid,
+    });
+typedef $$PlanEconomicoPartidasTableUpdateCompanionBuilder =
+    PlanEconomicoPartidasCompanion Function({
+      Value<String> tenantId,
+      Value<String> id,
+      Value<String> planEconomicoId,
+      Value<String?> lineaPresupuestoOrigenId,
+      Value<String?> categoriaEconomicaId,
+      Value<String?> categoriaCodigoSnapshot,
+      Value<String?> categoriaNombreSnapshot,
+      Value<String> descripcion,
+      Value<String> unidad,
+      Value<double> cantidad,
+      Value<int> precioVentaUnitarioCentimos,
+      Value<int> importeVentaCentimos,
+      Value<int?> costePrevistoCentimos,
+      Value<int> orden,
+      Value<int> rowid,
+    });
+
+final class $$PlanEconomicoPartidasTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $PlanEconomicoPartidasTable,
+          PlanEconomicoPartida
+        > {
+  $$PlanEconomicoPartidasTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) =>
+      db.tenants.createAlias('plan_economico_partidas__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$PlanEconomicoPartidasTableFilterComposer
+    extends Composer<_$AppDatabase, $PlanEconomicoPartidasTable> {
+  $$PlanEconomicoPartidasTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get planEconomicoId => $composableBuilder(
+    column: $table.planEconomicoId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lineaPresupuestoOrigenId => $composableBuilder(
+    column: $table.lineaPresupuestoOrigenId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get categoriaEconomicaId => $composableBuilder(
+    column: $table.categoriaEconomicaId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get categoriaCodigoSnapshot => $composableBuilder(
+    column: $table.categoriaCodigoSnapshot,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get categoriaNombreSnapshot => $composableBuilder(
+    column: $table.categoriaNombreSnapshot,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get descripcion => $composableBuilder(
+    column: $table.descripcion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get unidad => $composableBuilder(
+    column: $table.unidad,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get cantidad => $composableBuilder(
+    column: $table.cantidad,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get precioVentaUnitarioCentimos => $composableBuilder(
+    column: $table.precioVentaUnitarioCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get importeVentaCentimos => $composableBuilder(
+    column: $table.importeVentaCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get costePrevistoCentimos => $composableBuilder(
+    column: $table.costePrevistoCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get orden => $composableBuilder(
+    column: $table.orden,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PlanEconomicoPartidasTableOrderingComposer
+    extends Composer<_$AppDatabase, $PlanEconomicoPartidasTable> {
+  $$PlanEconomicoPartidasTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get planEconomicoId => $composableBuilder(
+    column: $table.planEconomicoId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lineaPresupuestoOrigenId => $composableBuilder(
+    column: $table.lineaPresupuestoOrigenId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get categoriaEconomicaId => $composableBuilder(
+    column: $table.categoriaEconomicaId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get categoriaCodigoSnapshot => $composableBuilder(
+    column: $table.categoriaCodigoSnapshot,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get categoriaNombreSnapshot => $composableBuilder(
+    column: $table.categoriaNombreSnapshot,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get descripcion => $composableBuilder(
+    column: $table.descripcion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get unidad => $composableBuilder(
+    column: $table.unidad,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get cantidad => $composableBuilder(
+    column: $table.cantidad,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get precioVentaUnitarioCentimos => $composableBuilder(
+    column: $table.precioVentaUnitarioCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get importeVentaCentimos => $composableBuilder(
+    column: $table.importeVentaCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get costePrevistoCentimos => $composableBuilder(
+    column: $table.costePrevistoCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get orden => $composableBuilder(
+    column: $table.orden,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PlanEconomicoPartidasTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PlanEconomicoPartidasTable> {
+  $$PlanEconomicoPartidasTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get planEconomicoId => $composableBuilder(
+    column: $table.planEconomicoId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get lineaPresupuestoOrigenId => $composableBuilder(
+    column: $table.lineaPresupuestoOrigenId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get categoriaEconomicaId => $composableBuilder(
+    column: $table.categoriaEconomicaId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get categoriaCodigoSnapshot => $composableBuilder(
+    column: $table.categoriaCodigoSnapshot,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get categoriaNombreSnapshot => $composableBuilder(
+    column: $table.categoriaNombreSnapshot,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get descripcion => $composableBuilder(
+    column: $table.descripcion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get unidad =>
+      $composableBuilder(column: $table.unidad, builder: (column) => column);
+
+  GeneratedColumn<double> get cantidad =>
+      $composableBuilder(column: $table.cantidad, builder: (column) => column);
+
+  GeneratedColumn<int> get precioVentaUnitarioCentimos => $composableBuilder(
+    column: $table.precioVentaUnitarioCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get importeVentaCentimos => $composableBuilder(
+    column: $table.importeVentaCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get costePrevistoCentimos => $composableBuilder(
+    column: $table.costePrevistoCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get orden =>
+      $composableBuilder(column: $table.orden, builder: (column) => column);
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PlanEconomicoPartidasTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PlanEconomicoPartidasTable,
+          PlanEconomicoPartida,
+          $$PlanEconomicoPartidasTableFilterComposer,
+          $$PlanEconomicoPartidasTableOrderingComposer,
+          $$PlanEconomicoPartidasTableAnnotationComposer,
+          $$PlanEconomicoPartidasTableCreateCompanionBuilder,
+          $$PlanEconomicoPartidasTableUpdateCompanionBuilder,
+          (PlanEconomicoPartida, $$PlanEconomicoPartidasTableReferences),
+          PlanEconomicoPartida,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$PlanEconomicoPartidasTableTableManager(
+    _$AppDatabase db,
+    $PlanEconomicoPartidasTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PlanEconomicoPartidasTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$PlanEconomicoPartidasTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$PlanEconomicoPartidasTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> id = const Value.absent(),
+                Value<String> planEconomicoId = const Value.absent(),
+                Value<String?> lineaPresupuestoOrigenId = const Value.absent(),
+                Value<String?> categoriaEconomicaId = const Value.absent(),
+                Value<String?> categoriaCodigoSnapshot = const Value.absent(),
+                Value<String?> categoriaNombreSnapshot = const Value.absent(),
+                Value<String> descripcion = const Value.absent(),
+                Value<String> unidad = const Value.absent(),
+                Value<double> cantidad = const Value.absent(),
+                Value<int> precioVentaUnitarioCentimos = const Value.absent(),
+                Value<int> importeVentaCentimos = const Value.absent(),
+                Value<int?> costePrevistoCentimos = const Value.absent(),
+                Value<int> orden = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PlanEconomicoPartidasCompanion(
+                tenantId: tenantId,
+                id: id,
+                planEconomicoId: planEconomicoId,
+                lineaPresupuestoOrigenId: lineaPresupuestoOrigenId,
+                categoriaEconomicaId: categoriaEconomicaId,
+                categoriaCodigoSnapshot: categoriaCodigoSnapshot,
+                categoriaNombreSnapshot: categoriaNombreSnapshot,
+                descripcion: descripcion,
+                unidad: unidad,
+                cantidad: cantidad,
+                precioVentaUnitarioCentimos: precioVentaUnitarioCentimos,
+                importeVentaCentimos: importeVentaCentimos,
+                costePrevistoCentimos: costePrevistoCentimos,
+                orden: orden,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String id,
+                required String planEconomicoId,
+                Value<String?> lineaPresupuestoOrigenId = const Value.absent(),
+                Value<String?> categoriaEconomicaId = const Value.absent(),
+                Value<String?> categoriaCodigoSnapshot = const Value.absent(),
+                Value<String?> categoriaNombreSnapshot = const Value.absent(),
+                required String descripcion,
+                required String unidad,
+                required double cantidad,
+                required int precioVentaUnitarioCentimos,
+                required int importeVentaCentimos,
+                Value<int?> costePrevistoCentimos = const Value.absent(),
+                required int orden,
+                Value<int> rowid = const Value.absent(),
+              }) => PlanEconomicoPartidasCompanion.insert(
+                tenantId: tenantId,
+                id: id,
+                planEconomicoId: planEconomicoId,
+                lineaPresupuestoOrigenId: lineaPresupuestoOrigenId,
+                categoriaEconomicaId: categoriaEconomicaId,
+                categoriaCodigoSnapshot: categoriaCodigoSnapshot,
+                categoriaNombreSnapshot: categoriaNombreSnapshot,
+                descripcion: descripcion,
+                unidad: unidad,
+                cantidad: cantidad,
+                precioVentaUnitarioCentimos: precioVentaUnitarioCentimos,
+                importeVentaCentimos: importeVentaCentimos,
+                costePrevistoCentimos: costePrevistoCentimos,
+                orden: orden,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$PlanEconomicoPartidasTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable:
+                                    $$PlanEconomicoPartidasTableReferences
+                                        ._tenantIdTable(db),
+                                referencedColumn:
+                                    $$PlanEconomicoPartidasTableReferences
+                                        ._tenantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$PlanEconomicoPartidasTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PlanEconomicoPartidasTable,
+      PlanEconomicoPartida,
+      $$PlanEconomicoPartidasTableFilterComposer,
+      $$PlanEconomicoPartidasTableOrderingComposer,
+      $$PlanEconomicoPartidasTableAnnotationComposer,
+      $$PlanEconomicoPartidasTableCreateCompanionBuilder,
+      $$PlanEconomicoPartidasTableUpdateCompanionBuilder,
+      (PlanEconomicoPartida, $$PlanEconomicoPartidasTableReferences),
+      PlanEconomicoPartida,
+      PrefetchHooks Function({bool tenantId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -24431,4 +30712,21 @@ class $AppDatabaseManager {
         _db,
         _db.movimientosCreditoCliente,
       );
+  $$CategoriasEconomicasTableTableManager get categoriasEconomicas =>
+      $$CategoriasEconomicasTableTableManager(_db, _db.categoriasEconomicas);
+  $$ConfiguracionEconomicaTableTableManager get configuracionEconomica =>
+      $$ConfiguracionEconomicaTableTableManager(
+        _db,
+        _db.configuracionEconomica,
+      );
+  $$LineaPresupuestoCostesPrevistosTableTableManager
+  get lineaPresupuestoCostesPrevistos =>
+      $$LineaPresupuestoCostesPrevistosTableTableManager(
+        _db,
+        _db.lineaPresupuestoCostesPrevistos,
+      );
+  $$PlanesEconomicosTableTableManager get planesEconomicos =>
+      $$PlanesEconomicosTableTableManager(_db, _db.planesEconomicos);
+  $$PlanEconomicoPartidasTableTableManager get planEconomicoPartidas =>
+      $$PlanEconomicoPartidasTableTableManager(_db, _db.planEconomicoPartidas);
 }

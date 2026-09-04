@@ -335,6 +335,10 @@ No quedan decisiones de negocio bloqueantes para comenzar Fase 3-B. Los valores 
 
 Maquinaria especializada, documentos de proveedor, reparto multiobra y almacén se incorporarán en incrementos propios cuando el circuito administrativo lo requiera; el contrato de hechos de coste ya los admite.
 
+### Estado de 3-B
+
+Implementada técnicamente sobre schema v24. El coste previsto editable se conserva en un desglose interno asociado a cada línea borrador; no se añade al documento comercial. Al aceptar, una única transacción congela el plan, sus partidas, las categorías descriptivas y el porcentaje de indirectos, cambia el estado y registra Timeline. La cobertura distingue `sinCostes`, `parcial` y `completo`, sin convertir ausencias en cero. La migración inicializa categorías y configuración por tenant, pero no crea planes retrospectivos para presupuestos legacy. Los tipos `base`, `sustitucion` y `modificado` y la versión física reservan la evolución sin implementar todavía sustituciones ni doble contabilización. Fase 3-C no se ha iniciado.
+
 ## 23. Matriz de pruebas futura
 
 - Aislamiento de tenant en cada tabla, consulta, agregado, caché, FK e índice.

@@ -32,6 +32,9 @@ Este documento está preparado para registrar decisiones arquitectónicas, tecno
 - 2026-09-04: aprobado el cierre económico explícito con comprobaciones y advertencias registradas, snapshot auditable y reapertura explícita con motivo sin eliminar el historial.
 - 2026-09-03: durante una obra se distinguirán resultado realizado —solo con producción fiable— y beneficio final estimado; no se usará `facturado - coste acumulado` como beneficio actual.
 - 2026-09-03: Fase 3-A es exclusivamente diseño. La implementación propuesta comienza en Fase 3-B con schema v24, plan económico y categorías, sin modificar todavía el esquema.
+- 2026-09-04: Fase 3-B mantiene el coste previsto separado del presupuesto comercial. La asignación editable vive vinculada a la línea borrador y la aceptación la transforma, dentro de la misma transacción que estado y Timeline, en un snapshot económico inmutable.
+- 2026-09-04: desconocido y cero son estados distintos. Un plan declara cobertura `sinCostes`, `parcial` o `completo`; indirectos, coste total, beneficio y margen solo se materializan cuando los costes directos y el porcentaje aplicable son conocidos. Con venta neta cero el margen permanece no disponible.
+- 2026-09-04: v23 → v24 crea categorías neutrales con UUID propios por tenant y configuración sin porcentaje predeterminado. No crea planes ni costes retrospectivos para presupuestos legacy.
 
 ## Interfaz y navegación
 

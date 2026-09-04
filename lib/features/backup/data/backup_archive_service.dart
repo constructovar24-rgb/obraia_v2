@@ -39,6 +39,11 @@ class BackupArchiveService {
     'proveedores',
     'timeline_events',
     'movimientos_credito_cliente',
+    'categorias_economicas',
+    'configuracion_economica',
+    'linea_presupuesto_costes_previstos',
+    'planes_economicos',
+    'plan_economico_partidas',
   };
 
   final DatabaseSnapshotService _snapshotService;
@@ -401,6 +406,13 @@ class BackupArchiveService {
           .whereType<String>()
           .toSet();
       final expectedTables = _expectedTables.difference({
+        if (schemaVersion < 24) ...{
+          'categorias_economicas',
+          'configuracion_economica',
+          'linea_presupuesto_costes_previstos',
+          'planes_economicos',
+          'plan_economico_partidas',
+        },
         if (schemaVersion < 23) 'tenants',
         if (schemaVersion < 20) 'factura_asignaciones_presupuesto',
         if (schemaVersion < 21) 'factura_documentos_emitidos',

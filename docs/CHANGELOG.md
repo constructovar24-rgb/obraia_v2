@@ -2,6 +2,15 @@
 
 ## No publicado
 
+### Plan económico y categorías — Fase 3-B
+
+- Incorporadas categorías económicas y configuración de indirectos aisladas por tenant, sin valores específicos de una empresa.
+- Añadida carga interna de categoría y coste previsto por línea de presupuesto, separada del modelo y PDF comerciales.
+- La aceptación genera atómicamente un plan y partidas inmutables junto al estado y Timeline, congelando venta, costes, categorías y parámetros.
+- Diferenciados coste desconocido, parcial y completo; beneficio y margen solo se muestran cuando son reproducibles.
+- Elevado Drift a schema v24 con migración segura, bootstrap tenant-scoped, backup/restauración adaptados y sin inventar planes legacy.
+- Añadidas pruebas de dominio, integración, aislamiento, rollback, migración y regresión.
+
 ### Diseño del modelo económico de Fase 3
 
 - Auditadas las fuentes actuales de presupuesto, facturación, cobro, crédito, compras, certificaciones y resumen de obra, sin reinterpretar Compra como factura de proveedor.

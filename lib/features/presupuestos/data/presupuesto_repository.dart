@@ -10,6 +10,7 @@ import 'package:obraia_v2/features/presupuestos/domain/presupuesto.dart'
     as presupuesto_domain;
 import 'package:obraia_v2/features/presupuestos/domain/estado_presupuesto.dart';
 import 'package:obraia_v2/features/timeline/data/timeline_repository.dart';
+import 'package:obraia_v2/features/economia/data/plan_economico_repository.dart';
 import 'package:uuid/uuid.dart';
 
 class PresupuestoRepository {
@@ -17,9 +18,11 @@ class PresupuestoRepository {
 
   final AppDatabase database;
   final TimelineRepository _timelineRepository;
+  final PlanEconomicoRepository _planEconomicoRepository;
 
   PresupuestoRepository(this.database)
-    : _timelineRepository = TimelineRepository(database.timelineEventsDao);
+    : _timelineRepository = TimelineRepository(database.timelineEventsDao),
+      _planEconomicoRepository = PlanEconomicoRepository(database);
 
   Stream<List<presupuesto_domain.Presupuesto>> observarPorExpediente(
     String expedienteId,
@@ -278,6 +281,8 @@ class PresupuestoRepository {
           'Solo se puede aceptar un presupuesto en borrador.',
         );
       }
+
+      await _planEconomicoRepository.crearSnapshotParaAceptacion(presupuestoId);
 
       final actualizados = await database.presupuestosDao.aceptarBorrador(
         presupuestoId,

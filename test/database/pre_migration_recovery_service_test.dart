@@ -62,4 +62,27 @@ void main() {
       isFalse,
     );
   });
+
+  test('protege una base v23 antes de migrar a v24', () async {
+    final directory = await Directory.systemTemp.createTemp(
+      'obraia-pre-migration-v23-',
+    );
+    addTearDown(() => directory.delete(recursive: true));
+    final source = File(p.join(directory.path, 'obraia.sqlite'));
+    final raw = sqlite3.open(source.path);
+    raw.execute('CREATE TABLE ejemplo (id TEXT PRIMARY KEY)');
+    raw.execute("INSERT INTO ejemplo VALUES ('dato')");
+    raw.userVersion = 23;
+    raw.close();
+
+    final recovery = await const PreMigrationRecoveryService()
+        .protectBeforeUpgrade(source);
+
+    expect(recovery, isNotNull);
+    expect(p.basename(recovery!.path), startsWith('obraia-v23-'));
+    final copy = sqlite3.open(recovery.path, mode: OpenMode.readOnly);
+    expect(copy.userVersion, 23);
+    expect(copy.select('SELECT id FROM ejemplo').single['id'], 'dato');
+    copy.close();
+  });
 }

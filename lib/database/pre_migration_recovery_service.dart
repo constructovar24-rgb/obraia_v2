@@ -6,14 +6,21 @@ import 'package:sqlite3/sqlite3.dart';
 class PreMigrationRecoveryService {
   const PreMigrationRecoveryService();
 
-  Future<File?> protectV22(File source) async {
+  Future<File?> protectV22(File source) =>
+      protectBeforeUpgrade(source, supportedVersions: const {22});
+
+  Future<File?> protectBeforeUpgrade(
+    File source, {
+    Set<int> supportedVersions = const {22, 23},
+  }) async {
     if (!await source.exists()) return null;
 
     Database? database;
     try {
       database = sqlite3.open(source.path, mode: OpenMode.readOnly);
-      if (database.userVersion != 22) return null;
-      _validate(database, expectedVersion: 22);
+      final version = database.userVersion;
+      if (!supportedVersions.contains(version)) return null;
+      _validate(database, expectedVersion: version);
 
       final recoveryDirectory = Directory(
         p.join(source.parent.path, 'migration-recovery'),
@@ -21,13 +28,13 @@ class PreMigrationRecoveryService {
       await recoveryDirectory.create(recursive: true);
       final stamp = DateTime.now().toUtc().microsecondsSinceEpoch;
       final recovery = File(
-        p.join(recoveryDirectory.path, 'obraia-v22-$stamp.sqlite'),
+        p.join(recoveryDirectory.path, 'obraia-v$version-$stamp.sqlite'),
       );
       database.execute('VACUUM INTO ?', [recovery.path]);
 
       final recovered = sqlite3.open(recovery.path, mode: OpenMode.readOnly);
       try {
-        _validate(recovered, expectedVersion: 22);
+        _validate(recovered, expectedVersion: version);
       } finally {
         recovered.close();
       }

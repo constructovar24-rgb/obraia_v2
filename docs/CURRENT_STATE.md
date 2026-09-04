@@ -5,7 +5,7 @@ Fotografía verificada el **3 de septiembre de 2026**. Debe actualizarse cuando 
 ## Base tecnológica
 
 - Flutter/Dart con Riverpod.
-- Drift sobre SQLite; 17 tablas y `schemaVersion` 23. Las conexiones activan claves foráneas y las 16 tablas empresariales exigen `tenantId`.
+- Drift sobre SQLite; 22 tablas y `schemaVersion` 24. Las conexiones activan claves foráneas y todas las tablas empresariales, incluidas las económicas, exigen `tenantId`.
 - `pdf` y `printing` para generación documental.
 - Windows como plataforma prioritaria.
 - 171 archivos Dart en la auditoría de esta línea base.
@@ -34,9 +34,15 @@ Con análisis, pruebas y compilación Windows superados, Expedientes queda técn
 
 ## Fase actual
 
+Fase 3-B está implementada técnicamente. Cada tenant dispone de categorías económicas neutrales y porcentaje configurable de indirectos; las líneas de presupuesto en borrador pueden registrar categoría y coste previsto interno sin contaminar el PDF comercial. La aceptación crea atómicamente con el cambio de estado y Timeline un plan económico inmutable y sus partidas congeladas. El plan distingue coste cero de coste desconocido mediante cobertura completa, parcial o sin costes, y solo publica coste total, beneficio y margen cuando los datos necesarios están completos.
+
+El esquema v24 añade categorías, configuración económica, costes previstos de borrador, planes y partidas de plan con claves compuestas e índices tenant-first. La migración v23 → v24 conserva los datos, inicializa categorías/configuración por tenant y no fabrica planes ni costes para presupuestos legacy. Backup/restauración y la copia preventiva admiten la nueva versión. Fase 3-C no se ha iniciado.
+
+La verificación de 3-B supera 252 pruebas, incluidas reglas económicas, aceptación/rollback, aislamiento, migración, backup y toda la regresión de Fase 2. `flutter analyze --no-pub`, `git diff --check` y `flutter build windows --debug --no-pub` también superan.
+
 Fase 3-A está formalmente cerrada como diseño aprobado, no como implementación. `PHASE_3_ECONOMIC_MODEL.md` define la separación entre rentabilidad, facturación y tesorería; las magnitudes oficiales; el presupuesto aceptado como plan económico inmutable; hechos de coste; tarifa interna de mano de obra propia; indirectos sobre coste directo previsto; clasificación explícita de Compras por devengo; cierre/reapertura auditables; trazabilidad y una propuesta conceptual v23 → v24. No quedan decisiones de negocio bloqueantes para iniciar 3-B. No existen todavía nuevas tablas, migración v24, motor de rentabilidad ni interfaz económica.
 
-La auditoría arquitectónica está en `MULTI_TENANT_ARCHITECTURE_AUDIT.md` y el diseño ejecutable v22 → v23 en `MULTI_TENANT_MIGRATION_PLAN.md`. La puerta P0 multi-tenant está cerrada: existe Tenant, el esquema v23 migra y backfillea v22 de forma transaccional, las relaciones críticas impiden cruces entre tenants y DAOs, repositorios, búsqueda, dashboard, configuración, numeraciones FAC/RECT y backup quedan aislados por un `TenantContext` obligatorio. El cambio de contexto invalida los providers tenant-scoped y Configuración admite una identidad independiente por tenant. Antes de migrar una base v22 se crea y valida una copia SQLite de recuperación sin sobrescritura. No existen aún selector público, usuarios, roles, autenticación, cloud ni sincronización. La implementación de Fase 3 continúa sin comenzar.
+La auditoría arquitectónica está en `MULTI_TENANT_ARCHITECTURE_AUDIT.md` y el diseño ejecutable v22 → v23 en `MULTI_TENANT_MIGRATION_PLAN.md`. La puerta P0 multi-tenant está cerrada: existe Tenant, el esquema v23 migra y backfillea v22 de forma transaccional, las relaciones críticas impiden cruces entre tenants y DAOs, repositorios, búsqueda, dashboard, configuración, numeraciones FAC/RECT y backup quedan aislados por un `TenantContext` obligatorio. El cambio de contexto invalida los providers tenant-scoped y Configuración admite una identidad independiente por tenant. Antes de migrar una base v22 se crea y valida una copia SQLite de recuperación sin sobrescritura. No existen aún selector público, usuarios, roles, autenticación, cloud ni sincronización. La implementación de Fase 3 ha comenzado exclusivamente con 3-B; costes reales y 3-C continúan sin iniciar.
 
 La verificación final de P0 supera 241 pruebas, incluidas conservación v22 → v23 poblada y vacía, rollback por anomalía, contexto ausente, las 16 tablas empresariales, relaciones cross-tenant, cambio de contexto sin caché cruzada, configuración independiente, numeraciones FAC/RECT, concurrencia, búsqueda/dashboard y backup/restore con dos tenants. `flutter analyze --no-pub`, `git diff --check` y `flutter build windows --debug --no-pub` también superan.
 
@@ -75,4 +81,4 @@ Expediente/Obra es el octavo incremento y actúa como centro operativo. Su resum
 
 ## Próximo hito
 
-Tras aceptar y publicar este diseño, el siguiente incremento recomendado es **Fase 3-B — plan económico y categorías**: implementar schema v24, snapshots inmutables del presupuesto aceptado y migración legacy segura. No iniciar aún costes reales, mano de obra, UI económica, usuarios, selector multiempresa, cloud ni sincronización.
+Tras revisar y publicar 3-B, el siguiente incremento recomendado es **Fase 3-C — hechos de coste y Compras**, en una entrega independiente. No se ha iniciado todavía.

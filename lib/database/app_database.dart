@@ -23,6 +23,11 @@ import 'tables/timeline_events.dart';
 import 'tables/factura_asignaciones_presupuesto.dart';
 import 'tables/factura_documentos_emitidos.dart';
 import 'tables/movimientos_credito_cliente.dart';
+import 'tables/categorias_economicas.dart';
+import 'tables/configuracion_economica.dart';
+import 'tables/linea_presupuesto_costes_previstos.dart';
+import 'tables/planes_economicos.dart';
+import 'tables/plan_economico_partidas.dart';
 import 'dao/expedientes_dao.dart';
 import 'dao/clientes_dao.dart';
 import 'dao/presupuestos_dao.dart';
@@ -39,6 +44,7 @@ import 'dao/timeline_events_dao.dart';
 import 'dao/factura_asignaciones_presupuesto_dao.dart';
 import 'dao/factura_documentos_emitidos_dao.dart';
 import 'dao/movimientos_credito_cliente_dao.dart';
+import 'dao/economia_prevista_dao.dart';
 import 'pre_migration_recovery_service.dart';
 
 part 'app_database.g.dart';
@@ -62,6 +68,11 @@ part 'app_database.g.dart';
     FacturaAsignacionesPresupuesto,
     FacturaDocumentosEmitidos,
     MovimientosCreditoCliente,
+    CategoriasEconomicas,
+    ConfiguracionEconomica,
+    LineaPresupuestoCostesPrevistos,
+    PlanesEconomicos,
+    PlanEconomicoPartidas,
   ],
   daos: [
     ExpedientesDao,
@@ -80,6 +91,7 @@ part 'app_database.g.dart';
     FacturaAsignacionesPresupuestoDao,
     FacturaDocumentosEmitidosDao,
     MovimientosCreditoClienteDao,
+    EconomiaPrevistaDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -107,7 +119,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 23;
+  int get schemaVersion => 24;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -123,6 +135,7 @@ class AppDatabase extends _$AppDatabase {
         ),
       );
       await _crearIndicesMultiTenant();
+      await _inicializarEconomiaPorTenant(tenantId);
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
@@ -338,6 +351,18 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 23) {
         await _migrarMultiTenantV23(m);
+      }
+      if (from < 24) {
+        await m.createTable(categoriasEconomicas);
+        await m.createTable(configuracionEconomica);
+        await m.createTable(lineaPresupuestoCostesPrevistos);
+        await m.createTable(planesEconomicos);
+        await m.createTable(planEconomicoPartidas);
+        await _crearIndicesEconomicos();
+        final tenantsExistentes = await select(tenants).get();
+        for (final tenant in tenantsExistentes) {
+          await _inicializarEconomiaPorTenant(tenant.id);
+        }
       }
     },
     beforeOpen: (details) async {
@@ -594,6 +619,76 @@ class AppDatabase extends _$AppDatabase {
         await customStatement(statement);
       }
     }
+    await _crearIndicesEconomicos();
+  }
+
+  Future<void> _crearIndicesEconomicos() async {
+    final statements = <String, List<String>>{
+      'categorias_economicas': [
+        'CREATE UNIQUE INDEX IF NOT EXISTS categorias_economicas_tenant_id_id_unica ON categorias_economicas(tenant_id,id)',
+        'CREATE UNIQUE INDEX IF NOT EXISTS categorias_economicas_tenant_codigo_unica ON categorias_economicas(tenant_id,codigo)',
+        'CREATE INDEX IF NOT EXISTS categorias_economicas_tenant_activas_idx ON categorias_economicas(tenant_id,activa,orden)',
+      ],
+      'configuracion_economica': [
+        'CREATE UNIQUE INDEX IF NOT EXISTS configuracion_economica_tenant_unica ON configuracion_economica(tenant_id)',
+      ],
+      'linea_presupuesto_costes_previstos': [
+        'CREATE UNIQUE INDEX IF NOT EXISTS linea_costes_tenant_linea_unica ON linea_presupuesto_costes_previstos(tenant_id,linea_presupuesto_id)',
+        'CREATE INDEX IF NOT EXISTS linea_costes_tenant_categoria_idx ON linea_presupuesto_costes_previstos(tenant_id,categoria_economica_id)',
+      ],
+      'planes_economicos': [
+        'CREATE UNIQUE INDEX IF NOT EXISTS planes_tenant_presupuesto_unica ON planes_economicos(tenant_id,presupuesto_id)',
+        'CREATE INDEX IF NOT EXISTS planes_tenant_expediente_estado_idx ON planes_economicos(tenant_id,expediente_id,estado)',
+      ],
+      'plan_economico_partidas': [
+        'CREATE UNIQUE INDEX IF NOT EXISTS plan_partidas_tenant_plan_orden_unica ON plan_economico_partidas(tenant_id,plan_economico_id,orden)',
+        'CREATE INDEX IF NOT EXISTS plan_partidas_tenant_categoria_idx ON plan_economico_partidas(tenant_id,categoria_economica_id)',
+      ],
+    };
+    for (final entry in statements.entries) {
+      if (!await _existeTabla(entry.key)) continue;
+      for (final statement in entry.value) {
+        await customStatement(statement);
+      }
+    }
+  }
+
+  Future<void> _inicializarEconomiaPorTenant(String tenantId) async {
+    final ahora = DateTime.now().toUtc();
+    final categorias = <(String, String)>[
+      ('materiales', 'Materiales'),
+      ('mano_obra', 'Mano de obra'),
+      ('maquinaria', 'Maquinaria'),
+      ('subcontratas', 'Subcontratas'),
+      ('transporte', 'Transporte'),
+      ('alquileres', 'Alquileres'),
+      ('tasas_licencias', 'Tasas y licencias'),
+      ('residuos', 'Residuos y vertedero'),
+      ('otros_directos', 'Otros costes directos'),
+    ];
+    for (var i = 0; i < categorias.length; i++) {
+      await into(categoriasEconomicas).insert(
+        CategoriasEconomicasCompanion.insert(
+          tenantId: tenantId,
+          id: _uuid.v4(),
+          codigo: categorias[i].$1,
+          nombre: categorias[i].$2,
+          orden: Value(i),
+          fechaCreacion: ahora,
+          fechaModificacion: ahora,
+        ),
+        mode: InsertMode.insertOrIgnore,
+      );
+    }
+    await into(configuracionEconomica).insert(
+      ConfiguracionEconomicaCompanion.insert(
+        tenantId: tenantId,
+        id: _uuid.v4(),
+        fechaCreacion: ahora,
+        fechaModificacion: ahora,
+      ),
+      mode: InsertMode.insertOrIgnore,
+    );
   }
 
   Future<void> _crearIndicesCredito() async {
@@ -765,7 +860,7 @@ class AppDatabase extends _$AppDatabase {
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final file = await AppDatabase.defaultDatabaseFile();
-    await const PreMigrationRecoveryService().protectV22(file);
+    await const PreMigrationRecoveryService().protectBeforeUpgrade(file);
     return NativeDatabase(file);
   });
 }
