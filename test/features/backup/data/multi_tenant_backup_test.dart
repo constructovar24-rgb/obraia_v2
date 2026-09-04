@@ -11,7 +11,7 @@ const _tenantA = '00000000-0000-4000-8000-000000000023';
 const _tenantB = '00000000-0000-4000-8000-000000000024';
 
 void main() {
-  test('snapshot v25 conserva tenants y reabre cada ámbito', () async {
+  test('snapshot v26 conserva tenants y reabre cada ámbito', () async {
     final directory = await Directory.systemTemp.createTemp(
       'obraia-mt-backup-',
     );

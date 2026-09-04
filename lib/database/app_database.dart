@@ -29,6 +29,9 @@ import 'tables/linea_presupuesto_costes_previstos.dart';
 import 'tables/planes_economicos.dart';
 import 'tables/plan_economico_partidas.dart';
 import 'tables/hechos_coste.dart';
+import 'tables/personas_laborales.dart';
+import 'tables/tarifas_persona.dart';
+import 'tables/partes_trabajo.dart';
 import 'dao/expedientes_dao.dart';
 import 'dao/clientes_dao.dart';
 import 'dao/presupuestos_dao.dart';
@@ -47,6 +50,7 @@ import 'dao/factura_documentos_emitidos_dao.dart';
 import 'dao/movimientos_credito_cliente_dao.dart';
 import 'dao/economia_prevista_dao.dart';
 import 'dao/hechos_coste_dao.dart';
+import 'dao/mano_obra_dao.dart';
 import 'pre_migration_recovery_service.dart';
 
 part 'app_database.g.dart';
@@ -76,6 +80,9 @@ part 'app_database.g.dart';
     PlanesEconomicos,
     PlanEconomicoPartidas,
     HechosCoste,
+    PersonasLaborales,
+    TarifasPersona,
+    PartesTrabajo,
   ],
   daos: [
     ExpedientesDao,
@@ -96,6 +103,7 @@ part 'app_database.g.dart';
     MovimientosCreditoClienteDao,
     EconomiaPrevistaDao,
     HechosCosteDao,
+    ManoObraDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -123,7 +131,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 25;
+  int get schemaVersion => 26;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -377,6 +385,12 @@ class AppDatabase extends _$AppDatabase {
           await m.createTable(hechosCoste);
         }
         await _crearIndicesHechosCoste();
+      }
+      if (from < 26) {
+        await m.createTable(personasLaborales);
+        await m.createTable(tarifasPersona);
+        await m.createTable(partesTrabajo);
+        await _crearIndicesManoObra();
       }
     },
     beforeOpen: (details) async {
@@ -641,6 +655,24 @@ class AppDatabase extends _$AppDatabase {
     }
     await _crearIndicesEconomicos();
     await _crearIndicesHechosCoste();
+    await _crearIndicesManoObra();
+  }
+
+  Future<void> _crearIndicesManoObra() async {
+    if (!await _existeTabla('personas_laborales')) return;
+    for (final statement in <String>[
+      'CREATE UNIQUE INDEX IF NOT EXISTS personas_laborales_tenant_id_id_unica ON personas_laborales(tenant_id,id)',
+      'CREATE INDEX IF NOT EXISTS personas_laborales_tenant_activa_idx ON personas_laborales(tenant_id,activa,nombre)',
+      'CREATE UNIQUE INDEX IF NOT EXISTS tarifas_persona_tenant_id_id_unica ON tarifas_persona(tenant_id,id)',
+      'CREATE INDEX IF NOT EXISTS tarifas_persona_tenant_persona_vigencia_idx ON tarifas_persona(tenant_id,persona_id,vigente_desde,vigente_hasta)',
+      'CREATE UNIQUE INDEX IF NOT EXISTS partes_trabajo_tenant_id_id_unica ON partes_trabajo(tenant_id,id)',
+      'CREATE UNIQUE INDEX IF NOT EXISTS plan_partidas_tenant_plan_id_unica ON plan_economico_partidas(tenant_id,plan_economico_id,id)',
+      'CREATE INDEX IF NOT EXISTS partes_trabajo_tenant_obra_fecha_idx ON partes_trabajo(tenant_id,expediente_id,fecha_trabajo)',
+      'CREATE INDEX IF NOT EXISTS partes_trabajo_tenant_persona_fecha_idx ON partes_trabajo(tenant_id,persona_id,fecha_trabajo)',
+      'CREATE INDEX IF NOT EXISTS partes_trabajo_tenant_partida_idx ON partes_trabajo(tenant_id,plan_economico_partida_id)',
+    ]) {
+      await customStatement(statement);
+    }
   }
 
   Future<void> _crearIndicesHechosCoste() async {
@@ -897,7 +929,7 @@ LazyDatabase _openConnection() {
     final file = await AppDatabase.defaultDatabaseFile();
     await const PreMigrationRecoveryService().protectBeforeUpgrade(
       file,
-      supportedVersions: {22, 23, 24},
+      supportedVersions: {22, 23, 24, 25},
     );
     return NativeDatabase(file);
   });

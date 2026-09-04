@@ -9,7 +9,7 @@ import 'package:sqlite3/sqlite3.dart';
 const _tenantId = '00000000-0000-4000-8000-000000000023';
 
 void main() {
-  test('migra v23 a v25 sin inventar planes ni costes legacy', () async {
+  test('migra v23 a v26 sin inventar planes ni costes legacy', () async {
     final directory = await Directory.systemTemp.createTemp('obraia-v23-v24-');
     addTearDown(() => directory.delete(recursive: true));
     final file = File(p.join(directory.path, 'obraia.sqlite'));
@@ -22,7 +22,7 @@ void main() {
     addTearDown(database.close);
     await database.ensureReady();
 
-    expect(database.schemaVersion, 25);
+    expect(database.schemaVersion, 26);
     expect(
       await database.select(database.categoriasEconomicas).get(),
       hasLength(9),

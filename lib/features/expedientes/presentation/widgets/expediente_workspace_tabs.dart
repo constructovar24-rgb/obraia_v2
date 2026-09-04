@@ -7,6 +7,7 @@ class ExpedienteWorkspaceTabs extends StatelessWidget {
     'Resumen',
     'Presupuestos',
     'Compras',
+    'Mano de obra',
     'Certificaciones',
     'Facturas',
     'Documentos',

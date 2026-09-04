@@ -27,6 +27,7 @@ import '../../../documentos/presentation/screens/editar_documento_screen.dart';
 import '../../../documentos/presentation/screens/nuevo_documento_screen.dart';
 import '../../../facturas/presentation/widgets/facturas_tab.dart';
 import '../../../compras/presentation/widgets/compras_tab.dart';
+import '../../../mano_obra/presentation/widgets/mano_obra_tab.dart';
 import '../../../timeline/presentation/timeline_page.dart';
 import '../widgets/expediente_resumen_tab.dart';
 import 'cliente_tab.dart';
@@ -171,6 +172,7 @@ class ExpedienteDetailScreen extends ConsumerWidget {
                     ExpedienteResumenTab(expedienteId: id),
                     PresupuestosTab(expedienteId: id),
                     ComprasTab(expedienteId: id),
+                    ManoObraTab(expedienteId: id),
                     _CertificacionesTab(expedienteId: id),
                     FacturasTab(expedienteId: id),
                     _DocumentosTab(expedienteId: id),

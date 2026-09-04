@@ -30,6 +30,9 @@ const businessTables = <String>[
   'factura_asignaciones_presupuesto',
   'factura_documentos_emitidos',
   'movimientos_credito_cliente',
+  'personas_laborales',
+  'tarifas_persona',
+  'partes_trabajo',
 ];
 
 void main() {
@@ -56,7 +59,7 @@ void main() {
   tearDown(() => database.close());
 
   test(
-    'las 16 tablas tienen tenant obligatorio, FK e índice tenant-first',
+    'las tablas empresariales tienen tenant obligatorio, FK e índice tenant-first',
     () async {
       for (final table in businessTables) {
         final columns = await database

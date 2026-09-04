@@ -100,3 +100,11 @@ Este documento está preparado para registrar decisiones arquitectónicas, tecno
 - 2026-08-30: Toda disposición valida céntimos disponibles dentro de la misma transacción. Cobros, reversiones y cambios RECT se bloquean cuando dejarían crédito dispuesto sin respaldo.
 - 2026-08-30: Ningún movimiento económico confirmado se edita o elimina en el flujo ordinario; las correcciones se representan mediante reversiones vinculadas y parcialmente acumulables.
 - 2026-08-30: Selector y confirmación de compensaciones usan una única identidad fiscal conservadora: mismo cliente estructural y NIF histórico congelado, no vacío y coincidente tras normalizar formato. Una factura legacy sin NIF histórico no es elegible y no se modifica automáticamente.
+
+## Mano de obra económica
+
+- 2026-09-04: Una persona laboral representa únicamente tiempo imputable económicamente; titular/autónomo, empleado y colaborador interno no se confunden con proveedores ni activan nómina, pago o tesorería.
+- 2026-09-04: La tarifa interna es coste por hora, nunca precio de venta. Sus intervalos son inclusivos y no pueden solaparse para una misma persona.
+- 2026-09-04: El parte congela la tarifa aplicable a la fecha trabajada y redondea una sola vez a céntimos. Cambios posteriores de tarifa no reescriben el pasado.
+- 2026-09-04: Las horas sin tarifa se conservan como pendientes sin hecho económico. La valoración posterior crea el alta en el ledger; nunca se inventa coste cero.
+- 2026-09-04: Un parte valorado no se corrige sobrescribiendo magnitudes económicas: se revierte mediante contramovimiento y se registra un parte de reemplazo.

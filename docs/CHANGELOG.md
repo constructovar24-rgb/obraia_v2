@@ -2,6 +2,16 @@
 
 ## No publicado
 
+### Mano de obra y tarifas históricas — Fase 3-D
+
+- Añadidas personas económicas internas tenant-scoped para titular/autónomo, empleados y colaboradores, sin introducir nóminas ni RRHH completo.
+- Incorporado historial no solapado de tarifas internas de coste por hora; cada parte valorado congela tarifa y coste según la fecha trabajada.
+- Las horas sin tarifa quedan pendientes de valorar y se distinguen de un coste explícito de cero.
+- Cada parte valorado genera un único hecho canónico de coste y Timeline en la misma transacción; la reversión añade un contramovimiento y conserva el histórico.
+- Añadidos agregados de horas, coste por persona/partida, coste sin partida y cobertura completa, parcial o sin valorar.
+- Elevado Drift a schema v26 con migración v25 → v26, backup preventivo, relaciones compuestas e índices tenant-first, sin fabricar historia legacy.
+- Incorporada una pestaña mínima de Mano de obra en el Expediente para gestionar personas/tarifas y registrar, valorar o revertir partes.
+
 ### Hechos canónicos de coste y Compras — Fase 3-C
 
 - Añadido el ledger tenant-scoped `hechos_coste` con importes en céntimos, origen idempotente, categoría y vínculos opcionales al plan económico.

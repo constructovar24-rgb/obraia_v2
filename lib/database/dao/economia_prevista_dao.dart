@@ -39,6 +39,12 @@ class EconomiaPrevistaDao extends DatabaseAccessor<AppDatabase>
             ..where((t) => t.tenantId.equals(_tenantId) & t.id.equals(id)))
           .getSingleOrNull();
 
+  Future<CategoriasEconomica?> obtenerCategoriaPorCodigo(String codigo) =>
+      (select(categoriasEconomicas)..where(
+            (t) => t.tenantId.equals(_tenantId) & t.codigo.equals(codigo),
+          ))
+          .getSingleOrNull();
+
   Future<void> insertarCategoria(CategoriasEconomicasCompanion value) => into(
     categoriasEconomicas,
   ).insert(value.copyWith(tenantId: Value(_tenantId)));
@@ -104,6 +110,17 @@ class EconomiaPrevistaDao extends DatabaseAccessor<AppDatabase>
                 t.tenantId.equals(_tenantId) &
                 t.presupuestoId.equals(presupuestoId),
           ))
+          .getSingleOrNull();
+
+  Future<PlanesEconomico?> obtenerPlanPorExpediente(String expedienteId) =>
+      (select(planesEconomicos)
+            ..where(
+              (t) =>
+                  t.tenantId.equals(_tenantId) &
+                  t.expedienteId.equals(expedienteId),
+            )
+            ..orderBy([(t) => OrderingTerm.desc(t.fechaAceptacion)])
+            ..limit(1))
           .getSingleOrNull();
 
   Stream<PlanesEconomico?> observarPlanPorPresupuesto(String presupuestoId) =>

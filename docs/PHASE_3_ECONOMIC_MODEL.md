@@ -1,6 +1,6 @@
 # Fase 3-A — Modelo económico y rentabilidad por obra
 
-Estado: **Fase 3-A cerrada; 3-B y 3-C implementadas técnicamente**. Fecha de actualización: 4 de septiembre de 2026. El esquema vigente es v25 y las reglas fiscales existentes permanecen separadas.
+Estado: **Fase 3-A cerrada; 3-B, 3-C y 3-D implementadas técnicamente**. Fecha de actualización: 4 de septiembre de 2026. El esquema vigente es v26 y las reglas fiscales existentes permanecen separadas.
 
 ## 1. Principios y lenguaje oficial
 
@@ -341,7 +341,13 @@ Implementada técnicamente sobre schema v24. El coste previsto editable se conse
 
 ### Estado de 3-C
 
-Implementada técnicamente sobre schema v25. `hechos_coste` es la fuente canónica append-only: cada movimiento conserva tenant, obra, categoría opcional, devengo, neto, IVA no recuperable explícito, coste, origen, idempotencia y vínculos opcionales al plan/partida. Las Compras nacen y migran como provisionales; sus estados manuales no generan coste. Confirmación, clasificación y Timeline son atómicos. Reversión y eliminación añaden contramovimientos, los ajustes se registran como hechos nuevos y la edición económica histórica queda bloqueada. Los agregados suman únicamente el ledger por obra/categoría/sin asignar. No se han iniciado mano de obra ni Fase 3-D.
+Implementada técnicamente sobre schema v25. `hechos_coste` es la fuente canónica append-only: cada movimiento conserva tenant, obra, categoría opcional, devengo, neto, IVA no recuperable explícito, coste, origen, idempotencia y vínculos opcionales al plan/partida. Las Compras nacen y migran como provisionales; sus estados manuales no generan coste. Confirmación, clasificación y Timeline son atómicos. Reversión y eliminación añaden contramovimientos, los ajustes se registran como hechos nuevos y la edición económica histórica queda bloqueada. Los agregados suman únicamente el ledger por obra/categoría/sin asignar. Este incremento no incorporó mano de obra, que se añadió posteriormente en 3-D.
+
+### Estado de 3-D
+
+Implementada técnicamente sobre schema v26. `personas_laborales` delimita personas internas imputables sin convertirse en un modelo de RRHH; `tarifas_persona` conserva intervalos históricos tenant-scoped y `partes_trabajo` registra horas con precisión de diezmilésimas. La fecha del trabajo selecciona la tarifa y el parte congela tarifa y coste. El cálculo usa enteros y redondeo determinista a céntimos.
+
+Un parte sin tarifa conserva horas y cobertura pendiente, pero no crea `hechos_coste`. La valoración posterior crea el alta con origen `parteTrabajo`; la reversión crea el contramovimiento y el parte original permanece auditable. Una corrección económica es reversión más parte nuevo. Alta valorada, valoración posterior y reversión coordinan parte, ledger y Timeline transaccionalmente. Los agregados ofrecen horas/coste por obra y persona, coste por partida y sin partida, y cobertura completa, parcial o sin valorar. No se modifican venta, PDFs comerciales, nóminas, pagos ni tesorería. Fase 3-E no se ha iniciado.
 
 ## 23. Matriz de pruebas futura
 

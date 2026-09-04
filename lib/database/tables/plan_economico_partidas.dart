@@ -28,6 +28,7 @@ class PlanEconomicoPartidas extends Table {
   @override
   List<Set<Column>> get uniqueKeys => [
     {tenantId, id},
+    {tenantId, planEconomicoId, id},
     {tenantId, planEconomicoId, orden},
   ];
   @override

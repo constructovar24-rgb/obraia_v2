@@ -76,7 +76,7 @@ La auditoría completa, prioridades P0–P3 y roadmap revisado están en `MULTI_
 
 **Prerequisito:** completar la puerta P0 multi-tenant. Un presupuesto aceptado será el plan económico versionado de la obra y todos los costes, tarifas, márgenes, históricos y métricas pertenecerán al tenant activo.
 
-**Estado:** Fase 3-A y 3-B están cerradas; Fase 3-C está implementada técnicamente sobre schema v25. El coste real procede exclusivamente del ledger canónico `hechos_coste`: las Compras requieren clasificación explícita, el origen es idempotente y las reversiones/ajustes conservan historia. Ninguna Compra legacy se devenga automáticamente. Fase 3-D no se ha iniciado.
+**Estado:** Fases 3-A, 3-B y 3-C están cerradas; Fase 3-D está implementada técnicamente sobre schema v26. El coste real procede exclusivamente del ledger canónico `hechos_coste`: Compras y partes de trabajo usan orígenes idempotentes y reversiones append-only. Personas, tarifas históricas, partes y agregados laborales permanecen aislados por tenant. Las horas sin tarifa no se convierten en coste cero. Fase 3-E no se ha iniciado.
 
 **Secuencia:** 3-B plan económico/categorías y v24; 3-C hechos de coste/Compras; 3-D mano de obra; 3-E compromisos/estimaciones y motor de desviación; 3-F centro económico del Expediente; 3-G cierres, alertas e histórico.
 

@@ -49,9 +49,9 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      const MaterialApp(
+      MaterialApp(
         home: DefaultTabController(
-          length: 9,
+          length: ExpedienteWorkspaceTabs.length,
           child: Scaffold(body: ExpedienteWorkspaceTabs()),
         ),
       ),

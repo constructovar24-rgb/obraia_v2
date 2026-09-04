@@ -27,6 +27,9 @@ enum TimelineEventType {
   compraCosteConfirmado,
   compraCosteRevertido,
   compraCosteAjustado,
+  horasTrabajoRegistradas,
+  costeLaboralConfirmado,
+  parteTrabajoRevertido,
 }
 
 enum TimelineCreditoTipo {

@@ -144,5 +144,11 @@ String timelineEventTypeLabel(TimelineEventType tipo) {
       return 'Coste de compra revertido';
     case TimelineEventType.compraCosteAjustado:
       return 'Coste de compra ajustado';
+    case TimelineEventType.horasTrabajoRegistradas:
+      return 'Horas registradas';
+    case TimelineEventType.costeLaboralConfirmado:
+      return 'Coste laboral confirmado';
+    case TimelineEventType.parteTrabajoRevertido:
+      return 'Parte de trabajo revertido';
   }
 }
