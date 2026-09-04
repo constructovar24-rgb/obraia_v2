@@ -1,8 +1,6 @@
-enum CompraEstado {
-  pendiente,
-  pagada,
-  anulada,
-}
+enum CompraEstado { pendiente, pagada, anulada }
+
+enum CompraClasificacionEconomica { provisional, incurrido, anulada }
 
 class Compra {
   final String id;
@@ -16,6 +14,7 @@ class Compra {
   final double ivaPorcentaje;
   final double importeTotal;
   final CompraEstado estado;
+  final CompraClasificacionEconomica clasificacionEconomica;
   final String? observaciones;
 
   const Compra({
@@ -30,6 +29,7 @@ class Compra {
     required this.ivaPorcentaje,
     required this.importeTotal,
     required this.estado,
+    this.clasificacionEconomica = CompraClasificacionEconomica.provisional,
     this.observaciones,
   });
 }

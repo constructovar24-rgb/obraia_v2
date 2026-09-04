@@ -19,6 +19,9 @@ extension CompraDataMapper on CompraData {
       ivaPorcentaje: ivaPorcentaje,
       importeTotal: importeTotal,
       estado: CompraEstado.values.byName(estado),
+      clasificacionEconomica: CompraClasificacionEconomica.values.byName(
+        clasificacionEconomica,
+      ),
       observaciones: observaciones,
     );
   }
@@ -38,6 +41,7 @@ extension CompraMapper on Compra {
       ivaPorcentaje: Value(ivaPorcentaje),
       importeTotal: Value(importeTotal),
       estado: Value(estado.name),
+      clasificacionEconomica: Value(clasificacionEconomica.name),
       observaciones: Value(observaciones),
     );
   }

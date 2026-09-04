@@ -9196,6 +9196,18 @@ class $ComprasTable extends Compras with TableInfo<$ComprasTable, Compra> {
     requiredDuringInsert: false,
     defaultValue: const Constant(''),
   );
+  static const VerificationMeta _clasificacionEconomicaMeta =
+      const VerificationMeta('clasificacionEconomica');
+  @override
+  late final GeneratedColumn<String> clasificacionEconomica =
+      GeneratedColumn<String>(
+        'clasificacion_economica',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('provisional'),
+      );
   static const VerificationMeta _observacionesMeta = const VerificationMeta(
     'observaciones',
   );
@@ -9262,6 +9274,7 @@ class $ComprasTable extends Compras with TableInfo<$ComprasTable, Compra> {
     ivaPorcentaje,
     importeTotal,
     estado,
+    clasificacionEconomica,
     observaciones,
     eliminado,
     fechaCreacion,
@@ -9373,6 +9386,15 @@ class $ComprasTable extends Compras with TableInfo<$ComprasTable, Compra> {
         estado.isAcceptableOrUnknown(data['estado']!, _estadoMeta),
       );
     }
+    if (data.containsKey('clasificacion_economica')) {
+      context.handle(
+        _clasificacionEconomicaMeta,
+        clasificacionEconomica.isAcceptableOrUnknown(
+          data['clasificacion_economica']!,
+          _clasificacionEconomicaMeta,
+        ),
+      );
+    }
     if (data.containsKey('observaciones')) {
       context.handle(
         _observacionesMeta,
@@ -9467,6 +9489,10 @@ class $ComprasTable extends Compras with TableInfo<$ComprasTable, Compra> {
         DriftSqlType.string,
         data['${effectivePrefix}estado'],
       )!,
+      clasificacionEconomica: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}clasificacion_economica'],
+      )!,
       observaciones: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}observaciones'],
@@ -9505,6 +9531,7 @@ class Compra extends DataClass implements Insertable<Compra> {
   final double ivaPorcentaje;
   final double importeTotal;
   final String estado;
+  final String clasificacionEconomica;
   final String? observaciones;
   final bool eliminado;
   final DateTime fechaCreacion;
@@ -9522,6 +9549,7 @@ class Compra extends DataClass implements Insertable<Compra> {
     required this.ivaPorcentaje,
     required this.importeTotal,
     required this.estado,
+    required this.clasificacionEconomica,
     this.observaciones,
     required this.eliminado,
     required this.fechaCreacion,
@@ -9546,6 +9574,7 @@ class Compra extends DataClass implements Insertable<Compra> {
     map['iva_porcentaje'] = Variable<double>(ivaPorcentaje);
     map['importe_total'] = Variable<double>(importeTotal);
     map['estado'] = Variable<String>(estado);
+    map['clasificacion_economica'] = Variable<String>(clasificacionEconomica);
     if (!nullToAbsent || observaciones != null) {
       map['observaciones'] = Variable<String>(observaciones);
     }
@@ -9573,6 +9602,7 @@ class Compra extends DataClass implements Insertable<Compra> {
       ivaPorcentaje: Value(ivaPorcentaje),
       importeTotal: Value(importeTotal),
       estado: Value(estado),
+      clasificacionEconomica: Value(clasificacionEconomica),
       observaciones: observaciones == null && nullToAbsent
           ? const Value.absent()
           : Value(observaciones),
@@ -9600,6 +9630,9 @@ class Compra extends DataClass implements Insertable<Compra> {
       ivaPorcentaje: serializer.fromJson<double>(json['ivaPorcentaje']),
       importeTotal: serializer.fromJson<double>(json['importeTotal']),
       estado: serializer.fromJson<String>(json['estado']),
+      clasificacionEconomica: serializer.fromJson<String>(
+        json['clasificacionEconomica'],
+      ),
       observaciones: serializer.fromJson<String?>(json['observaciones']),
       eliminado: serializer.fromJson<bool>(json['eliminado']),
       fechaCreacion: serializer.fromJson<DateTime>(json['fechaCreacion']),
@@ -9624,6 +9657,9 @@ class Compra extends DataClass implements Insertable<Compra> {
       'ivaPorcentaje': serializer.toJson<double>(ivaPorcentaje),
       'importeTotal': serializer.toJson<double>(importeTotal),
       'estado': serializer.toJson<String>(estado),
+      'clasificacionEconomica': serializer.toJson<String>(
+        clasificacionEconomica,
+      ),
       'observaciones': serializer.toJson<String?>(observaciones),
       'eliminado': serializer.toJson<bool>(eliminado),
       'fechaCreacion': serializer.toJson<DateTime>(fechaCreacion),
@@ -9644,6 +9680,7 @@ class Compra extends DataClass implements Insertable<Compra> {
     double? ivaPorcentaje,
     double? importeTotal,
     String? estado,
+    String? clasificacionEconomica,
     Value<String?> observaciones = const Value.absent(),
     bool? eliminado,
     DateTime? fechaCreacion,
@@ -9663,6 +9700,8 @@ class Compra extends DataClass implements Insertable<Compra> {
     ivaPorcentaje: ivaPorcentaje ?? this.ivaPorcentaje,
     importeTotal: importeTotal ?? this.importeTotal,
     estado: estado ?? this.estado,
+    clasificacionEconomica:
+        clasificacionEconomica ?? this.clasificacionEconomica,
     observaciones: observaciones.present
         ? observaciones.value
         : this.observaciones,
@@ -9698,6 +9737,9 @@ class Compra extends DataClass implements Insertable<Compra> {
           ? data.importeTotal.value
           : this.importeTotal,
       estado: data.estado.present ? data.estado.value : this.estado,
+      clasificacionEconomica: data.clasificacionEconomica.present
+          ? data.clasificacionEconomica.value
+          : this.clasificacionEconomica,
       observaciones: data.observaciones.present
           ? data.observaciones.value
           : this.observaciones,
@@ -9726,6 +9768,7 @@ class Compra extends DataClass implements Insertable<Compra> {
           ..write('ivaPorcentaje: $ivaPorcentaje, ')
           ..write('importeTotal: $importeTotal, ')
           ..write('estado: $estado, ')
+          ..write('clasificacionEconomica: $clasificacionEconomica, ')
           ..write('observaciones: $observaciones, ')
           ..write('eliminado: $eliminado, ')
           ..write('fechaCreacion: $fechaCreacion, ')
@@ -9748,6 +9791,7 @@ class Compra extends DataClass implements Insertable<Compra> {
     ivaPorcentaje,
     importeTotal,
     estado,
+    clasificacionEconomica,
     observaciones,
     eliminado,
     fechaCreacion,
@@ -9769,6 +9813,7 @@ class Compra extends DataClass implements Insertable<Compra> {
           other.ivaPorcentaje == this.ivaPorcentaje &&
           other.importeTotal == this.importeTotal &&
           other.estado == this.estado &&
+          other.clasificacionEconomica == this.clasificacionEconomica &&
           other.observaciones == this.observaciones &&
           other.eliminado == this.eliminado &&
           other.fechaCreacion == this.fechaCreacion &&
@@ -9788,6 +9833,7 @@ class ComprasCompanion extends UpdateCompanion<Compra> {
   final Value<double> ivaPorcentaje;
   final Value<double> importeTotal;
   final Value<String> estado;
+  final Value<String> clasificacionEconomica;
   final Value<String?> observaciones;
   final Value<bool> eliminado;
   final Value<DateTime> fechaCreacion;
@@ -9806,6 +9852,7 @@ class ComprasCompanion extends UpdateCompanion<Compra> {
     this.ivaPorcentaje = const Value.absent(),
     this.importeTotal = const Value.absent(),
     this.estado = const Value.absent(),
+    this.clasificacionEconomica = const Value.absent(),
     this.observaciones = const Value.absent(),
     this.eliminado = const Value.absent(),
     this.fechaCreacion = const Value.absent(),
@@ -9825,6 +9872,7 @@ class ComprasCompanion extends UpdateCompanion<Compra> {
     this.ivaPorcentaje = const Value.absent(),
     this.importeTotal = const Value.absent(),
     this.estado = const Value.absent(),
+    this.clasificacionEconomica = const Value.absent(),
     this.observaciones = const Value.absent(),
     this.eliminado = const Value.absent(),
     this.fechaCreacion = const Value.absent(),
@@ -9845,6 +9893,7 @@ class ComprasCompanion extends UpdateCompanion<Compra> {
     Expression<double>? ivaPorcentaje,
     Expression<double>? importeTotal,
     Expression<String>? estado,
+    Expression<String>? clasificacionEconomica,
     Expression<String>? observaciones,
     Expression<bool>? eliminado,
     Expression<DateTime>? fechaCreacion,
@@ -9864,6 +9913,8 @@ class ComprasCompanion extends UpdateCompanion<Compra> {
       if (ivaPorcentaje != null) 'iva_porcentaje': ivaPorcentaje,
       if (importeTotal != null) 'importe_total': importeTotal,
       if (estado != null) 'estado': estado,
+      if (clasificacionEconomica != null)
+        'clasificacion_economica': clasificacionEconomica,
       if (observaciones != null) 'observaciones': observaciones,
       if (eliminado != null) 'eliminado': eliminado,
       if (fechaCreacion != null) 'fecha_creacion': fechaCreacion,
@@ -9885,6 +9936,7 @@ class ComprasCompanion extends UpdateCompanion<Compra> {
     Value<double>? ivaPorcentaje,
     Value<double>? importeTotal,
     Value<String>? estado,
+    Value<String>? clasificacionEconomica,
     Value<String?>? observaciones,
     Value<bool>? eliminado,
     Value<DateTime>? fechaCreacion,
@@ -9904,6 +9956,8 @@ class ComprasCompanion extends UpdateCompanion<Compra> {
       ivaPorcentaje: ivaPorcentaje ?? this.ivaPorcentaje,
       importeTotal: importeTotal ?? this.importeTotal,
       estado: estado ?? this.estado,
+      clasificacionEconomica:
+          clasificacionEconomica ?? this.clasificacionEconomica,
       observaciones: observaciones ?? this.observaciones,
       eliminado: eliminado ?? this.eliminado,
       fechaCreacion: fechaCreacion ?? this.fechaCreacion,
@@ -9951,6 +10005,11 @@ class ComprasCompanion extends UpdateCompanion<Compra> {
     if (estado.present) {
       map['estado'] = Variable<String>(estado.value);
     }
+    if (clasificacionEconomica.present) {
+      map['clasificacion_economica'] = Variable<String>(
+        clasificacionEconomica.value,
+      );
+    }
     if (observaciones.present) {
       map['observaciones'] = Variable<String>(observaciones.value);
     }
@@ -9984,6 +10043,7 @@ class ComprasCompanion extends UpdateCompanion<Compra> {
           ..write('ivaPorcentaje: $ivaPorcentaje, ')
           ..write('importeTotal: $importeTotal, ')
           ..write('estado: $estado, ')
+          ..write('clasificacionEconomica: $clasificacionEconomica, ')
           ..write('observaciones: $observaciones, ')
           ..write('eliminado: $eliminado, ')
           ..write('fechaCreacion: $fechaCreacion, ')
@@ -17690,6 +17750,1069 @@ class PlanEconomicoPartidasCompanion
   }
 }
 
+class $HechosCosteTable extends HechosCoste
+    with TableInfo<$HechosCosteTable, HechosCosteData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HechosCosteTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _expedienteIdMeta = const VerificationMeta(
+    'expedienteId',
+  );
+  @override
+  late final GeneratedColumn<String> expedienteId = GeneratedColumn<String>(
+    'expediente_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _categoriaEconomicaIdMeta =
+      const VerificationMeta('categoriaEconomicaId');
+  @override
+  late final GeneratedColumn<String> categoriaEconomicaId =
+      GeneratedColumn<String>(
+        'categoria_economica_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _planEconomicoIdMeta = const VerificationMeta(
+    'planEconomicoId',
+  );
+  @override
+  late final GeneratedColumn<String> planEconomicoId = GeneratedColumn<String>(
+    'plan_economico_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _planEconomicoPartidaIdMeta =
+      const VerificationMeta('planEconomicoPartidaId');
+  @override
+  late final GeneratedColumn<String> planEconomicoPartidaId =
+      GeneratedColumn<String>(
+        'plan_economico_partida_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _fechaDevengoMeta = const VerificationMeta(
+    'fechaDevengo',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaDevengo = GeneratedColumn<DateTime>(
+    'fecha_devengo',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _importeNetoCentimosMeta =
+      const VerificationMeta('importeNetoCentimos');
+  @override
+  late final GeneratedColumn<int> importeNetoCentimos = GeneratedColumn<int>(
+    'importe_neto_centimos',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ivaNoRecuperableCentimosMeta =
+      const VerificationMeta('ivaNoRecuperableCentimos');
+  @override
+  late final GeneratedColumn<int> ivaNoRecuperableCentimos =
+      GeneratedColumn<int>(
+        'iva_no_recuperable_centimos',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _importeCosteCentimosMeta =
+      const VerificationMeta('importeCosteCentimos');
+  @override
+  late final GeneratedColumn<int> importeCosteCentimos = GeneratedColumn<int>(
+    'importe_coste_centimos',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descripcionMeta = const VerificationMeta(
+    'descripcion',
+  );
+  @override
+  late final GeneratedColumn<String> descripcion = GeneratedColumn<String>(
+    'descripcion',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _origenTipoMeta = const VerificationMeta(
+    'origenTipo',
+  );
+  @override
+  late final GeneratedColumn<String> origenTipo = GeneratedColumn<String>(
+    'origen_tipo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _origenIdMeta = const VerificationMeta(
+    'origenId',
+  );
+  @override
+  late final GeneratedColumn<String> origenId = GeneratedColumn<String>(
+    'origen_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _tipoMovimientoMeta = const VerificationMeta(
+    'tipoMovimiento',
+  );
+  @override
+  late final GeneratedColumn<String> tipoMovimiento = GeneratedColumn<String>(
+    'tipo_movimiento',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _hechoRevertidoIdMeta = const VerificationMeta(
+    'hechoRevertidoId',
+  );
+  @override
+  late final GeneratedColumn<String> hechoRevertidoId = GeneratedColumn<String>(
+    'hecho_revertido_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _claveIdempotenciaMeta = const VerificationMeta(
+    'claveIdempotencia',
+  );
+  @override
+  late final GeneratedColumn<String> claveIdempotencia =
+      GeneratedColumn<String>(
+        'clave_idempotencia',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _fechaCreacionMeta = const VerificationMeta(
+    'fechaCreacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaCreacion =
+      GeneratedColumn<DateTime>(
+        'fecha_creacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    id,
+    expedienteId,
+    categoriaEconomicaId,
+    planEconomicoId,
+    planEconomicoPartidaId,
+    fechaDevengo,
+    importeNetoCentimos,
+    ivaNoRecuperableCentimos,
+    importeCosteCentimos,
+    descripcion,
+    origenTipo,
+    origenId,
+    tipoMovimiento,
+    hechoRevertidoId,
+    claveIdempotencia,
+    fechaCreacion,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'hechos_coste';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<HechosCosteData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('expediente_id')) {
+      context.handle(
+        _expedienteIdMeta,
+        expedienteId.isAcceptableOrUnknown(
+          data['expediente_id']!,
+          _expedienteIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_expedienteIdMeta);
+    }
+    if (data.containsKey('categoria_economica_id')) {
+      context.handle(
+        _categoriaEconomicaIdMeta,
+        categoriaEconomicaId.isAcceptableOrUnknown(
+          data['categoria_economica_id']!,
+          _categoriaEconomicaIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('plan_economico_id')) {
+      context.handle(
+        _planEconomicoIdMeta,
+        planEconomicoId.isAcceptableOrUnknown(
+          data['plan_economico_id']!,
+          _planEconomicoIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('plan_economico_partida_id')) {
+      context.handle(
+        _planEconomicoPartidaIdMeta,
+        planEconomicoPartidaId.isAcceptableOrUnknown(
+          data['plan_economico_partida_id']!,
+          _planEconomicoPartidaIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('fecha_devengo')) {
+      context.handle(
+        _fechaDevengoMeta,
+        fechaDevengo.isAcceptableOrUnknown(
+          data['fecha_devengo']!,
+          _fechaDevengoMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaDevengoMeta);
+    }
+    if (data.containsKey('importe_neto_centimos')) {
+      context.handle(
+        _importeNetoCentimosMeta,
+        importeNetoCentimos.isAcceptableOrUnknown(
+          data['importe_neto_centimos']!,
+          _importeNetoCentimosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_importeNetoCentimosMeta);
+    }
+    if (data.containsKey('iva_no_recuperable_centimos')) {
+      context.handle(
+        _ivaNoRecuperableCentimosMeta,
+        ivaNoRecuperableCentimos.isAcceptableOrUnknown(
+          data['iva_no_recuperable_centimos']!,
+          _ivaNoRecuperableCentimosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_ivaNoRecuperableCentimosMeta);
+    }
+    if (data.containsKey('importe_coste_centimos')) {
+      context.handle(
+        _importeCosteCentimosMeta,
+        importeCosteCentimos.isAcceptableOrUnknown(
+          data['importe_coste_centimos']!,
+          _importeCosteCentimosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_importeCosteCentimosMeta);
+    }
+    if (data.containsKey('descripcion')) {
+      context.handle(
+        _descripcionMeta,
+        descripcion.isAcceptableOrUnknown(
+          data['descripcion']!,
+          _descripcionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_descripcionMeta);
+    }
+    if (data.containsKey('origen_tipo')) {
+      context.handle(
+        _origenTipoMeta,
+        origenTipo.isAcceptableOrUnknown(data['origen_tipo']!, _origenTipoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_origenTipoMeta);
+    }
+    if (data.containsKey('origen_id')) {
+      context.handle(
+        _origenIdMeta,
+        origenId.isAcceptableOrUnknown(data['origen_id']!, _origenIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_origenIdMeta);
+    }
+    if (data.containsKey('tipo_movimiento')) {
+      context.handle(
+        _tipoMovimientoMeta,
+        tipoMovimiento.isAcceptableOrUnknown(
+          data['tipo_movimiento']!,
+          _tipoMovimientoMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_tipoMovimientoMeta);
+    }
+    if (data.containsKey('hecho_revertido_id')) {
+      context.handle(
+        _hechoRevertidoIdMeta,
+        hechoRevertidoId.isAcceptableOrUnknown(
+          data['hecho_revertido_id']!,
+          _hechoRevertidoIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('clave_idempotencia')) {
+      context.handle(
+        _claveIdempotenciaMeta,
+        claveIdempotencia.isAcceptableOrUnknown(
+          data['clave_idempotencia']!,
+          _claveIdempotenciaMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_claveIdempotenciaMeta);
+    }
+    if (data.containsKey('fecha_creacion')) {
+      context.handle(
+        _fechaCreacionMeta,
+        fechaCreacion.isAcceptableOrUnknown(
+          data['fecha_creacion']!,
+          _fechaCreacionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaCreacionMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {tenantId, id},
+    {tenantId, claveIdempotencia},
+  ];
+  @override
+  HechosCosteData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HechosCosteData(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      expedienteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}expediente_id'],
+      )!,
+      categoriaEconomicaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}categoria_economica_id'],
+      ),
+      planEconomicoId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}plan_economico_id'],
+      ),
+      planEconomicoPartidaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}plan_economico_partida_id'],
+      ),
+      fechaDevengo: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_devengo'],
+      )!,
+      importeNetoCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}importe_neto_centimos'],
+      )!,
+      ivaNoRecuperableCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}iva_no_recuperable_centimos'],
+      )!,
+      importeCosteCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}importe_coste_centimos'],
+      )!,
+      descripcion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}descripcion'],
+      )!,
+      origenTipo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}origen_tipo'],
+      )!,
+      origenId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}origen_id'],
+      )!,
+      tipoMovimiento: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tipo_movimiento'],
+      )!,
+      hechoRevertidoId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hecho_revertido_id'],
+      ),
+      claveIdempotencia: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}clave_idempotencia'],
+      )!,
+      fechaCreacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_creacion'],
+      )!,
+    );
+  }
+
+  @override
+  $HechosCosteTable createAlias(String alias) {
+    return $HechosCosteTable(attachedDatabase, alias);
+  }
+}
+
+class HechosCosteData extends DataClass implements Insertable<HechosCosteData> {
+  final String tenantId;
+  final String id;
+  final String expedienteId;
+  final String? categoriaEconomicaId;
+  final String? planEconomicoId;
+  final String? planEconomicoPartidaId;
+  final DateTime fechaDevengo;
+  final int importeNetoCentimos;
+  final int ivaNoRecuperableCentimos;
+  final int importeCosteCentimos;
+  final String descripcion;
+  final String origenTipo;
+  final String origenId;
+  final String tipoMovimiento;
+  final String? hechoRevertidoId;
+  final String claveIdempotencia;
+  final DateTime fechaCreacion;
+  const HechosCosteData({
+    required this.tenantId,
+    required this.id,
+    required this.expedienteId,
+    this.categoriaEconomicaId,
+    this.planEconomicoId,
+    this.planEconomicoPartidaId,
+    required this.fechaDevengo,
+    required this.importeNetoCentimos,
+    required this.ivaNoRecuperableCentimos,
+    required this.importeCosteCentimos,
+    required this.descripcion,
+    required this.origenTipo,
+    required this.origenId,
+    required this.tipoMovimiento,
+    this.hechoRevertidoId,
+    required this.claveIdempotencia,
+    required this.fechaCreacion,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['id'] = Variable<String>(id);
+    map['expediente_id'] = Variable<String>(expedienteId);
+    if (!nullToAbsent || categoriaEconomicaId != null) {
+      map['categoria_economica_id'] = Variable<String>(categoriaEconomicaId);
+    }
+    if (!nullToAbsent || planEconomicoId != null) {
+      map['plan_economico_id'] = Variable<String>(planEconomicoId);
+    }
+    if (!nullToAbsent || planEconomicoPartidaId != null) {
+      map['plan_economico_partida_id'] = Variable<String>(
+        planEconomicoPartidaId,
+      );
+    }
+    map['fecha_devengo'] = Variable<DateTime>(fechaDevengo);
+    map['importe_neto_centimos'] = Variable<int>(importeNetoCentimos);
+    map['iva_no_recuperable_centimos'] = Variable<int>(
+      ivaNoRecuperableCentimos,
+    );
+    map['importe_coste_centimos'] = Variable<int>(importeCosteCentimos);
+    map['descripcion'] = Variable<String>(descripcion);
+    map['origen_tipo'] = Variable<String>(origenTipo);
+    map['origen_id'] = Variable<String>(origenId);
+    map['tipo_movimiento'] = Variable<String>(tipoMovimiento);
+    if (!nullToAbsent || hechoRevertidoId != null) {
+      map['hecho_revertido_id'] = Variable<String>(hechoRevertidoId);
+    }
+    map['clave_idempotencia'] = Variable<String>(claveIdempotencia);
+    map['fecha_creacion'] = Variable<DateTime>(fechaCreacion);
+    return map;
+  }
+
+  HechosCosteCompanion toCompanion(bool nullToAbsent) {
+    return HechosCosteCompanion(
+      tenantId: Value(tenantId),
+      id: Value(id),
+      expedienteId: Value(expedienteId),
+      categoriaEconomicaId: categoriaEconomicaId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(categoriaEconomicaId),
+      planEconomicoId: planEconomicoId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(planEconomicoId),
+      planEconomicoPartidaId: planEconomicoPartidaId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(planEconomicoPartidaId),
+      fechaDevengo: Value(fechaDevengo),
+      importeNetoCentimos: Value(importeNetoCentimos),
+      ivaNoRecuperableCentimos: Value(ivaNoRecuperableCentimos),
+      importeCosteCentimos: Value(importeCosteCentimos),
+      descripcion: Value(descripcion),
+      origenTipo: Value(origenTipo),
+      origenId: Value(origenId),
+      tipoMovimiento: Value(tipoMovimiento),
+      hechoRevertidoId: hechoRevertidoId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(hechoRevertidoId),
+      claveIdempotencia: Value(claveIdempotencia),
+      fechaCreacion: Value(fechaCreacion),
+    );
+  }
+
+  factory HechosCosteData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HechosCosteData(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      id: serializer.fromJson<String>(json['id']),
+      expedienteId: serializer.fromJson<String>(json['expedienteId']),
+      categoriaEconomicaId: serializer.fromJson<String?>(
+        json['categoriaEconomicaId'],
+      ),
+      planEconomicoId: serializer.fromJson<String?>(json['planEconomicoId']),
+      planEconomicoPartidaId: serializer.fromJson<String?>(
+        json['planEconomicoPartidaId'],
+      ),
+      fechaDevengo: serializer.fromJson<DateTime>(json['fechaDevengo']),
+      importeNetoCentimos: serializer.fromJson<int>(
+        json['importeNetoCentimos'],
+      ),
+      ivaNoRecuperableCentimos: serializer.fromJson<int>(
+        json['ivaNoRecuperableCentimos'],
+      ),
+      importeCosteCentimos: serializer.fromJson<int>(
+        json['importeCosteCentimos'],
+      ),
+      descripcion: serializer.fromJson<String>(json['descripcion']),
+      origenTipo: serializer.fromJson<String>(json['origenTipo']),
+      origenId: serializer.fromJson<String>(json['origenId']),
+      tipoMovimiento: serializer.fromJson<String>(json['tipoMovimiento']),
+      hechoRevertidoId: serializer.fromJson<String?>(json['hechoRevertidoId']),
+      claveIdempotencia: serializer.fromJson<String>(json['claveIdempotencia']),
+      fechaCreacion: serializer.fromJson<DateTime>(json['fechaCreacion']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'id': serializer.toJson<String>(id),
+      'expedienteId': serializer.toJson<String>(expedienteId),
+      'categoriaEconomicaId': serializer.toJson<String?>(categoriaEconomicaId),
+      'planEconomicoId': serializer.toJson<String?>(planEconomicoId),
+      'planEconomicoPartidaId': serializer.toJson<String?>(
+        planEconomicoPartidaId,
+      ),
+      'fechaDevengo': serializer.toJson<DateTime>(fechaDevengo),
+      'importeNetoCentimos': serializer.toJson<int>(importeNetoCentimos),
+      'ivaNoRecuperableCentimos': serializer.toJson<int>(
+        ivaNoRecuperableCentimos,
+      ),
+      'importeCosteCentimos': serializer.toJson<int>(importeCosteCentimos),
+      'descripcion': serializer.toJson<String>(descripcion),
+      'origenTipo': serializer.toJson<String>(origenTipo),
+      'origenId': serializer.toJson<String>(origenId),
+      'tipoMovimiento': serializer.toJson<String>(tipoMovimiento),
+      'hechoRevertidoId': serializer.toJson<String?>(hechoRevertidoId),
+      'claveIdempotencia': serializer.toJson<String>(claveIdempotencia),
+      'fechaCreacion': serializer.toJson<DateTime>(fechaCreacion),
+    };
+  }
+
+  HechosCosteData copyWith({
+    String? tenantId,
+    String? id,
+    String? expedienteId,
+    Value<String?> categoriaEconomicaId = const Value.absent(),
+    Value<String?> planEconomicoId = const Value.absent(),
+    Value<String?> planEconomicoPartidaId = const Value.absent(),
+    DateTime? fechaDevengo,
+    int? importeNetoCentimos,
+    int? ivaNoRecuperableCentimos,
+    int? importeCosteCentimos,
+    String? descripcion,
+    String? origenTipo,
+    String? origenId,
+    String? tipoMovimiento,
+    Value<String?> hechoRevertidoId = const Value.absent(),
+    String? claveIdempotencia,
+    DateTime? fechaCreacion,
+  }) => HechosCosteData(
+    tenantId: tenantId ?? this.tenantId,
+    id: id ?? this.id,
+    expedienteId: expedienteId ?? this.expedienteId,
+    categoriaEconomicaId: categoriaEconomicaId.present
+        ? categoriaEconomicaId.value
+        : this.categoriaEconomicaId,
+    planEconomicoId: planEconomicoId.present
+        ? planEconomicoId.value
+        : this.planEconomicoId,
+    planEconomicoPartidaId: planEconomicoPartidaId.present
+        ? planEconomicoPartidaId.value
+        : this.planEconomicoPartidaId,
+    fechaDevengo: fechaDevengo ?? this.fechaDevengo,
+    importeNetoCentimos: importeNetoCentimos ?? this.importeNetoCentimos,
+    ivaNoRecuperableCentimos:
+        ivaNoRecuperableCentimos ?? this.ivaNoRecuperableCentimos,
+    importeCosteCentimos: importeCosteCentimos ?? this.importeCosteCentimos,
+    descripcion: descripcion ?? this.descripcion,
+    origenTipo: origenTipo ?? this.origenTipo,
+    origenId: origenId ?? this.origenId,
+    tipoMovimiento: tipoMovimiento ?? this.tipoMovimiento,
+    hechoRevertidoId: hechoRevertidoId.present
+        ? hechoRevertidoId.value
+        : this.hechoRevertidoId,
+    claveIdempotencia: claveIdempotencia ?? this.claveIdempotencia,
+    fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+  );
+  HechosCosteData copyWithCompanion(HechosCosteCompanion data) {
+    return HechosCosteData(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      id: data.id.present ? data.id.value : this.id,
+      expedienteId: data.expedienteId.present
+          ? data.expedienteId.value
+          : this.expedienteId,
+      categoriaEconomicaId: data.categoriaEconomicaId.present
+          ? data.categoriaEconomicaId.value
+          : this.categoriaEconomicaId,
+      planEconomicoId: data.planEconomicoId.present
+          ? data.planEconomicoId.value
+          : this.planEconomicoId,
+      planEconomicoPartidaId: data.planEconomicoPartidaId.present
+          ? data.planEconomicoPartidaId.value
+          : this.planEconomicoPartidaId,
+      fechaDevengo: data.fechaDevengo.present
+          ? data.fechaDevengo.value
+          : this.fechaDevengo,
+      importeNetoCentimos: data.importeNetoCentimos.present
+          ? data.importeNetoCentimos.value
+          : this.importeNetoCentimos,
+      ivaNoRecuperableCentimos: data.ivaNoRecuperableCentimos.present
+          ? data.ivaNoRecuperableCentimos.value
+          : this.ivaNoRecuperableCentimos,
+      importeCosteCentimos: data.importeCosteCentimos.present
+          ? data.importeCosteCentimos.value
+          : this.importeCosteCentimos,
+      descripcion: data.descripcion.present
+          ? data.descripcion.value
+          : this.descripcion,
+      origenTipo: data.origenTipo.present
+          ? data.origenTipo.value
+          : this.origenTipo,
+      origenId: data.origenId.present ? data.origenId.value : this.origenId,
+      tipoMovimiento: data.tipoMovimiento.present
+          ? data.tipoMovimiento.value
+          : this.tipoMovimiento,
+      hechoRevertidoId: data.hechoRevertidoId.present
+          ? data.hechoRevertidoId.value
+          : this.hechoRevertidoId,
+      claveIdempotencia: data.claveIdempotencia.present
+          ? data.claveIdempotencia.value
+          : this.claveIdempotencia,
+      fechaCreacion: data.fechaCreacion.present
+          ? data.fechaCreacion.value
+          : this.fechaCreacion,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HechosCosteData(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('categoriaEconomicaId: $categoriaEconomicaId, ')
+          ..write('planEconomicoId: $planEconomicoId, ')
+          ..write('planEconomicoPartidaId: $planEconomicoPartidaId, ')
+          ..write('fechaDevengo: $fechaDevengo, ')
+          ..write('importeNetoCentimos: $importeNetoCentimos, ')
+          ..write('ivaNoRecuperableCentimos: $ivaNoRecuperableCentimos, ')
+          ..write('importeCosteCentimos: $importeCosteCentimos, ')
+          ..write('descripcion: $descripcion, ')
+          ..write('origenTipo: $origenTipo, ')
+          ..write('origenId: $origenId, ')
+          ..write('tipoMovimiento: $tipoMovimiento, ')
+          ..write('hechoRevertidoId: $hechoRevertidoId, ')
+          ..write('claveIdempotencia: $claveIdempotencia, ')
+          ..write('fechaCreacion: $fechaCreacion')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    tenantId,
+    id,
+    expedienteId,
+    categoriaEconomicaId,
+    planEconomicoId,
+    planEconomicoPartidaId,
+    fechaDevengo,
+    importeNetoCentimos,
+    ivaNoRecuperableCentimos,
+    importeCosteCentimos,
+    descripcion,
+    origenTipo,
+    origenId,
+    tipoMovimiento,
+    hechoRevertidoId,
+    claveIdempotencia,
+    fechaCreacion,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HechosCosteData &&
+          other.tenantId == this.tenantId &&
+          other.id == this.id &&
+          other.expedienteId == this.expedienteId &&
+          other.categoriaEconomicaId == this.categoriaEconomicaId &&
+          other.planEconomicoId == this.planEconomicoId &&
+          other.planEconomicoPartidaId == this.planEconomicoPartidaId &&
+          other.fechaDevengo == this.fechaDevengo &&
+          other.importeNetoCentimos == this.importeNetoCentimos &&
+          other.ivaNoRecuperableCentimos == this.ivaNoRecuperableCentimos &&
+          other.importeCosteCentimos == this.importeCosteCentimos &&
+          other.descripcion == this.descripcion &&
+          other.origenTipo == this.origenTipo &&
+          other.origenId == this.origenId &&
+          other.tipoMovimiento == this.tipoMovimiento &&
+          other.hechoRevertidoId == this.hechoRevertidoId &&
+          other.claveIdempotencia == this.claveIdempotencia &&
+          other.fechaCreacion == this.fechaCreacion);
+}
+
+class HechosCosteCompanion extends UpdateCompanion<HechosCosteData> {
+  final Value<String> tenantId;
+  final Value<String> id;
+  final Value<String> expedienteId;
+  final Value<String?> categoriaEconomicaId;
+  final Value<String?> planEconomicoId;
+  final Value<String?> planEconomicoPartidaId;
+  final Value<DateTime> fechaDevengo;
+  final Value<int> importeNetoCentimos;
+  final Value<int> ivaNoRecuperableCentimos;
+  final Value<int> importeCosteCentimos;
+  final Value<String> descripcion;
+  final Value<String> origenTipo;
+  final Value<String> origenId;
+  final Value<String> tipoMovimiento;
+  final Value<String?> hechoRevertidoId;
+  final Value<String> claveIdempotencia;
+  final Value<DateTime> fechaCreacion;
+  final Value<int> rowid;
+  const HechosCosteCompanion({
+    this.tenantId = const Value.absent(),
+    this.id = const Value.absent(),
+    this.expedienteId = const Value.absent(),
+    this.categoriaEconomicaId = const Value.absent(),
+    this.planEconomicoId = const Value.absent(),
+    this.planEconomicoPartidaId = const Value.absent(),
+    this.fechaDevengo = const Value.absent(),
+    this.importeNetoCentimos = const Value.absent(),
+    this.ivaNoRecuperableCentimos = const Value.absent(),
+    this.importeCosteCentimos = const Value.absent(),
+    this.descripcion = const Value.absent(),
+    this.origenTipo = const Value.absent(),
+    this.origenId = const Value.absent(),
+    this.tipoMovimiento = const Value.absent(),
+    this.hechoRevertidoId = const Value.absent(),
+    this.claveIdempotencia = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  HechosCosteCompanion.insert({
+    required String tenantId,
+    required String id,
+    required String expedienteId,
+    this.categoriaEconomicaId = const Value.absent(),
+    this.planEconomicoId = const Value.absent(),
+    this.planEconomicoPartidaId = const Value.absent(),
+    required DateTime fechaDevengo,
+    required int importeNetoCentimos,
+    required int ivaNoRecuperableCentimos,
+    required int importeCosteCentimos,
+    required String descripcion,
+    required String origenTipo,
+    required String origenId,
+    required String tipoMovimiento,
+    this.hechoRevertidoId = const Value.absent(),
+    required String claveIdempotencia,
+    required DateTime fechaCreacion,
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       id = Value(id),
+       expedienteId = Value(expedienteId),
+       fechaDevengo = Value(fechaDevengo),
+       importeNetoCentimos = Value(importeNetoCentimos),
+       ivaNoRecuperableCentimos = Value(ivaNoRecuperableCentimos),
+       importeCosteCentimos = Value(importeCosteCentimos),
+       descripcion = Value(descripcion),
+       origenTipo = Value(origenTipo),
+       origenId = Value(origenId),
+       tipoMovimiento = Value(tipoMovimiento),
+       claveIdempotencia = Value(claveIdempotencia),
+       fechaCreacion = Value(fechaCreacion);
+  static Insertable<HechosCosteData> custom({
+    Expression<String>? tenantId,
+    Expression<String>? id,
+    Expression<String>? expedienteId,
+    Expression<String>? categoriaEconomicaId,
+    Expression<String>? planEconomicoId,
+    Expression<String>? planEconomicoPartidaId,
+    Expression<DateTime>? fechaDevengo,
+    Expression<int>? importeNetoCentimos,
+    Expression<int>? ivaNoRecuperableCentimos,
+    Expression<int>? importeCosteCentimos,
+    Expression<String>? descripcion,
+    Expression<String>? origenTipo,
+    Expression<String>? origenId,
+    Expression<String>? tipoMovimiento,
+    Expression<String>? hechoRevertidoId,
+    Expression<String>? claveIdempotencia,
+    Expression<DateTime>? fechaCreacion,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (id != null) 'id': id,
+      if (expedienteId != null) 'expediente_id': expedienteId,
+      if (categoriaEconomicaId != null)
+        'categoria_economica_id': categoriaEconomicaId,
+      if (planEconomicoId != null) 'plan_economico_id': planEconomicoId,
+      if (planEconomicoPartidaId != null)
+        'plan_economico_partida_id': planEconomicoPartidaId,
+      if (fechaDevengo != null) 'fecha_devengo': fechaDevengo,
+      if (importeNetoCentimos != null)
+        'importe_neto_centimos': importeNetoCentimos,
+      if (ivaNoRecuperableCentimos != null)
+        'iva_no_recuperable_centimos': ivaNoRecuperableCentimos,
+      if (importeCosteCentimos != null)
+        'importe_coste_centimos': importeCosteCentimos,
+      if (descripcion != null) 'descripcion': descripcion,
+      if (origenTipo != null) 'origen_tipo': origenTipo,
+      if (origenId != null) 'origen_id': origenId,
+      if (tipoMovimiento != null) 'tipo_movimiento': tipoMovimiento,
+      if (hechoRevertidoId != null) 'hecho_revertido_id': hechoRevertidoId,
+      if (claveIdempotencia != null) 'clave_idempotencia': claveIdempotencia,
+      if (fechaCreacion != null) 'fecha_creacion': fechaCreacion,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  HechosCosteCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? id,
+    Value<String>? expedienteId,
+    Value<String?>? categoriaEconomicaId,
+    Value<String?>? planEconomicoId,
+    Value<String?>? planEconomicoPartidaId,
+    Value<DateTime>? fechaDevengo,
+    Value<int>? importeNetoCentimos,
+    Value<int>? ivaNoRecuperableCentimos,
+    Value<int>? importeCosteCentimos,
+    Value<String>? descripcion,
+    Value<String>? origenTipo,
+    Value<String>? origenId,
+    Value<String>? tipoMovimiento,
+    Value<String?>? hechoRevertidoId,
+    Value<String>? claveIdempotencia,
+    Value<DateTime>? fechaCreacion,
+    Value<int>? rowid,
+  }) {
+    return HechosCosteCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      id: id ?? this.id,
+      expedienteId: expedienteId ?? this.expedienteId,
+      categoriaEconomicaId: categoriaEconomicaId ?? this.categoriaEconomicaId,
+      planEconomicoId: planEconomicoId ?? this.planEconomicoId,
+      planEconomicoPartidaId:
+          planEconomicoPartidaId ?? this.planEconomicoPartidaId,
+      fechaDevengo: fechaDevengo ?? this.fechaDevengo,
+      importeNetoCentimos: importeNetoCentimos ?? this.importeNetoCentimos,
+      ivaNoRecuperableCentimos:
+          ivaNoRecuperableCentimos ?? this.ivaNoRecuperableCentimos,
+      importeCosteCentimos: importeCosteCentimos ?? this.importeCosteCentimos,
+      descripcion: descripcion ?? this.descripcion,
+      origenTipo: origenTipo ?? this.origenTipo,
+      origenId: origenId ?? this.origenId,
+      tipoMovimiento: tipoMovimiento ?? this.tipoMovimiento,
+      hechoRevertidoId: hechoRevertidoId ?? this.hechoRevertidoId,
+      claveIdempotencia: claveIdempotencia ?? this.claveIdempotencia,
+      fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (expedienteId.present) {
+      map['expediente_id'] = Variable<String>(expedienteId.value);
+    }
+    if (categoriaEconomicaId.present) {
+      map['categoria_economica_id'] = Variable<String>(
+        categoriaEconomicaId.value,
+      );
+    }
+    if (planEconomicoId.present) {
+      map['plan_economico_id'] = Variable<String>(planEconomicoId.value);
+    }
+    if (planEconomicoPartidaId.present) {
+      map['plan_economico_partida_id'] = Variable<String>(
+        planEconomicoPartidaId.value,
+      );
+    }
+    if (fechaDevengo.present) {
+      map['fecha_devengo'] = Variable<DateTime>(fechaDevengo.value);
+    }
+    if (importeNetoCentimos.present) {
+      map['importe_neto_centimos'] = Variable<int>(importeNetoCentimos.value);
+    }
+    if (ivaNoRecuperableCentimos.present) {
+      map['iva_no_recuperable_centimos'] = Variable<int>(
+        ivaNoRecuperableCentimos.value,
+      );
+    }
+    if (importeCosteCentimos.present) {
+      map['importe_coste_centimos'] = Variable<int>(importeCosteCentimos.value);
+    }
+    if (descripcion.present) {
+      map['descripcion'] = Variable<String>(descripcion.value);
+    }
+    if (origenTipo.present) {
+      map['origen_tipo'] = Variable<String>(origenTipo.value);
+    }
+    if (origenId.present) {
+      map['origen_id'] = Variable<String>(origenId.value);
+    }
+    if (tipoMovimiento.present) {
+      map['tipo_movimiento'] = Variable<String>(tipoMovimiento.value);
+    }
+    if (hechoRevertidoId.present) {
+      map['hecho_revertido_id'] = Variable<String>(hechoRevertidoId.value);
+    }
+    if (claveIdempotencia.present) {
+      map['clave_idempotencia'] = Variable<String>(claveIdempotencia.value);
+    }
+    if (fechaCreacion.present) {
+      map['fecha_creacion'] = Variable<DateTime>(fechaCreacion.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HechosCosteCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('categoriaEconomicaId: $categoriaEconomicaId, ')
+          ..write('planEconomicoId: $planEconomicoId, ')
+          ..write('planEconomicoPartidaId: $planEconomicoPartidaId, ')
+          ..write('fechaDevengo: $fechaDevengo, ')
+          ..write('importeNetoCentimos: $importeNetoCentimos, ')
+          ..write('ivaNoRecuperableCentimos: $ivaNoRecuperableCentimos, ')
+          ..write('importeCosteCentimos: $importeCosteCentimos, ')
+          ..write('descripcion: $descripcion, ')
+          ..write('origenTipo: $origenTipo, ')
+          ..write('origenId: $origenId, ')
+          ..write('tipoMovimiento: $tipoMovimiento, ')
+          ..write('hechoRevertidoId: $hechoRevertidoId, ')
+          ..write('claveIdempotencia: $claveIdempotencia, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -17728,6 +18851,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final $PlanEconomicoPartidasTable planEconomicoPartidas =
       $PlanEconomicoPartidasTable(this);
+  late final $HechosCosteTable hechosCoste = $HechosCosteTable(this);
   late final ExpedientesDao expedientesDao = ExpedientesDao(
     this as AppDatabase,
   );
@@ -17767,6 +18891,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final EconomiaPrevistaDao economiaPrevistaDao = EconomiaPrevistaDao(
     this as AppDatabase,
   );
+  late final HechosCosteDao hechosCosteDao = HechosCosteDao(
+    this as AppDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -17794,6 +18921,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     lineaPresupuestoCostesPrevistos,
     planesEconomicos,
     planEconomicoPartidas,
+    hechosCoste,
   ];
 }
 
@@ -18261,6 +19389,24 @@ final class $$TenantsTableReferences
     final cache = $_typedResult.readTableOrNull(
       _planEconomicoPartidasRefsTable($_db),
     );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$HechosCosteTable, List<HechosCosteData>>
+  _hechosCosteRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.hechosCoste,
+    aliasName: 'tenants__id__hechos_coste__tenant_id',
+  );
+
+  $$HechosCosteTableProcessedTableManager get hechosCosteRefs {
+    final manager = $$HechosCosteTableTableManager(
+      $_db,
+      $_db.hechosCoste,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_hechosCosteRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -18832,6 +19978,31 @@ class $$TenantsTableFilterComposer
                     $removeJoinBuilderFromRootComposer,
               ),
         );
+    return f(composer);
+  }
+
+  Expression<bool> hechosCosteRefs(
+    Expression<bool> Function($$HechosCosteTableFilterComposer f) f,
+  ) {
+    final $$HechosCosteTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.hechosCoste,
+      getReferencedColumn: (t) => t.tenantId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$HechosCosteTableFilterComposer(
+            $db: $db,
+            $table: $db.hechosCoste,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return f(composer);
   }
 }
@@ -19432,6 +20603,31 @@ class $$TenantsTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> hechosCosteRefs<T extends Object>(
+    Expression<T> Function($$HechosCosteTableAnnotationComposer a) f,
+  ) {
+    final $$HechosCosteTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.hechosCoste,
+      getReferencedColumn: (t) => t.tenantId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$HechosCosteTableAnnotationComposer(
+            $db: $db,
+            $table: $db.hechosCoste,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$TenantsTableTableManager
@@ -19469,6 +20665,7 @@ class $$TenantsTableTableManager
             bool lineaPresupuestoCostesPrevistosRefs,
             bool planesEconomicosRefs,
             bool planEconomicoPartidasRefs,
+            bool hechosCosteRefs,
           })
         > {
   $$TenantsTableTableManager(_$AppDatabase db, $TenantsTable table)
@@ -19541,6 +20738,7 @@ class $$TenantsTableTableManager
                 lineaPresupuestoCostesPrevistosRefs = false,
                 planesEconomicosRefs = false,
                 planEconomicoPartidasRefs = false,
+                hechosCosteRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -19570,6 +20768,7 @@ class $$TenantsTableTableManager
                       db.lineaPresupuestoCostesPrevistos,
                     if (planesEconomicosRefs) db.planesEconomicos,
                     if (planEconomicoPartidasRefs) db.planEconomicoPartidas,
+                    if (hechosCosteRefs) db.hechosCoste,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -20011,6 +21210,27 @@ class $$TenantsTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (hechosCosteRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          HechosCosteData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._hechosCosteRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).hechosCosteRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -20053,6 +21273,7 @@ typedef $$TenantsTableProcessedTableManager =
         bool lineaPresupuestoCostesPrevistosRefs,
         bool planesEconomicosRefs,
         bool planEconomicoPartidasRefs,
+        bool hechosCosteRefs,
       })
     >;
 typedef $$ClientesTableCreateCompanionBuilder =
@@ -25094,6 +26315,7 @@ typedef $$ComprasTableCreateCompanionBuilder =
       Value<double> ivaPorcentaje,
       Value<double> importeTotal,
       Value<String> estado,
+      Value<String> clasificacionEconomica,
       Value<String?> observaciones,
       Value<bool> eliminado,
       Value<DateTime> fechaCreacion,
@@ -25114,6 +26336,7 @@ typedef $$ComprasTableUpdateCompanionBuilder =
       Value<double> ivaPorcentaje,
       Value<double> importeTotal,
       Value<String> estado,
+      Value<String> clasificacionEconomica,
       Value<String?> observaciones,
       Value<bool> eliminado,
       Value<DateTime> fechaCreacion,
@@ -25204,6 +26427,11 @@ class $$ComprasTableFilterComposer
 
   ColumnFilters<String> get estado => $composableBuilder(
     column: $table.estado,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clasificacionEconomica => $composableBuilder(
+    column: $table.clasificacionEconomica,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -25315,6 +26543,11 @@ class $$ComprasTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get clasificacionEconomica => $composableBuilder(
+    column: $table.clasificacionEconomica,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get observaciones => $composableBuilder(
     column: $table.observaciones,
     builder: (column) => ColumnOrderings(column),
@@ -25415,6 +26648,11 @@ class $$ComprasTableAnnotationComposer
   GeneratedColumn<String> get estado =>
       $composableBuilder(column: $table.estado, builder: (column) => column);
 
+  GeneratedColumn<String> get clasificacionEconomica => $composableBuilder(
+    column: $table.clasificacionEconomica,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get observaciones => $composableBuilder(
     column: $table.observaciones,
     builder: (column) => column,
@@ -25497,6 +26735,7 @@ class $$ComprasTableTableManager
                 Value<double> ivaPorcentaje = const Value.absent(),
                 Value<double> importeTotal = const Value.absent(),
                 Value<String> estado = const Value.absent(),
+                Value<String> clasificacionEconomica = const Value.absent(),
                 Value<String?> observaciones = const Value.absent(),
                 Value<bool> eliminado = const Value.absent(),
                 Value<DateTime> fechaCreacion = const Value.absent(),
@@ -25515,6 +26754,7 @@ class $$ComprasTableTableManager
                 ivaPorcentaje: ivaPorcentaje,
                 importeTotal: importeTotal,
                 estado: estado,
+                clasificacionEconomica: clasificacionEconomica,
                 observaciones: observaciones,
                 eliminado: eliminado,
                 fechaCreacion: fechaCreacion,
@@ -25535,6 +26775,7 @@ class $$ComprasTableTableManager
                 Value<double> ivaPorcentaje = const Value.absent(),
                 Value<double> importeTotal = const Value.absent(),
                 Value<String> estado = const Value.absent(),
+                Value<String> clasificacionEconomica = const Value.absent(),
                 Value<String?> observaciones = const Value.absent(),
                 Value<bool> eliminado = const Value.absent(),
                 Value<DateTime> fechaCreacion = const Value.absent(),
@@ -25553,6 +26794,7 @@ class $$ComprasTableTableManager
                 ivaPorcentaje: ivaPorcentaje,
                 importeTotal: importeTotal,
                 estado: estado,
+                clasificacionEconomica: clasificacionEconomica,
                 observaciones: observaciones,
                 eliminado: eliminado,
                 fechaCreacion: fechaCreacion,
@@ -30664,6 +31906,579 @@ typedef $$PlanEconomicoPartidasTableProcessedTableManager =
       PlanEconomicoPartida,
       PrefetchHooks Function({bool tenantId})
     >;
+typedef $$HechosCosteTableCreateCompanionBuilder =
+    HechosCosteCompanion Function({
+      required String tenantId,
+      required String id,
+      required String expedienteId,
+      Value<String?> categoriaEconomicaId,
+      Value<String?> planEconomicoId,
+      Value<String?> planEconomicoPartidaId,
+      required DateTime fechaDevengo,
+      required int importeNetoCentimos,
+      required int ivaNoRecuperableCentimos,
+      required int importeCosteCentimos,
+      required String descripcion,
+      required String origenTipo,
+      required String origenId,
+      required String tipoMovimiento,
+      Value<String?> hechoRevertidoId,
+      required String claveIdempotencia,
+      required DateTime fechaCreacion,
+      Value<int> rowid,
+    });
+typedef $$HechosCosteTableUpdateCompanionBuilder =
+    HechosCosteCompanion Function({
+      Value<String> tenantId,
+      Value<String> id,
+      Value<String> expedienteId,
+      Value<String?> categoriaEconomicaId,
+      Value<String?> planEconomicoId,
+      Value<String?> planEconomicoPartidaId,
+      Value<DateTime> fechaDevengo,
+      Value<int> importeNetoCentimos,
+      Value<int> ivaNoRecuperableCentimos,
+      Value<int> importeCosteCentimos,
+      Value<String> descripcion,
+      Value<String> origenTipo,
+      Value<String> origenId,
+      Value<String> tipoMovimiento,
+      Value<String?> hechoRevertidoId,
+      Value<String> claveIdempotencia,
+      Value<DateTime> fechaCreacion,
+      Value<int> rowid,
+    });
+
+final class $$HechosCosteTableReferences
+    extends BaseReferences<_$AppDatabase, $HechosCosteTable, HechosCosteData> {
+  $$HechosCosteTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) =>
+      db.tenants.createAlias('hechos_coste__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$HechosCosteTableFilterComposer
+    extends Composer<_$AppDatabase, $HechosCosteTable> {
+  $$HechosCosteTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get categoriaEconomicaId => $composableBuilder(
+    column: $table.categoriaEconomicaId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get planEconomicoId => $composableBuilder(
+    column: $table.planEconomicoId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get planEconomicoPartidaId => $composableBuilder(
+    column: $table.planEconomicoPartidaId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaDevengo => $composableBuilder(
+    column: $table.fechaDevengo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get importeNetoCentimos => $composableBuilder(
+    column: $table.importeNetoCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get ivaNoRecuperableCentimos => $composableBuilder(
+    column: $table.ivaNoRecuperableCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get importeCosteCentimos => $composableBuilder(
+    column: $table.importeCosteCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get descripcion => $composableBuilder(
+    column: $table.descripcion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get origenTipo => $composableBuilder(
+    column: $table.origenTipo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get origenId => $composableBuilder(
+    column: $table.origenId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tipoMovimiento => $composableBuilder(
+    column: $table.tipoMovimiento,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hechoRevertidoId => $composableBuilder(
+    column: $table.hechoRevertidoId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get claveIdempotencia => $composableBuilder(
+    column: $table.claveIdempotencia,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$HechosCosteTableOrderingComposer
+    extends Composer<_$AppDatabase, $HechosCosteTable> {
+  $$HechosCosteTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get categoriaEconomicaId => $composableBuilder(
+    column: $table.categoriaEconomicaId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get planEconomicoId => $composableBuilder(
+    column: $table.planEconomicoId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get planEconomicoPartidaId => $composableBuilder(
+    column: $table.planEconomicoPartidaId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaDevengo => $composableBuilder(
+    column: $table.fechaDevengo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get importeNetoCentimos => $composableBuilder(
+    column: $table.importeNetoCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get ivaNoRecuperableCentimos => $composableBuilder(
+    column: $table.ivaNoRecuperableCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get importeCosteCentimos => $composableBuilder(
+    column: $table.importeCosteCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get descripcion => $composableBuilder(
+    column: $table.descripcion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get origenTipo => $composableBuilder(
+    column: $table.origenTipo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get origenId => $composableBuilder(
+    column: $table.origenId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tipoMovimiento => $composableBuilder(
+    column: $table.tipoMovimiento,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hechoRevertidoId => $composableBuilder(
+    column: $table.hechoRevertidoId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get claveIdempotencia => $composableBuilder(
+    column: $table.claveIdempotencia,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$HechosCosteTableAnnotationComposer
+    extends Composer<_$AppDatabase, $HechosCosteTable> {
+  $$HechosCosteTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get categoriaEconomicaId => $composableBuilder(
+    column: $table.categoriaEconomicaId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get planEconomicoId => $composableBuilder(
+    column: $table.planEconomicoId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get planEconomicoPartidaId => $composableBuilder(
+    column: $table.planEconomicoPartidaId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaDevengo => $composableBuilder(
+    column: $table.fechaDevengo,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get importeNetoCentimos => $composableBuilder(
+    column: $table.importeNetoCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get ivaNoRecuperableCentimos => $composableBuilder(
+    column: $table.ivaNoRecuperableCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get importeCosteCentimos => $composableBuilder(
+    column: $table.importeCosteCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get descripcion => $composableBuilder(
+    column: $table.descripcion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get origenTipo => $composableBuilder(
+    column: $table.origenTipo,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get origenId =>
+      $composableBuilder(column: $table.origenId, builder: (column) => column);
+
+  GeneratedColumn<String> get tipoMovimiento => $composableBuilder(
+    column: $table.tipoMovimiento,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get hechoRevertidoId => $composableBuilder(
+    column: $table.hechoRevertidoId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get claveIdempotencia => $composableBuilder(
+    column: $table.claveIdempotencia,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => column,
+  );
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$HechosCosteTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $HechosCosteTable,
+          HechosCosteData,
+          $$HechosCosteTableFilterComposer,
+          $$HechosCosteTableOrderingComposer,
+          $$HechosCosteTableAnnotationComposer,
+          $$HechosCosteTableCreateCompanionBuilder,
+          $$HechosCosteTableUpdateCompanionBuilder,
+          (HechosCosteData, $$HechosCosteTableReferences),
+          HechosCosteData,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$HechosCosteTableTableManager(_$AppDatabase db, $HechosCosteTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$HechosCosteTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$HechosCosteTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$HechosCosteTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> id = const Value.absent(),
+                Value<String> expedienteId = const Value.absent(),
+                Value<String?> categoriaEconomicaId = const Value.absent(),
+                Value<String?> planEconomicoId = const Value.absent(),
+                Value<String?> planEconomicoPartidaId = const Value.absent(),
+                Value<DateTime> fechaDevengo = const Value.absent(),
+                Value<int> importeNetoCentimos = const Value.absent(),
+                Value<int> ivaNoRecuperableCentimos = const Value.absent(),
+                Value<int> importeCosteCentimos = const Value.absent(),
+                Value<String> descripcion = const Value.absent(),
+                Value<String> origenTipo = const Value.absent(),
+                Value<String> origenId = const Value.absent(),
+                Value<String> tipoMovimiento = const Value.absent(),
+                Value<String?> hechoRevertidoId = const Value.absent(),
+                Value<String> claveIdempotencia = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => HechosCosteCompanion(
+                tenantId: tenantId,
+                id: id,
+                expedienteId: expedienteId,
+                categoriaEconomicaId: categoriaEconomicaId,
+                planEconomicoId: planEconomicoId,
+                planEconomicoPartidaId: planEconomicoPartidaId,
+                fechaDevengo: fechaDevengo,
+                importeNetoCentimos: importeNetoCentimos,
+                ivaNoRecuperableCentimos: ivaNoRecuperableCentimos,
+                importeCosteCentimos: importeCosteCentimos,
+                descripcion: descripcion,
+                origenTipo: origenTipo,
+                origenId: origenId,
+                tipoMovimiento: tipoMovimiento,
+                hechoRevertidoId: hechoRevertidoId,
+                claveIdempotencia: claveIdempotencia,
+                fechaCreacion: fechaCreacion,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String id,
+                required String expedienteId,
+                Value<String?> categoriaEconomicaId = const Value.absent(),
+                Value<String?> planEconomicoId = const Value.absent(),
+                Value<String?> planEconomicoPartidaId = const Value.absent(),
+                required DateTime fechaDevengo,
+                required int importeNetoCentimos,
+                required int ivaNoRecuperableCentimos,
+                required int importeCosteCentimos,
+                required String descripcion,
+                required String origenTipo,
+                required String origenId,
+                required String tipoMovimiento,
+                Value<String?> hechoRevertidoId = const Value.absent(),
+                required String claveIdempotencia,
+                required DateTime fechaCreacion,
+                Value<int> rowid = const Value.absent(),
+              }) => HechosCosteCompanion.insert(
+                tenantId: tenantId,
+                id: id,
+                expedienteId: expedienteId,
+                categoriaEconomicaId: categoriaEconomicaId,
+                planEconomicoId: planEconomicoId,
+                planEconomicoPartidaId: planEconomicoPartidaId,
+                fechaDevengo: fechaDevengo,
+                importeNetoCentimos: importeNetoCentimos,
+                ivaNoRecuperableCentimos: ivaNoRecuperableCentimos,
+                importeCosteCentimos: importeCosteCentimos,
+                descripcion: descripcion,
+                origenTipo: origenTipo,
+                origenId: origenId,
+                tipoMovimiento: tipoMovimiento,
+                hechoRevertidoId: hechoRevertidoId,
+                claveIdempotencia: claveIdempotencia,
+                fechaCreacion: fechaCreacion,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$HechosCosteTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable: $$HechosCosteTableReferences
+                                    ._tenantIdTable(db),
+                                referencedColumn: $$HechosCosteTableReferences
+                                    ._tenantIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$HechosCosteTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $HechosCosteTable,
+      HechosCosteData,
+      $$HechosCosteTableFilterComposer,
+      $$HechosCosteTableOrderingComposer,
+      $$HechosCosteTableAnnotationComposer,
+      $$HechosCosteTableCreateCompanionBuilder,
+      $$HechosCosteTableUpdateCompanionBuilder,
+      (HechosCosteData, $$HechosCosteTableReferences),
+      HechosCosteData,
+      PrefetchHooks Function({bool tenantId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -30729,4 +32544,6 @@ class $AppDatabaseManager {
       $$PlanesEconomicosTableTableManager(_db, _db.planesEconomicos);
   $$PlanEconomicoPartidasTableTableManager get planEconomicoPartidas =>
       $$PlanEconomicoPartidasTableTableManager(_db, _db.planEconomicoPartidas);
+  $$HechosCosteTableTableManager get hechosCoste =>
+      $$HechosCosteTableTableManager(_db, _db.hechosCoste);
 }

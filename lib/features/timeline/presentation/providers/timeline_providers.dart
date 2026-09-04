@@ -138,5 +138,11 @@ String timelineEventTypeLabel(TimelineEventType tipo) {
       return 'Nota creada';
     case TimelineEventType.compraRegistrada:
       return 'Compra registrada';
+    case TimelineEventType.compraCosteConfirmado:
+      return 'Compra confirmada como coste';
+    case TimelineEventType.compraCosteRevertido:
+      return 'Coste de compra revertido';
+    case TimelineEventType.compraCosteAjustado:
+      return 'Coste de compra ajustado';
   }
 }

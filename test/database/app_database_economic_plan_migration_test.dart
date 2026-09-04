@@ -9,53 +9,48 @@ import 'package:sqlite3/sqlite3.dart';
 const _tenantId = '00000000-0000-4000-8000-000000000023';
 
 void main() {
-  test(
-    'migra v23 a v24 sin inventar planes para presupuestos legacy',
-    () async {
-      final directory = await Directory.systemTemp.createTemp(
-        'obraia-v23-v24-',
-      );
-      addTearDown(() => directory.delete(recursive: true));
-      final file = File(p.join(directory.path, 'obraia.sqlite'));
-      await _crearV23(file);
+  test('migra v23 a v25 sin inventar planes ni costes legacy', () async {
+    final directory = await Directory.systemTemp.createTemp('obraia-v23-v24-');
+    addTearDown(() => directory.delete(recursive: true));
+    final file = File(p.join(directory.path, 'obraia.sqlite'));
+    await _crearV23(file);
 
-      final database = AppDatabase.forTesting(
-        NativeDatabase(file),
-        tenantId: _tenantId,
-      );
-      addTearDown(database.close);
-      await database.ensureReady();
+    final database = AppDatabase.forTesting(
+      NativeDatabase(file),
+      tenantId: _tenantId,
+    );
+    addTearDown(database.close);
+    await database.ensureReady();
 
-      expect(database.schemaVersion, 24);
-      expect(
-        await database.select(database.categoriasEconomicas).get(),
-        hasLength(9),
-      );
-      final configuraciones = await database
-          .select(database.configuracionEconomica)
-          .get();
-      expect(configuraciones, hasLength(1));
-      expect(configuraciones.single.porcentajeIndirectos, isNull);
-      expect(await database.select(database.planesEconomicos).get(), isEmpty);
-      expect(
-        (await database.presupuestosDao.obtenerPorId(
-          'presupuesto-legacy',
-        ))!.estado,
-        'Aceptado',
-      );
-      expect(
-        await database.customSelect('PRAGMA foreign_key_check').get(),
-        isEmpty,
-      );
-      final indices = await database
-          .customSelect("SELECT name FROM sqlite_master WHERE type='index'")
-          .get();
-      expect(
-        indices.map((row) => row.read<String>('name')),
-        contains('planes_tenant_expediente_estado_idx'),
-      );
-    },
-  );
+    expect(database.schemaVersion, 25);
+    expect(
+      await database.select(database.categoriasEconomicas).get(),
+      hasLength(9),
+    );
+    final configuraciones = await database
+        .select(database.configuracionEconomica)
+        .get();
+    expect(configuraciones, hasLength(1));
+    expect(configuraciones.single.porcentajeIndirectos, isNull);
+    expect(await database.select(database.planesEconomicos).get(), isEmpty);
+    expect(
+      (await database.presupuestosDao.obtenerPorId(
+        'presupuesto-legacy',
+      ))!.estado,
+      'Aceptado',
+    );
+    expect(
+      await database.customSelect('PRAGMA foreign_key_check').get(),
+      isEmpty,
+    );
+    final indices = await database
+        .customSelect("SELECT name FROM sqlite_master WHERE type='index'")
+        .get();
+    expect(
+      indices.map((row) => row.read<String>('name')),
+      contains('planes_tenant_expediente_estado_idx'),
+    );
+  });
 }
 
 Future<void> _crearV23(File file) async {

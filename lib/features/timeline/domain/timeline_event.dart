@@ -24,6 +24,9 @@ enum TimelineEventType {
   fotografiaAnadida,
   notaCreada,
   compraRegistrada,
+  compraCosteConfirmado,
+  compraCosteRevertido,
+  compraCosteAjustado,
 }
 
 enum TimelineCreditoTipo {

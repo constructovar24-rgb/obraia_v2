@@ -1,6 +1,6 @@
 # Fase 3-A — Modelo económico y rentabilidad por obra
 
-Estado: **Fase 3-A cerrada; diseño ejecutable aprobado y no implementado**. Fecha de cierre: 4 de septiembre de 2026. Este documento define la semántica, fuentes de verdad, persistencia futura y criterios de aceptación. No cambia `schemaVersion` 23 ni las reglas fiscales existentes.
+Estado: **Fase 3-A cerrada; 3-B y 3-C implementadas técnicamente**. Fecha de actualización: 4 de septiembre de 2026. El esquema vigente es v25 y las reglas fiscales existentes permanecen separadas.
 
 ## 1. Principios y lenguaje oficial
 
@@ -337,7 +337,11 @@ Maquinaria especializada, documentos de proveedor, reparto multiobra y almacén 
 
 ### Estado de 3-B
 
-Implementada técnicamente sobre schema v24. El coste previsto editable se conserva en un desglose interno asociado a cada línea borrador; no se añade al documento comercial. Al aceptar, una única transacción congela el plan, sus partidas, las categorías descriptivas y el porcentaje de indirectos, cambia el estado y registra Timeline. La cobertura distingue `sinCostes`, `parcial` y `completo`, sin convertir ausencias en cero. La migración inicializa categorías y configuración por tenant, pero no crea planes retrospectivos para presupuestos legacy. Los tipos `base`, `sustitucion` y `modificado` y la versión física reservan la evolución sin implementar todavía sustituciones ni doble contabilización. Fase 3-C no se ha iniciado.
+Implementada técnicamente sobre schema v24. El coste previsto editable se conserva en un desglose interno asociado a cada línea borrador; no se añade al documento comercial. Al aceptar, una única transacción congela el plan, sus partidas, las categorías descriptivas y el porcentaje de indirectos, cambia el estado y registra Timeline. La cobertura distingue `sinCostes`, `parcial` y `completo`, sin convertir ausencias en cero. La migración inicializa categorías y configuración por tenant, pero no crea planes retrospectivos para presupuestos legacy. Los tipos `base`, `sustitucion` y `modificado` y la versión física reservan la evolución sin implementar todavía sustituciones ni doble contabilización.
+
+### Estado de 3-C
+
+Implementada técnicamente sobre schema v25. `hechos_coste` es la fuente canónica append-only: cada movimiento conserva tenant, obra, categoría opcional, devengo, neto, IVA no recuperable explícito, coste, origen, idempotencia y vínculos opcionales al plan/partida. Las Compras nacen y migran como provisionales; sus estados manuales no generan coste. Confirmación, clasificación y Timeline son atómicos. Reversión y eliminación añaden contramovimientos, los ajustes se registran como hechos nuevos y la edición económica histórica queda bloqueada. Los agregados suman únicamente el ledger por obra/categoría/sin asignar. No se han iniciado mano de obra ni Fase 3-D.
 
 ## 23. Matriz de pruebas futura
 

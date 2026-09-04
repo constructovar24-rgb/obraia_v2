@@ -33,6 +33,9 @@ class Compras extends Table {
 
   TextColumn get estado => text().withDefault(const Constant(''))();
 
+  TextColumn get clasificacionEconomica =>
+      text().withDefault(const Constant('provisional'))();
+
   TextColumn get observaciones => text().nullable()();
 
   BoolColumn get eliminado => boolean().withDefault(const Constant(false))();
@@ -55,5 +58,6 @@ class Compras extends Table {
   List<String> get customConstraints => [
     'FOREIGN KEY (tenant_id, expediente_id) REFERENCES expedientes (tenant_id, id)',
     'FOREIGN KEY (tenant_id, proveedor_id) REFERENCES proveedores (tenant_id, id)',
+    "CHECK (clasificacion_economica IN ('provisional', 'incurrido', 'anulada'))",
   ];
 }

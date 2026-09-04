@@ -28,6 +28,7 @@ import 'tables/configuracion_economica.dart';
 import 'tables/linea_presupuesto_costes_previstos.dart';
 import 'tables/planes_economicos.dart';
 import 'tables/plan_economico_partidas.dart';
+import 'tables/hechos_coste.dart';
 import 'dao/expedientes_dao.dart';
 import 'dao/clientes_dao.dart';
 import 'dao/presupuestos_dao.dart';
@@ -45,6 +46,7 @@ import 'dao/factura_asignaciones_presupuesto_dao.dart';
 import 'dao/factura_documentos_emitidos_dao.dart';
 import 'dao/movimientos_credito_cliente_dao.dart';
 import 'dao/economia_prevista_dao.dart';
+import 'dao/hechos_coste_dao.dart';
 import 'pre_migration_recovery_service.dart';
 
 part 'app_database.g.dart';
@@ -73,6 +75,7 @@ part 'app_database.g.dart';
     LineaPresupuestoCostesPrevistos,
     PlanesEconomicos,
     PlanEconomicoPartidas,
+    HechosCoste,
   ],
   daos: [
     ExpedientesDao,
@@ -92,6 +95,7 @@ part 'app_database.g.dart';
     FacturaDocumentosEmitidosDao,
     MovimientosCreditoClienteDao,
     EconomiaPrevistaDao,
+    HechosCosteDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -119,7 +123,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 24;
+  int get schemaVersion => 25;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -364,6 +368,16 @@ class AppDatabase extends _$AppDatabase {
           await _inicializarEconomiaPorTenant(tenant.id);
         }
       }
+      if (from < 25) {
+        if (await _existeTabla('compras') &&
+            !await _existeColumna('compras', 'clasificacion_economica')) {
+          await m.addColumn(compras, compras.clasificacionEconomica);
+        }
+        if (!await _existeTabla('hechos_coste')) {
+          await m.createTable(hechosCoste);
+        }
+        await _crearIndicesHechosCoste();
+      }
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
@@ -514,6 +528,12 @@ class AppDatabase extends _$AppDatabase {
     return fila != null;
   }
 
+  Future<bool> _existeColumna(String tabla, String columna) async {
+    if (!await _existeTabla(tabla)) return false;
+    final columnas = await customSelect('PRAGMA table_info($tabla)').get();
+    return columnas.any((fila) => fila.read<String>('name') == columna);
+  }
+
   Future<void> _crearIndicesMultiTenant() async {
     await customStatement(
       'DROP INDEX IF EXISTS facturas_numeracion_legal_unica',
@@ -620,6 +640,21 @@ class AppDatabase extends _$AppDatabase {
       }
     }
     await _crearIndicesEconomicos();
+    await _crearIndicesHechosCoste();
+  }
+
+  Future<void> _crearIndicesHechosCoste() async {
+    if (!await _existeTabla('hechos_coste')) return;
+    for (final statement in <String>[
+      'CREATE UNIQUE INDEX IF NOT EXISTS hechos_coste_tenant_id_id_unica ON hechos_coste(tenant_id,id)',
+      'CREATE UNIQUE INDEX IF NOT EXISTS hechos_coste_tenant_clave_unica ON hechos_coste(tenant_id,clave_idempotencia)',
+      'CREATE INDEX IF NOT EXISTS hechos_coste_tenant_expediente_fecha_idx ON hechos_coste(tenant_id,expediente_id,fecha_devengo)',
+      'CREATE INDEX IF NOT EXISTS hechos_coste_tenant_categoria_idx ON hechos_coste(tenant_id,categoria_economica_id)',
+      'CREATE INDEX IF NOT EXISTS hechos_coste_tenant_origen_idx ON hechos_coste(tenant_id,origen_tipo,origen_id)',
+      'CREATE INDEX IF NOT EXISTS hechos_coste_tenant_partida_idx ON hechos_coste(tenant_id,plan_economico_partida_id)',
+    ]) {
+      await customStatement(statement);
+    }
   }
 
   Future<void> _crearIndicesEconomicos() async {
@@ -860,7 +895,10 @@ class AppDatabase extends _$AppDatabase {
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final file = await AppDatabase.defaultDatabaseFile();
-    await const PreMigrationRecoveryService().protectBeforeUpgrade(file);
+    await const PreMigrationRecoveryService().protectBeforeUpgrade(
+      file,
+      supportedVersions: {22, 23, 24},
+    );
     return NativeDatabase(file);
   });
 }

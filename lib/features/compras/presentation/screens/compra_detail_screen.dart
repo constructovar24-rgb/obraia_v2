@@ -10,6 +10,8 @@ import '../../../../core/widgets/status_chip.dart';
 import '../../../expedientes/presentation/screens/expediente_detail_screen.dart';
 import '../../../proveedores/presentation/providers/proveedor_providers.dart';
 import '../../../proveedores/presentation/screens/proveedor_detail_screen.dart';
+import '../../../economia/presentation/providers/plan_economico_providers.dart';
+import '../../../economia/presentation/providers/hecho_coste_providers.dart';
 import '../../domain/compra.dart';
 import '../providers/compra_providers.dart';
 import 'compras_screen.dart';
@@ -34,16 +36,18 @@ class CompraDetailScreen extends ConsumerWidget {
           subtitle: 'Apunte de gasto registrado',
           showBackButton: true,
           actions: [
-            AppPageHeaderAction(
-              icon: Icons.edit_outlined,
-              tooltip: 'Editar compra',
-              onPressed: () => Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => EditarCompraScreen(compra: compra),
+            if (compra.clasificacionEconomica ==
+                CompraClasificacionEconomica.provisional)
+              AppPageHeaderAction(
+                icon: Icons.edit_outlined,
+                tooltip: 'Editar compra',
+                onPressed: () => Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => EditarCompraScreen(compra: compra),
+                  ),
                 ),
               ),
-            ),
             AppPageHeaderAction(
               icon: Icons.delete_outline,
               tooltip: 'Eliminar compra',
@@ -186,6 +190,18 @@ class CompraDetailScreen extends ConsumerWidget {
                               '${compra.ivaPorcentaje.toStringAsFixed(2)} %',
                             ),
                             _money('Importe total', compra.importeTotal),
+                            _text(
+                              'Clasificación económica',
+                              switch (compra.clasificacionEconomica) {
+                                CompraClasificacionEconomica.provisional =>
+                                  'Provisional · no cuenta como coste real',
+                                CompraClasificacionEconomica.incurrido =>
+                                  'Gasto incurrido · cuenta como coste real',
+                                CompraClasificacionEconomica.anulada =>
+                                  'Anulada · coste neutralizado',
+                              },
+                            ),
+                            _CosteRealCompraResumen(compraId: compra.id),
                             _text('Fecha', compraFecha(compra.fecha)),
                             if (compra.observaciones?.trim().isNotEmpty == true)
                               _text(
@@ -213,6 +229,21 @@ class CompraDetailScreen extends ConsumerWidget {
                             );
                     },
                   ),
+                  const SizedBox(height: AppSpacing.md),
+                  if (compra.clasificacionEconomica ==
+                      CompraClasificacionEconomica.provisional)
+                    FilledButton.icon(
+                      onPressed: () => _confirmarCoste(context, ref),
+                      icon: const Icon(Icons.account_balance_wallet_outlined),
+                      label: const Text('Confirmar como gasto incurrido'),
+                    ),
+                  if (compra.clasificacionEconomica ==
+                      CompraClasificacionEconomica.incurrido)
+                    OutlinedButton.icon(
+                      onPressed: () => _revertirCoste(context, ref),
+                      icon: const Icon(Icons.undo),
+                      label: const Text('Revertir coste real'),
+                    ),
                   const SizedBox(height: AppSpacing.md),
                   const AppCard(
                     child: Row(
@@ -279,5 +310,127 @@ class CompraDetailScreen extends ConsumerWidget {
         );
       }
     }
+  }
+
+  Future<void> _confirmarCoste(BuildContext context, WidgetRef ref) async {
+    final categorias = await ref
+        .read(planEconomicoRepositoryProvider)
+        .observarCategorias()
+        .first;
+    if (!context.mounted) return;
+    String? categoriaId = categorias.firstOrNull?.id;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: const Text('Confirmar como gasto incurrido'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'La base imponible empezará a contar como coste real de la obra. El IVA se considera recuperable y no se suma al coste.',
+              ),
+              const SizedBox(height: AppSpacing.md),
+              DropdownButtonFormField<String?>(
+                initialValue: categoriaId,
+                decoration: const InputDecoration(
+                  labelText: 'Categoría económica',
+                ),
+                items: [
+                  const DropdownMenuItem<String?>(
+                    value: null,
+                    child: Text('Sin asignar'),
+                  ),
+                  ...categorias.map(
+                    (c) => DropdownMenuItem<String?>(
+                      value: c.id,
+                      child: Text(c.nombre),
+                    ),
+                  ),
+                ],
+                onChanged: (value) => setState(() => categoriaId = value),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(dialogContext, true),
+              child: const Text('Confirmar coste'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+    await ref
+        .read(compraRepositoryProvider)
+        .confirmarComoGasto(
+          compraId: compra.id,
+          categoriaEconomicaId: categoriaId,
+        );
+    if (context.mounted) Navigator.pop(context);
+  }
+
+  Future<void> _revertirCoste(BuildContext context, WidgetRef ref) async {
+    final confirmed = await ConfirmDialog.show(
+      context,
+      title: 'Revertir coste real',
+      message:
+          'Se añadirá un movimiento contrario y quedará trazabilidad. El hecho original no se borrará.',
+      confirmLabel: 'Revertir coste',
+    );
+    if (!confirmed || !context.mounted) return;
+    await ref
+        .read(compraRepositoryProvider)
+        .revertirCoste(
+          compra.id,
+          motivo: 'Reversión confirmada desde la compra.',
+        );
+    if (context.mounted) Navigator.pop(context);
+  }
+}
+
+class _CosteRealCompraResumen extends ConsumerWidget {
+  const _CosteRealCompraResumen({required this.compraId});
+  final String compraId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final repository = ref.watch(hechoCosteRepositoryProvider);
+    final categoriasRepository = ref.watch(planEconomicoRepositoryProvider);
+    return FutureBuilder(
+      future: Future.wait([
+        repository.obtenerHechosOrigen('compra', compraId),
+        categoriasRepository.observarCategorias().first,
+      ]),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return const SizedBox.shrink();
+        final hechos = snapshot.data![0] as List;
+        if (hechos.isEmpty) return const SizedBox.shrink();
+        final categorias = snapshot.data![1] as List;
+        final alta = hechos.firstWhere((h) => h.tipoMovimiento.name == 'alta');
+        final categoria = categorias
+            .where((c) => c.id == alta.categoriaEconomicaId)
+            .firstOrNull;
+        return Padding(
+          padding: const EdgeInsets.only(bottom: AppSpacing.md),
+          child: Row(
+            children: [
+              const Expanded(child: Text('Categoría de coste')),
+              Flexible(
+                child: Text(
+                  categoria?.nombre ?? 'Sin asignar',
+                  textAlign: TextAlign.end,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

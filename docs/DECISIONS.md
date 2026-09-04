@@ -35,6 +35,10 @@ Este documento está preparado para registrar decisiones arquitectónicas, tecno
 - 2026-09-04: Fase 3-B mantiene el coste previsto separado del presupuesto comercial. La asignación editable vive vinculada a la línea borrador y la aceptación la transforma, dentro de la misma transacción que estado y Timeline, en un snapshot económico inmutable.
 - 2026-09-04: desconocido y cero son estados distintos. Un plan declara cobertura `sinCostes`, `parcial` o `completo`; indirectos, coste total, beneficio y margen solo se materializan cuando los costes directos y el porcentaje aplicable son conocidos. Con venta neta cero el margen permanece no disponible.
 - 2026-09-04: v23 → v24 crea categorías neutrales con UUID propios por tenant y configuración sin porcentaje predeterminado. No crea planes ni costes retrospectivos para presupuestos legacy.
+- 2026-09-04: el coste real tiene como única fuente `hechos_coste`, un ledger append-only de importes en céntimos. Compra, futuros documentos, partes, maquinaria o almacén son orígenes/evidencias y no agregados paralelos.
+- 2026-09-04: `pendiente`, `pagada` y `anulada` conservan su semántica manual histórica y no acreditan devengo. La clasificación económica independiente comienza en `provisional`; solo una confirmación explícita crea coste real.
+- 2026-09-04: la Compra actual registra por defecto su base imponible como coste neto y cero de IVA no recuperable. Un IVA no recuperable solo se suma mediante dato explícito; no se infiere de la tasa indicada.
+- 2026-09-04: un hecho confirmado no se reescribe. Reversión y eliminación lógica crean un contramovimiento atómico con Timeline; ajustes positivos o negativos son movimientos nuevos con motivo.
 
 ## Interfaz y navegación
 

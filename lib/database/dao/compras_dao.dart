@@ -24,6 +24,27 @@ class ComprasDao extends DatabaseAccessor<AppDatabase> with _$ComprasDaoMixin {
         .write(compra.copyWith(fechaModificacion: Value(DateTime.now())));
   }
 
+  Future<Compra?> obtenerPorId(String id) =>
+      (select(compras)..where(
+            (t) =>
+                t.tenantId.equals(attachedDatabase.activeTenantId) &
+                t.id.equals(id),
+          ))
+          .getSingleOrNull();
+
+  Future<int> actualizarClasificacion(String id, String clasificacion) =>
+      (update(compras)..where(
+            (t) =>
+                t.tenantId.equals(attachedDatabase.activeTenantId) &
+                t.id.equals(id),
+          ))
+          .write(
+            ComprasCompanion(
+              clasificacionEconomica: Value(clasificacion),
+              fechaModificacion: Value(DateTime.now().toUtc()),
+            ),
+          );
+
   Stream<List<Compra>> observarPorExpediente(String expedienteId) {
     return (select(compras)
           ..where(

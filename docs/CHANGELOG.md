@@ -2,6 +2,15 @@
 
 ## No publicado
 
+### Hechos canónicos de coste y Compras — Fase 3-C
+
+- Añadido el ledger tenant-scoped `hechos_coste` con importes en céntimos, origen idempotente, categoría y vínculos opcionales al plan económico.
+- Separada la clasificación económica de Compra de su estado manual: provisional no suma; gasto incurrido requiere confirmación explícita.
+- Incorporadas confirmación y reversión atómicas con Timeline, además de ajustes auditables positivos y negativos.
+- Bloqueada la edición silenciosa de Compras devengadas y neutralizado su coste antes de una eliminación lógica.
+- Añadidos agregados reproducibles por obra, categoría y costes sin asignar, sin mezclarlos con facturación o cobros.
+- Elevado Drift a schema v25; Compras legacy permanecen provisionales y no generan costes inventados.
+
 ### Plan económico y categorías — Fase 3-B
 
 - Incorporadas categorías económicas y configuración de indirectos aisladas por tenant, sin valores específicos de una empresa.

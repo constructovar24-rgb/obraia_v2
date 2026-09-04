@@ -44,6 +44,7 @@ class BackupArchiveService {
     'linea_presupuesto_costes_previstos',
     'planes_economicos',
     'plan_economico_partidas',
+    'hechos_coste',
   };
 
   final DatabaseSnapshotService _snapshotService;
@@ -406,6 +407,7 @@ class BackupArchiveService {
           .whereType<String>()
           .toSet();
       final expectedTables = _expectedTables.difference({
+        if (schemaVersion < 25) 'hechos_coste',
         if (schemaVersion < 24) ...{
           'categorias_economicas',
           'configuracion_economica',

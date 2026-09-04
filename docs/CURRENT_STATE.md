@@ -5,7 +5,7 @@ Fotografía verificada el **3 de septiembre de 2026**. Debe actualizarse cuando 
 ## Base tecnológica
 
 - Flutter/Dart con Riverpod.
-- Drift sobre SQLite; 22 tablas y `schemaVersion` 24. Las conexiones activan claves foráneas y todas las tablas empresariales, incluidas las económicas, exigen `tenantId`.
+- Drift sobre SQLite; 23 tablas y `schemaVersion` 25. Las conexiones activan claves foráneas y todas las tablas empresariales, incluidas las económicas, exigen `tenantId`.
 - `pdf` y `printing` para generación documental.
 - Windows como plataforma prioritaria.
 - 171 archivos Dart en la auditoría de esta línea base.
@@ -36,9 +36,11 @@ Con análisis, pruebas y compilación Windows superados, Expedientes queda técn
 
 Fase 3-B está implementada técnicamente. Cada tenant dispone de categorías económicas neutrales y porcentaje configurable de indirectos; las líneas de presupuesto en borrador pueden registrar categoría y coste previsto interno sin contaminar el PDF comercial. La aceptación crea atómicamente con el cambio de estado y Timeline un plan económico inmutable y sus partidas congeladas. El plan distingue coste cero de coste desconocido mediante cobertura completa, parcial o sin costes, y solo publica coste total, beneficio y margen cuando los datos necesarios están completos.
 
+Fase 3-C está implementada técnicamente sobre schema v25. `hechos_coste` es el ledger append-only y tenant-scoped del coste real: admite altas, reversiones y ajustes firmados, origen idempotente, categoría opcional y vínculos opcionales al plan/partida. Una Compra permanece provisional hasta confirmación explícita; entonces su base neta se registra atómicamente con clasificación y Timeline. Revertir o eliminar una Compra devengada añade el contramovimiento y nunca borra historia. Los estados manuales pendiente/pagada/anulada no determinan devengo y ninguna Compra legacy se convierte automáticamente.
+
 El esquema v24 añade categorías, configuración económica, costes previstos de borrador, planes y partidas de plan con claves compuestas e índices tenant-first. La migración v23 → v24 conserva los datos, inicializa categorías/configuración por tenant y no fabrica planes ni costes para presupuestos legacy. Backup/restauración y la copia preventiva admiten la nueva versión. Fase 3-C no se ha iniciado.
 
-La verificación de 3-B supera 252 pruebas, incluidas reglas económicas, aceptación/rollback, aislamiento, migración, backup y toda la regresión de Fase 2. `flutter analyze --no-pub`, `git diff --check` y `flutter build windows --debug --no-pub` también superan.
+La verificación acumulada supera 259 pruebas, incluidas reglas económicas, aceptación/rollback, aislamiento, migraciones, backup y toda la regresión de Fase 2. `flutter analyze --no-pub`, `git diff --check` y `flutter build windows --debug --no-pub` también superan.
 
 Fase 3-A está formalmente cerrada como diseño aprobado, no como implementación. `PHASE_3_ECONOMIC_MODEL.md` define la separación entre rentabilidad, facturación y tesorería; las magnitudes oficiales; el presupuesto aceptado como plan económico inmutable; hechos de coste; tarifa interna de mano de obra propia; indirectos sobre coste directo previsto; clasificación explícita de Compras por devengo; cierre/reapertura auditables; trazabilidad y una propuesta conceptual v23 → v24. No quedan decisiones de negocio bloqueantes para iniciar 3-B. No existen todavía nuevas tablas, migración v24, motor de rentabilidad ni interfaz económica.
 
@@ -81,4 +83,4 @@ Expediente/Obra es el octavo incremento y actúa como centro operativo. Su resum
 
 ## Próximo hito
 
-Tras revisar y publicar 3-B, el siguiente incremento recomendado es **Fase 3-C — hechos de coste y Compras**, en una entrega independiente. No se ha iniciado todavía.
+Tras revisar y publicar 3-C, el siguiente incremento recomendado es **Fase 3-D — mano de obra**, en una entrega independiente. No se ha iniciado todavía.
