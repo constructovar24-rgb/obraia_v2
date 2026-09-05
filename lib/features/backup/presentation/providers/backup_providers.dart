@@ -16,7 +16,7 @@ final backupControllerProvider = ChangeNotifierProvider<BackupController>((
   ref,
 ) {
   final controller = BackupController(
-    ref.read(databaseProvider),
+    ref.watch(databaseProvider),
     ref.read(backupRestoreCoordinatorProvider),
   );
   controller.checkDaily();

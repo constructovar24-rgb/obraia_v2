@@ -1,5 +1,8 @@
+import '../../../core/environment/app_environment.dart';
+
 class BackupManifest {
   const BackupManifest({
+    this.environment = AppEnvironment.development,
     required this.createdAtUtc,
     required this.appVersion,
     required this.appBuildNumber,
@@ -14,6 +17,7 @@ class BackupManifest {
   static const manifestPath = 'manifest.json';
   static const defaultDatabasePath = 'database/obraia.sqlite';
 
+  final AppEnvironment environment;
   final DateTime createdAtUtc;
   final String appVersion;
   final String appBuildNumber;
@@ -23,6 +27,7 @@ class BackupManifest {
   final List<BackupManifestEntry> entries;
 
   Map<String, Object> toJson() => <String, Object>{
+    'environment': environment.name,
     'format': format,
     'formatVersion': currentFormatVersion,
     'createdAtUtc': createdAtUtc.toUtc().toIso8601String(),
@@ -67,6 +72,9 @@ class BackupManifest {
     }
 
     final manifest = BackupManifest(
+      environment: map.containsKey('environment')
+          ? AppEnvironment.parse(map['environment'])
+          : AppEnvironment.development,
       createdAtUtc: createdAt,
       appVersion: _requiredNonEmptyString(map, 'appVersion'),
       appBuildNumber: _requiredNonEmptyString(map, 'appBuildNumber'),

@@ -1,5 +1,7 @@
 # Plan maestro de OBRA IA
 
+**PROD-1 — implementado y verificado técnicamente:** entornos Desarrollo y Producción con SQLite físicamente distintas; la base actual conserva su ruta como Desarrollo. Producción nueva utiliza solo inicialización técnica neutral, con schema 32 y sin copia de datos funcionales. Backups separados y restauración cruzada bloqueada; selector confirmado e indicador visible. No se han introducido datos reales. PROD-2, piloto real y Fase 5 no iniciados. Análisis limpio, 17 pruebas específicas y 333 totales superadas; Windows debug compilado en copia aislada idéntica porque la sesión abierta bloqueaba la carpeta habitual. Procedimiento y aceptación manual pendiente en [PROD1_ENVIRONMENTS.md](PROD1_ENVIRONMENTS.md).
+
 **FASE 4 COMPLETADA:** 4-A Planificación, 4-B Diario, 4-C Evidencias e incidencias, 4-D Circuito básico de proveedores, 4-E «Qué toca ahora» y 4-F Centro operativo están cerradas técnicamente sobre schema 32.
 
 **Siguiente hito: PUERTA DE ENTRADA A PRODUCCIÓN / PILOTO REAL**, antes de continuar con Fase 5. Debe incluir revisión operativa y protección de documentos originales: los archivos locales todavía no forman parte del backup SQLite y OBRA IA no debe considerarse archivo documental único hasta resolverla.

@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
+import '../core/environment/app_environment.dart';
+import '../core/environment/environment_paths.dart';
 import 'package:uuid/uuid.dart';
 import '../core/tenant/tenant_context.dart';
 import 'tables/tenants.dart';
@@ -150,17 +150,19 @@ part 'app_database.g.dart';
   ],
 )
 class AppDatabase extends _$AppDatabase {
-  AppDatabase()
+  AppDatabase({File? file, this.environment = AppEnvironment.development})
     : tenantContext = TenantContext(),
       _initialTenantId = null,
-      super(_openConnection());
+      super(_openConnection(file, environment));
 
   AppDatabase.forTesting(
     super.executor, {
     String tenantId = '00000000-0000-4000-8000-000000000023',
+    this.environment = AppEnvironment.development,
   }) : tenantContext = TenantContext(initialTenantId: tenantId),
        _initialTenantId = tenantId;
 
+  final AppEnvironment environment;
   final TenantContext tenantContext;
   final String? _initialTenantId;
 
@@ -169,8 +171,9 @@ class AppDatabase extends _$AppDatabase {
   Future<void> ensureReady() => customSelect('SELECT 1').getSingle();
 
   static Future<File> defaultDatabaseFile() async {
-    final directory = await getApplicationDocumentsDirectory();
-    return File(p.join(directory.path, 'obraia.sqlite'));
+    return (await EnvironmentPaths.resolve(
+      AppEnvironment.development,
+    )).databaseFile;
   }
 
   @override
@@ -1106,9 +1109,12 @@ class AppDatabase extends _$AppDatabase {
   }
 }
 
-LazyDatabase _openConnection() {
+LazyDatabase _openConnection(File? requestedFile, AppEnvironment environment) {
   return LazyDatabase(() async {
-    final file = await AppDatabase.defaultDatabaseFile();
+    final file =
+        requestedFile ??
+        (await EnvironmentPaths.resolve(environment)).databaseFile;
+    await file.parent.create(recursive: true);
     await const PreMigrationRecoveryService().protectBeforeUpgrade(
       file,
       supportedVersions: {22, 23, 24, 25, 26, 27, 28, 29, 30, 31},

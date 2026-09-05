@@ -2,6 +2,15 @@
 
 ## No publicado
 
+### PROD-1 — Separación de entornos
+
+- Conservada la SQLite actual como Desarrollo, sin moverla, limpiarla, renumerarla ni copiar sus datos.
+- Añadido perfil persistido, Producción independiente con inicialización neutral, indicador visible y cambio confirmado con reinicio de sesión/providers y lifecycle exclusivo.
+- Separadas las carpetas de backups; manifiesto con entorno y bloqueo de restauraciones cruzadas, incluidos backups legacy solo en Desarrollo.
+- Schema 32 sin cambios; sin datos reales, sin PROD-2 y sin Fase 5.
+- Verificados análisis limpio, 17 pruebas específicas, suite de 333 pruebas y build Windows debug en copia aislada idéntica; aceptación manual posterior pendiente.
+- Procedimiento, rutas, límites documentales y aceptación manual en [PROD1_ENVIRONMENTS.md](PROD1_ENVIRONMENTS.md).
+
 ### Centro operativo final de obra — Fase 4-F
 
 - Consolidado el Resumen del Expediente con recomendaciones, acciones rápidas, planificación, incidencias, diario, actividad, suministros, economía y administración.

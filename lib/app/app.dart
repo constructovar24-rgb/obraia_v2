@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../screens/home_screen.dart';
+import '../features/environment/presentation/widgets/environment_controls.dart';
 import 'app_theme.dart';
 
 class ObraIAApp extends StatelessWidget {
@@ -14,6 +15,12 @@ class ObraIAApp extends StatelessWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.light,
+      builder: (context, child) => Column(
+        children: [
+          const SafeArea(bottom: false, child: EnvironmentIndicator()),
+          Expanded(child: child!),
+        ],
+      ),
       home: const HomeScreen(),
     );
   }

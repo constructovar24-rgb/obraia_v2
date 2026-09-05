@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/backup_providers.dart';
+import '../../data/backup_restore_coordinator.dart';
 
 class BackupScreen extends ConsumerWidget {
   const BackupScreen({super.key});
@@ -66,6 +67,16 @@ class BackupScreen extends ConsumerWidget {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Copia restaurada correctamente.')),
+          );
+        }
+      } on BackupEnvironmentMismatchException {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'La copia pertenece a otro entorno. Restauración bloqueada; no se han sustituido datos.',
+              ),
+            ),
           );
         }
       } catch (_) {

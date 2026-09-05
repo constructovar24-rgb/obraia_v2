@@ -5,7 +5,7 @@ import 'app_database.dart';
 import 'database_lifecycle_controller.dart';
 
 final databaseLifecycleControllerProvider =
-    ChangeNotifierProvider<DatabaseLifecycleController>((ref) {
+    Provider<DatabaseLifecycleController>((ref) {
       final controller = DatabaseLifecycleController(
         initialDatabase: AppDatabase(),
         databaseFactory: AppDatabase.new,
@@ -19,7 +19,11 @@ final databaseLifecycleControllerProvider =
     });
 
 final databaseProvider = Provider<AppDatabase>((ref) {
-  return ref.watch(databaseLifecycleControllerProvider).activeDatabase;
+  final lifecycle = ref.watch(databaseLifecycleControllerProvider);
+  void invalidate() => ref.invalidateSelf();
+  lifecycle.addListener(invalidate);
+  ref.onDispose(() => lifecycle.removeListener(invalidate));
+  return lifecycle.activeDatabase;
 });
 
 final tenantContextProvider = Provider<TenantContext>((ref) {

@@ -1,5 +1,7 @@
 # Estado actual de OBRA IA
 
+**PROD-1 — implementado y verificado técnicamente:** entornos Desarrollo y Producción con SQLite físicamente distintas; la base actual conserva su ruta como Desarrollo. Producción nueva utiliza solo inicialización técnica neutral, con schema 32 y sin copia de datos funcionales. Backups separados y restauración cruzada bloqueada; selector confirmado e indicador visible. No se han introducido datos reales. PROD-2, piloto real y Fase 5 no iniciados. Análisis limpio, 17 pruebas específicas y 333 totales superadas; Windows debug compilado en copia aislada idéntica porque la sesión abierta bloqueaba la carpeta habitual. Procedimiento y aceptación manual pendiente en [PROD1_ENVIRONMENTS.md](PROD1_ENVIRONMENTS.md).
+
 Fase 4 está completada técnicamente. 4-F consolida el Expediente como centro operativo diario sobre `schemaVersion` 32: cabecera con estado operativo/económico, recomendaciones destacadas, acciones rápidas, planificación, incidencias, diario, actividad reciente, suministros, economía y agregados administrativos canónicos. No se añaden fuentes de verdad ni reglas económicas. El siguiente hito es la **Puerta de entrada a producción / piloto real**, antes de Fase 5.
 
 Fase 4-E está implementada técnicamente sin cambio de esquema. «Qué toca ahora» calcula recomendaciones deterministas, explicables y no persistidas a partir de Presupuestos, Planificación, Incidencias, Facturas/Cobros, Suministros y Economía. El motor puro no muta estados ni importes, no usa IA y mantiene separado el próximo paso manual. El Resumen muestra hasta cinco acciones prioritarias y permite navegar a su fuente.
@@ -103,4 +105,4 @@ Expediente/Obra es el octavo incremento y actúa como centro operativo. Su resum
 
 ## Próximo hito
 
-Tras revisar y publicar 4-C, el siguiente incremento previsto es **Fase 4-D — materiales y albaranes**, en una entrega independiente. No se ha iniciado todavía.
+Realizar la aceptación manual posterior de PROD-1 según su procedimiento. PROD-2 permanece pendiente y no iniciado; no comenzar Fase 5 ni introducir datos reales.

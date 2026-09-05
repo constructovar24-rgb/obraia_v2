@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import '../../../database/database_lifecycle_controller.dart';
+import '../../../database/app_database.dart';
 import '../domain/backup_manifest.dart';
 import 'backup_restore_staging_service.dart';
 import 'database_file_swap_service.dart';
@@ -28,6 +29,7 @@ class BackupRestoreCoordinator {
 
   Future<BackupRestoreResult> restore({
     required String backupPath,
+    AppDatabase? expectedDatabase,
     required Directory recoveryDirectory,
     required String appVersion,
     required String appBuildNumber,
@@ -36,12 +38,19 @@ class BackupRestoreCoordinator {
       PreparedRestoreBackup? prepared;
       try {
         final activeDatabase = databaseLifecycle.activeDatabase;
+        if (expectedDatabase != null &&
+            !identical(expectedDatabase, activeDatabase)) {
+          throw StateError("La sesión de restauración ya no está activa.");
+        }
         final activeDatabasePath = await databaseLifecycle.activeDatabasePath;
 
         prepared = await _stagingService.prepare(
           backupPath: backupPath,
           currentSchemaVersion: activeDatabase.schemaVersion,
         );
+        if (prepared.manifest.environment != activeDatabase.environment) {
+          throw const BackupEnvironmentMismatchException();
+        }
         final recoveryBackup = await _recoveryBackupService.create(
           database: activeDatabase,
           recoveryDirectory: recoveryDirectory,
@@ -80,4 +89,11 @@ class BackupRestoreResult {
   final BackupManifest incomingManifest;
   final RecoveryBackupResult recoveryBackup;
   final DatabaseSwapResult swapResult;
+}
+
+class BackupEnvironmentMismatchException implements Exception {
+  const BackupEnvironmentMismatchException();
+  @override
+  String toString() =>
+      'La copia pertenece a otro entorno. Restauración bloqueada.';
 }

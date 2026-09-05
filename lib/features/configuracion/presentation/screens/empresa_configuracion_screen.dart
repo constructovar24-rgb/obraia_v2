@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/shortcuts/app_shortcuts.dart';
 import '../../data/empresa_configuracion_repository.dart';
 import '../../../backup/presentation/screens/backup_screen.dart';
+import '../../../environment/presentation/widgets/environment_controls.dart';
+import '../../../environment/presentation/providers/environment_controller.dart';
 import '../../../economia/presentation/providers/plan_economico_providers.dart';
 
 class EmpresaConfiguracionScreen extends ConsumerStatefulWidget {
@@ -93,6 +95,8 @@ class _EmpresaConfiguracionScreenState
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
+                      const EnvironmentSelector(),
+                      const SizedBox(height: 20),
                       Align(
                         alignment: Alignment.centerLeft,
                         child: OutlinedButton.icon(
@@ -204,25 +208,46 @@ class _EmpresaConfiguracionScreenState
                             );
                             return;
                           }
-                          await repository.guardarConfiguracion(
-                            nombreEmpresa: _nombreEmpresaController.text.trim(),
-                            cif: _cifController.text.trim(),
-                            direccion: _direccionController.text.trim(),
-                            codigoPostal: _codigoPostalController.text.trim(),
-                            poblacion: _poblacionController.text.trim(),
-                            provincia: _provinciaController.text.trim(),
-                            telefono: _telefonoController.text.trim(),
-                            email: _emailController.text.trim(),
-                            web: _webController.text.trim(),
-                            logoPath: _logoPathController.text.trim().isEmpty
-                                ? null
-                                : _logoPathController.text.trim(),
+                          final planRepository = ref.read(
+                            planEconomicoRepositoryProvider,
                           );
-                          await ref
-                              .read(planEconomicoRepositoryProvider)
-                              .guardarPorcentajeIndirectos(
-                                porcentajeIndirectos,
-                              );
+                          try {
+                            await ref
+                                .read(environmentControllerProvider)
+                                .runOperation(() async {
+                                  await repository.guardarConfiguracion(
+                                    nombreEmpresa: _nombreEmpresaController.text
+                                        .trim(),
+                                    cif: _cifController.text.trim(),
+                                    direccion: _direccionController.text.trim(),
+                                    codigoPostal: _codigoPostalController.text
+                                        .trim(),
+                                    poblacion: _poblacionController.text.trim(),
+                                    provincia: _provinciaController.text.trim(),
+                                    telefono: _telefonoController.text.trim(),
+                                    email: _emailController.text.trim(),
+                                    web: _webController.text.trim(),
+                                    logoPath:
+                                        _logoPathController.text.trim().isEmpty
+                                        ? null
+                                        : _logoPathController.text.trim(),
+                                  );
+                                  await planRepository
+                                      .guardarPorcentajeIndirectos(
+                                        porcentajeIndirectos,
+                                      );
+                                });
+                          } catch (_) {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'No se pudo guardar. Comprueba que no haya otra operación en curso e inténtalo de nuevo.',
+                                ),
+                              ),
+                            );
+                            return;
+                          }
 
                           if (!context.mounted) return;
 

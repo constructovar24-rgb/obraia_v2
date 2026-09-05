@@ -118,6 +118,7 @@ class BackupArchiveService {
         sha256: sha256.convert(databaseBytes).toString(),
       );
       final manifest = BackupManifest(
+        environment: database.environment,
         createdAtUtc: (createdAtUtc ?? DateTime.now()).toUtc(),
         appVersion: _requiredMetadata(appVersion, 'appVersion'),
         appBuildNumber: _requiredMetadata(appBuildNumber, 'appBuildNumber'),
