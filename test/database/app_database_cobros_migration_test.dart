@@ -10,7 +10,7 @@ import 'package:sqlite3/sqlite3.dart';
 
 void main() {
   for (final version in [21]) {
-    test('migra y conserva cobros desde esquema $version a 27', () async {
+    test('migra y conserva cobros desde esquema $version a 30', () async {
       final directory = await Directory.systemTemp.createTemp(
         'obraia-cobros-migration-$version-',
       );
@@ -25,7 +25,7 @@ void main() {
         'factura',
       )).single;
 
-      expect(database.schemaVersion, 29);
+      expect(database.schemaVersion, 30);
       expect(movimiento.importe, 25.5);
       expect(movimiento.esReversion, isFalse);
       expect(movimiento.cobroOrigenId, isNull);
@@ -44,7 +44,7 @@ void main() {
       final versionPersistida = await database
           .customSelect('PRAGMA user_version')
           .getSingle();
-      expect(versionPersistida.data.values.single, 29);
+      expect(versionPersistida.data.values.single, 30);
       expect(
         await database.movimientosCreditoClienteDao.obtenerTodos(),
         isEmpty,

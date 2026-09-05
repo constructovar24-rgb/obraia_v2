@@ -26305,6 +26305,762 @@ class ActuacionesObraCompanion extends UpdateCompanion<ActuacionesObraData> {
   }
 }
 
+class $DiarioObraTable extends DiarioObra
+    with TableInfo<$DiarioObraTable, DiarioObraData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DiarioObraTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _expedienteIdMeta = const VerificationMeta(
+    'expedienteId',
+  );
+  @override
+  late final GeneratedColumn<String> expedienteId = GeneratedColumn<String>(
+    'expediente_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fechaTrabajoMeta = const VerificationMeta(
+    'fechaTrabajo',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaTrabajo = GeneratedColumn<DateTime>(
+    'fecha_trabajo',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _trabajosMeta = const VerificationMeta(
+    'trabajos',
+  );
+  @override
+  late final GeneratedColumn<String> trabajos = GeneratedColumn<String>(
+    'trabajos',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _observacionesMeta = const VerificationMeta(
+    'observaciones',
+  );
+  @override
+  late final GeneratedColumn<String> observaciones = GeneratedColumn<String>(
+    'observaciones',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _meteorologiaMeta = const VerificationMeta(
+    'meteorologia',
+  );
+  @override
+  late final GeneratedColumn<String> meteorologia = GeneratedColumn<String>(
+    'meteorologia',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _incidenciaTextoMeta = const VerificationMeta(
+    'incidenciaTexto',
+  );
+  @override
+  late final GeneratedColumn<String> incidenciaTexto = GeneratedColumn<String>(
+    'incidencia_texto',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _actuacionIdMeta = const VerificationMeta(
+    'actuacionId',
+  );
+  @override
+  late final GeneratedColumn<String> actuacionId = GeneratedColumn<String>(
+    'actuacion_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _anuladoMeta = const VerificationMeta(
+    'anulado',
+  );
+  @override
+  late final GeneratedColumn<bool> anulado = GeneratedColumn<bool>(
+    'anulado',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("anulado" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _fechaCreacionMeta = const VerificationMeta(
+    'fechaCreacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaCreacion =
+      GeneratedColumn<DateTime>(
+        'fecha_creacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+        defaultValue: currentDateAndTime,
+      );
+  static const VerificationMeta _fechaModificacionMeta = const VerificationMeta(
+    'fechaModificacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaModificacion =
+      GeneratedColumn<DateTime>(
+        'fecha_modificacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+        defaultValue: currentDateAndTime,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    id,
+    expedienteId,
+    fechaTrabajo,
+    trabajos,
+    observaciones,
+    meteorologia,
+    incidenciaTexto,
+    actuacionId,
+    anulado,
+    fechaCreacion,
+    fechaModificacion,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'diario_obra';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DiarioObraData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('expediente_id')) {
+      context.handle(
+        _expedienteIdMeta,
+        expedienteId.isAcceptableOrUnknown(
+          data['expediente_id']!,
+          _expedienteIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_expedienteIdMeta);
+    }
+    if (data.containsKey('fecha_trabajo')) {
+      context.handle(
+        _fechaTrabajoMeta,
+        fechaTrabajo.isAcceptableOrUnknown(
+          data['fecha_trabajo']!,
+          _fechaTrabajoMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaTrabajoMeta);
+    }
+    if (data.containsKey('trabajos')) {
+      context.handle(
+        _trabajosMeta,
+        trabajos.isAcceptableOrUnknown(data['trabajos']!, _trabajosMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_trabajosMeta);
+    }
+    if (data.containsKey('observaciones')) {
+      context.handle(
+        _observacionesMeta,
+        observaciones.isAcceptableOrUnknown(
+          data['observaciones']!,
+          _observacionesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('meteorologia')) {
+      context.handle(
+        _meteorologiaMeta,
+        meteorologia.isAcceptableOrUnknown(
+          data['meteorologia']!,
+          _meteorologiaMeta,
+        ),
+      );
+    }
+    if (data.containsKey('incidencia_texto')) {
+      context.handle(
+        _incidenciaTextoMeta,
+        incidenciaTexto.isAcceptableOrUnknown(
+          data['incidencia_texto']!,
+          _incidenciaTextoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('actuacion_id')) {
+      context.handle(
+        _actuacionIdMeta,
+        actuacionId.isAcceptableOrUnknown(
+          data['actuacion_id']!,
+          _actuacionIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('anulado')) {
+      context.handle(
+        _anuladoMeta,
+        anulado.isAcceptableOrUnknown(data['anulado']!, _anuladoMeta),
+      );
+    }
+    if (data.containsKey('fecha_creacion')) {
+      context.handle(
+        _fechaCreacionMeta,
+        fechaCreacion.isAcceptableOrUnknown(
+          data['fecha_creacion']!,
+          _fechaCreacionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('fecha_modificacion')) {
+      context.handle(
+        _fechaModificacionMeta,
+        fechaModificacion.isAcceptableOrUnknown(
+          data['fecha_modificacion']!,
+          _fechaModificacionMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {tenantId, id};
+  @override
+  DiarioObraData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DiarioObraData(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      expedienteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}expediente_id'],
+      )!,
+      fechaTrabajo: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_trabajo'],
+      )!,
+      trabajos: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trabajos'],
+      )!,
+      observaciones: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}observaciones'],
+      ),
+      meteorologia: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}meteorologia'],
+      ),
+      incidenciaTexto: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}incidencia_texto'],
+      ),
+      actuacionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}actuacion_id'],
+      ),
+      anulado: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}anulado'],
+      )!,
+      fechaCreacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_creacion'],
+      )!,
+      fechaModificacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_modificacion'],
+      )!,
+    );
+  }
+
+  @override
+  $DiarioObraTable createAlias(String alias) {
+    return $DiarioObraTable(attachedDatabase, alias);
+  }
+}
+
+class DiarioObraData extends DataClass implements Insertable<DiarioObraData> {
+  final String tenantId;
+  final String id;
+  final String expedienteId;
+  final DateTime fechaTrabajo;
+  final String trabajos;
+  final String? observaciones;
+  final String? meteorologia;
+  final String? incidenciaTexto;
+  final String? actuacionId;
+  final bool anulado;
+  final DateTime fechaCreacion;
+  final DateTime fechaModificacion;
+  const DiarioObraData({
+    required this.tenantId,
+    required this.id,
+    required this.expedienteId,
+    required this.fechaTrabajo,
+    required this.trabajos,
+    this.observaciones,
+    this.meteorologia,
+    this.incidenciaTexto,
+    this.actuacionId,
+    required this.anulado,
+    required this.fechaCreacion,
+    required this.fechaModificacion,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['id'] = Variable<String>(id);
+    map['expediente_id'] = Variable<String>(expedienteId);
+    map['fecha_trabajo'] = Variable<DateTime>(fechaTrabajo);
+    map['trabajos'] = Variable<String>(trabajos);
+    if (!nullToAbsent || observaciones != null) {
+      map['observaciones'] = Variable<String>(observaciones);
+    }
+    if (!nullToAbsent || meteorologia != null) {
+      map['meteorologia'] = Variable<String>(meteorologia);
+    }
+    if (!nullToAbsent || incidenciaTexto != null) {
+      map['incidencia_texto'] = Variable<String>(incidenciaTexto);
+    }
+    if (!nullToAbsent || actuacionId != null) {
+      map['actuacion_id'] = Variable<String>(actuacionId);
+    }
+    map['anulado'] = Variable<bool>(anulado);
+    map['fecha_creacion'] = Variable<DateTime>(fechaCreacion);
+    map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion);
+    return map;
+  }
+
+  DiarioObraCompanion toCompanion(bool nullToAbsent) {
+    return DiarioObraCompanion(
+      tenantId: Value(tenantId),
+      id: Value(id),
+      expedienteId: Value(expedienteId),
+      fechaTrabajo: Value(fechaTrabajo),
+      trabajos: Value(trabajos),
+      observaciones: observaciones == null && nullToAbsent
+          ? const Value.absent()
+          : Value(observaciones),
+      meteorologia: meteorologia == null && nullToAbsent
+          ? const Value.absent()
+          : Value(meteorologia),
+      incidenciaTexto: incidenciaTexto == null && nullToAbsent
+          ? const Value.absent()
+          : Value(incidenciaTexto),
+      actuacionId: actuacionId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(actuacionId),
+      anulado: Value(anulado),
+      fechaCreacion: Value(fechaCreacion),
+      fechaModificacion: Value(fechaModificacion),
+    );
+  }
+
+  factory DiarioObraData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DiarioObraData(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      id: serializer.fromJson<String>(json['id']),
+      expedienteId: serializer.fromJson<String>(json['expedienteId']),
+      fechaTrabajo: serializer.fromJson<DateTime>(json['fechaTrabajo']),
+      trabajos: serializer.fromJson<String>(json['trabajos']),
+      observaciones: serializer.fromJson<String?>(json['observaciones']),
+      meteorologia: serializer.fromJson<String?>(json['meteorologia']),
+      incidenciaTexto: serializer.fromJson<String?>(json['incidenciaTexto']),
+      actuacionId: serializer.fromJson<String?>(json['actuacionId']),
+      anulado: serializer.fromJson<bool>(json['anulado']),
+      fechaCreacion: serializer.fromJson<DateTime>(json['fechaCreacion']),
+      fechaModificacion: serializer.fromJson<DateTime>(
+        json['fechaModificacion'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'id': serializer.toJson<String>(id),
+      'expedienteId': serializer.toJson<String>(expedienteId),
+      'fechaTrabajo': serializer.toJson<DateTime>(fechaTrabajo),
+      'trabajos': serializer.toJson<String>(trabajos),
+      'observaciones': serializer.toJson<String?>(observaciones),
+      'meteorologia': serializer.toJson<String?>(meteorologia),
+      'incidenciaTexto': serializer.toJson<String?>(incidenciaTexto),
+      'actuacionId': serializer.toJson<String?>(actuacionId),
+      'anulado': serializer.toJson<bool>(anulado),
+      'fechaCreacion': serializer.toJson<DateTime>(fechaCreacion),
+      'fechaModificacion': serializer.toJson<DateTime>(fechaModificacion),
+    };
+  }
+
+  DiarioObraData copyWith({
+    String? tenantId,
+    String? id,
+    String? expedienteId,
+    DateTime? fechaTrabajo,
+    String? trabajos,
+    Value<String?> observaciones = const Value.absent(),
+    Value<String?> meteorologia = const Value.absent(),
+    Value<String?> incidenciaTexto = const Value.absent(),
+    Value<String?> actuacionId = const Value.absent(),
+    bool? anulado,
+    DateTime? fechaCreacion,
+    DateTime? fechaModificacion,
+  }) => DiarioObraData(
+    tenantId: tenantId ?? this.tenantId,
+    id: id ?? this.id,
+    expedienteId: expedienteId ?? this.expedienteId,
+    fechaTrabajo: fechaTrabajo ?? this.fechaTrabajo,
+    trabajos: trabajos ?? this.trabajos,
+    observaciones: observaciones.present
+        ? observaciones.value
+        : this.observaciones,
+    meteorologia: meteorologia.present ? meteorologia.value : this.meteorologia,
+    incidenciaTexto: incidenciaTexto.present
+        ? incidenciaTexto.value
+        : this.incidenciaTexto,
+    actuacionId: actuacionId.present ? actuacionId.value : this.actuacionId,
+    anulado: anulado ?? this.anulado,
+    fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+    fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+  );
+  DiarioObraData copyWithCompanion(DiarioObraCompanion data) {
+    return DiarioObraData(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      id: data.id.present ? data.id.value : this.id,
+      expedienteId: data.expedienteId.present
+          ? data.expedienteId.value
+          : this.expedienteId,
+      fechaTrabajo: data.fechaTrabajo.present
+          ? data.fechaTrabajo.value
+          : this.fechaTrabajo,
+      trabajos: data.trabajos.present ? data.trabajos.value : this.trabajos,
+      observaciones: data.observaciones.present
+          ? data.observaciones.value
+          : this.observaciones,
+      meteorologia: data.meteorologia.present
+          ? data.meteorologia.value
+          : this.meteorologia,
+      incidenciaTexto: data.incidenciaTexto.present
+          ? data.incidenciaTexto.value
+          : this.incidenciaTexto,
+      actuacionId: data.actuacionId.present
+          ? data.actuacionId.value
+          : this.actuacionId,
+      anulado: data.anulado.present ? data.anulado.value : this.anulado,
+      fechaCreacion: data.fechaCreacion.present
+          ? data.fechaCreacion.value
+          : this.fechaCreacion,
+      fechaModificacion: data.fechaModificacion.present
+          ? data.fechaModificacion.value
+          : this.fechaModificacion,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DiarioObraData(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('fechaTrabajo: $fechaTrabajo, ')
+          ..write('trabajos: $trabajos, ')
+          ..write('observaciones: $observaciones, ')
+          ..write('meteorologia: $meteorologia, ')
+          ..write('incidenciaTexto: $incidenciaTexto, ')
+          ..write('actuacionId: $actuacionId, ')
+          ..write('anulado: $anulado, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    tenantId,
+    id,
+    expedienteId,
+    fechaTrabajo,
+    trabajos,
+    observaciones,
+    meteorologia,
+    incidenciaTexto,
+    actuacionId,
+    anulado,
+    fechaCreacion,
+    fechaModificacion,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DiarioObraData &&
+          other.tenantId == this.tenantId &&
+          other.id == this.id &&
+          other.expedienteId == this.expedienteId &&
+          other.fechaTrabajo == this.fechaTrabajo &&
+          other.trabajos == this.trabajos &&
+          other.observaciones == this.observaciones &&
+          other.meteorologia == this.meteorologia &&
+          other.incidenciaTexto == this.incidenciaTexto &&
+          other.actuacionId == this.actuacionId &&
+          other.anulado == this.anulado &&
+          other.fechaCreacion == this.fechaCreacion &&
+          other.fechaModificacion == this.fechaModificacion);
+}
+
+class DiarioObraCompanion extends UpdateCompanion<DiarioObraData> {
+  final Value<String> tenantId;
+  final Value<String> id;
+  final Value<String> expedienteId;
+  final Value<DateTime> fechaTrabajo;
+  final Value<String> trabajos;
+  final Value<String?> observaciones;
+  final Value<String?> meteorologia;
+  final Value<String?> incidenciaTexto;
+  final Value<String?> actuacionId;
+  final Value<bool> anulado;
+  final Value<DateTime> fechaCreacion;
+  final Value<DateTime> fechaModificacion;
+  final Value<int> rowid;
+  const DiarioObraCompanion({
+    this.tenantId = const Value.absent(),
+    this.id = const Value.absent(),
+    this.expedienteId = const Value.absent(),
+    this.fechaTrabajo = const Value.absent(),
+    this.trabajos = const Value.absent(),
+    this.observaciones = const Value.absent(),
+    this.meteorologia = const Value.absent(),
+    this.incidenciaTexto = const Value.absent(),
+    this.actuacionId = const Value.absent(),
+    this.anulado = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.fechaModificacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DiarioObraCompanion.insert({
+    required String tenantId,
+    required String id,
+    required String expedienteId,
+    required DateTime fechaTrabajo,
+    required String trabajos,
+    this.observaciones = const Value.absent(),
+    this.meteorologia = const Value.absent(),
+    this.incidenciaTexto = const Value.absent(),
+    this.actuacionId = const Value.absent(),
+    this.anulado = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.fechaModificacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       id = Value(id),
+       expedienteId = Value(expedienteId),
+       fechaTrabajo = Value(fechaTrabajo),
+       trabajos = Value(trabajos);
+  static Insertable<DiarioObraData> custom({
+    Expression<String>? tenantId,
+    Expression<String>? id,
+    Expression<String>? expedienteId,
+    Expression<DateTime>? fechaTrabajo,
+    Expression<String>? trabajos,
+    Expression<String>? observaciones,
+    Expression<String>? meteorologia,
+    Expression<String>? incidenciaTexto,
+    Expression<String>? actuacionId,
+    Expression<bool>? anulado,
+    Expression<DateTime>? fechaCreacion,
+    Expression<DateTime>? fechaModificacion,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (id != null) 'id': id,
+      if (expedienteId != null) 'expediente_id': expedienteId,
+      if (fechaTrabajo != null) 'fecha_trabajo': fechaTrabajo,
+      if (trabajos != null) 'trabajos': trabajos,
+      if (observaciones != null) 'observaciones': observaciones,
+      if (meteorologia != null) 'meteorologia': meteorologia,
+      if (incidenciaTexto != null) 'incidencia_texto': incidenciaTexto,
+      if (actuacionId != null) 'actuacion_id': actuacionId,
+      if (anulado != null) 'anulado': anulado,
+      if (fechaCreacion != null) 'fecha_creacion': fechaCreacion,
+      if (fechaModificacion != null) 'fecha_modificacion': fechaModificacion,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DiarioObraCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? id,
+    Value<String>? expedienteId,
+    Value<DateTime>? fechaTrabajo,
+    Value<String>? trabajos,
+    Value<String?>? observaciones,
+    Value<String?>? meteorologia,
+    Value<String?>? incidenciaTexto,
+    Value<String?>? actuacionId,
+    Value<bool>? anulado,
+    Value<DateTime>? fechaCreacion,
+    Value<DateTime>? fechaModificacion,
+    Value<int>? rowid,
+  }) {
+    return DiarioObraCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      id: id ?? this.id,
+      expedienteId: expedienteId ?? this.expedienteId,
+      fechaTrabajo: fechaTrabajo ?? this.fechaTrabajo,
+      trabajos: trabajos ?? this.trabajos,
+      observaciones: observaciones ?? this.observaciones,
+      meteorologia: meteorologia ?? this.meteorologia,
+      incidenciaTexto: incidenciaTexto ?? this.incidenciaTexto,
+      actuacionId: actuacionId ?? this.actuacionId,
+      anulado: anulado ?? this.anulado,
+      fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+      fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (expedienteId.present) {
+      map['expediente_id'] = Variable<String>(expedienteId.value);
+    }
+    if (fechaTrabajo.present) {
+      map['fecha_trabajo'] = Variable<DateTime>(fechaTrabajo.value);
+    }
+    if (trabajos.present) {
+      map['trabajos'] = Variable<String>(trabajos.value);
+    }
+    if (observaciones.present) {
+      map['observaciones'] = Variable<String>(observaciones.value);
+    }
+    if (meteorologia.present) {
+      map['meteorologia'] = Variable<String>(meteorologia.value);
+    }
+    if (incidenciaTexto.present) {
+      map['incidencia_texto'] = Variable<String>(incidenciaTexto.value);
+    }
+    if (actuacionId.present) {
+      map['actuacion_id'] = Variable<String>(actuacionId.value);
+    }
+    if (anulado.present) {
+      map['anulado'] = Variable<bool>(anulado.value);
+    }
+    if (fechaCreacion.present) {
+      map['fecha_creacion'] = Variable<DateTime>(fechaCreacion.value);
+    }
+    if (fechaModificacion.present) {
+      map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DiarioObraCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('fechaTrabajo: $fechaTrabajo, ')
+          ..write('trabajos: $trabajos, ')
+          ..write('observaciones: $observaciones, ')
+          ..write('meteorologia: $meteorologia, ')
+          ..write('incidenciaTexto: $incidenciaTexto, ')
+          ..write('actuacionId: $actuacionId, ')
+          ..write('anulado: $anulado, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -26363,6 +27119,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ActuacionesObraTable actuacionesObra = $ActuacionesObraTable(
     this,
   );
+  late final $DiarioObraTable diarioObra = $DiarioObraTable(this);
   late final ExpedientesDao expedientesDao = ExpedientesDao(
     this as AppDatabase,
   );
@@ -26414,6 +27171,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final PlanificacionObraDao planificacionObraDao = PlanificacionObraDao(
     this as AppDatabase,
   );
+  late final DiarioObraDao diarioObraDao = DiarioObraDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -26452,6 +27210,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     cierresEconomicosObra,
     reaperturasEconomicasObra,
     actuacionesObra,
+    diarioObra,
   ];
 }
 
@@ -27164,6 +27923,24 @@ final class $$TenantsTableReferences
     final cache = $_typedResult.readTableOrNull(
       _actuacionesObraRefsTable($_db),
     );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$DiarioObraTable, List<DiarioObraData>>
+  _diarioObraRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.diarioObra,
+    aliasName: 'tenants__id__diario_obra__tenant_id',
+  );
+
+  $$DiarioObraTableProcessedTableManager get diarioObraRefs {
+    final manager = $$DiarioObraTableTableManager(
+      $_db,
+      $_db.diarioObra,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_diarioObraRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -28015,6 +28792,31 @@ class $$TenantsTableFilterComposer
           }) => $$ActuacionesObraTableFilterComposer(
             $db: $db,
             $table: $db.actuacionesObra,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> diarioObraRefs(
+    Expression<bool> Function($$DiarioObraTableFilterComposer f) f,
+  ) {
+    final $$DiarioObraTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.diarioObra,
+      getReferencedColumn: (t) => t.tenantId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DiarioObraTableFilterComposer(
+            $db: $db,
+            $table: $db.diarioObra,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -28908,6 +29710,31 @@ class $$TenantsTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> diarioObraRefs<T extends Object>(
+    Expression<T> Function($$DiarioObraTableAnnotationComposer a) f,
+  ) {
+    final $$DiarioObraTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.diarioObra,
+      getReferencedColumn: (t) => t.tenantId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DiarioObraTableAnnotationComposer(
+            $db: $db,
+            $table: $db.diarioObra,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$TenantsTableTableManager
@@ -28956,6 +29783,7 @@ class $$TenantsTableTableManager
             bool cierresEconomicosObraRefs,
             bool reaperturasEconomicasObraRefs,
             bool actuacionesObraRefs,
+            bool diarioObraRefs,
           })
         > {
   $$TenantsTableTableManager(_$AppDatabase db, $TenantsTable table)
@@ -29039,6 +29867,7 @@ class $$TenantsTableTableManager
                 cierresEconomicosObraRefs = false,
                 reaperturasEconomicasObraRefs = false,
                 actuacionesObraRefs = false,
+                diarioObraRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -29082,6 +29911,7 @@ class $$TenantsTableTableManager
                     if (reaperturasEconomicasObraRefs)
                       db.reaperturasEconomicasObra,
                     if (actuacionesObraRefs) db.actuacionesObra,
+                    if (diarioObraRefs) db.diarioObra,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -29754,6 +30584,27 @@ class $$TenantsTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (diarioObraRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          DiarioObraData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._diarioObraRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).diarioObraRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -29807,6 +30658,7 @@ typedef $$TenantsTableProcessedTableManager =
         bool cierresEconomicosObraRefs,
         bool reaperturasEconomicasObraRefs,
         bool actuacionesObraRefs,
+        bool diarioObraRefs,
       })
     >;
 typedef $$ClientesTableCreateCompanionBuilder =
@@ -45725,6 +46577,472 @@ typedef $$ActuacionesObraTableProcessedTableManager =
       ActuacionesObraData,
       PrefetchHooks Function({bool tenantId})
     >;
+typedef $$DiarioObraTableCreateCompanionBuilder =
+    DiarioObraCompanion Function({
+      required String tenantId,
+      required String id,
+      required String expedienteId,
+      required DateTime fechaTrabajo,
+      required String trabajos,
+      Value<String?> observaciones,
+      Value<String?> meteorologia,
+      Value<String?> incidenciaTexto,
+      Value<String?> actuacionId,
+      Value<bool> anulado,
+      Value<DateTime> fechaCreacion,
+      Value<DateTime> fechaModificacion,
+      Value<int> rowid,
+    });
+typedef $$DiarioObraTableUpdateCompanionBuilder =
+    DiarioObraCompanion Function({
+      Value<String> tenantId,
+      Value<String> id,
+      Value<String> expedienteId,
+      Value<DateTime> fechaTrabajo,
+      Value<String> trabajos,
+      Value<String?> observaciones,
+      Value<String?> meteorologia,
+      Value<String?> incidenciaTexto,
+      Value<String?> actuacionId,
+      Value<bool> anulado,
+      Value<DateTime> fechaCreacion,
+      Value<DateTime> fechaModificacion,
+      Value<int> rowid,
+    });
+
+final class $$DiarioObraTableReferences
+    extends BaseReferences<_$AppDatabase, $DiarioObraTable, DiarioObraData> {
+  $$DiarioObraTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) =>
+      db.tenants.createAlias('diario_obra__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$DiarioObraTableFilterComposer
+    extends Composer<_$AppDatabase, $DiarioObraTable> {
+  $$DiarioObraTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaTrabajo => $composableBuilder(
+    column: $table.fechaTrabajo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get trabajos => $composableBuilder(
+    column: $table.trabajos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get meteorologia => $composableBuilder(
+    column: $table.meteorologia,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get incidenciaTexto => $composableBuilder(
+    column: $table.incidenciaTexto,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get actuacionId => $composableBuilder(
+    column: $table.actuacionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get anulado => $composableBuilder(
+    column: $table.anulado,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$DiarioObraTableOrderingComposer
+    extends Composer<_$AppDatabase, $DiarioObraTable> {
+  $$DiarioObraTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaTrabajo => $composableBuilder(
+    column: $table.fechaTrabajo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get trabajos => $composableBuilder(
+    column: $table.trabajos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get meteorologia => $composableBuilder(
+    column: $table.meteorologia,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get incidenciaTexto => $composableBuilder(
+    column: $table.incidenciaTexto,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get actuacionId => $composableBuilder(
+    column: $table.actuacionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get anulado => $composableBuilder(
+    column: $table.anulado,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$DiarioObraTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DiarioObraTable> {
+  $$DiarioObraTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaTrabajo => $composableBuilder(
+    column: $table.fechaTrabajo,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get trabajos =>
+      $composableBuilder(column: $table.trabajos, builder: (column) => column);
+
+  GeneratedColumn<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get meteorologia => $composableBuilder(
+    column: $table.meteorologia,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get incidenciaTexto => $composableBuilder(
+    column: $table.incidenciaTexto,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get actuacionId => $composableBuilder(
+    column: $table.actuacionId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get anulado =>
+      $composableBuilder(column: $table.anulado, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => column,
+  );
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$DiarioObraTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DiarioObraTable,
+          DiarioObraData,
+          $$DiarioObraTableFilterComposer,
+          $$DiarioObraTableOrderingComposer,
+          $$DiarioObraTableAnnotationComposer,
+          $$DiarioObraTableCreateCompanionBuilder,
+          $$DiarioObraTableUpdateCompanionBuilder,
+          (DiarioObraData, $$DiarioObraTableReferences),
+          DiarioObraData,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$DiarioObraTableTableManager(_$AppDatabase db, $DiarioObraTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DiarioObraTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DiarioObraTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DiarioObraTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> id = const Value.absent(),
+                Value<String> expedienteId = const Value.absent(),
+                Value<DateTime> fechaTrabajo = const Value.absent(),
+                Value<String> trabajos = const Value.absent(),
+                Value<String?> observaciones = const Value.absent(),
+                Value<String?> meteorologia = const Value.absent(),
+                Value<String?> incidenciaTexto = const Value.absent(),
+                Value<String?> actuacionId = const Value.absent(),
+                Value<bool> anulado = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<DateTime> fechaModificacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DiarioObraCompanion(
+                tenantId: tenantId,
+                id: id,
+                expedienteId: expedienteId,
+                fechaTrabajo: fechaTrabajo,
+                trabajos: trabajos,
+                observaciones: observaciones,
+                meteorologia: meteorologia,
+                incidenciaTexto: incidenciaTexto,
+                actuacionId: actuacionId,
+                anulado: anulado,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String id,
+                required String expedienteId,
+                required DateTime fechaTrabajo,
+                required String trabajos,
+                Value<String?> observaciones = const Value.absent(),
+                Value<String?> meteorologia = const Value.absent(),
+                Value<String?> incidenciaTexto = const Value.absent(),
+                Value<String?> actuacionId = const Value.absent(),
+                Value<bool> anulado = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<DateTime> fechaModificacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DiarioObraCompanion.insert(
+                tenantId: tenantId,
+                id: id,
+                expedienteId: expedienteId,
+                fechaTrabajo: fechaTrabajo,
+                trabajos: trabajos,
+                observaciones: observaciones,
+                meteorologia: meteorologia,
+                incidenciaTexto: incidenciaTexto,
+                actuacionId: actuacionId,
+                anulado: anulado,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$DiarioObraTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable: $$DiarioObraTableReferences
+                                    ._tenantIdTable(db),
+                                referencedColumn: $$DiarioObraTableReferences
+                                    ._tenantIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$DiarioObraTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DiarioObraTable,
+      DiarioObraData,
+      $$DiarioObraTableFilterComposer,
+      $$DiarioObraTableOrderingComposer,
+      $$DiarioObraTableAnnotationComposer,
+      $$DiarioObraTableCreateCompanionBuilder,
+      $$DiarioObraTableUpdateCompanionBuilder,
+      (DiarioObraData, $$DiarioObraTableReferences),
+      DiarioObraData,
+      PrefetchHooks Function({bool tenantId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -45822,4 +47140,6 @@ class $AppDatabaseManager {
       );
   $$ActuacionesObraTableTableManager get actuacionesObra =>
       $$ActuacionesObraTableTableManager(_db, _db.actuacionesObra);
+  $$DiarioObraTableTableManager get diarioObra =>
+      $$DiarioObraTableTableManager(_db, _db.diarioObra);
 }

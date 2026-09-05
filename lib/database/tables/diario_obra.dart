@@ -2,19 +2,21 @@
 
 import 'package:drift/drift.dart';
 
+import 'actuaciones_obra.dart';
 import 'expedientes.dart';
 import 'tenants.dart';
 
-class ActuacionesObra extends Table {
+class DiarioObra extends Table {
   TextColumn get tenantId => text().references(Tenants, #id)();
   TextColumn get id => text()();
   TextColumn get expedienteId => text()();
-  TextColumn get tipo => text()();
-  TextColumn get descripcion => text()();
-  DateTimeColumn get fechaPrevista => dateTime().nullable()();
-  TextColumn get estado => text().withDefault(const Constant('pendiente'))();
-  IntColumn get orden => integer().withDefault(const Constant(0))();
+  DateTimeColumn get fechaTrabajo => dateTime()();
+  TextColumn get trabajos => text()();
   TextColumn get observaciones => text().nullable()();
+  TextColumn get meteorologia => text().nullable()();
+  TextColumn get incidenciaTexto => text().nullable()();
+  TextColumn get actuacionId => text().nullable()();
+  BoolColumn get anulado => boolean().withDefault(const Constant(false))();
   DateTimeColumn get fechaCreacion =>
       dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get fechaModificacion =>
@@ -26,8 +28,7 @@ class ActuacionesObra extends Table {
   @override
   List<String> get customConstraints => [
     'FOREIGN KEY (tenant_id, expediente_id) REFERENCES expedientes (tenant_id, id)',
-    "CHECK (tipo IN ('proximoPaso', 'actuacion'))",
-    "CHECK (estado IN ('pendiente', 'completado', 'cancelado'))",
-    'CHECK (length(trim(descripcion)) > 0)',
+    'FOREIGN KEY (tenant_id, actuacion_id) REFERENCES actuaciones_obra (tenant_id, id)',
+    'CHECK (length(trim(trabajos)) > 0)',
   ];
 }

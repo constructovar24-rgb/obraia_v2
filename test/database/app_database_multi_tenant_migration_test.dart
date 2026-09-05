@@ -40,7 +40,7 @@ void main() {
     addTearDown(database.close);
     await database.ensureReady();
 
-    expect(database.schemaVersion, 29);
+    expect(database.schemaVersion, 30);
     expect(await database.select(database.tenants).get(), hasLength(1));
     for (final tabla in _tablasEmpresariales) {
       final filas = await database

@@ -178,5 +178,9 @@ String timelineEventTypeLabel(TimelineEventType tipo) {
       return 'Actuación completada';
     case TimelineEventType.actuacionObraCancelada:
       return 'Actuación cancelada';
+    case TimelineEventType.entradaDiarioObraCreada:
+      return 'Entrada de diario creada';
+    case TimelineEventType.entradaDiarioObraAnulada:
+      return 'Entrada de diario anulada';
   }
 }

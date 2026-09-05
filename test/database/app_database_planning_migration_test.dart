@@ -36,7 +36,7 @@ void main() {
 
     db = AppDatabase.forTesting(NativeDatabase(file));
     await db.ensureReady();
-    expect(db.schemaVersion, 29);
+    expect(db.schemaVersion, 30);
     final row = await db.planificacionObraDao.obtenerPlanificacion('obra');
     expect(row!.estadoOperativo, 'pendiente');
     expect(row.fechaInicioPrevista, isNull);

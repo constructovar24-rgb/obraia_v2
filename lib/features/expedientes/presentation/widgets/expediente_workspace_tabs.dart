@@ -16,6 +16,7 @@ class ExpedienteWorkspaceTabs extends StatelessWidget {
     'Datos generales',
     'Economía',
     'Planificación',
+    'Diario de obra',
   ];
 
   static int get length => labels.length;

@@ -2,6 +2,15 @@
 
 ## No publicado
 
+### Diario de obra — Fase 4-B
+
+- Añadido un Diario tenant-scoped dentro de cada Expediente con fecha, trabajos libres, observaciones, meteorología manual, incidencia textual y actuación opcional.
+- Incorporadas edición controlada, anulación lógica, orden cronológico y resumen compacto de la última entrada.
+- Mostradas las horas del día desde los partes existentes de Mano de obra, excluyendo partes revertidos y sin duplicar registros ni costes.
+- Registradas creación y anulación como eventos relevantes de Timeline en la misma transacción; las ediciones menores no generan ruido.
+- Elevado Drift a schema v30 con relaciones compuestas, índices tenant-first, backup/restauración y migración v29 a v30 sin datos inventados.
+- Añadida UI adaptable con validación, actuación opcional y protección efectiva frente al doble guardado.
+
 ### Planificación básica de obra — Fase 4-A
 
 - Añadido estado operativo independiente: pendiente, preparada, en ejecución, pausada, finalizada o cancelada.

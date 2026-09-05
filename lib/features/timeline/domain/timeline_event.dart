@@ -44,6 +44,8 @@ enum TimelineEventType {
   actuacionObraCreada,
   actuacionObraCompletada,
   actuacionObraCancelada,
+  entradaDiarioObraCreada,
+  entradaDiarioObraAnulada,
 }
 
 enum TimelineCreditoTipo {

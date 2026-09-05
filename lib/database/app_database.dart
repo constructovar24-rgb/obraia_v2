@@ -39,6 +39,7 @@ import 'tables/estados_economicos_obra.dart';
 import 'tables/cierres_economicos_obra.dart';
 import 'tables/reaperturas_economicas_obra.dart';
 import 'tables/actuaciones_obra.dart';
+import 'tables/diario_obra.dart';
 import 'dao/expedientes_dao.dart';
 import 'dao/clientes_dao.dart';
 import 'dao/presupuestos_dao.dart';
@@ -61,6 +62,7 @@ import 'dao/mano_obra_dao.dart';
 import 'dao/prevision_economica_dao.dart';
 import 'dao/cierre_economico_dao.dart';
 import 'dao/planificacion_obra_dao.dart';
+import 'dao/diario_obra_dao.dart';
 import 'pre_migration_recovery_service.dart';
 
 part 'app_database.g.dart';
@@ -100,6 +102,7 @@ part 'app_database.g.dart';
     CierresEconomicosObra,
     ReaperturasEconomicasObra,
     ActuacionesObra,
+    DiarioObra,
   ],
   daos: [
     ExpedientesDao,
@@ -124,6 +127,7 @@ part 'app_database.g.dart';
     PrevisionEconomicaDao,
     CierreEconomicoDao,
     PlanificacionObraDao,
+    DiarioObraDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -151,7 +155,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 29;
+  int get schemaVersion => 30;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -445,6 +449,10 @@ class AppDatabase extends _$AppDatabase {
           await _crearIndicesPlanificacion();
         }
       }
+      if (from < 30 && await _existeTabla('expedientes')) {
+        await m.createTable(diarioObra);
+        await _crearIndicesDiarioObra();
+      }
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
@@ -712,6 +720,18 @@ class AppDatabase extends _$AppDatabase {
     await _crearIndicesPrevisionEconomica();
     await _crearIndicesCierreEconomico();
     await _crearIndicesPlanificacion();
+    await _crearIndicesDiarioObra();
+  }
+
+  Future<void> _crearIndicesDiarioObra() async {
+    if (!await _existeTabla('diario_obra')) return;
+    for (final statement in <String>[
+      'CREATE UNIQUE INDEX IF NOT EXISTS diario_obra_tenant_id_unica ON diario_obra(tenant_id,id)',
+      'CREATE INDEX IF NOT EXISTS diario_obra_tenant_expediente_fecha_idx ON diario_obra(tenant_id,expediente_id,fecha_trabajo,fecha_creacion)',
+      'CREATE INDEX IF NOT EXISTS diario_obra_tenant_actuacion_idx ON diario_obra(tenant_id,actuacion_id)',
+    ]) {
+      await customStatement(statement);
+    }
   }
 
   Future<void> _crearIndicesPlanificacion() async {
@@ -1027,7 +1047,7 @@ LazyDatabase _openConnection() {
     final file = await AppDatabase.defaultDatabaseFile();
     await const PreMigrationRecoveryService().protectBeforeUpgrade(
       file,
-      supportedVersions: {22, 23, 24, 25, 26, 27, 28},
+      supportedVersions: {22, 23, 24, 25, 26, 27, 28, 29},
     );
     return NativeDatabase(file);
   });
