@@ -7,7 +7,7 @@ import '../../../../core/widgets/money_text.dart';
 import '../../../certificaciones/presentation/providers/certificacion_providers.dart';
 import '../../../documentos/domain/documento.dart';
 import '../../../documentos/presentation/providers/documento_providers.dart';
-import '../../../economia/presentation/widgets/prevision_economica_panel.dart';
+import '../../../economia/presentation/widgets/centro_economico_obra.dart';
 import '../../../timeline/presentation/providers/timeline_providers.dart';
 import '../providers/expediente_workspace_providers.dart';
 
@@ -96,7 +96,7 @@ class ExpedienteResumenTab extends ConsumerWidget {
                 },
               ),
               const SizedBox(height: AppSpacing.lg),
-              PrevisionEconomicaPanel(expedienteId: expedienteId),
+              EconomiaResumenCompacto(expedienteId: expedienteId),
               const SizedBox(height: AppSpacing.lg),
               AppCard(
                 child: Column(

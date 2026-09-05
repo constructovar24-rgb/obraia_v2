@@ -216,3 +216,9 @@
 - Añadido forecast de obra con cobertura explícita, comparación con el plan original y soporte de beneficio/margen negativos.
 - Añadida migración segura v26→v27, regeneración Drift, compatibilidad de backup y panel mínimo en el resumen del Expediente.
 - Añadidas pruebas de consumo parcial/completo, sobreconsumo, reversión, versionado, rollback de Timeline y migración sin datos fabricados.
+# Fase 3-F
+
+- Añadido centro económico profesional como pestaña del Expediente.
+- Añadidos bloques de previsto inicial, situación actual y previsión final, con desviaciones, cobertura y alertas visuales.
+- Añadido desglose real por categorías y «Sin asignar», integración del resumen de mano de obra y navegación a áreas relacionadas.
+- El Resumen del Expediente muestra una lectura económica compacta; no cambia el esquema 27 ni las superficies comerciales.

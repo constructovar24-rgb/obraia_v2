@@ -28,6 +28,7 @@ import '../../../documentos/presentation/screens/nuevo_documento_screen.dart';
 import '../../../facturas/presentation/widgets/facturas_tab.dart';
 import '../../../compras/presentation/widgets/compras_tab.dart';
 import '../../../mano_obra/presentation/widgets/mano_obra_tab.dart';
+import '../../../economia/presentation/widgets/centro_economico_obra.dart';
 import '../../../timeline/presentation/timeline_page.dart';
 import '../widgets/expediente_resumen_tab.dart';
 import 'cliente_tab.dart';
@@ -179,6 +180,7 @@ class ExpedienteDetailScreen extends ConsumerWidget {
                     TimelinePage(expedienteId: id),
                     ClienteTab(expedienteId: id),
                     DatosGeneralesTab(id: id, codigoExpediente: codigoActual),
+                    CentroEconomicoObra(expedienteId: id),
                     // const Center(child: Text('En desarrollo')), // Contenido de Notas (oculto temporalmente).
                   ],
                 ),

@@ -79,6 +79,7 @@ class ResumenForecastObra {
     required this.margenFinalEstimadoPorcentaje,
     required this.porCategoriaCentimos,
     required this.tieneCompromisosSobreconsumidos,
+    required this.desgloseCategorias,
   });
   final int costeRealCentimos;
   final int comprometidoPendienteCentimos;
@@ -94,6 +95,17 @@ class ResumenForecastObra {
   final double? margenFinalEstimadoPorcentaje;
   final Map<String?, int> porCategoriaCentimos;
   final bool tieneCompromisosSobreconsumidos;
+  final List<DesgloseForecastCategoria> desgloseCategorias;
+
+  int? get desviacionCosteCentimos =>
+      costeFinalEstimadoCentimos == null || costePlanificadoCentimos == null
+      ? null
+      : costeFinalEstimadoCentimos! - costePlanificadoCentimos!;
+  int? get desviacionBeneficioCentimos =>
+      beneficioFinalEstimadoCentimos == null ||
+          beneficioPlanificadoCentimos == null
+      ? null
+      : beneficioFinalEstimadoCentimos! - beneficioPlanificadoCentimos!;
 
   bool get forecastSuperaPlan =>
       costeFinalEstimadoCentimos != null &&
@@ -106,4 +118,27 @@ class ResumenForecastObra {
       margenFinalEstimadoPorcentaje != null &&
       margenPlanificadoPorcentaje != null &&
       margenFinalEstimadoPorcentaje! < margenPlanificadoPorcentaje!;
+}
+
+class DesgloseForecastCategoria {
+  const DesgloseForecastCategoria({
+    required this.categoriaId,
+    required this.nombre,
+    required this.previstoCentimos,
+    required this.realCentimos,
+    required this.comprometidoCentimos,
+    required this.restanteCentimos,
+  });
+
+  final String? categoriaId;
+  final String nombre;
+  final int? previstoCentimos;
+  final int realCentimos;
+  final int comprometidoCentimos;
+  final int restanteCentimos;
+  int get finalConocidoCentimos =>
+      realCentimos + comprometidoCentimos + restanteCentimos;
+  int? get desviacionCentimos => previstoCentimos == null
+      ? null
+      : finalConocidoCentimos - previstoCentimos!;
 }

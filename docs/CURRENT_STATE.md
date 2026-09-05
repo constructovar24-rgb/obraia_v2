@@ -1,5 +1,7 @@
 # Estado actual de OBRA IA
 
+Fase 3-F está implementada técnicamente sin cambio de esquema. El Expediente incorpora una pestaña «Economía» con lectura temporal del plan original, situación actual y previsión final; desviaciones globales; desglose por categorías; cobertura y alertas derivadas; resumen laboral; gestión de compromisos/estimaciones y navegación a las áreas operativas. El Resumen general conserva una versión compacta. Los widgets consumen la proyección económica de 3-E y no duplican fuentes ni fórmulas. `schemaVersion` permanece en 27 y Fase 3-G no se ha iniciado.
+
 Fotografía verificada el **3 de septiembre de 2026**. Debe actualizarse cuando cambien de forma relevante el producto, la arquitectura, la persistencia o las prioridades. No sustituye a Git, al código ni a las pruebas.
 
 ## Base tecnológica

@@ -63,50 +63,52 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('la ficha consolida el resumen real sin métricas de fase 3', (
-    tester,
-  ) async {
-    tester.view.physicalSize = const Size(1200, 900);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          databaseProvider.overrideWithValue(database),
-          expedientePresupuestoResumenProvider.overrideWith(
-            (ref, id) =>
-                Stream.value(const ExpedientePresupuestoResumen(2, 1000)),
-          ),
-          expedienteFacturaResumenProvider.overrideWith(
-            (ref, id) =>
-                Stream.value(const ExpedienteFacturaResumen(1, 600, 250, 350)),
-          ),
-          expedienteCompraResumenProvider.overrideWith(
-            (ref, id) => Stream.value(const ExpedienteCompraResumen(0, 0)),
-          ),
-        ],
-        child: const MaterialApp(
-          home: DefaultTabController(
-            length: 9,
-            child: Scaffold(body: ExpedienteResumenTab(expedienteId: 'exp-1')),
+  testWidgets(
+    'la ficha consolida el resumen real y acceso económico compacto',
+    (tester) async {
+      tester.view.physicalSize = const Size(1200, 900);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(database),
+            expedientePresupuestoResumenProvider.overrideWith(
+              (ref, id) =>
+                  Stream.value(const ExpedientePresupuestoResumen(2, 1000)),
+            ),
+            expedienteFacturaResumenProvider.overrideWith(
+              (ref, id) => Stream.value(
+                const ExpedienteFacturaResumen(1, 600, 250, 350),
+              ),
+            ),
+            expedienteCompraResumenProvider.overrideWith(
+              (ref, id) => Stream.value(const ExpedienteCompraResumen(0, 0)),
+            ),
+          ],
+          child: MaterialApp(
+            home: DefaultTabController(
+              length: ExpedienteWorkspaceTabs.length,
+              child: Scaffold(
+                body: ExpedienteResumenTab(expedienteId: 'exp-1'),
+              ),
+            ),
           ),
         ),
-      ),
-    );
-    for (var i = 0; i < 20; i++) {
-      await tester.pump(const Duration(milliseconds: 30));
-    }
-    expect(find.text('Resumen administrativo'), findsOneWidget);
-    expect(find.text('Facturado'), findsOneWidget);
-    expect(find.text('Cobrado'), findsOneWidget);
-    expect(find.text('Compras registradas'), findsOneWidget);
-    expect(find.text('1 documentos'), findsOneWidget);
-    expect(find.text('Rentabilidad'), findsNothing);
-    expect(find.text('Margen'), findsNothing);
-    expect(tester.takeException(), isNull);
-    await tester.pumpWidget(const SizedBox());
-    await tester.pump(const Duration(milliseconds: 1));
-    await tester.pump(const Duration(milliseconds: 1));
-  });
+      );
+      for (var i = 0; i < 20; i++) {
+        await tester.pump(const Duration(milliseconds: 30));
+      }
+      expect(find.text('Resumen administrativo'), findsOneWidget);
+      expect(find.text('Facturado'), findsOneWidget);
+      expect(find.text('Cobrado'), findsOneWidget);
+      expect(find.text('Compras registradas'), findsOneWidget);
+      expect(find.text('1 documentos'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump(const Duration(milliseconds: 1));
+      await tester.pump(const Duration(milliseconds: 1));
+    },
+  );
 }

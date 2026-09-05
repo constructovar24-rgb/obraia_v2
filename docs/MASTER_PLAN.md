@@ -1,5 +1,7 @@
 # Plan maestro de OBRA IA
 
+**Fase 3-F implementada técnicamente:** centro económico profesional dentro de cada obra, con previsto inicial, situación actual, forecast final, desviaciones y tabla por categoría. Integra mano de obra y accesos a presupuesto, compras, facturas/cobros, compromisos y estimaciones reutilizando la proyección 3-E. No cambia persistencia ni documentos comerciales. Fase 3-G no se ha iniciado.
+
 El plan ordena resultados, no fechas. Cada fase se aborda con entregas pequeñas y solo se cierra con evidencia verificable. `CURRENT_STATE.md` registra la situación efectiva.
 
 ## Fase 0 — Línea base y cierre de Expedientes

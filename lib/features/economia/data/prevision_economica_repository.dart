@@ -309,21 +309,69 @@ class PrevisionEconomicaRepository {
         ? beneficio * 100 / venta
         : null;
     final porCategoria = <String?, int>{};
+    final realPorCategoria = <String?, int>{};
+    final compromisoPorCategoria = <String?, int>{};
+    final restantePorCategoria = <String?, int>{};
+    final previstoPorCategoria = <String?, int>{};
     for (final h in hechos) {
+      realPorCategoria[h.categoriaEconomicaId] =
+          (realPorCategoria[h.categoriaEconomicaId] ?? 0) +
+          h.importeCosteCentimos;
       porCategoria[h.categoriaEconomicaId] =
           (porCategoria[h.categoriaEconomicaId] ?? 0) + h.importeCosteCentimos;
     }
     for (final c in compromisos.where(
       (c) => c.estado != EstadoCompromiso.cancelado,
     )) {
+      compromisoPorCategoria[c.categoriaEconomicaId] =
+          (compromisoPorCategoria[c.categoriaEconomicaId] ?? 0) +
+          c.pendienteCentimos;
       porCategoria[c.categoriaEconomicaId] =
           (porCategoria[c.categoriaEconomicaId] ?? 0) + c.pendienteCentimos;
     }
     for (final e in vigentes.values) {
+      restantePorCategoria[e.categoriaEconomicaId] =
+          (restantePorCategoria[e.categoriaEconomicaId] ?? 0) +
+          e.importeAdicionalCentimos;
       porCategoria[e.categoriaEconomicaId] =
           (porCategoria[e.categoriaEconomicaId] ?? 0) +
           e.importeAdicionalCentimos;
     }
+    for (final partida in partidas) {
+      final coste = partida.costePrevistoCentimos;
+      if (coste != null) {
+        previstoPorCategoria[partida.categoriaEconomicaId] =
+            (previstoPorCategoria[partida.categoriaEconomicaId] ?? 0) + coste;
+      }
+    }
+    final categorias = await database.economiaPrevistaDao
+        .observarCategorias()
+        .first;
+    final nombres = {for (final c in categorias) c.id: c.nombre};
+    final ids = <String?>{
+      ...previstoPorCategoria.keys,
+      ...realPorCategoria.keys,
+      ...compromisoPorCategoria.keys,
+      ...restantePorCategoria.keys,
+    };
+    final desglose =
+        ids
+            .map(
+              (id) => DesgloseForecastCategoria(
+                categoriaId: id,
+                nombre: id == null ? 'Sin asignar' : nombres[id] ?? 'Categoría',
+                previstoCentimos: previstoPorCategoria[id],
+                realCentimos: realPorCategoria[id] ?? 0,
+                comprometidoCentimos: compromisoPorCategoria[id] ?? 0,
+                restanteCentimos: restantePorCategoria[id] ?? 0,
+              ),
+            )
+            .toList(growable: false)
+          ..sort((a, b) {
+            if (a.categoriaId == null) return 1;
+            if (b.categoriaId == null) return -1;
+            return a.nombre.compareTo(b.nombre);
+          });
     return ResumenForecastObra(
       costeRealCentimos: real,
       comprometidoPendienteCentimos: pendiente,
@@ -341,6 +389,7 @@ class PrevisionEconomicaRepository {
       tieneCompromisosSobreconsumidos: compromisos.any(
         (c) => c.importeConsumidoCentimos > c.importeComprometidoCentimos,
       ),
+      desgloseCategorias: desglose,
     );
   }
 
