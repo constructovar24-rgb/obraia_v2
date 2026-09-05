@@ -1,5 +1,9 @@
 # Plan maestro de OBRA IA
 
+**FASE 4 COMPLETADA:** 4-A Planificación, 4-B Diario, 4-C Evidencias e incidencias, 4-D Circuito básico de proveedores, 4-E «Qué toca ahora» y 4-F Centro operativo están cerradas técnicamente sobre schema 32.
+
+**Siguiente hito: PUERTA DE ENTRADA A PRODUCCIÓN / PILOTO REAL**, antes de continuar con Fase 5. Debe incluir revisión operativa y protección de documentos originales: los archivos locales todavía no forman parte del backup SQLite y OBRA IA no debe considerarse archivo documental único hasta resolverla.
+
 **Fase 4-E implementada técnicamente:** motor «Qué toca ahora» derivado y reutilizable, con prioridades estables, explicación y destino de navegación. Las reglas consultan hechos tenant-scoped y alertas económicas canónicas; no persisten recomendaciones, no ejecutan acciones, no sustituyen el próximo paso manual y no usan IA. Schema 32.
 
 **Fase 4-D implementada técnicamente:** circuito tenant-scoped Proveedor → Albarán → Obra → Factura recibida → Pago sobre schema 32. Reparte líneas y facturas entre obras sin duplicar originales ni costes; la reconciliación usa Compras y `hechos_coste`, y los pagos no son coste. El backup de archivos originales sigue pendiente antes del uso documental intensivo.

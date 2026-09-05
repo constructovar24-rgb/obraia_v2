@@ -1,5 +1,7 @@
 # Estado actual de OBRA IA
 
+Fase 4 está completada técnicamente. 4-F consolida el Expediente como centro operativo diario sobre `schemaVersion` 32: cabecera con estado operativo/económico, recomendaciones destacadas, acciones rápidas, planificación, incidencias, diario, actividad reciente, suministros, economía y agregados administrativos canónicos. No se añaden fuentes de verdad ni reglas económicas. El siguiente hito es la **Puerta de entrada a producción / piloto real**, antes de Fase 5.
+
 Fase 4-E está implementada técnicamente sin cambio de esquema. «Qué toca ahora» calcula recomendaciones deterministas, explicables y no persistidas a partir de Presupuestos, Planificación, Incidencias, Facturas/Cobros, Suministros y Economía. El motor puro no muta estados ni importes, no usa IA y mantiene separado el próximo paso manual. El Resumen muestra hasta cinco acciones prioritarias y permite navegar a su fuente.
 
 Fase 4-D está implementada técnicamente sobre `schemaVersion` 32. El circuito Proveedor → Albarán → Obra → Factura recibida → Pago admite líneas, reparto multiobra, varios albaranes por factura y pagos parciales. Cada imputación se reconcilia explícitamente con una Compra y su único `hechos_coste`; el IVA recuperable no es coste y pagar no genera coste. La migración v31→v32 no inventa datos legacy. Los originales reutilizan Documentos; incorporar sus archivos físicos al backup sigue siendo deuda prioritaria.

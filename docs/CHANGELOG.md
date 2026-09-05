@@ -2,6 +2,15 @@
 
 ## No publicado
 
+### Centro operativo final de obra — Fase 4-F
+
+- Consolidado el Resumen del Expediente con recomendaciones, acciones rápidas, planificación, incidencias, diario, actividad, suministros, economía y administración.
+- Enriquecida la cabecera con estado operativo, estado económico, cliente y fechas reales disponibles.
+- Corregidos accesos del Resumen que apuntaban a índices antiguos de Facturas, Certificaciones, Documentos y Timeline.
+- Mantenido schema 32, sin nuevas fuentes de verdad, mutaciones automáticas ni reglas económicas.
+- Fase 4 cerrada; siguiente hito: Puerta de entrada a producción / piloto real.
+- Persiste como deuda prioritaria incorporar los documentos originales locales al sistema de backup antes de depender de OBRA IA como archivo único.
+
 ### Motor «Qué toca ahora» — Fase 4-E
 
 - Añadido un motor de dominio puro con reglas comerciales, de planificación, incidencias, suministros, cobros y economía.

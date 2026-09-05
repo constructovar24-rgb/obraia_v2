@@ -30,6 +30,10 @@ import '../../../circuito_proveedor/presentation/widgets/suministros_obra_tab.da
 import '../../../mano_obra/presentation/widgets/mano_obra_tab.dart';
 import '../../../economia/presentation/widgets/centro_economico_obra.dart';
 import '../../../planificacion/presentation/widgets/planificacion_obra_tab.dart';
+import '../../../planificacion/presentation/providers/planificacion_obra_providers.dart';
+import '../../../planificacion/domain/planificacion_obra.dart';
+import '../../../economia/presentation/providers/cierre_economico_providers.dart';
+import '../../../economia/domain/cierre_economico.dart';
 import '../../../diario_obra/presentation/widgets/diario_obra_tab.dart';
 import '../../../incidencias/presentation/widgets/incidencias_obra_tab.dart';
 import '../../../timeline/presentation/timeline_page.dart';
@@ -64,6 +68,8 @@ class ExpedienteDetailScreen extends ConsumerWidget {
     final hasCliente = clienteActual != null && clienteActual.isNotEmpty;
     final atencionEstadoAsync = ref.watch(expedienteAtencionEstadoProvider(id));
     final accionGestionAsync = ref.watch(expedienteGestionAccionProvider(id));
+    final planificacion = ref.watch(planificacionObraProvider(id)).valueOrNull;
+    final economia = ref.watch(estadoCierreEconomicoProvider(id)).valueOrNull;
 
     List<AppPageHeaderAction> construirAcciones() {
       final acciones = <AppPageHeaderAction>[
@@ -124,17 +130,23 @@ class ExpedienteDetailScreen extends ConsumerWidget {
                     child: EntitySummaryCard(
                       title: codigoActual,
                       subtitle: nombreActual,
-                      details: hasCliente
-                          ? [
-                              Text(
-                                'Cliente: $clienteActual',
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                            ]
-                          : null,
+                      details: [
+                        if (hasCliente)
+                          Text(
+                            'Cliente: $clienteActual',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        if (planificacion?.inicioPrevisto != null)
+                          Text(
+                            'Inicio previsto: ${_fecha(planificacion!.inicioPrevisto!)}',
+                          ),
+                        Text(
+                          'Economía: ${economia?.estado == EstadoEconomicoObra.cerrado ? 'Cerrada' : 'Abierta'} · Expediente ${_labelEstadoCiclo(expediente?.estadoCiclo).toLowerCase()}',
+                        ),
+                      ],
                       statusWidget: StatusChip(
-                        label: _labelEstadoCiclo(expediente?.estadoCiclo),
-                        type: _tipoEstadoCiclo(expediente?.estadoCiclo),
+                        label: _labelEstadoOperativo(planificacion?.estado),
+                        type: _tipoEstadoOperativo(planificacion?.estado),
                       ),
                       trailing:
                           expediente?.clienteId == null ||
@@ -209,16 +221,26 @@ class ExpedienteDetailScreen extends ConsumerWidget {
     }
   }
 
-  StatusType _tipoEstadoCiclo(expediente_domain.ExpedienteEstadoCiclo? estado) {
-    switch (estado) {
-      case expediente_domain.ExpedienteEstadoCiclo.activo:
-        return StatusType.success;
-      case expediente_domain.ExpedienteEstadoCiclo.archivado:
-        return StatusType.neutral;
-      case null:
-        return StatusType.neutral;
-    }
-  }
+  String _labelEstadoOperativo(EstadoOperativoObra? estado) => switch (estado) {
+    EstadoOperativoObra.pendiente || null => 'Pendiente / programación',
+    EstadoOperativoObra.preparada => 'Preparada',
+    EstadoOperativoObra.enEjecucion => 'En ejecución',
+    EstadoOperativoObra.pausada => 'Pausada',
+    EstadoOperativoObra.finalizada => 'Finalizada',
+    EstadoOperativoObra.cancelada => 'Cancelada',
+  };
+
+  StatusType _tipoEstadoOperativo(EstadoOperativoObra? estado) =>
+      switch (estado) {
+        EstadoOperativoObra.enEjecucion ||
+        EstadoOperativoObra.finalizada => StatusType.success,
+        EstadoOperativoObra.pausada => StatusType.warning,
+        EstadoOperativoObra.cancelada => StatusType.error,
+        _ => StatusType.info,
+      };
+
+  String _fecha(DateTime value) =>
+      '${value.day.toString().padLeft(2, '0')}/${value.month.toString().padLeft(2, '0')}/${value.year}';
 
   IconData _iconoAccion(ExpedienteGestionAccion accion) {
     switch (accion) {

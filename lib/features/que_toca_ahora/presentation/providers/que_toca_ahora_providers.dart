@@ -44,9 +44,9 @@ final recomendacionesExpedienteProvider =
       final forecast = await ref.watch(
         resumenForecastProvider(expedienteId).future,
       );
-      final supply = await ref
-          .watch(circuitoProveedorRepositoryProvider)
-          .obtenerSenalesObra(expedienteId, hoy);
+      final supply = await ref.watch(
+        senalesSuministrosObraProvider(expedienteId).future,
+      );
       final today = DateTime(hoy.year, hoy.month, hoy.day);
       final pendingActions = actuaciones.where(
         (a) =>

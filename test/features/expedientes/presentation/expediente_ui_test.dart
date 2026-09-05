@@ -101,6 +101,14 @@ void main() {
         await tester.pump(const Duration(milliseconds: 30));
       }
       expect(find.text('Resumen administrativo'), findsOneWidget);
+      expect(find.text('QUÉ TOCA AHORA'), findsOneWidget);
+      expect(find.text('Actividad reciente'), findsOneWidget);
+      expect(find.text('Aún no hay actividad registrada.'), findsOneWidget);
+      expect(find.text('Compras y suministros'), findsOneWidget);
+      expect(find.text('Planificación'), findsWidgets);
+      expect(find.text('Registrar diario'), findsOneWidget);
+      expect(find.text('Nueva incidencia'), findsOneWidget);
+      expect(find.text('Ver economía'), findsOneWidget);
       expect(find.text('Facturado'), findsOneWidget);
       expect(find.text('Cobrado'), findsOneWidget);
       expect(find.text('Compras registradas'), findsOneWidget);

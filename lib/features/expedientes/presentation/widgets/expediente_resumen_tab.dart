@@ -9,10 +9,12 @@ import '../../../documentos/domain/documento.dart';
 import '../../../documentos/presentation/providers/documento_providers.dart';
 import '../../../economia/presentation/widgets/centro_economico_obra.dart';
 import '../../../timeline/presentation/providers/timeline_providers.dart';
+import '../../../timeline/domain/timeline_event.dart';
 import '../../../planificacion/presentation/widgets/planificacion_resumen_compacto.dart';
 import '../../../diario_obra/presentation/widgets/diario_resumen_compacto.dart';
 import '../../../incidencias/presentation/widgets/incidencias_resumen_compacto.dart';
 import '../../../que_toca_ahora/presentation/widgets/que_toca_ahora_panel.dart';
+import '../../../circuito_proveedor/presentation/widgets/suministros_resumen_compacto.dart';
 import '../providers/expediente_workspace_providers.dart';
 
 class ExpedienteResumenTab extends ConsumerWidget {
@@ -45,6 +47,20 @@ class ExpedienteResumenTab extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               QueTocaAhoraPanel(expedienteId: expedienteId),
+              const SizedBox(height: AppSpacing.md),
+              const _QuickActions(),
+              const SizedBox(height: AppSpacing.lg),
+              PlanificacionResumenCompacto(expedienteId: expedienteId, tab: 11),
+              const SizedBox(height: AppSpacing.lg),
+              IncidenciasResumenCompacto(expedienteId: expedienteId, tab: 13),
+              const SizedBox(height: AppSpacing.lg),
+              DiarioResumenCompacto(expedienteId: expedienteId, tab: 12),
+              const SizedBox(height: AppSpacing.lg),
+              _RecentActivity(events: actividad.value ?? const []),
+              const SizedBox(height: AppSpacing.lg),
+              SuministrosResumenCompacto(expedienteId: expedienteId, tab: 2),
+              const SizedBox(height: AppSpacing.lg),
+              EconomiaResumenCompacto(expedienteId: expedienteId),
               const SizedBox(height: AppSpacing.lg),
               Text(
                 'Resumen administrativo',
@@ -65,19 +81,19 @@ class ExpedienteResumenTab extends ConsumerWidget {
                       label: 'Facturado',
                       detail: '${facturas.value?.cantidad ?? 0} documentos',
                       amount: facturas.value?.facturado,
-                      tab: 4,
+                      tab: 5,
                     ),
                     _Metric(
                       label: 'Cobrado',
                       detail: 'Movimientos registrados',
                       amount: facturas.value?.cobrado,
-                      tab: 4,
+                      tab: 5,
                     ),
                     _Metric(
                       label: 'Pendiente de cobro',
                       detail: 'Estado económico validado',
                       amount: facturas.value?.pendiente,
-                      tab: 4,
+                      tab: 5,
                     ),
                     _Metric(
                       label: 'Compras registradas',
@@ -102,14 +118,6 @@ class ExpedienteResumenTab extends ConsumerWidget {
                 },
               ),
               const SizedBox(height: AppSpacing.lg),
-              EconomiaResumenCompacto(expedienteId: expedienteId),
-              const SizedBox(height: AppSpacing.lg),
-              PlanificacionResumenCompacto(expedienteId: expedienteId, tab: 11),
-              const SizedBox(height: AppSpacing.lg),
-              DiarioResumenCompacto(expedienteId: expedienteId, tab: 12),
-              const SizedBox(height: AppSpacing.lg),
-              IncidenciasResumenCompacto(expedienteId: expedienteId, tab: 13),
-              const SizedBox(height: AppSpacing.lg),
               AppCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -124,20 +132,20 @@ class ExpedienteResumenTab extends ConsumerWidget {
                       title: 'Certificaciones',
                       detail:
                           '${certificaciones.value?.length ?? 0} registradas',
-                      tab: 3,
+                      tab: 4,
                     ),
                     _Link(
                       icon: Icons.insert_drive_file_outlined,
                       title: 'Documentos y fotos',
                       detail:
                           '${documentoItems.length} documentos · $fotos fotografías',
-                      tab: 5,
+                      tab: 6,
                     ),
                     _Link(
                       icon: Icons.history,
                       title: 'Actividad',
                       detail: '${actividad.value?.length ?? 0} eventos reales',
-                      tab: 6,
+                      tab: 7,
                     ),
                   ],
                 ),
@@ -214,4 +222,101 @@ class _Link extends StatelessWidget {
       onTap: () => DefaultTabController.of(context).animateTo(tab),
     ),
   );
+}
+
+class _QuickActions extends StatelessWidget {
+  const _QuickActions();
+  @override
+  Widget build(BuildContext context) => AppCard(
+    child: Wrap(
+      spacing: AppSpacing.sm,
+      runSpacing: AppSpacing.sm,
+      children: [
+        _Action(
+          icon: Icons.calendar_month_outlined,
+          label: 'Planificación',
+          tab: 11,
+        ),
+        _Action(
+          icon: Icons.menu_book_outlined,
+          label: 'Registrar diario',
+          tab: 12,
+        ),
+        _Action(
+          icon: Icons.report_problem_outlined,
+          label: 'Nueva incidencia',
+          tab: 13,
+        ),
+        _Action(
+          icon: Icons.local_shipping_outlined,
+          label: 'Registrar suministro',
+          tab: 2,
+        ),
+        _Action(
+          icon: Icons.monitor_heart_outlined,
+          label: 'Ver economía',
+          tab: 10,
+        ),
+      ],
+    ),
+  );
+}
+
+class _Action extends StatelessWidget {
+  const _Action({required this.icon, required this.label, required this.tab});
+  final IconData icon;
+  final String label;
+  final int tab;
+  @override
+  Widget build(BuildContext context) => OutlinedButton.icon(
+    key: ValueKey('accion-rapida-$tab'),
+    onPressed: () => DefaultTabController.of(context).animateTo(tab),
+    icon: Icon(icon),
+    label: Text(label),
+  );
+}
+
+class _RecentActivity extends StatelessWidget {
+  const _RecentActivity({required this.events});
+  final List<TimelineEvent> events;
+  @override
+  Widget build(BuildContext context) {
+    final recent = events.take(3).toList(growable: false);
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Actividad reciente',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          if (recent.isEmpty)
+            const Padding(
+              padding: EdgeInsets.only(top: AppSpacing.sm),
+              child: Text('Aún no hay actividad registrada.'),
+            ),
+          ...recent.map(
+            (event) => ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.history, size: 20),
+              title: Text(event.titulo),
+              subtitle: Text(
+                '${event.fecha.day.toString().padLeft(2, '0')}/${event.fecha.month.toString().padLeft(2, '0')}/${event.fecha.year}${event.descripcion == null ? '' : ' · ${event.descripcion}'}',
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              key: const ValueKey('ver-actividad-reciente'),
+              onPressed: () => DefaultTabController.of(context).animateTo(7),
+              child: const Text('Ver Timeline'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
