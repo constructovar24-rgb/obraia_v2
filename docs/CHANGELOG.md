@@ -2,6 +2,15 @@
 
 ## No publicado
 
+### Planificación básica de obra — Fase 4-A
+
+- Añadido estado operativo independiente: pendiente, preparada, en ejecución, pausada, finalizada o cancelada.
+- Incorporadas fechas previstas y reales opcionales con validación de rangos y migración legacy sin fechas inventadas.
+- Añadidos próximo paso explícito y actuaciones ordenadas con estados pendiente, completada y cancelada.
+- Integrada una pestaña Planificación y un resumen operativo compacto dentro del Expediente.
+- Registrados en Timeline los cambios relevantes mediante transacciones y mantenido el cierre económico independiente.
+- Elevado Drift a schema v29 con tabla tenant-scoped, índices, backup/restauración y pruebas de migración.
+
 ### Mano de obra y tarifas históricas — Fase 3-D
 
 - Añadidas personas económicas internas tenant-scoped para titular/autónomo, empleados y colaboradores, sin introducir nóminas ni RRHH completo.

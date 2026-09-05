@@ -35,6 +35,14 @@ class Expedientes extends Table {
   // Estado del expediente
   IntColumn get estado => integer().withDefault(const Constant(0))();
 
+  TextColumn get estadoOperativo =>
+      text().withDefault(const Constant('pendiente'))();
+
+  DateTimeColumn get fechaInicioPrevista => dateTime().nullable()();
+  DateTimeColumn get fechaFinPrevista => dateTime().nullable()();
+  DateTimeColumn get fechaInicioReal => dateTime().nullable()();
+  DateTimeColumn get fechaFinReal => dateTime().nullable()();
+
   BoolColumn get eliminado => boolean().withDefault(const Constant(false))();
 
   // Fechas

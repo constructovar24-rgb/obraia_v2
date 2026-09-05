@@ -1,5 +1,7 @@
 # Estado actual de OBRA IA
 
+Fase 4-A está implementada técnicamente sobre `schemaVersion` 29. El Expediente conserva su ciclo administrativo y añade un estado operativo independiente, calendario previsto/real opcional, próximo paso explícito y actuaciones ordenadas con estados pendiente/completada/cancelada. Toda persistencia nueva está aislada por tenant; los cambios operativos relevantes son atómicos con Timeline y no alteran el cierre económico. La migración v28→v29 deja el legacy en programación y no inventa fechas ni actuaciones. Fase 4-B no se ha iniciado.
+
 Fase 3-G está implementada técnicamente sobre `schemaVersion` 28. Cada obra dispone de estado económico independiente, abierto por defecto, cierres con precheck centralizado y confirmación de advertencias, snapshots históricos inmutables y reaperturas con motivo. El cierre y la reapertura son atómicos con Timeline. Hechos de coste, compromisos, estimaciones y operaciones laborales rechazan cambios mientras la economía está cerrada. El centro económico muestra estado, alertas deterministas e historial. La migración v27→v28 no fabrica cierres legacy. Fase 3 queda técnicamente completa; Fase 4 no se ha iniciado.
 
 Fase 3-F está implementada técnicamente sin cambio de esquema. El Expediente incorpora una pestaña «Economía» con lectura temporal del plan original, situación actual y previsión final; desviaciones globales; desglose por categorías; cobertura y alertas derivadas; resumen laboral; gestión de compromisos/estimaciones y navegación a las áreas operativas. El Resumen general conserva una versión compacta. Los widgets consumen la proyección económica de 3-E y no duplican fuentes ni fórmulas. `schemaVersion` permanece en 27 y Fase 3-G no se ha iniciado.
@@ -9,7 +11,7 @@ Fotografía verificada el **3 de septiembre de 2026**. Debe actualizarse cuando 
 ## Base tecnológica
 
 - Flutter/Dart con Riverpod.
-- Drift sobre SQLite; 29 tablas y `schemaVersion` 27. Las conexiones activan claves foráneas y todas las tablas empresariales, incluidas las económicas, exigen `tenantId`.
+- Drift sobre SQLite con `schemaVersion` 29. Las conexiones activan claves foráneas y todas las tablas empresariales, incluida la planificación, exigen `tenantId`.
 - `pdf` y `printing` para generación documental.
 - Windows como plataforma prioritaria.
 - 171 archivos Dart en la auditoría de esta línea base.

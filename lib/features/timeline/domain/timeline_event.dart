@@ -38,6 +38,12 @@ enum TimelineEventType {
   economiaCerrada,
   economiaCerradaConAdvertencias,
   economiaReabierta,
+  estadoOperativoObraCambiado,
+  inicioRealObraRegistrado,
+  finalizacionRealObraRegistrada,
+  actuacionObraCreada,
+  actuacionObraCompletada,
+  actuacionObraCancelada,
 }
 
 enum TimelineCreditoTipo {

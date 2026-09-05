@@ -9,6 +9,7 @@ import '../../../documentos/domain/documento.dart';
 import '../../../documentos/presentation/providers/documento_providers.dart';
 import '../../../economia/presentation/widgets/centro_economico_obra.dart';
 import '../../../timeline/presentation/providers/timeline_providers.dart';
+import '../../../planificacion/presentation/widgets/planificacion_resumen_compacto.dart';
 import '../providers/expediente_workspace_providers.dart';
 
 class ExpedienteResumenTab extends ConsumerWidget {
@@ -97,6 +98,8 @@ class ExpedienteResumenTab extends ConsumerWidget {
               ),
               const SizedBox(height: AppSpacing.lg),
               EconomiaResumenCompacto(expedienteId: expedienteId),
+              const SizedBox(height: AppSpacing.lg),
+              PlanificacionResumenCompacto(expedienteId: expedienteId, tab: 11),
               const SizedBox(height: AppSpacing.lg),
               AppCard(
                 child: Column(

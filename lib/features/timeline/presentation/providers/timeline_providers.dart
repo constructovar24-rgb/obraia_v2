@@ -166,5 +166,17 @@ String timelineEventTypeLabel(TimelineEventType tipo) {
       return 'Economía cerrada con advertencias';
     case TimelineEventType.economiaReabierta:
       return 'Economía reabierta';
+    case TimelineEventType.estadoOperativoObraCambiado:
+      return 'Estado operativo actualizado';
+    case TimelineEventType.inicioRealObraRegistrado:
+      return 'Inicio real registrado';
+    case TimelineEventType.finalizacionRealObraRegistrada:
+      return 'Finalización real registrada';
+    case TimelineEventType.actuacionObraCreada:
+      return 'Actuación prevista';
+    case TimelineEventType.actuacionObraCompletada:
+      return 'Actuación completada';
+    case TimelineEventType.actuacionObraCancelada:
+      return 'Actuación cancelada';
   }
 }

@@ -1,5 +1,7 @@
 # Plan maestro de OBRA IA
 
+**Fase 4-A implementada técnicamente:** planificación básica por obra con estado operativo separado del ciclo administrativo y económico, cuatro fechas opcionales, próximo paso explícito y actuaciones sencillas ordenadas. La nueva persistencia es tenant-scoped, migra de v28 a v29 sin fabricar datos legacy y registra en Timeline los cambios relevantes. Fase 4-B no iniciada.
+
 **Fase 3-G implementada técnicamente:** cierre económico explícito con controles, advertencias confirmables, snapshot inmutable, reapertura auditada e historial de cierres sucesivos. Las operaciones que cambian la rentabilidad exigen economía abierta. Alertas y severidad proceden de reglas deterministas existentes, sin notificaciones externas. Esquema v28; Fase 4 no iniciada.
 
 **Fase 3-F implementada técnicamente:** centro económico profesional dentro de cada obra, con previsto inicial, situación actual, forecast final, desviaciones y tabla por categoría. Integra mano de obra y accesos a presupuesto, compras, facturas/cobros, compromisos y estimaciones reutilizando la proyección 3-E. No cambia persistencia ni documentos comerciales. Fase 3-G no se ha iniciado.
