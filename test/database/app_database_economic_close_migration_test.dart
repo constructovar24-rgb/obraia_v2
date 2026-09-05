@@ -27,7 +27,7 @@ void main() {
     final migrated = AppDatabase.forTesting(NativeDatabase(file));
     addTearDown(migrated.close);
     await migrated.ensureReady();
-    expect(migrated.schemaVersion, 31);
+    expect(migrated.schemaVersion, 32);
     expect(await migrated.cierreEconomicoDao.obtenerEstado('obra'), null);
     expect(await migrated.cierreEconomicoDao.obtenerCierres('obra'), isEmpty);
     expect(

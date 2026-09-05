@@ -1,5 +1,7 @@
 # Estado actual de OBRA IA
 
+Fase 4-D está implementada técnicamente sobre `schemaVersion` 32. El circuito Proveedor → Albarán → Obra → Factura recibida → Pago admite líneas, reparto multiobra, varios albaranes por factura y pagos parciales. Cada imputación se reconcilia explícitamente con una Compra y su único `hechos_coste`; el IVA recuperable no es coste y pagar no genera coste. La migración v31→v32 no inventa datos legacy. Los originales reutilizan Documentos; incorporar sus archivos físicos al backup sigue siendo deuda prioritaria.
+
 Fase 4-C está implementada técnicamente sobre `schemaVersion` 31. Las fotografías y demás evidencias reutilizan exclusivamente `Documentos`; una incidencia profesional tenant-scoped puede vincular cero o varios documentos existentes y jornadas del Diario sin copiar archivos. Las incidencias mantienen fecha, título, descripción, prioridad, estado, resolución y timestamps; sus transiciones relevantes son atómicas con Timeline y no alteran economía ni estado operativo. La migración v30→v31 no inventa incidencias. Análisis, 305 pruebas y compilación Windows debug superan. El almacenamiento físico sigue dependiendo de rutas locales heredadas y el backup SQLite no incorpora todavía los archivos originales: esta deuda debe resolverse antes de una distribución o sincronización fiable. Fase 4-D no se ha iniciado.
 
 Fase 4-B está implementada técnicamente sobre `schemaVersion` 30. Cada Expediente incorpora un Diario de obra tenant-scoped con fecha de trabajo, texto libre de trabajos, observaciones, meteorología manual, incidencia textual y actuación opcional. Las entradas se ordenan cronológicamente, admiten edición controlada y anulación lógica; creación y anulación son atómicas con Timeline. Las horas mostradas proceden exclusivamente de los partes de 3-D y el Diario no genera costes ni cambia estados. La migración v29→v30 no inventa entradas legacy. Análisis, 299 pruebas y compilación Windows debug superan. Fase 4-C no se ha iniciado.
@@ -15,7 +17,7 @@ Fotografía verificada el **3 de septiembre de 2026**. Debe actualizarse cuando 
 ## Base tecnológica
 
 - Flutter/Dart con Riverpod.
-- Drift sobre SQLite con `schemaVersion` 31. Las conexiones activan claves foráneas y todas las tablas empresariales y relaciones de incidencias exigen `tenantId`.
+- Drift sobre SQLite con `schemaVersion` 32. Las conexiones activan claves foráneas y todas las tablas empresariales exigen `tenantId`.
 - `pdf` y `printing` para generación documental.
 - Windows como plataforma prioritaria.
 - 171 archivos Dart en la auditoría de esta línea base.

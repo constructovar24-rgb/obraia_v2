@@ -25,7 +25,7 @@ void main() {
         'factura',
       )).single;
 
-      expect(database.schemaVersion, 31);
+      expect(database.schemaVersion, 32);
       expect(movimiento.importe, 25.5);
       expect(movimiento.esReversion, isFalse);
       expect(movimiento.cobroOrigenId, isNull);
@@ -44,7 +44,7 @@ void main() {
       final versionPersistida = await database
           .customSelect('PRAGMA user_version')
           .getSingle();
-      expect(versionPersistida.data.values.single, 31);
+      expect(versionPersistida.data.values.single, 32);
       expect(
         await database.movimientosCreditoClienteDao.obtenerTodos(),
         isEmpty,

@@ -34,7 +34,7 @@ void main() {
     final migrated = AppDatabase.forTesting(NativeDatabase(file));
     addTearDown(migrated.close);
     await migrated.ensureReady();
-    expect(migrated.schemaVersion, 31);
+    expect(migrated.schemaVersion, 32);
     expect(
       (await migrated.expedientesDao.obtenerExpediente('obra'))!.nombre,
       'Obra legacy',
@@ -49,6 +49,6 @@ void main() {
     final reopened = AppDatabase.forTesting(NativeDatabase(file));
     addTearDown(reopened.close);
     await reopened.ensureReady();
-    expect(reopened.schemaVersion, 31);
+    expect(reopened.schemaVersion, 32);
   });
 }

@@ -6,7 +6,7 @@ class ExpedienteWorkspaceTabs extends StatelessWidget {
   static const labels = <String>[
     'Resumen',
     'Presupuestos',
-    'Compras',
+    'Compras / Suministros',
     'Mano de obra',
     'Certificaciones',
     'Facturas',

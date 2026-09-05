@@ -59,6 +59,14 @@ class BackupArchiveService {
     'incidencias_obra',
     'incidencia_documentos',
     'incidencia_diario',
+    'albaranes_proveedor',
+    'lineas_albaran_proveedor',
+    'asignaciones_albaran_obra',
+    'facturas_recibidas',
+    'factura_recibida_albaranes',
+    'asignaciones_factura_recibida',
+    'factura_recibida_compras',
+    'pagos_proveedor',
   };
 
   final DatabaseSnapshotService _snapshotService;
@@ -421,6 +429,16 @@ class BackupArchiveService {
           .whereType<String>()
           .toSet();
       final expectedTables = _expectedTables.difference({
+        if (schemaVersion < 32) ...{
+          'albaranes_proveedor',
+          'lineas_albaran_proveedor',
+          'asignaciones_albaran_obra',
+          'facturas_recibidas',
+          'factura_recibida_albaranes',
+          'asignaciones_factura_recibida',
+          'factura_recibida_compras',
+          'pagos_proveedor',
+        },
         if (schemaVersion < 31) ...{
           'incidencias_obra',
           'incidencia_documentos',

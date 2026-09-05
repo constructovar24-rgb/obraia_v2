@@ -28482,6 +28482,4180 @@ class IncidenciaDiarioCompanion extends UpdateCompanion<IncidenciaDiarioData> {
   }
 }
 
+class $AlbaranesProveedorTable extends AlbaranesProveedor
+    with TableInfo<$AlbaranesProveedorTable, AlbaranesProveedorData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AlbaranesProveedorTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _proveedorIdMeta = const VerificationMeta(
+    'proveedorId',
+  );
+  @override
+  late final GeneratedColumn<String> proveedorId = GeneratedColumn<String>(
+    'proveedor_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _referenciaProveedorMeta =
+      const VerificationMeta('referenciaProveedor');
+  @override
+  late final GeneratedColumn<String> referenciaProveedor =
+      GeneratedColumn<String>(
+        'referencia_proveedor',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _fechaMeta = const VerificationMeta('fecha');
+  @override
+  late final GeneratedColumn<DateTime> fecha = GeneratedColumn<DateTime>(
+    'fecha',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _estadoMeta = const VerificationMeta('estado');
+  @override
+  late final GeneratedColumn<String> estado = GeneratedColumn<String>(
+    'estado',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('recibido'),
+  );
+  static const VerificationMeta _observacionesMeta = const VerificationMeta(
+    'observaciones',
+  );
+  @override
+  late final GeneratedColumn<String> observaciones = GeneratedColumn<String>(
+    'observaciones',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _documentoIdMeta = const VerificationMeta(
+    'documentoId',
+  );
+  @override
+  late final GeneratedColumn<String> documentoId = GeneratedColumn<String>(
+    'documento_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _fechaCreacionMeta = const VerificationMeta(
+    'fechaCreacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaCreacion =
+      GeneratedColumn<DateTime>(
+        'fecha_creacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _fechaModificacionMeta = const VerificationMeta(
+    'fechaModificacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaModificacion =
+      GeneratedColumn<DateTime>(
+        'fecha_modificacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    id,
+    proveedorId,
+    referenciaProveedor,
+    fecha,
+    estado,
+    observaciones,
+    documentoId,
+    fechaCreacion,
+    fechaModificacion,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'albaranes_proveedor';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AlbaranesProveedorData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('proveedor_id')) {
+      context.handle(
+        _proveedorIdMeta,
+        proveedorId.isAcceptableOrUnknown(
+          data['proveedor_id']!,
+          _proveedorIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_proveedorIdMeta);
+    }
+    if (data.containsKey('referencia_proveedor')) {
+      context.handle(
+        _referenciaProveedorMeta,
+        referenciaProveedor.isAcceptableOrUnknown(
+          data['referencia_proveedor']!,
+          _referenciaProveedorMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_referenciaProveedorMeta);
+    }
+    if (data.containsKey('fecha')) {
+      context.handle(
+        _fechaMeta,
+        fecha.isAcceptableOrUnknown(data['fecha']!, _fechaMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaMeta);
+    }
+    if (data.containsKey('estado')) {
+      context.handle(
+        _estadoMeta,
+        estado.isAcceptableOrUnknown(data['estado']!, _estadoMeta),
+      );
+    }
+    if (data.containsKey('observaciones')) {
+      context.handle(
+        _observacionesMeta,
+        observaciones.isAcceptableOrUnknown(
+          data['observaciones']!,
+          _observacionesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('documento_id')) {
+      context.handle(
+        _documentoIdMeta,
+        documentoId.isAcceptableOrUnknown(
+          data['documento_id']!,
+          _documentoIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('fecha_creacion')) {
+      context.handle(
+        _fechaCreacionMeta,
+        fechaCreacion.isAcceptableOrUnknown(
+          data['fecha_creacion']!,
+          _fechaCreacionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaCreacionMeta);
+    }
+    if (data.containsKey('fecha_modificacion')) {
+      context.handle(
+        _fechaModificacionMeta,
+        fechaModificacion.isAcceptableOrUnknown(
+          data['fecha_modificacion']!,
+          _fechaModificacionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaModificacionMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {tenantId, id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {tenantId, proveedorId, referenciaProveedor},
+  ];
+  @override
+  AlbaranesProveedorData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AlbaranesProveedorData(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      proveedorId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}proveedor_id'],
+      )!,
+      referenciaProveedor: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}referencia_proveedor'],
+      )!,
+      fecha: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha'],
+      )!,
+      estado: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}estado'],
+      )!,
+      observaciones: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}observaciones'],
+      ),
+      documentoId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}documento_id'],
+      ),
+      fechaCreacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_creacion'],
+      )!,
+      fechaModificacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_modificacion'],
+      )!,
+    );
+  }
+
+  @override
+  $AlbaranesProveedorTable createAlias(String alias) {
+    return $AlbaranesProveedorTable(attachedDatabase, alias);
+  }
+}
+
+class AlbaranesProveedorData extends DataClass
+    implements Insertable<AlbaranesProveedorData> {
+  final String tenantId;
+  final String id;
+  final String proveedorId;
+  final String referenciaProveedor;
+  final DateTime fecha;
+  final String estado;
+  final String? observaciones;
+  final String? documentoId;
+  final DateTime fechaCreacion;
+  final DateTime fechaModificacion;
+  const AlbaranesProveedorData({
+    required this.tenantId,
+    required this.id,
+    required this.proveedorId,
+    required this.referenciaProveedor,
+    required this.fecha,
+    required this.estado,
+    this.observaciones,
+    this.documentoId,
+    required this.fechaCreacion,
+    required this.fechaModificacion,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['id'] = Variable<String>(id);
+    map['proveedor_id'] = Variable<String>(proveedorId);
+    map['referencia_proveedor'] = Variable<String>(referenciaProveedor);
+    map['fecha'] = Variable<DateTime>(fecha);
+    map['estado'] = Variable<String>(estado);
+    if (!nullToAbsent || observaciones != null) {
+      map['observaciones'] = Variable<String>(observaciones);
+    }
+    if (!nullToAbsent || documentoId != null) {
+      map['documento_id'] = Variable<String>(documentoId);
+    }
+    map['fecha_creacion'] = Variable<DateTime>(fechaCreacion);
+    map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion);
+    return map;
+  }
+
+  AlbaranesProveedorCompanion toCompanion(bool nullToAbsent) {
+    return AlbaranesProveedorCompanion(
+      tenantId: Value(tenantId),
+      id: Value(id),
+      proveedorId: Value(proveedorId),
+      referenciaProveedor: Value(referenciaProveedor),
+      fecha: Value(fecha),
+      estado: Value(estado),
+      observaciones: observaciones == null && nullToAbsent
+          ? const Value.absent()
+          : Value(observaciones),
+      documentoId: documentoId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(documentoId),
+      fechaCreacion: Value(fechaCreacion),
+      fechaModificacion: Value(fechaModificacion),
+    );
+  }
+
+  factory AlbaranesProveedorData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AlbaranesProveedorData(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      id: serializer.fromJson<String>(json['id']),
+      proveedorId: serializer.fromJson<String>(json['proveedorId']),
+      referenciaProveedor: serializer.fromJson<String>(
+        json['referenciaProveedor'],
+      ),
+      fecha: serializer.fromJson<DateTime>(json['fecha']),
+      estado: serializer.fromJson<String>(json['estado']),
+      observaciones: serializer.fromJson<String?>(json['observaciones']),
+      documentoId: serializer.fromJson<String?>(json['documentoId']),
+      fechaCreacion: serializer.fromJson<DateTime>(json['fechaCreacion']),
+      fechaModificacion: serializer.fromJson<DateTime>(
+        json['fechaModificacion'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'id': serializer.toJson<String>(id),
+      'proveedorId': serializer.toJson<String>(proveedorId),
+      'referenciaProveedor': serializer.toJson<String>(referenciaProveedor),
+      'fecha': serializer.toJson<DateTime>(fecha),
+      'estado': serializer.toJson<String>(estado),
+      'observaciones': serializer.toJson<String?>(observaciones),
+      'documentoId': serializer.toJson<String?>(documentoId),
+      'fechaCreacion': serializer.toJson<DateTime>(fechaCreacion),
+      'fechaModificacion': serializer.toJson<DateTime>(fechaModificacion),
+    };
+  }
+
+  AlbaranesProveedorData copyWith({
+    String? tenantId,
+    String? id,
+    String? proveedorId,
+    String? referenciaProveedor,
+    DateTime? fecha,
+    String? estado,
+    Value<String?> observaciones = const Value.absent(),
+    Value<String?> documentoId = const Value.absent(),
+    DateTime? fechaCreacion,
+    DateTime? fechaModificacion,
+  }) => AlbaranesProveedorData(
+    tenantId: tenantId ?? this.tenantId,
+    id: id ?? this.id,
+    proveedorId: proveedorId ?? this.proveedorId,
+    referenciaProveedor: referenciaProveedor ?? this.referenciaProveedor,
+    fecha: fecha ?? this.fecha,
+    estado: estado ?? this.estado,
+    observaciones: observaciones.present
+        ? observaciones.value
+        : this.observaciones,
+    documentoId: documentoId.present ? documentoId.value : this.documentoId,
+    fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+    fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+  );
+  AlbaranesProveedorData copyWithCompanion(AlbaranesProveedorCompanion data) {
+    return AlbaranesProveedorData(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      id: data.id.present ? data.id.value : this.id,
+      proveedorId: data.proveedorId.present
+          ? data.proveedorId.value
+          : this.proveedorId,
+      referenciaProveedor: data.referenciaProveedor.present
+          ? data.referenciaProveedor.value
+          : this.referenciaProveedor,
+      fecha: data.fecha.present ? data.fecha.value : this.fecha,
+      estado: data.estado.present ? data.estado.value : this.estado,
+      observaciones: data.observaciones.present
+          ? data.observaciones.value
+          : this.observaciones,
+      documentoId: data.documentoId.present
+          ? data.documentoId.value
+          : this.documentoId,
+      fechaCreacion: data.fechaCreacion.present
+          ? data.fechaCreacion.value
+          : this.fechaCreacion,
+      fechaModificacion: data.fechaModificacion.present
+          ? data.fechaModificacion.value
+          : this.fechaModificacion,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AlbaranesProveedorData(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('proveedorId: $proveedorId, ')
+          ..write('referenciaProveedor: $referenciaProveedor, ')
+          ..write('fecha: $fecha, ')
+          ..write('estado: $estado, ')
+          ..write('observaciones: $observaciones, ')
+          ..write('documentoId: $documentoId, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    tenantId,
+    id,
+    proveedorId,
+    referenciaProveedor,
+    fecha,
+    estado,
+    observaciones,
+    documentoId,
+    fechaCreacion,
+    fechaModificacion,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AlbaranesProveedorData &&
+          other.tenantId == this.tenantId &&
+          other.id == this.id &&
+          other.proveedorId == this.proveedorId &&
+          other.referenciaProveedor == this.referenciaProveedor &&
+          other.fecha == this.fecha &&
+          other.estado == this.estado &&
+          other.observaciones == this.observaciones &&
+          other.documentoId == this.documentoId &&
+          other.fechaCreacion == this.fechaCreacion &&
+          other.fechaModificacion == this.fechaModificacion);
+}
+
+class AlbaranesProveedorCompanion
+    extends UpdateCompanion<AlbaranesProveedorData> {
+  final Value<String> tenantId;
+  final Value<String> id;
+  final Value<String> proveedorId;
+  final Value<String> referenciaProveedor;
+  final Value<DateTime> fecha;
+  final Value<String> estado;
+  final Value<String?> observaciones;
+  final Value<String?> documentoId;
+  final Value<DateTime> fechaCreacion;
+  final Value<DateTime> fechaModificacion;
+  final Value<int> rowid;
+  const AlbaranesProveedorCompanion({
+    this.tenantId = const Value.absent(),
+    this.id = const Value.absent(),
+    this.proveedorId = const Value.absent(),
+    this.referenciaProveedor = const Value.absent(),
+    this.fecha = const Value.absent(),
+    this.estado = const Value.absent(),
+    this.observaciones = const Value.absent(),
+    this.documentoId = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.fechaModificacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AlbaranesProveedorCompanion.insert({
+    required String tenantId,
+    required String id,
+    required String proveedorId,
+    required String referenciaProveedor,
+    required DateTime fecha,
+    this.estado = const Value.absent(),
+    this.observaciones = const Value.absent(),
+    this.documentoId = const Value.absent(),
+    required DateTime fechaCreacion,
+    required DateTime fechaModificacion,
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       id = Value(id),
+       proveedorId = Value(proveedorId),
+       referenciaProveedor = Value(referenciaProveedor),
+       fecha = Value(fecha),
+       fechaCreacion = Value(fechaCreacion),
+       fechaModificacion = Value(fechaModificacion);
+  static Insertable<AlbaranesProveedorData> custom({
+    Expression<String>? tenantId,
+    Expression<String>? id,
+    Expression<String>? proveedorId,
+    Expression<String>? referenciaProveedor,
+    Expression<DateTime>? fecha,
+    Expression<String>? estado,
+    Expression<String>? observaciones,
+    Expression<String>? documentoId,
+    Expression<DateTime>? fechaCreacion,
+    Expression<DateTime>? fechaModificacion,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (id != null) 'id': id,
+      if (proveedorId != null) 'proveedor_id': proveedorId,
+      if (referenciaProveedor != null)
+        'referencia_proveedor': referenciaProveedor,
+      if (fecha != null) 'fecha': fecha,
+      if (estado != null) 'estado': estado,
+      if (observaciones != null) 'observaciones': observaciones,
+      if (documentoId != null) 'documento_id': documentoId,
+      if (fechaCreacion != null) 'fecha_creacion': fechaCreacion,
+      if (fechaModificacion != null) 'fecha_modificacion': fechaModificacion,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AlbaranesProveedorCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? id,
+    Value<String>? proveedorId,
+    Value<String>? referenciaProveedor,
+    Value<DateTime>? fecha,
+    Value<String>? estado,
+    Value<String?>? observaciones,
+    Value<String?>? documentoId,
+    Value<DateTime>? fechaCreacion,
+    Value<DateTime>? fechaModificacion,
+    Value<int>? rowid,
+  }) {
+    return AlbaranesProveedorCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      id: id ?? this.id,
+      proveedorId: proveedorId ?? this.proveedorId,
+      referenciaProveedor: referenciaProveedor ?? this.referenciaProveedor,
+      fecha: fecha ?? this.fecha,
+      estado: estado ?? this.estado,
+      observaciones: observaciones ?? this.observaciones,
+      documentoId: documentoId ?? this.documentoId,
+      fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+      fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (proveedorId.present) {
+      map['proveedor_id'] = Variable<String>(proveedorId.value);
+    }
+    if (referenciaProveedor.present) {
+      map['referencia_proveedor'] = Variable<String>(referenciaProveedor.value);
+    }
+    if (fecha.present) {
+      map['fecha'] = Variable<DateTime>(fecha.value);
+    }
+    if (estado.present) {
+      map['estado'] = Variable<String>(estado.value);
+    }
+    if (observaciones.present) {
+      map['observaciones'] = Variable<String>(observaciones.value);
+    }
+    if (documentoId.present) {
+      map['documento_id'] = Variable<String>(documentoId.value);
+    }
+    if (fechaCreacion.present) {
+      map['fecha_creacion'] = Variable<DateTime>(fechaCreacion.value);
+    }
+    if (fechaModificacion.present) {
+      map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AlbaranesProveedorCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('proveedorId: $proveedorId, ')
+          ..write('referenciaProveedor: $referenciaProveedor, ')
+          ..write('fecha: $fecha, ')
+          ..write('estado: $estado, ')
+          ..write('observaciones: $observaciones, ')
+          ..write('documentoId: $documentoId, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $LineasAlbaranProveedorTable extends LineasAlbaranProveedor
+    with TableInfo<$LineasAlbaranProveedorTable, LineasAlbaranProveedorData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LineasAlbaranProveedorTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _albaranIdMeta = const VerificationMeta(
+    'albaranId',
+  );
+  @override
+  late final GeneratedColumn<String> albaranId = GeneratedColumn<String>(
+    'albaran_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descripcionOriginalMeta =
+      const VerificationMeta('descripcionOriginal');
+  @override
+  late final GeneratedColumn<String> descripcionOriginal =
+      GeneratedColumn<String>(
+        'descripcion_original',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _cantidadMeta = const VerificationMeta(
+    'cantidad',
+  );
+  @override
+  late final GeneratedColumn<double> cantidad = GeneratedColumn<double>(
+    'cantidad',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _unidadMeta = const VerificationMeta('unidad');
+  @override
+  late final GeneratedColumn<String> unidad = GeneratedColumn<String>(
+    'unidad',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _precioUnitarioCentimosMeta =
+      const VerificationMeta('precioUnitarioCentimos');
+  @override
+  late final GeneratedColumn<int> precioUnitarioCentimos = GeneratedColumn<int>(
+    'precio_unitario_centimos',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _importeCentimosMeta = const VerificationMeta(
+    'importeCentimos',
+  );
+  @override
+  late final GeneratedColumn<int> importeCentimos = GeneratedColumn<int>(
+    'importe_centimos',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _observacionesMeta = const VerificationMeta(
+    'observaciones',
+  );
+  @override
+  late final GeneratedColumn<String> observaciones = GeneratedColumn<String>(
+    'observaciones',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    id,
+    albaranId,
+    descripcionOriginal,
+    cantidad,
+    unidad,
+    precioUnitarioCentimos,
+    importeCentimos,
+    observaciones,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'lineas_albaran_proveedor';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LineasAlbaranProveedorData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('albaran_id')) {
+      context.handle(
+        _albaranIdMeta,
+        albaranId.isAcceptableOrUnknown(data['albaran_id']!, _albaranIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_albaranIdMeta);
+    }
+    if (data.containsKey('descripcion_original')) {
+      context.handle(
+        _descripcionOriginalMeta,
+        descripcionOriginal.isAcceptableOrUnknown(
+          data['descripcion_original']!,
+          _descripcionOriginalMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_descripcionOriginalMeta);
+    }
+    if (data.containsKey('cantidad')) {
+      context.handle(
+        _cantidadMeta,
+        cantidad.isAcceptableOrUnknown(data['cantidad']!, _cantidadMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_cantidadMeta);
+    }
+    if (data.containsKey('unidad')) {
+      context.handle(
+        _unidadMeta,
+        unidad.isAcceptableOrUnknown(data['unidad']!, _unidadMeta),
+      );
+    }
+    if (data.containsKey('precio_unitario_centimos')) {
+      context.handle(
+        _precioUnitarioCentimosMeta,
+        precioUnitarioCentimos.isAcceptableOrUnknown(
+          data['precio_unitario_centimos']!,
+          _precioUnitarioCentimosMeta,
+        ),
+      );
+    }
+    if (data.containsKey('importe_centimos')) {
+      context.handle(
+        _importeCentimosMeta,
+        importeCentimos.isAcceptableOrUnknown(
+          data['importe_centimos']!,
+          _importeCentimosMeta,
+        ),
+      );
+    }
+    if (data.containsKey('observaciones')) {
+      context.handle(
+        _observacionesMeta,
+        observaciones.isAcceptableOrUnknown(
+          data['observaciones']!,
+          _observacionesMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {tenantId, id};
+  @override
+  LineasAlbaranProveedorData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LineasAlbaranProveedorData(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      albaranId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}albaran_id'],
+      )!,
+      descripcionOriginal: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}descripcion_original'],
+      )!,
+      cantidad: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}cantidad'],
+      )!,
+      unidad: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}unidad'],
+      ),
+      precioUnitarioCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}precio_unitario_centimos'],
+      ),
+      importeCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}importe_centimos'],
+      ),
+      observaciones: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}observaciones'],
+      ),
+    );
+  }
+
+  @override
+  $LineasAlbaranProveedorTable createAlias(String alias) {
+    return $LineasAlbaranProveedorTable(attachedDatabase, alias);
+  }
+}
+
+class LineasAlbaranProveedorData extends DataClass
+    implements Insertable<LineasAlbaranProveedorData> {
+  final String tenantId;
+  final String id;
+  final String albaranId;
+  final String descripcionOriginal;
+  final double cantidad;
+  final String? unidad;
+  final int? precioUnitarioCentimos;
+  final int? importeCentimos;
+  final String? observaciones;
+  const LineasAlbaranProveedorData({
+    required this.tenantId,
+    required this.id,
+    required this.albaranId,
+    required this.descripcionOriginal,
+    required this.cantidad,
+    this.unidad,
+    this.precioUnitarioCentimos,
+    this.importeCentimos,
+    this.observaciones,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['id'] = Variable<String>(id);
+    map['albaran_id'] = Variable<String>(albaranId);
+    map['descripcion_original'] = Variable<String>(descripcionOriginal);
+    map['cantidad'] = Variable<double>(cantidad);
+    if (!nullToAbsent || unidad != null) {
+      map['unidad'] = Variable<String>(unidad);
+    }
+    if (!nullToAbsent || precioUnitarioCentimos != null) {
+      map['precio_unitario_centimos'] = Variable<int>(precioUnitarioCentimos);
+    }
+    if (!nullToAbsent || importeCentimos != null) {
+      map['importe_centimos'] = Variable<int>(importeCentimos);
+    }
+    if (!nullToAbsent || observaciones != null) {
+      map['observaciones'] = Variable<String>(observaciones);
+    }
+    return map;
+  }
+
+  LineasAlbaranProveedorCompanion toCompanion(bool nullToAbsent) {
+    return LineasAlbaranProveedorCompanion(
+      tenantId: Value(tenantId),
+      id: Value(id),
+      albaranId: Value(albaranId),
+      descripcionOriginal: Value(descripcionOriginal),
+      cantidad: Value(cantidad),
+      unidad: unidad == null && nullToAbsent
+          ? const Value.absent()
+          : Value(unidad),
+      precioUnitarioCentimos: precioUnitarioCentimos == null && nullToAbsent
+          ? const Value.absent()
+          : Value(precioUnitarioCentimos),
+      importeCentimos: importeCentimos == null && nullToAbsent
+          ? const Value.absent()
+          : Value(importeCentimos),
+      observaciones: observaciones == null && nullToAbsent
+          ? const Value.absent()
+          : Value(observaciones),
+    );
+  }
+
+  factory LineasAlbaranProveedorData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LineasAlbaranProveedorData(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      id: serializer.fromJson<String>(json['id']),
+      albaranId: serializer.fromJson<String>(json['albaranId']),
+      descripcionOriginal: serializer.fromJson<String>(
+        json['descripcionOriginal'],
+      ),
+      cantidad: serializer.fromJson<double>(json['cantidad']),
+      unidad: serializer.fromJson<String?>(json['unidad']),
+      precioUnitarioCentimos: serializer.fromJson<int?>(
+        json['precioUnitarioCentimos'],
+      ),
+      importeCentimos: serializer.fromJson<int?>(json['importeCentimos']),
+      observaciones: serializer.fromJson<String?>(json['observaciones']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'id': serializer.toJson<String>(id),
+      'albaranId': serializer.toJson<String>(albaranId),
+      'descripcionOriginal': serializer.toJson<String>(descripcionOriginal),
+      'cantidad': serializer.toJson<double>(cantidad),
+      'unidad': serializer.toJson<String?>(unidad),
+      'precioUnitarioCentimos': serializer.toJson<int?>(precioUnitarioCentimos),
+      'importeCentimos': serializer.toJson<int?>(importeCentimos),
+      'observaciones': serializer.toJson<String?>(observaciones),
+    };
+  }
+
+  LineasAlbaranProveedorData copyWith({
+    String? tenantId,
+    String? id,
+    String? albaranId,
+    String? descripcionOriginal,
+    double? cantidad,
+    Value<String?> unidad = const Value.absent(),
+    Value<int?> precioUnitarioCentimos = const Value.absent(),
+    Value<int?> importeCentimos = const Value.absent(),
+    Value<String?> observaciones = const Value.absent(),
+  }) => LineasAlbaranProveedorData(
+    tenantId: tenantId ?? this.tenantId,
+    id: id ?? this.id,
+    albaranId: albaranId ?? this.albaranId,
+    descripcionOriginal: descripcionOriginal ?? this.descripcionOriginal,
+    cantidad: cantidad ?? this.cantidad,
+    unidad: unidad.present ? unidad.value : this.unidad,
+    precioUnitarioCentimos: precioUnitarioCentimos.present
+        ? precioUnitarioCentimos.value
+        : this.precioUnitarioCentimos,
+    importeCentimos: importeCentimos.present
+        ? importeCentimos.value
+        : this.importeCentimos,
+    observaciones: observaciones.present
+        ? observaciones.value
+        : this.observaciones,
+  );
+  LineasAlbaranProveedorData copyWithCompanion(
+    LineasAlbaranProveedorCompanion data,
+  ) {
+    return LineasAlbaranProveedorData(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      id: data.id.present ? data.id.value : this.id,
+      albaranId: data.albaranId.present ? data.albaranId.value : this.albaranId,
+      descripcionOriginal: data.descripcionOriginal.present
+          ? data.descripcionOriginal.value
+          : this.descripcionOriginal,
+      cantidad: data.cantidad.present ? data.cantidad.value : this.cantidad,
+      unidad: data.unidad.present ? data.unidad.value : this.unidad,
+      precioUnitarioCentimos: data.precioUnitarioCentimos.present
+          ? data.precioUnitarioCentimos.value
+          : this.precioUnitarioCentimos,
+      importeCentimos: data.importeCentimos.present
+          ? data.importeCentimos.value
+          : this.importeCentimos,
+      observaciones: data.observaciones.present
+          ? data.observaciones.value
+          : this.observaciones,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LineasAlbaranProveedorData(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('albaranId: $albaranId, ')
+          ..write('descripcionOriginal: $descripcionOriginal, ')
+          ..write('cantidad: $cantidad, ')
+          ..write('unidad: $unidad, ')
+          ..write('precioUnitarioCentimos: $precioUnitarioCentimos, ')
+          ..write('importeCentimos: $importeCentimos, ')
+          ..write('observaciones: $observaciones')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    tenantId,
+    id,
+    albaranId,
+    descripcionOriginal,
+    cantidad,
+    unidad,
+    precioUnitarioCentimos,
+    importeCentimos,
+    observaciones,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LineasAlbaranProveedorData &&
+          other.tenantId == this.tenantId &&
+          other.id == this.id &&
+          other.albaranId == this.albaranId &&
+          other.descripcionOriginal == this.descripcionOriginal &&
+          other.cantidad == this.cantidad &&
+          other.unidad == this.unidad &&
+          other.precioUnitarioCentimos == this.precioUnitarioCentimos &&
+          other.importeCentimos == this.importeCentimos &&
+          other.observaciones == this.observaciones);
+}
+
+class LineasAlbaranProveedorCompanion
+    extends UpdateCompanion<LineasAlbaranProveedorData> {
+  final Value<String> tenantId;
+  final Value<String> id;
+  final Value<String> albaranId;
+  final Value<String> descripcionOriginal;
+  final Value<double> cantidad;
+  final Value<String?> unidad;
+  final Value<int?> precioUnitarioCentimos;
+  final Value<int?> importeCentimos;
+  final Value<String?> observaciones;
+  final Value<int> rowid;
+  const LineasAlbaranProveedorCompanion({
+    this.tenantId = const Value.absent(),
+    this.id = const Value.absent(),
+    this.albaranId = const Value.absent(),
+    this.descripcionOriginal = const Value.absent(),
+    this.cantidad = const Value.absent(),
+    this.unidad = const Value.absent(),
+    this.precioUnitarioCentimos = const Value.absent(),
+    this.importeCentimos = const Value.absent(),
+    this.observaciones = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LineasAlbaranProveedorCompanion.insert({
+    required String tenantId,
+    required String id,
+    required String albaranId,
+    required String descripcionOriginal,
+    required double cantidad,
+    this.unidad = const Value.absent(),
+    this.precioUnitarioCentimos = const Value.absent(),
+    this.importeCentimos = const Value.absent(),
+    this.observaciones = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       id = Value(id),
+       albaranId = Value(albaranId),
+       descripcionOriginal = Value(descripcionOriginal),
+       cantidad = Value(cantidad);
+  static Insertable<LineasAlbaranProveedorData> custom({
+    Expression<String>? tenantId,
+    Expression<String>? id,
+    Expression<String>? albaranId,
+    Expression<String>? descripcionOriginal,
+    Expression<double>? cantidad,
+    Expression<String>? unidad,
+    Expression<int>? precioUnitarioCentimos,
+    Expression<int>? importeCentimos,
+    Expression<String>? observaciones,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (id != null) 'id': id,
+      if (albaranId != null) 'albaran_id': albaranId,
+      if (descripcionOriginal != null)
+        'descripcion_original': descripcionOriginal,
+      if (cantidad != null) 'cantidad': cantidad,
+      if (unidad != null) 'unidad': unidad,
+      if (precioUnitarioCentimos != null)
+        'precio_unitario_centimos': precioUnitarioCentimos,
+      if (importeCentimos != null) 'importe_centimos': importeCentimos,
+      if (observaciones != null) 'observaciones': observaciones,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LineasAlbaranProveedorCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? id,
+    Value<String>? albaranId,
+    Value<String>? descripcionOriginal,
+    Value<double>? cantidad,
+    Value<String?>? unidad,
+    Value<int?>? precioUnitarioCentimos,
+    Value<int?>? importeCentimos,
+    Value<String?>? observaciones,
+    Value<int>? rowid,
+  }) {
+    return LineasAlbaranProveedorCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      id: id ?? this.id,
+      albaranId: albaranId ?? this.albaranId,
+      descripcionOriginal: descripcionOriginal ?? this.descripcionOriginal,
+      cantidad: cantidad ?? this.cantidad,
+      unidad: unidad ?? this.unidad,
+      precioUnitarioCentimos:
+          precioUnitarioCentimos ?? this.precioUnitarioCentimos,
+      importeCentimos: importeCentimos ?? this.importeCentimos,
+      observaciones: observaciones ?? this.observaciones,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (albaranId.present) {
+      map['albaran_id'] = Variable<String>(albaranId.value);
+    }
+    if (descripcionOriginal.present) {
+      map['descripcion_original'] = Variable<String>(descripcionOriginal.value);
+    }
+    if (cantidad.present) {
+      map['cantidad'] = Variable<double>(cantidad.value);
+    }
+    if (unidad.present) {
+      map['unidad'] = Variable<String>(unidad.value);
+    }
+    if (precioUnitarioCentimos.present) {
+      map['precio_unitario_centimos'] = Variable<int>(
+        precioUnitarioCentimos.value,
+      );
+    }
+    if (importeCentimos.present) {
+      map['importe_centimos'] = Variable<int>(importeCentimos.value);
+    }
+    if (observaciones.present) {
+      map['observaciones'] = Variable<String>(observaciones.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LineasAlbaranProveedorCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('albaranId: $albaranId, ')
+          ..write('descripcionOriginal: $descripcionOriginal, ')
+          ..write('cantidad: $cantidad, ')
+          ..write('unidad: $unidad, ')
+          ..write('precioUnitarioCentimos: $precioUnitarioCentimos, ')
+          ..write('importeCentimos: $importeCentimos, ')
+          ..write('observaciones: $observaciones, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AsignacionesAlbaranObraTable extends AsignacionesAlbaranObra
+    with TableInfo<$AsignacionesAlbaranObraTable, AsignacionesAlbaranObraData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AsignacionesAlbaranObraTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lineaAlbaranIdMeta = const VerificationMeta(
+    'lineaAlbaranId',
+  );
+  @override
+  late final GeneratedColumn<String> lineaAlbaranId = GeneratedColumn<String>(
+    'linea_albaran_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _expedienteIdMeta = const VerificationMeta(
+    'expedienteId',
+  );
+  @override
+  late final GeneratedColumn<String> expedienteId = GeneratedColumn<String>(
+    'expediente_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _importeCentimosMeta = const VerificationMeta(
+    'importeCentimos',
+  );
+  @override
+  late final GeneratedColumn<int> importeCentimos = GeneratedColumn<int>(
+    'importe_centimos',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    id,
+    lineaAlbaranId,
+    expedienteId,
+    importeCentimos,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'asignaciones_albaran_obra';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AsignacionesAlbaranObraData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('linea_albaran_id')) {
+      context.handle(
+        _lineaAlbaranIdMeta,
+        lineaAlbaranId.isAcceptableOrUnknown(
+          data['linea_albaran_id']!,
+          _lineaAlbaranIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_lineaAlbaranIdMeta);
+    }
+    if (data.containsKey('expediente_id')) {
+      context.handle(
+        _expedienteIdMeta,
+        expedienteId.isAcceptableOrUnknown(
+          data['expediente_id']!,
+          _expedienteIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('importe_centimos')) {
+      context.handle(
+        _importeCentimosMeta,
+        importeCentimos.isAcceptableOrUnknown(
+          data['importe_centimos']!,
+          _importeCentimosMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {tenantId, id};
+  @override
+  AsignacionesAlbaranObraData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AsignacionesAlbaranObraData(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      lineaAlbaranId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}linea_albaran_id'],
+      )!,
+      expedienteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}expediente_id'],
+      ),
+      importeCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}importe_centimos'],
+      ),
+    );
+  }
+
+  @override
+  $AsignacionesAlbaranObraTable createAlias(String alias) {
+    return $AsignacionesAlbaranObraTable(attachedDatabase, alias);
+  }
+}
+
+class AsignacionesAlbaranObraData extends DataClass
+    implements Insertable<AsignacionesAlbaranObraData> {
+  final String tenantId;
+  final String id;
+  final String lineaAlbaranId;
+  final String? expedienteId;
+  final int? importeCentimos;
+  const AsignacionesAlbaranObraData({
+    required this.tenantId,
+    required this.id,
+    required this.lineaAlbaranId,
+    this.expedienteId,
+    this.importeCentimos,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['id'] = Variable<String>(id);
+    map['linea_albaran_id'] = Variable<String>(lineaAlbaranId);
+    if (!nullToAbsent || expedienteId != null) {
+      map['expediente_id'] = Variable<String>(expedienteId);
+    }
+    if (!nullToAbsent || importeCentimos != null) {
+      map['importe_centimos'] = Variable<int>(importeCentimos);
+    }
+    return map;
+  }
+
+  AsignacionesAlbaranObraCompanion toCompanion(bool nullToAbsent) {
+    return AsignacionesAlbaranObraCompanion(
+      tenantId: Value(tenantId),
+      id: Value(id),
+      lineaAlbaranId: Value(lineaAlbaranId),
+      expedienteId: expedienteId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(expedienteId),
+      importeCentimos: importeCentimos == null && nullToAbsent
+          ? const Value.absent()
+          : Value(importeCentimos),
+    );
+  }
+
+  factory AsignacionesAlbaranObraData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AsignacionesAlbaranObraData(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      id: serializer.fromJson<String>(json['id']),
+      lineaAlbaranId: serializer.fromJson<String>(json['lineaAlbaranId']),
+      expedienteId: serializer.fromJson<String?>(json['expedienteId']),
+      importeCentimos: serializer.fromJson<int?>(json['importeCentimos']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'id': serializer.toJson<String>(id),
+      'lineaAlbaranId': serializer.toJson<String>(lineaAlbaranId),
+      'expedienteId': serializer.toJson<String?>(expedienteId),
+      'importeCentimos': serializer.toJson<int?>(importeCentimos),
+    };
+  }
+
+  AsignacionesAlbaranObraData copyWith({
+    String? tenantId,
+    String? id,
+    String? lineaAlbaranId,
+    Value<String?> expedienteId = const Value.absent(),
+    Value<int?> importeCentimos = const Value.absent(),
+  }) => AsignacionesAlbaranObraData(
+    tenantId: tenantId ?? this.tenantId,
+    id: id ?? this.id,
+    lineaAlbaranId: lineaAlbaranId ?? this.lineaAlbaranId,
+    expedienteId: expedienteId.present ? expedienteId.value : this.expedienteId,
+    importeCentimos: importeCentimos.present
+        ? importeCentimos.value
+        : this.importeCentimos,
+  );
+  AsignacionesAlbaranObraData copyWithCompanion(
+    AsignacionesAlbaranObraCompanion data,
+  ) {
+    return AsignacionesAlbaranObraData(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      id: data.id.present ? data.id.value : this.id,
+      lineaAlbaranId: data.lineaAlbaranId.present
+          ? data.lineaAlbaranId.value
+          : this.lineaAlbaranId,
+      expedienteId: data.expedienteId.present
+          ? data.expedienteId.value
+          : this.expedienteId,
+      importeCentimos: data.importeCentimos.present
+          ? data.importeCentimos.value
+          : this.importeCentimos,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AsignacionesAlbaranObraData(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('lineaAlbaranId: $lineaAlbaranId, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('importeCentimos: $importeCentimos')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(tenantId, id, lineaAlbaranId, expedienteId, importeCentimos);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AsignacionesAlbaranObraData &&
+          other.tenantId == this.tenantId &&
+          other.id == this.id &&
+          other.lineaAlbaranId == this.lineaAlbaranId &&
+          other.expedienteId == this.expedienteId &&
+          other.importeCentimos == this.importeCentimos);
+}
+
+class AsignacionesAlbaranObraCompanion
+    extends UpdateCompanion<AsignacionesAlbaranObraData> {
+  final Value<String> tenantId;
+  final Value<String> id;
+  final Value<String> lineaAlbaranId;
+  final Value<String?> expedienteId;
+  final Value<int?> importeCentimos;
+  final Value<int> rowid;
+  const AsignacionesAlbaranObraCompanion({
+    this.tenantId = const Value.absent(),
+    this.id = const Value.absent(),
+    this.lineaAlbaranId = const Value.absent(),
+    this.expedienteId = const Value.absent(),
+    this.importeCentimos = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AsignacionesAlbaranObraCompanion.insert({
+    required String tenantId,
+    required String id,
+    required String lineaAlbaranId,
+    this.expedienteId = const Value.absent(),
+    this.importeCentimos = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       id = Value(id),
+       lineaAlbaranId = Value(lineaAlbaranId);
+  static Insertable<AsignacionesAlbaranObraData> custom({
+    Expression<String>? tenantId,
+    Expression<String>? id,
+    Expression<String>? lineaAlbaranId,
+    Expression<String>? expedienteId,
+    Expression<int>? importeCentimos,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (id != null) 'id': id,
+      if (lineaAlbaranId != null) 'linea_albaran_id': lineaAlbaranId,
+      if (expedienteId != null) 'expediente_id': expedienteId,
+      if (importeCentimos != null) 'importe_centimos': importeCentimos,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AsignacionesAlbaranObraCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? id,
+    Value<String>? lineaAlbaranId,
+    Value<String?>? expedienteId,
+    Value<int?>? importeCentimos,
+    Value<int>? rowid,
+  }) {
+    return AsignacionesAlbaranObraCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      id: id ?? this.id,
+      lineaAlbaranId: lineaAlbaranId ?? this.lineaAlbaranId,
+      expedienteId: expedienteId ?? this.expedienteId,
+      importeCentimos: importeCentimos ?? this.importeCentimos,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (lineaAlbaranId.present) {
+      map['linea_albaran_id'] = Variable<String>(lineaAlbaranId.value);
+    }
+    if (expedienteId.present) {
+      map['expediente_id'] = Variable<String>(expedienteId.value);
+    }
+    if (importeCentimos.present) {
+      map['importe_centimos'] = Variable<int>(importeCentimos.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AsignacionesAlbaranObraCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('lineaAlbaranId: $lineaAlbaranId, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('importeCentimos: $importeCentimos, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $FacturasRecibidasTable extends FacturasRecibidas
+    with TableInfo<$FacturasRecibidasTable, FacturasRecibida> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FacturasRecibidasTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _proveedorIdMeta = const VerificationMeta(
+    'proveedorId',
+  );
+  @override
+  late final GeneratedColumn<String> proveedorId = GeneratedColumn<String>(
+    'proveedor_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _numeroNormalizadoMeta = const VerificationMeta(
+    'numeroNormalizado',
+  );
+  @override
+  late final GeneratedColumn<String> numeroNormalizado =
+      GeneratedColumn<String>(
+        'numero_normalizado',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _numeroProveedorMeta = const VerificationMeta(
+    'numeroProveedor',
+  );
+  @override
+  late final GeneratedColumn<String> numeroProveedor = GeneratedColumn<String>(
+    'numero_proveedor',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fechaFacturaMeta = const VerificationMeta(
+    'fechaFactura',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaFactura = GeneratedColumn<DateTime>(
+    'fecha_factura',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fechaVencimientoMeta = const VerificationMeta(
+    'fechaVencimiento',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaVencimiento =
+      GeneratedColumn<DateTime>(
+        'fecha_vencimiento',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _baseCentimosMeta = const VerificationMeta(
+    'baseCentimos',
+  );
+  @override
+  late final GeneratedColumn<int> baseCentimos = GeneratedColumn<int>(
+    'base_centimos',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ivaCentimosMeta = const VerificationMeta(
+    'ivaCentimos',
+  );
+  @override
+  late final GeneratedColumn<int> ivaCentimos = GeneratedColumn<int>(
+    'iva_centimos',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _totalCentimosMeta = const VerificationMeta(
+    'totalCentimos',
+  );
+  @override
+  late final GeneratedColumn<int> totalCentimos = GeneratedColumn<int>(
+    'total_centimos',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _estadoMeta = const VerificationMeta('estado');
+  @override
+  late final GeneratedColumn<String> estado = GeneratedColumn<String>(
+    'estado',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('pendiente'),
+  );
+  static const VerificationMeta _documentoIdMeta = const VerificationMeta(
+    'documentoId',
+  );
+  @override
+  late final GeneratedColumn<String> documentoId = GeneratedColumn<String>(
+    'documento_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _fechaCreacionMeta = const VerificationMeta(
+    'fechaCreacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaCreacion =
+      GeneratedColumn<DateTime>(
+        'fecha_creacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _fechaModificacionMeta = const VerificationMeta(
+    'fechaModificacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaModificacion =
+      GeneratedColumn<DateTime>(
+        'fecha_modificacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    id,
+    proveedorId,
+    numeroNormalizado,
+    numeroProveedor,
+    fechaFactura,
+    fechaVencimiento,
+    baseCentimos,
+    ivaCentimos,
+    totalCentimos,
+    estado,
+    documentoId,
+    fechaCreacion,
+    fechaModificacion,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'facturas_recibidas';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FacturasRecibida> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('proveedor_id')) {
+      context.handle(
+        _proveedorIdMeta,
+        proveedorId.isAcceptableOrUnknown(
+          data['proveedor_id']!,
+          _proveedorIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_proveedorIdMeta);
+    }
+    if (data.containsKey('numero_normalizado')) {
+      context.handle(
+        _numeroNormalizadoMeta,
+        numeroNormalizado.isAcceptableOrUnknown(
+          data['numero_normalizado']!,
+          _numeroNormalizadoMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_numeroNormalizadoMeta);
+    }
+    if (data.containsKey('numero_proveedor')) {
+      context.handle(
+        _numeroProveedorMeta,
+        numeroProveedor.isAcceptableOrUnknown(
+          data['numero_proveedor']!,
+          _numeroProveedorMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_numeroProveedorMeta);
+    }
+    if (data.containsKey('fecha_factura')) {
+      context.handle(
+        _fechaFacturaMeta,
+        fechaFactura.isAcceptableOrUnknown(
+          data['fecha_factura']!,
+          _fechaFacturaMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaFacturaMeta);
+    }
+    if (data.containsKey('fecha_vencimiento')) {
+      context.handle(
+        _fechaVencimientoMeta,
+        fechaVencimiento.isAcceptableOrUnknown(
+          data['fecha_vencimiento']!,
+          _fechaVencimientoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('base_centimos')) {
+      context.handle(
+        _baseCentimosMeta,
+        baseCentimos.isAcceptableOrUnknown(
+          data['base_centimos']!,
+          _baseCentimosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_baseCentimosMeta);
+    }
+    if (data.containsKey('iva_centimos')) {
+      context.handle(
+        _ivaCentimosMeta,
+        ivaCentimos.isAcceptableOrUnknown(
+          data['iva_centimos']!,
+          _ivaCentimosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_ivaCentimosMeta);
+    }
+    if (data.containsKey('total_centimos')) {
+      context.handle(
+        _totalCentimosMeta,
+        totalCentimos.isAcceptableOrUnknown(
+          data['total_centimos']!,
+          _totalCentimosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_totalCentimosMeta);
+    }
+    if (data.containsKey('estado')) {
+      context.handle(
+        _estadoMeta,
+        estado.isAcceptableOrUnknown(data['estado']!, _estadoMeta),
+      );
+    }
+    if (data.containsKey('documento_id')) {
+      context.handle(
+        _documentoIdMeta,
+        documentoId.isAcceptableOrUnknown(
+          data['documento_id']!,
+          _documentoIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('fecha_creacion')) {
+      context.handle(
+        _fechaCreacionMeta,
+        fechaCreacion.isAcceptableOrUnknown(
+          data['fecha_creacion']!,
+          _fechaCreacionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaCreacionMeta);
+    }
+    if (data.containsKey('fecha_modificacion')) {
+      context.handle(
+        _fechaModificacionMeta,
+        fechaModificacion.isAcceptableOrUnknown(
+          data['fecha_modificacion']!,
+          _fechaModificacionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaModificacionMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {tenantId, id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {tenantId, proveedorId, numeroNormalizado},
+  ];
+  @override
+  FacturasRecibida map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FacturasRecibida(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      proveedorId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}proveedor_id'],
+      )!,
+      numeroNormalizado: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}numero_normalizado'],
+      )!,
+      numeroProveedor: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}numero_proveedor'],
+      )!,
+      fechaFactura: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_factura'],
+      )!,
+      fechaVencimiento: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_vencimiento'],
+      ),
+      baseCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}base_centimos'],
+      )!,
+      ivaCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}iva_centimos'],
+      )!,
+      totalCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}total_centimos'],
+      )!,
+      estado: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}estado'],
+      )!,
+      documentoId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}documento_id'],
+      ),
+      fechaCreacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_creacion'],
+      )!,
+      fechaModificacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_modificacion'],
+      )!,
+    );
+  }
+
+  @override
+  $FacturasRecibidasTable createAlias(String alias) {
+    return $FacturasRecibidasTable(attachedDatabase, alias);
+  }
+}
+
+class FacturasRecibida extends DataClass
+    implements Insertable<FacturasRecibida> {
+  final String tenantId;
+  final String id;
+  final String proveedorId;
+  final String numeroNormalizado;
+  final String numeroProveedor;
+  final DateTime fechaFactura;
+  final DateTime? fechaVencimiento;
+  final int baseCentimos;
+  final int ivaCentimos;
+  final int totalCentimos;
+  final String estado;
+  final String? documentoId;
+  final DateTime fechaCreacion;
+  final DateTime fechaModificacion;
+  const FacturasRecibida({
+    required this.tenantId,
+    required this.id,
+    required this.proveedorId,
+    required this.numeroNormalizado,
+    required this.numeroProveedor,
+    required this.fechaFactura,
+    this.fechaVencimiento,
+    required this.baseCentimos,
+    required this.ivaCentimos,
+    required this.totalCentimos,
+    required this.estado,
+    this.documentoId,
+    required this.fechaCreacion,
+    required this.fechaModificacion,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['id'] = Variable<String>(id);
+    map['proveedor_id'] = Variable<String>(proveedorId);
+    map['numero_normalizado'] = Variable<String>(numeroNormalizado);
+    map['numero_proveedor'] = Variable<String>(numeroProveedor);
+    map['fecha_factura'] = Variable<DateTime>(fechaFactura);
+    if (!nullToAbsent || fechaVencimiento != null) {
+      map['fecha_vencimiento'] = Variable<DateTime>(fechaVencimiento);
+    }
+    map['base_centimos'] = Variable<int>(baseCentimos);
+    map['iva_centimos'] = Variable<int>(ivaCentimos);
+    map['total_centimos'] = Variable<int>(totalCentimos);
+    map['estado'] = Variable<String>(estado);
+    if (!nullToAbsent || documentoId != null) {
+      map['documento_id'] = Variable<String>(documentoId);
+    }
+    map['fecha_creacion'] = Variable<DateTime>(fechaCreacion);
+    map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion);
+    return map;
+  }
+
+  FacturasRecibidasCompanion toCompanion(bool nullToAbsent) {
+    return FacturasRecibidasCompanion(
+      tenantId: Value(tenantId),
+      id: Value(id),
+      proveedorId: Value(proveedorId),
+      numeroNormalizado: Value(numeroNormalizado),
+      numeroProveedor: Value(numeroProveedor),
+      fechaFactura: Value(fechaFactura),
+      fechaVencimiento: fechaVencimiento == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fechaVencimiento),
+      baseCentimos: Value(baseCentimos),
+      ivaCentimos: Value(ivaCentimos),
+      totalCentimos: Value(totalCentimos),
+      estado: Value(estado),
+      documentoId: documentoId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(documentoId),
+      fechaCreacion: Value(fechaCreacion),
+      fechaModificacion: Value(fechaModificacion),
+    );
+  }
+
+  factory FacturasRecibida.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FacturasRecibida(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      id: serializer.fromJson<String>(json['id']),
+      proveedorId: serializer.fromJson<String>(json['proveedorId']),
+      numeroNormalizado: serializer.fromJson<String>(json['numeroNormalizado']),
+      numeroProveedor: serializer.fromJson<String>(json['numeroProveedor']),
+      fechaFactura: serializer.fromJson<DateTime>(json['fechaFactura']),
+      fechaVencimiento: serializer.fromJson<DateTime?>(
+        json['fechaVencimiento'],
+      ),
+      baseCentimos: serializer.fromJson<int>(json['baseCentimos']),
+      ivaCentimos: serializer.fromJson<int>(json['ivaCentimos']),
+      totalCentimos: serializer.fromJson<int>(json['totalCentimos']),
+      estado: serializer.fromJson<String>(json['estado']),
+      documentoId: serializer.fromJson<String?>(json['documentoId']),
+      fechaCreacion: serializer.fromJson<DateTime>(json['fechaCreacion']),
+      fechaModificacion: serializer.fromJson<DateTime>(
+        json['fechaModificacion'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'id': serializer.toJson<String>(id),
+      'proveedorId': serializer.toJson<String>(proveedorId),
+      'numeroNormalizado': serializer.toJson<String>(numeroNormalizado),
+      'numeroProveedor': serializer.toJson<String>(numeroProveedor),
+      'fechaFactura': serializer.toJson<DateTime>(fechaFactura),
+      'fechaVencimiento': serializer.toJson<DateTime?>(fechaVencimiento),
+      'baseCentimos': serializer.toJson<int>(baseCentimos),
+      'ivaCentimos': serializer.toJson<int>(ivaCentimos),
+      'totalCentimos': serializer.toJson<int>(totalCentimos),
+      'estado': serializer.toJson<String>(estado),
+      'documentoId': serializer.toJson<String?>(documentoId),
+      'fechaCreacion': serializer.toJson<DateTime>(fechaCreacion),
+      'fechaModificacion': serializer.toJson<DateTime>(fechaModificacion),
+    };
+  }
+
+  FacturasRecibida copyWith({
+    String? tenantId,
+    String? id,
+    String? proveedorId,
+    String? numeroNormalizado,
+    String? numeroProveedor,
+    DateTime? fechaFactura,
+    Value<DateTime?> fechaVencimiento = const Value.absent(),
+    int? baseCentimos,
+    int? ivaCentimos,
+    int? totalCentimos,
+    String? estado,
+    Value<String?> documentoId = const Value.absent(),
+    DateTime? fechaCreacion,
+    DateTime? fechaModificacion,
+  }) => FacturasRecibida(
+    tenantId: tenantId ?? this.tenantId,
+    id: id ?? this.id,
+    proveedorId: proveedorId ?? this.proveedorId,
+    numeroNormalizado: numeroNormalizado ?? this.numeroNormalizado,
+    numeroProveedor: numeroProveedor ?? this.numeroProveedor,
+    fechaFactura: fechaFactura ?? this.fechaFactura,
+    fechaVencimiento: fechaVencimiento.present
+        ? fechaVencimiento.value
+        : this.fechaVencimiento,
+    baseCentimos: baseCentimos ?? this.baseCentimos,
+    ivaCentimos: ivaCentimos ?? this.ivaCentimos,
+    totalCentimos: totalCentimos ?? this.totalCentimos,
+    estado: estado ?? this.estado,
+    documentoId: documentoId.present ? documentoId.value : this.documentoId,
+    fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+    fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+  );
+  FacturasRecibida copyWithCompanion(FacturasRecibidasCompanion data) {
+    return FacturasRecibida(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      id: data.id.present ? data.id.value : this.id,
+      proveedorId: data.proveedorId.present
+          ? data.proveedorId.value
+          : this.proveedorId,
+      numeroNormalizado: data.numeroNormalizado.present
+          ? data.numeroNormalizado.value
+          : this.numeroNormalizado,
+      numeroProveedor: data.numeroProveedor.present
+          ? data.numeroProveedor.value
+          : this.numeroProveedor,
+      fechaFactura: data.fechaFactura.present
+          ? data.fechaFactura.value
+          : this.fechaFactura,
+      fechaVencimiento: data.fechaVencimiento.present
+          ? data.fechaVencimiento.value
+          : this.fechaVencimiento,
+      baseCentimos: data.baseCentimos.present
+          ? data.baseCentimos.value
+          : this.baseCentimos,
+      ivaCentimos: data.ivaCentimos.present
+          ? data.ivaCentimos.value
+          : this.ivaCentimos,
+      totalCentimos: data.totalCentimos.present
+          ? data.totalCentimos.value
+          : this.totalCentimos,
+      estado: data.estado.present ? data.estado.value : this.estado,
+      documentoId: data.documentoId.present
+          ? data.documentoId.value
+          : this.documentoId,
+      fechaCreacion: data.fechaCreacion.present
+          ? data.fechaCreacion.value
+          : this.fechaCreacion,
+      fechaModificacion: data.fechaModificacion.present
+          ? data.fechaModificacion.value
+          : this.fechaModificacion,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FacturasRecibida(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('proveedorId: $proveedorId, ')
+          ..write('numeroNormalizado: $numeroNormalizado, ')
+          ..write('numeroProveedor: $numeroProveedor, ')
+          ..write('fechaFactura: $fechaFactura, ')
+          ..write('fechaVencimiento: $fechaVencimiento, ')
+          ..write('baseCentimos: $baseCentimos, ')
+          ..write('ivaCentimos: $ivaCentimos, ')
+          ..write('totalCentimos: $totalCentimos, ')
+          ..write('estado: $estado, ')
+          ..write('documentoId: $documentoId, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    tenantId,
+    id,
+    proveedorId,
+    numeroNormalizado,
+    numeroProveedor,
+    fechaFactura,
+    fechaVencimiento,
+    baseCentimos,
+    ivaCentimos,
+    totalCentimos,
+    estado,
+    documentoId,
+    fechaCreacion,
+    fechaModificacion,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FacturasRecibida &&
+          other.tenantId == this.tenantId &&
+          other.id == this.id &&
+          other.proveedorId == this.proveedorId &&
+          other.numeroNormalizado == this.numeroNormalizado &&
+          other.numeroProveedor == this.numeroProveedor &&
+          other.fechaFactura == this.fechaFactura &&
+          other.fechaVencimiento == this.fechaVencimiento &&
+          other.baseCentimos == this.baseCentimos &&
+          other.ivaCentimos == this.ivaCentimos &&
+          other.totalCentimos == this.totalCentimos &&
+          other.estado == this.estado &&
+          other.documentoId == this.documentoId &&
+          other.fechaCreacion == this.fechaCreacion &&
+          other.fechaModificacion == this.fechaModificacion);
+}
+
+class FacturasRecibidasCompanion extends UpdateCompanion<FacturasRecibida> {
+  final Value<String> tenantId;
+  final Value<String> id;
+  final Value<String> proveedorId;
+  final Value<String> numeroNormalizado;
+  final Value<String> numeroProveedor;
+  final Value<DateTime> fechaFactura;
+  final Value<DateTime?> fechaVencimiento;
+  final Value<int> baseCentimos;
+  final Value<int> ivaCentimos;
+  final Value<int> totalCentimos;
+  final Value<String> estado;
+  final Value<String?> documentoId;
+  final Value<DateTime> fechaCreacion;
+  final Value<DateTime> fechaModificacion;
+  final Value<int> rowid;
+  const FacturasRecibidasCompanion({
+    this.tenantId = const Value.absent(),
+    this.id = const Value.absent(),
+    this.proveedorId = const Value.absent(),
+    this.numeroNormalizado = const Value.absent(),
+    this.numeroProveedor = const Value.absent(),
+    this.fechaFactura = const Value.absent(),
+    this.fechaVencimiento = const Value.absent(),
+    this.baseCentimos = const Value.absent(),
+    this.ivaCentimos = const Value.absent(),
+    this.totalCentimos = const Value.absent(),
+    this.estado = const Value.absent(),
+    this.documentoId = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.fechaModificacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FacturasRecibidasCompanion.insert({
+    required String tenantId,
+    required String id,
+    required String proveedorId,
+    required String numeroNormalizado,
+    required String numeroProveedor,
+    required DateTime fechaFactura,
+    this.fechaVencimiento = const Value.absent(),
+    required int baseCentimos,
+    required int ivaCentimos,
+    required int totalCentimos,
+    this.estado = const Value.absent(),
+    this.documentoId = const Value.absent(),
+    required DateTime fechaCreacion,
+    required DateTime fechaModificacion,
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       id = Value(id),
+       proveedorId = Value(proveedorId),
+       numeroNormalizado = Value(numeroNormalizado),
+       numeroProveedor = Value(numeroProveedor),
+       fechaFactura = Value(fechaFactura),
+       baseCentimos = Value(baseCentimos),
+       ivaCentimos = Value(ivaCentimos),
+       totalCentimos = Value(totalCentimos),
+       fechaCreacion = Value(fechaCreacion),
+       fechaModificacion = Value(fechaModificacion);
+  static Insertable<FacturasRecibida> custom({
+    Expression<String>? tenantId,
+    Expression<String>? id,
+    Expression<String>? proveedorId,
+    Expression<String>? numeroNormalizado,
+    Expression<String>? numeroProveedor,
+    Expression<DateTime>? fechaFactura,
+    Expression<DateTime>? fechaVencimiento,
+    Expression<int>? baseCentimos,
+    Expression<int>? ivaCentimos,
+    Expression<int>? totalCentimos,
+    Expression<String>? estado,
+    Expression<String>? documentoId,
+    Expression<DateTime>? fechaCreacion,
+    Expression<DateTime>? fechaModificacion,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (id != null) 'id': id,
+      if (proveedorId != null) 'proveedor_id': proveedorId,
+      if (numeroNormalizado != null) 'numero_normalizado': numeroNormalizado,
+      if (numeroProveedor != null) 'numero_proveedor': numeroProveedor,
+      if (fechaFactura != null) 'fecha_factura': fechaFactura,
+      if (fechaVencimiento != null) 'fecha_vencimiento': fechaVencimiento,
+      if (baseCentimos != null) 'base_centimos': baseCentimos,
+      if (ivaCentimos != null) 'iva_centimos': ivaCentimos,
+      if (totalCentimos != null) 'total_centimos': totalCentimos,
+      if (estado != null) 'estado': estado,
+      if (documentoId != null) 'documento_id': documentoId,
+      if (fechaCreacion != null) 'fecha_creacion': fechaCreacion,
+      if (fechaModificacion != null) 'fecha_modificacion': fechaModificacion,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FacturasRecibidasCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? id,
+    Value<String>? proveedorId,
+    Value<String>? numeroNormalizado,
+    Value<String>? numeroProveedor,
+    Value<DateTime>? fechaFactura,
+    Value<DateTime?>? fechaVencimiento,
+    Value<int>? baseCentimos,
+    Value<int>? ivaCentimos,
+    Value<int>? totalCentimos,
+    Value<String>? estado,
+    Value<String?>? documentoId,
+    Value<DateTime>? fechaCreacion,
+    Value<DateTime>? fechaModificacion,
+    Value<int>? rowid,
+  }) {
+    return FacturasRecibidasCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      id: id ?? this.id,
+      proveedorId: proveedorId ?? this.proveedorId,
+      numeroNormalizado: numeroNormalizado ?? this.numeroNormalizado,
+      numeroProveedor: numeroProveedor ?? this.numeroProveedor,
+      fechaFactura: fechaFactura ?? this.fechaFactura,
+      fechaVencimiento: fechaVencimiento ?? this.fechaVencimiento,
+      baseCentimos: baseCentimos ?? this.baseCentimos,
+      ivaCentimos: ivaCentimos ?? this.ivaCentimos,
+      totalCentimos: totalCentimos ?? this.totalCentimos,
+      estado: estado ?? this.estado,
+      documentoId: documentoId ?? this.documentoId,
+      fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+      fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (proveedorId.present) {
+      map['proveedor_id'] = Variable<String>(proveedorId.value);
+    }
+    if (numeroNormalizado.present) {
+      map['numero_normalizado'] = Variable<String>(numeroNormalizado.value);
+    }
+    if (numeroProveedor.present) {
+      map['numero_proveedor'] = Variable<String>(numeroProveedor.value);
+    }
+    if (fechaFactura.present) {
+      map['fecha_factura'] = Variable<DateTime>(fechaFactura.value);
+    }
+    if (fechaVencimiento.present) {
+      map['fecha_vencimiento'] = Variable<DateTime>(fechaVencimiento.value);
+    }
+    if (baseCentimos.present) {
+      map['base_centimos'] = Variable<int>(baseCentimos.value);
+    }
+    if (ivaCentimos.present) {
+      map['iva_centimos'] = Variable<int>(ivaCentimos.value);
+    }
+    if (totalCentimos.present) {
+      map['total_centimos'] = Variable<int>(totalCentimos.value);
+    }
+    if (estado.present) {
+      map['estado'] = Variable<String>(estado.value);
+    }
+    if (documentoId.present) {
+      map['documento_id'] = Variable<String>(documentoId.value);
+    }
+    if (fechaCreacion.present) {
+      map['fecha_creacion'] = Variable<DateTime>(fechaCreacion.value);
+    }
+    if (fechaModificacion.present) {
+      map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FacturasRecibidasCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('proveedorId: $proveedorId, ')
+          ..write('numeroNormalizado: $numeroNormalizado, ')
+          ..write('numeroProveedor: $numeroProveedor, ')
+          ..write('fechaFactura: $fechaFactura, ')
+          ..write('fechaVencimiento: $fechaVencimiento, ')
+          ..write('baseCentimos: $baseCentimos, ')
+          ..write('ivaCentimos: $ivaCentimos, ')
+          ..write('totalCentimos: $totalCentimos, ')
+          ..write('estado: $estado, ')
+          ..write('documentoId: $documentoId, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('fechaModificacion: $fechaModificacion, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $FacturaRecibidaAlbaranesTable extends FacturaRecibidaAlbaranes
+    with TableInfo<$FacturaRecibidaAlbaranesTable, FacturaRecibidaAlbarane> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FacturaRecibidaAlbaranesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _facturaIdMeta = const VerificationMeta(
+    'facturaId',
+  );
+  @override
+  late final GeneratedColumn<String> facturaId = GeneratedColumn<String>(
+    'factura_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _albaranIdMeta = const VerificationMeta(
+    'albaranId',
+  );
+  @override
+  late final GeneratedColumn<String> albaranId = GeneratedColumn<String>(
+    'albaran_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [tenantId, facturaId, albaranId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'factura_recibida_albaranes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FacturaRecibidaAlbarane> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('factura_id')) {
+      context.handle(
+        _facturaIdMeta,
+        facturaId.isAcceptableOrUnknown(data['factura_id']!, _facturaIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_facturaIdMeta);
+    }
+    if (data.containsKey('albaran_id')) {
+      context.handle(
+        _albaranIdMeta,
+        albaranId.isAcceptableOrUnknown(data['albaran_id']!, _albaranIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_albaranIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {tenantId, facturaId, albaranId};
+  @override
+  FacturaRecibidaAlbarane map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FacturaRecibidaAlbarane(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      facturaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}factura_id'],
+      )!,
+      albaranId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}albaran_id'],
+      )!,
+    );
+  }
+
+  @override
+  $FacturaRecibidaAlbaranesTable createAlias(String alias) {
+    return $FacturaRecibidaAlbaranesTable(attachedDatabase, alias);
+  }
+}
+
+class FacturaRecibidaAlbarane extends DataClass
+    implements Insertable<FacturaRecibidaAlbarane> {
+  final String tenantId;
+  final String facturaId;
+  final String albaranId;
+  const FacturaRecibidaAlbarane({
+    required this.tenantId,
+    required this.facturaId,
+    required this.albaranId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['factura_id'] = Variable<String>(facturaId);
+    map['albaran_id'] = Variable<String>(albaranId);
+    return map;
+  }
+
+  FacturaRecibidaAlbaranesCompanion toCompanion(bool nullToAbsent) {
+    return FacturaRecibidaAlbaranesCompanion(
+      tenantId: Value(tenantId),
+      facturaId: Value(facturaId),
+      albaranId: Value(albaranId),
+    );
+  }
+
+  factory FacturaRecibidaAlbarane.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FacturaRecibidaAlbarane(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      facturaId: serializer.fromJson<String>(json['facturaId']),
+      albaranId: serializer.fromJson<String>(json['albaranId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'facturaId': serializer.toJson<String>(facturaId),
+      'albaranId': serializer.toJson<String>(albaranId),
+    };
+  }
+
+  FacturaRecibidaAlbarane copyWith({
+    String? tenantId,
+    String? facturaId,
+    String? albaranId,
+  }) => FacturaRecibidaAlbarane(
+    tenantId: tenantId ?? this.tenantId,
+    facturaId: facturaId ?? this.facturaId,
+    albaranId: albaranId ?? this.albaranId,
+  );
+  FacturaRecibidaAlbarane copyWithCompanion(
+    FacturaRecibidaAlbaranesCompanion data,
+  ) {
+    return FacturaRecibidaAlbarane(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      facturaId: data.facturaId.present ? data.facturaId.value : this.facturaId,
+      albaranId: data.albaranId.present ? data.albaranId.value : this.albaranId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FacturaRecibidaAlbarane(')
+          ..write('tenantId: $tenantId, ')
+          ..write('facturaId: $facturaId, ')
+          ..write('albaranId: $albaranId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(tenantId, facturaId, albaranId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FacturaRecibidaAlbarane &&
+          other.tenantId == this.tenantId &&
+          other.facturaId == this.facturaId &&
+          other.albaranId == this.albaranId);
+}
+
+class FacturaRecibidaAlbaranesCompanion
+    extends UpdateCompanion<FacturaRecibidaAlbarane> {
+  final Value<String> tenantId;
+  final Value<String> facturaId;
+  final Value<String> albaranId;
+  final Value<int> rowid;
+  const FacturaRecibidaAlbaranesCompanion({
+    this.tenantId = const Value.absent(),
+    this.facturaId = const Value.absent(),
+    this.albaranId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FacturaRecibidaAlbaranesCompanion.insert({
+    required String tenantId,
+    required String facturaId,
+    required String albaranId,
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       facturaId = Value(facturaId),
+       albaranId = Value(albaranId);
+  static Insertable<FacturaRecibidaAlbarane> custom({
+    Expression<String>? tenantId,
+    Expression<String>? facturaId,
+    Expression<String>? albaranId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (facturaId != null) 'factura_id': facturaId,
+      if (albaranId != null) 'albaran_id': albaranId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FacturaRecibidaAlbaranesCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? facturaId,
+    Value<String>? albaranId,
+    Value<int>? rowid,
+  }) {
+    return FacturaRecibidaAlbaranesCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      facturaId: facturaId ?? this.facturaId,
+      albaranId: albaranId ?? this.albaranId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (facturaId.present) {
+      map['factura_id'] = Variable<String>(facturaId.value);
+    }
+    if (albaranId.present) {
+      map['albaran_id'] = Variable<String>(albaranId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FacturaRecibidaAlbaranesCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('facturaId: $facturaId, ')
+          ..write('albaranId: $albaranId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AsignacionesFacturaRecibidaTable extends AsignacionesFacturaRecibida
+    with
+        TableInfo<
+          $AsignacionesFacturaRecibidaTable,
+          AsignacionesFacturaRecibidaData
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AsignacionesFacturaRecibidaTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _facturaIdMeta = const VerificationMeta(
+    'facturaId',
+  );
+  @override
+  late final GeneratedColumn<String> facturaId = GeneratedColumn<String>(
+    'factura_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _expedienteIdMeta = const VerificationMeta(
+    'expedienteId',
+  );
+  @override
+  late final GeneratedColumn<String> expedienteId = GeneratedColumn<String>(
+    'expediente_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _baseCentimosMeta = const VerificationMeta(
+    'baseCentimos',
+  );
+  @override
+  late final GeneratedColumn<int> baseCentimos = GeneratedColumn<int>(
+    'base_centimos',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ivaNoRecuperableCentimosMeta =
+      const VerificationMeta('ivaNoRecuperableCentimos');
+  @override
+  late final GeneratedColumn<int> ivaNoRecuperableCentimos =
+      GeneratedColumn<int>(
+        'iva_no_recuperable_centimos',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(0),
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    id,
+    facturaId,
+    expedienteId,
+    baseCentimos,
+    ivaNoRecuperableCentimos,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'asignaciones_factura_recibida';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AsignacionesFacturaRecibidaData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('factura_id')) {
+      context.handle(
+        _facturaIdMeta,
+        facturaId.isAcceptableOrUnknown(data['factura_id']!, _facturaIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_facturaIdMeta);
+    }
+    if (data.containsKey('expediente_id')) {
+      context.handle(
+        _expedienteIdMeta,
+        expedienteId.isAcceptableOrUnknown(
+          data['expediente_id']!,
+          _expedienteIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('base_centimos')) {
+      context.handle(
+        _baseCentimosMeta,
+        baseCentimos.isAcceptableOrUnknown(
+          data['base_centimos']!,
+          _baseCentimosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_baseCentimosMeta);
+    }
+    if (data.containsKey('iva_no_recuperable_centimos')) {
+      context.handle(
+        _ivaNoRecuperableCentimosMeta,
+        ivaNoRecuperableCentimos.isAcceptableOrUnknown(
+          data['iva_no_recuperable_centimos']!,
+          _ivaNoRecuperableCentimosMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {tenantId, id};
+  @override
+  AsignacionesFacturaRecibidaData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AsignacionesFacturaRecibidaData(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      facturaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}factura_id'],
+      )!,
+      expedienteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}expediente_id'],
+      ),
+      baseCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}base_centimos'],
+      )!,
+      ivaNoRecuperableCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}iva_no_recuperable_centimos'],
+      )!,
+    );
+  }
+
+  @override
+  $AsignacionesFacturaRecibidaTable createAlias(String alias) {
+    return $AsignacionesFacturaRecibidaTable(attachedDatabase, alias);
+  }
+}
+
+class AsignacionesFacturaRecibidaData extends DataClass
+    implements Insertable<AsignacionesFacturaRecibidaData> {
+  final String tenantId;
+  final String id;
+  final String facturaId;
+  final String? expedienteId;
+  final int baseCentimos;
+  final int ivaNoRecuperableCentimos;
+  const AsignacionesFacturaRecibidaData({
+    required this.tenantId,
+    required this.id,
+    required this.facturaId,
+    this.expedienteId,
+    required this.baseCentimos,
+    required this.ivaNoRecuperableCentimos,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['id'] = Variable<String>(id);
+    map['factura_id'] = Variable<String>(facturaId);
+    if (!nullToAbsent || expedienteId != null) {
+      map['expediente_id'] = Variable<String>(expedienteId);
+    }
+    map['base_centimos'] = Variable<int>(baseCentimos);
+    map['iva_no_recuperable_centimos'] = Variable<int>(
+      ivaNoRecuperableCentimos,
+    );
+    return map;
+  }
+
+  AsignacionesFacturaRecibidaCompanion toCompanion(bool nullToAbsent) {
+    return AsignacionesFacturaRecibidaCompanion(
+      tenantId: Value(tenantId),
+      id: Value(id),
+      facturaId: Value(facturaId),
+      expedienteId: expedienteId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(expedienteId),
+      baseCentimos: Value(baseCentimos),
+      ivaNoRecuperableCentimos: Value(ivaNoRecuperableCentimos),
+    );
+  }
+
+  factory AsignacionesFacturaRecibidaData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AsignacionesFacturaRecibidaData(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      id: serializer.fromJson<String>(json['id']),
+      facturaId: serializer.fromJson<String>(json['facturaId']),
+      expedienteId: serializer.fromJson<String?>(json['expedienteId']),
+      baseCentimos: serializer.fromJson<int>(json['baseCentimos']),
+      ivaNoRecuperableCentimos: serializer.fromJson<int>(
+        json['ivaNoRecuperableCentimos'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'id': serializer.toJson<String>(id),
+      'facturaId': serializer.toJson<String>(facturaId),
+      'expedienteId': serializer.toJson<String?>(expedienteId),
+      'baseCentimos': serializer.toJson<int>(baseCentimos),
+      'ivaNoRecuperableCentimos': serializer.toJson<int>(
+        ivaNoRecuperableCentimos,
+      ),
+    };
+  }
+
+  AsignacionesFacturaRecibidaData copyWith({
+    String? tenantId,
+    String? id,
+    String? facturaId,
+    Value<String?> expedienteId = const Value.absent(),
+    int? baseCentimos,
+    int? ivaNoRecuperableCentimos,
+  }) => AsignacionesFacturaRecibidaData(
+    tenantId: tenantId ?? this.tenantId,
+    id: id ?? this.id,
+    facturaId: facturaId ?? this.facturaId,
+    expedienteId: expedienteId.present ? expedienteId.value : this.expedienteId,
+    baseCentimos: baseCentimos ?? this.baseCentimos,
+    ivaNoRecuperableCentimos:
+        ivaNoRecuperableCentimos ?? this.ivaNoRecuperableCentimos,
+  );
+  AsignacionesFacturaRecibidaData copyWithCompanion(
+    AsignacionesFacturaRecibidaCompanion data,
+  ) {
+    return AsignacionesFacturaRecibidaData(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      id: data.id.present ? data.id.value : this.id,
+      facturaId: data.facturaId.present ? data.facturaId.value : this.facturaId,
+      expedienteId: data.expedienteId.present
+          ? data.expedienteId.value
+          : this.expedienteId,
+      baseCentimos: data.baseCentimos.present
+          ? data.baseCentimos.value
+          : this.baseCentimos,
+      ivaNoRecuperableCentimos: data.ivaNoRecuperableCentimos.present
+          ? data.ivaNoRecuperableCentimos.value
+          : this.ivaNoRecuperableCentimos,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AsignacionesFacturaRecibidaData(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('facturaId: $facturaId, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('baseCentimos: $baseCentimos, ')
+          ..write('ivaNoRecuperableCentimos: $ivaNoRecuperableCentimos')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    tenantId,
+    id,
+    facturaId,
+    expedienteId,
+    baseCentimos,
+    ivaNoRecuperableCentimos,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AsignacionesFacturaRecibidaData &&
+          other.tenantId == this.tenantId &&
+          other.id == this.id &&
+          other.facturaId == this.facturaId &&
+          other.expedienteId == this.expedienteId &&
+          other.baseCentimos == this.baseCentimos &&
+          other.ivaNoRecuperableCentimos == this.ivaNoRecuperableCentimos);
+}
+
+class AsignacionesFacturaRecibidaCompanion
+    extends UpdateCompanion<AsignacionesFacturaRecibidaData> {
+  final Value<String> tenantId;
+  final Value<String> id;
+  final Value<String> facturaId;
+  final Value<String?> expedienteId;
+  final Value<int> baseCentimos;
+  final Value<int> ivaNoRecuperableCentimos;
+  final Value<int> rowid;
+  const AsignacionesFacturaRecibidaCompanion({
+    this.tenantId = const Value.absent(),
+    this.id = const Value.absent(),
+    this.facturaId = const Value.absent(),
+    this.expedienteId = const Value.absent(),
+    this.baseCentimos = const Value.absent(),
+    this.ivaNoRecuperableCentimos = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AsignacionesFacturaRecibidaCompanion.insert({
+    required String tenantId,
+    required String id,
+    required String facturaId,
+    this.expedienteId = const Value.absent(),
+    required int baseCentimos,
+    this.ivaNoRecuperableCentimos = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       id = Value(id),
+       facturaId = Value(facturaId),
+       baseCentimos = Value(baseCentimos);
+  static Insertable<AsignacionesFacturaRecibidaData> custom({
+    Expression<String>? tenantId,
+    Expression<String>? id,
+    Expression<String>? facturaId,
+    Expression<String>? expedienteId,
+    Expression<int>? baseCentimos,
+    Expression<int>? ivaNoRecuperableCentimos,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (id != null) 'id': id,
+      if (facturaId != null) 'factura_id': facturaId,
+      if (expedienteId != null) 'expediente_id': expedienteId,
+      if (baseCentimos != null) 'base_centimos': baseCentimos,
+      if (ivaNoRecuperableCentimos != null)
+        'iva_no_recuperable_centimos': ivaNoRecuperableCentimos,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AsignacionesFacturaRecibidaCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? id,
+    Value<String>? facturaId,
+    Value<String?>? expedienteId,
+    Value<int>? baseCentimos,
+    Value<int>? ivaNoRecuperableCentimos,
+    Value<int>? rowid,
+  }) {
+    return AsignacionesFacturaRecibidaCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      id: id ?? this.id,
+      facturaId: facturaId ?? this.facturaId,
+      expedienteId: expedienteId ?? this.expedienteId,
+      baseCentimos: baseCentimos ?? this.baseCentimos,
+      ivaNoRecuperableCentimos:
+          ivaNoRecuperableCentimos ?? this.ivaNoRecuperableCentimos,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (facturaId.present) {
+      map['factura_id'] = Variable<String>(facturaId.value);
+    }
+    if (expedienteId.present) {
+      map['expediente_id'] = Variable<String>(expedienteId.value);
+    }
+    if (baseCentimos.present) {
+      map['base_centimos'] = Variable<int>(baseCentimos.value);
+    }
+    if (ivaNoRecuperableCentimos.present) {
+      map['iva_no_recuperable_centimos'] = Variable<int>(
+        ivaNoRecuperableCentimos.value,
+      );
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AsignacionesFacturaRecibidaCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('facturaId: $facturaId, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('baseCentimos: $baseCentimos, ')
+          ..write('ivaNoRecuperableCentimos: $ivaNoRecuperableCentimos, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $FacturaRecibidaComprasTable extends FacturaRecibidaCompras
+    with TableInfo<$FacturaRecibidaComprasTable, FacturaRecibidaCompra> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FacturaRecibidaComprasTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _facturaIdMeta = const VerificationMeta(
+    'facturaId',
+  );
+  @override
+  late final GeneratedColumn<String> facturaId = GeneratedColumn<String>(
+    'factura_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _asignacionIdMeta = const VerificationMeta(
+    'asignacionId',
+  );
+  @override
+  late final GeneratedColumn<String> asignacionId = GeneratedColumn<String>(
+    'asignacion_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _compraIdMeta = const VerificationMeta(
+    'compraId',
+  );
+  @override
+  late final GeneratedColumn<String> compraId = GeneratedColumn<String>(
+    'compra_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    facturaId,
+    asignacionId,
+    compraId,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'factura_recibida_compras';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FacturaRecibidaCompra> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('factura_id')) {
+      context.handle(
+        _facturaIdMeta,
+        facturaId.isAcceptableOrUnknown(data['factura_id']!, _facturaIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_facturaIdMeta);
+    }
+    if (data.containsKey('asignacion_id')) {
+      context.handle(
+        _asignacionIdMeta,
+        asignacionId.isAcceptableOrUnknown(
+          data['asignacion_id']!,
+          _asignacionIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_asignacionIdMeta);
+    }
+    if (data.containsKey('compra_id')) {
+      context.handle(
+        _compraIdMeta,
+        compraId.isAcceptableOrUnknown(data['compra_id']!, _compraIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_compraIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {tenantId, facturaId, asignacionId};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {tenantId, compraId},
+  ];
+  @override
+  FacturaRecibidaCompra map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FacturaRecibidaCompra(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      facturaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}factura_id'],
+      )!,
+      asignacionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}asignacion_id'],
+      )!,
+      compraId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}compra_id'],
+      )!,
+    );
+  }
+
+  @override
+  $FacturaRecibidaComprasTable createAlias(String alias) {
+    return $FacturaRecibidaComprasTable(attachedDatabase, alias);
+  }
+}
+
+class FacturaRecibidaCompra extends DataClass
+    implements Insertable<FacturaRecibidaCompra> {
+  final String tenantId;
+  final String facturaId;
+  final String asignacionId;
+  final String compraId;
+  const FacturaRecibidaCompra({
+    required this.tenantId,
+    required this.facturaId,
+    required this.asignacionId,
+    required this.compraId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['factura_id'] = Variable<String>(facturaId);
+    map['asignacion_id'] = Variable<String>(asignacionId);
+    map['compra_id'] = Variable<String>(compraId);
+    return map;
+  }
+
+  FacturaRecibidaComprasCompanion toCompanion(bool nullToAbsent) {
+    return FacturaRecibidaComprasCompanion(
+      tenantId: Value(tenantId),
+      facturaId: Value(facturaId),
+      asignacionId: Value(asignacionId),
+      compraId: Value(compraId),
+    );
+  }
+
+  factory FacturaRecibidaCompra.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FacturaRecibidaCompra(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      facturaId: serializer.fromJson<String>(json['facturaId']),
+      asignacionId: serializer.fromJson<String>(json['asignacionId']),
+      compraId: serializer.fromJson<String>(json['compraId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'facturaId': serializer.toJson<String>(facturaId),
+      'asignacionId': serializer.toJson<String>(asignacionId),
+      'compraId': serializer.toJson<String>(compraId),
+    };
+  }
+
+  FacturaRecibidaCompra copyWith({
+    String? tenantId,
+    String? facturaId,
+    String? asignacionId,
+    String? compraId,
+  }) => FacturaRecibidaCompra(
+    tenantId: tenantId ?? this.tenantId,
+    facturaId: facturaId ?? this.facturaId,
+    asignacionId: asignacionId ?? this.asignacionId,
+    compraId: compraId ?? this.compraId,
+  );
+  FacturaRecibidaCompra copyWithCompanion(
+    FacturaRecibidaComprasCompanion data,
+  ) {
+    return FacturaRecibidaCompra(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      facturaId: data.facturaId.present ? data.facturaId.value : this.facturaId,
+      asignacionId: data.asignacionId.present
+          ? data.asignacionId.value
+          : this.asignacionId,
+      compraId: data.compraId.present ? data.compraId.value : this.compraId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FacturaRecibidaCompra(')
+          ..write('tenantId: $tenantId, ')
+          ..write('facturaId: $facturaId, ')
+          ..write('asignacionId: $asignacionId, ')
+          ..write('compraId: $compraId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(tenantId, facturaId, asignacionId, compraId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FacturaRecibidaCompra &&
+          other.tenantId == this.tenantId &&
+          other.facturaId == this.facturaId &&
+          other.asignacionId == this.asignacionId &&
+          other.compraId == this.compraId);
+}
+
+class FacturaRecibidaComprasCompanion
+    extends UpdateCompanion<FacturaRecibidaCompra> {
+  final Value<String> tenantId;
+  final Value<String> facturaId;
+  final Value<String> asignacionId;
+  final Value<String> compraId;
+  final Value<int> rowid;
+  const FacturaRecibidaComprasCompanion({
+    this.tenantId = const Value.absent(),
+    this.facturaId = const Value.absent(),
+    this.asignacionId = const Value.absent(),
+    this.compraId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FacturaRecibidaComprasCompanion.insert({
+    required String tenantId,
+    required String facturaId,
+    required String asignacionId,
+    required String compraId,
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       facturaId = Value(facturaId),
+       asignacionId = Value(asignacionId),
+       compraId = Value(compraId);
+  static Insertable<FacturaRecibidaCompra> custom({
+    Expression<String>? tenantId,
+    Expression<String>? facturaId,
+    Expression<String>? asignacionId,
+    Expression<String>? compraId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (facturaId != null) 'factura_id': facturaId,
+      if (asignacionId != null) 'asignacion_id': asignacionId,
+      if (compraId != null) 'compra_id': compraId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FacturaRecibidaComprasCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? facturaId,
+    Value<String>? asignacionId,
+    Value<String>? compraId,
+    Value<int>? rowid,
+  }) {
+    return FacturaRecibidaComprasCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      facturaId: facturaId ?? this.facturaId,
+      asignacionId: asignacionId ?? this.asignacionId,
+      compraId: compraId ?? this.compraId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (facturaId.present) {
+      map['factura_id'] = Variable<String>(facturaId.value);
+    }
+    if (asignacionId.present) {
+      map['asignacion_id'] = Variable<String>(asignacionId.value);
+    }
+    if (compraId.present) {
+      map['compra_id'] = Variable<String>(compraId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FacturaRecibidaComprasCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('facturaId: $facturaId, ')
+          ..write('asignacionId: $asignacionId, ')
+          ..write('compraId: $compraId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PagosProveedorTable extends PagosProveedor
+    with TableInfo<$PagosProveedorTable, PagosProveedorData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PagosProveedorTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _facturaIdMeta = const VerificationMeta(
+    'facturaId',
+  );
+  @override
+  late final GeneratedColumn<String> facturaId = GeneratedColumn<String>(
+    'factura_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fechaMeta = const VerificationMeta('fecha');
+  @override
+  late final GeneratedColumn<DateTime> fecha = GeneratedColumn<DateTime>(
+    'fecha',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _importeCentimosMeta = const VerificationMeta(
+    'importeCentimos',
+  );
+  @override
+  late final GeneratedColumn<int> importeCentimos = GeneratedColumn<int>(
+    'importe_centimos',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _metodoMeta = const VerificationMeta('metodo');
+  @override
+  late final GeneratedColumn<String> metodo = GeneratedColumn<String>(
+    'metodo',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _referenciaMeta = const VerificationMeta(
+    'referencia',
+  );
+  @override
+  late final GeneratedColumn<String> referencia = GeneratedColumn<String>(
+    'referencia',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _observacionesMeta = const VerificationMeta(
+    'observaciones',
+  );
+  @override
+  late final GeneratedColumn<String> observaciones = GeneratedColumn<String>(
+    'observaciones',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _fechaCreacionMeta = const VerificationMeta(
+    'fechaCreacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaCreacion =
+      GeneratedColumn<DateTime>(
+        'fecha_creacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    id,
+    facturaId,
+    fecha,
+    importeCentimos,
+    metodo,
+    referencia,
+    observaciones,
+    fechaCreacion,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'pagos_proveedor';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PagosProveedorData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('factura_id')) {
+      context.handle(
+        _facturaIdMeta,
+        facturaId.isAcceptableOrUnknown(data['factura_id']!, _facturaIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_facturaIdMeta);
+    }
+    if (data.containsKey('fecha')) {
+      context.handle(
+        _fechaMeta,
+        fecha.isAcceptableOrUnknown(data['fecha']!, _fechaMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaMeta);
+    }
+    if (data.containsKey('importe_centimos')) {
+      context.handle(
+        _importeCentimosMeta,
+        importeCentimos.isAcceptableOrUnknown(
+          data['importe_centimos']!,
+          _importeCentimosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_importeCentimosMeta);
+    }
+    if (data.containsKey('metodo')) {
+      context.handle(
+        _metodoMeta,
+        metodo.isAcceptableOrUnknown(data['metodo']!, _metodoMeta),
+      );
+    }
+    if (data.containsKey('referencia')) {
+      context.handle(
+        _referenciaMeta,
+        referencia.isAcceptableOrUnknown(data['referencia']!, _referenciaMeta),
+      );
+    }
+    if (data.containsKey('observaciones')) {
+      context.handle(
+        _observacionesMeta,
+        observaciones.isAcceptableOrUnknown(
+          data['observaciones']!,
+          _observacionesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('fecha_creacion')) {
+      context.handle(
+        _fechaCreacionMeta,
+        fechaCreacion.isAcceptableOrUnknown(
+          data['fecha_creacion']!,
+          _fechaCreacionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaCreacionMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {tenantId, id};
+  @override
+  PagosProveedorData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PagosProveedorData(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      facturaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}factura_id'],
+      )!,
+      fecha: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha'],
+      )!,
+      importeCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}importe_centimos'],
+      )!,
+      metodo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}metodo'],
+      ),
+      referencia: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}referencia'],
+      ),
+      observaciones: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}observaciones'],
+      ),
+      fechaCreacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_creacion'],
+      )!,
+    );
+  }
+
+  @override
+  $PagosProveedorTable createAlias(String alias) {
+    return $PagosProveedorTable(attachedDatabase, alias);
+  }
+}
+
+class PagosProveedorData extends DataClass
+    implements Insertable<PagosProveedorData> {
+  final String tenantId;
+  final String id;
+  final String facturaId;
+  final DateTime fecha;
+  final int importeCentimos;
+  final String? metodo;
+  final String? referencia;
+  final String? observaciones;
+  final DateTime fechaCreacion;
+  const PagosProveedorData({
+    required this.tenantId,
+    required this.id,
+    required this.facturaId,
+    required this.fecha,
+    required this.importeCentimos,
+    this.metodo,
+    this.referencia,
+    this.observaciones,
+    required this.fechaCreacion,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['id'] = Variable<String>(id);
+    map['factura_id'] = Variable<String>(facturaId);
+    map['fecha'] = Variable<DateTime>(fecha);
+    map['importe_centimos'] = Variable<int>(importeCentimos);
+    if (!nullToAbsent || metodo != null) {
+      map['metodo'] = Variable<String>(metodo);
+    }
+    if (!nullToAbsent || referencia != null) {
+      map['referencia'] = Variable<String>(referencia);
+    }
+    if (!nullToAbsent || observaciones != null) {
+      map['observaciones'] = Variable<String>(observaciones);
+    }
+    map['fecha_creacion'] = Variable<DateTime>(fechaCreacion);
+    return map;
+  }
+
+  PagosProveedorCompanion toCompanion(bool nullToAbsent) {
+    return PagosProveedorCompanion(
+      tenantId: Value(tenantId),
+      id: Value(id),
+      facturaId: Value(facturaId),
+      fecha: Value(fecha),
+      importeCentimos: Value(importeCentimos),
+      metodo: metodo == null && nullToAbsent
+          ? const Value.absent()
+          : Value(metodo),
+      referencia: referencia == null && nullToAbsent
+          ? const Value.absent()
+          : Value(referencia),
+      observaciones: observaciones == null && nullToAbsent
+          ? const Value.absent()
+          : Value(observaciones),
+      fechaCreacion: Value(fechaCreacion),
+    );
+  }
+
+  factory PagosProveedorData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PagosProveedorData(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      id: serializer.fromJson<String>(json['id']),
+      facturaId: serializer.fromJson<String>(json['facturaId']),
+      fecha: serializer.fromJson<DateTime>(json['fecha']),
+      importeCentimos: serializer.fromJson<int>(json['importeCentimos']),
+      metodo: serializer.fromJson<String?>(json['metodo']),
+      referencia: serializer.fromJson<String?>(json['referencia']),
+      observaciones: serializer.fromJson<String?>(json['observaciones']),
+      fechaCreacion: serializer.fromJson<DateTime>(json['fechaCreacion']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'id': serializer.toJson<String>(id),
+      'facturaId': serializer.toJson<String>(facturaId),
+      'fecha': serializer.toJson<DateTime>(fecha),
+      'importeCentimos': serializer.toJson<int>(importeCentimos),
+      'metodo': serializer.toJson<String?>(metodo),
+      'referencia': serializer.toJson<String?>(referencia),
+      'observaciones': serializer.toJson<String?>(observaciones),
+      'fechaCreacion': serializer.toJson<DateTime>(fechaCreacion),
+    };
+  }
+
+  PagosProveedorData copyWith({
+    String? tenantId,
+    String? id,
+    String? facturaId,
+    DateTime? fecha,
+    int? importeCentimos,
+    Value<String?> metodo = const Value.absent(),
+    Value<String?> referencia = const Value.absent(),
+    Value<String?> observaciones = const Value.absent(),
+    DateTime? fechaCreacion,
+  }) => PagosProveedorData(
+    tenantId: tenantId ?? this.tenantId,
+    id: id ?? this.id,
+    facturaId: facturaId ?? this.facturaId,
+    fecha: fecha ?? this.fecha,
+    importeCentimos: importeCentimos ?? this.importeCentimos,
+    metodo: metodo.present ? metodo.value : this.metodo,
+    referencia: referencia.present ? referencia.value : this.referencia,
+    observaciones: observaciones.present
+        ? observaciones.value
+        : this.observaciones,
+    fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+  );
+  PagosProveedorData copyWithCompanion(PagosProveedorCompanion data) {
+    return PagosProveedorData(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      id: data.id.present ? data.id.value : this.id,
+      facturaId: data.facturaId.present ? data.facturaId.value : this.facturaId,
+      fecha: data.fecha.present ? data.fecha.value : this.fecha,
+      importeCentimos: data.importeCentimos.present
+          ? data.importeCentimos.value
+          : this.importeCentimos,
+      metodo: data.metodo.present ? data.metodo.value : this.metodo,
+      referencia: data.referencia.present
+          ? data.referencia.value
+          : this.referencia,
+      observaciones: data.observaciones.present
+          ? data.observaciones.value
+          : this.observaciones,
+      fechaCreacion: data.fechaCreacion.present
+          ? data.fechaCreacion.value
+          : this.fechaCreacion,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PagosProveedorData(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('facturaId: $facturaId, ')
+          ..write('fecha: $fecha, ')
+          ..write('importeCentimos: $importeCentimos, ')
+          ..write('metodo: $metodo, ')
+          ..write('referencia: $referencia, ')
+          ..write('observaciones: $observaciones, ')
+          ..write('fechaCreacion: $fechaCreacion')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    tenantId,
+    id,
+    facturaId,
+    fecha,
+    importeCentimos,
+    metodo,
+    referencia,
+    observaciones,
+    fechaCreacion,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PagosProveedorData &&
+          other.tenantId == this.tenantId &&
+          other.id == this.id &&
+          other.facturaId == this.facturaId &&
+          other.fecha == this.fecha &&
+          other.importeCentimos == this.importeCentimos &&
+          other.metodo == this.metodo &&
+          other.referencia == this.referencia &&
+          other.observaciones == this.observaciones &&
+          other.fechaCreacion == this.fechaCreacion);
+}
+
+class PagosProveedorCompanion extends UpdateCompanion<PagosProveedorData> {
+  final Value<String> tenantId;
+  final Value<String> id;
+  final Value<String> facturaId;
+  final Value<DateTime> fecha;
+  final Value<int> importeCentimos;
+  final Value<String?> metodo;
+  final Value<String?> referencia;
+  final Value<String?> observaciones;
+  final Value<DateTime> fechaCreacion;
+  final Value<int> rowid;
+  const PagosProveedorCompanion({
+    this.tenantId = const Value.absent(),
+    this.id = const Value.absent(),
+    this.facturaId = const Value.absent(),
+    this.fecha = const Value.absent(),
+    this.importeCentimos = const Value.absent(),
+    this.metodo = const Value.absent(),
+    this.referencia = const Value.absent(),
+    this.observaciones = const Value.absent(),
+    this.fechaCreacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PagosProveedorCompanion.insert({
+    required String tenantId,
+    required String id,
+    required String facturaId,
+    required DateTime fecha,
+    required int importeCentimos,
+    this.metodo = const Value.absent(),
+    this.referencia = const Value.absent(),
+    this.observaciones = const Value.absent(),
+    required DateTime fechaCreacion,
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       id = Value(id),
+       facturaId = Value(facturaId),
+       fecha = Value(fecha),
+       importeCentimos = Value(importeCentimos),
+       fechaCreacion = Value(fechaCreacion);
+  static Insertable<PagosProveedorData> custom({
+    Expression<String>? tenantId,
+    Expression<String>? id,
+    Expression<String>? facturaId,
+    Expression<DateTime>? fecha,
+    Expression<int>? importeCentimos,
+    Expression<String>? metodo,
+    Expression<String>? referencia,
+    Expression<String>? observaciones,
+    Expression<DateTime>? fechaCreacion,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (id != null) 'id': id,
+      if (facturaId != null) 'factura_id': facturaId,
+      if (fecha != null) 'fecha': fecha,
+      if (importeCentimos != null) 'importe_centimos': importeCentimos,
+      if (metodo != null) 'metodo': metodo,
+      if (referencia != null) 'referencia': referencia,
+      if (observaciones != null) 'observaciones': observaciones,
+      if (fechaCreacion != null) 'fecha_creacion': fechaCreacion,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PagosProveedorCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? id,
+    Value<String>? facturaId,
+    Value<DateTime>? fecha,
+    Value<int>? importeCentimos,
+    Value<String?>? metodo,
+    Value<String?>? referencia,
+    Value<String?>? observaciones,
+    Value<DateTime>? fechaCreacion,
+    Value<int>? rowid,
+  }) {
+    return PagosProveedorCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      id: id ?? this.id,
+      facturaId: facturaId ?? this.facturaId,
+      fecha: fecha ?? this.fecha,
+      importeCentimos: importeCentimos ?? this.importeCentimos,
+      metodo: metodo ?? this.metodo,
+      referencia: referencia ?? this.referencia,
+      observaciones: observaciones ?? this.observaciones,
+      fechaCreacion: fechaCreacion ?? this.fechaCreacion,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (facturaId.present) {
+      map['factura_id'] = Variable<String>(facturaId.value);
+    }
+    if (fecha.present) {
+      map['fecha'] = Variable<DateTime>(fecha.value);
+    }
+    if (importeCentimos.present) {
+      map['importe_centimos'] = Variable<int>(importeCentimos.value);
+    }
+    if (metodo.present) {
+      map['metodo'] = Variable<String>(metodo.value);
+    }
+    if (referencia.present) {
+      map['referencia'] = Variable<String>(referencia.value);
+    }
+    if (observaciones.present) {
+      map['observaciones'] = Variable<String>(observaciones.value);
+    }
+    if (fechaCreacion.present) {
+      map['fecha_creacion'] = Variable<DateTime>(fechaCreacion.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PagosProveedorCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('facturaId: $facturaId, ')
+          ..write('fecha: $fecha, ')
+          ..write('importeCentimos: $importeCentimos, ')
+          ..write('metodo: $metodo, ')
+          ..write('referencia: $referencia, ')
+          ..write('observaciones: $observaciones, ')
+          ..write('fechaCreacion: $fechaCreacion, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -28549,6 +32723,21 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $IncidenciaDiarioTable incidenciaDiario = $IncidenciaDiarioTable(
     this,
   );
+  late final $AlbaranesProveedorTable albaranesProveedor =
+      $AlbaranesProveedorTable(this);
+  late final $LineasAlbaranProveedorTable lineasAlbaranProveedor =
+      $LineasAlbaranProveedorTable(this);
+  late final $AsignacionesAlbaranObraTable asignacionesAlbaranObra =
+      $AsignacionesAlbaranObraTable(this);
+  late final $FacturasRecibidasTable facturasRecibidas =
+      $FacturasRecibidasTable(this);
+  late final $FacturaRecibidaAlbaranesTable facturaRecibidaAlbaranes =
+      $FacturaRecibidaAlbaranesTable(this);
+  late final $AsignacionesFacturaRecibidaTable asignacionesFacturaRecibida =
+      $AsignacionesFacturaRecibidaTable(this);
+  late final $FacturaRecibidaComprasTable facturaRecibidaCompras =
+      $FacturaRecibidaComprasTable(this);
+  late final $PagosProveedorTable pagosProveedor = $PagosProveedorTable(this);
   late final ExpedientesDao expedientesDao = ExpedientesDao(
     this as AppDatabase,
   );
@@ -28604,6 +32793,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final IncidenciasObraDao incidenciasObraDao = IncidenciasObraDao(
     this as AppDatabase,
   );
+  late final CircuitoProveedorDao circuitoProveedorDao = CircuitoProveedorDao(
+    this as AppDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -28646,6 +32838,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     incidenciasObra,
     incidenciaDocumentos,
     incidenciaDiario,
+    albaranesProveedor,
+    lineasAlbaranProveedor,
+    asignacionesAlbaranObra,
+    facturasRecibidas,
+    facturaRecibidaAlbaranes,
+    asignacionesFacturaRecibida,
+    facturaRecibidaCompras,
+    pagosProveedor,
   ];
 }
 
@@ -29441,6 +33641,194 @@ final class $$TenantsTableReferences
     final cache = $_typedResult.readTableOrNull(
       _incidenciaDiarioRefsTable($_db),
     );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $AlbaranesProveedorTable,
+    List<AlbaranesProveedorData>
+  >
+  _albaranesProveedorRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.albaranesProveedor,
+        aliasName: 'tenants__id__albaranes_proveedor__tenant_id',
+      );
+
+  $$AlbaranesProveedorTableProcessedTableManager get albaranesProveedorRefs {
+    final manager = $$AlbaranesProveedorTableTableManager(
+      $_db,
+      $_db.albaranesProveedor,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _albaranesProveedorRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $LineasAlbaranProveedorTable,
+    List<LineasAlbaranProveedorData>
+  >
+  _lineasAlbaranProveedorRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.lineasAlbaranProveedor,
+        aliasName: 'tenants__id__lineas_albaran_proveedor__tenant_id',
+      );
+
+  $$LineasAlbaranProveedorTableProcessedTableManager
+  get lineasAlbaranProveedorRefs {
+    final manager = $$LineasAlbaranProveedorTableTableManager(
+      $_db,
+      $_db.lineasAlbaranProveedor,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _lineasAlbaranProveedorRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $AsignacionesAlbaranObraTable,
+    List<AsignacionesAlbaranObraData>
+  >
+  _asignacionesAlbaranObraRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.asignacionesAlbaranObra,
+        aliasName: 'tenants__id__asignaciones_albaran_obra__tenant_id',
+      );
+
+  $$AsignacionesAlbaranObraTableProcessedTableManager
+  get asignacionesAlbaranObraRefs {
+    final manager = $$AsignacionesAlbaranObraTableTableManager(
+      $_db,
+      $_db.asignacionesAlbaranObra,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _asignacionesAlbaranObraRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$FacturasRecibidasTable, List<FacturasRecibida>>
+  _facturasRecibidasRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.facturasRecibidas,
+        aliasName: 'tenants__id__facturas_recibidas__tenant_id',
+      );
+
+  $$FacturasRecibidasTableProcessedTableManager get facturasRecibidasRefs {
+    final manager = $$FacturasRecibidasTableTableManager(
+      $_db,
+      $_db.facturasRecibidas,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _facturasRecibidasRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $FacturaRecibidaAlbaranesTable,
+    List<FacturaRecibidaAlbarane>
+  >
+  _facturaRecibidaAlbaranesRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.facturaRecibidaAlbaranes,
+        aliasName: 'tenants__id__factura_recibida_albaranes__tenant_id',
+      );
+
+  $$FacturaRecibidaAlbaranesTableProcessedTableManager
+  get facturaRecibidaAlbaranesRefs {
+    final manager = $$FacturaRecibidaAlbaranesTableTableManager(
+      $_db,
+      $_db.facturaRecibidaAlbaranes,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _facturaRecibidaAlbaranesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $AsignacionesFacturaRecibidaTable,
+    List<AsignacionesFacturaRecibidaData>
+  >
+  _asignacionesFacturaRecibidaRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.asignacionesFacturaRecibida,
+        aliasName: 'tenants__id__asignaciones_factura_recibida__tenant_id',
+      );
+
+  $$AsignacionesFacturaRecibidaTableProcessedTableManager
+  get asignacionesFacturaRecibidaRefs {
+    final manager = $$AsignacionesFacturaRecibidaTableTableManager(
+      $_db,
+      $_db.asignacionesFacturaRecibida,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _asignacionesFacturaRecibidaRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $FacturaRecibidaComprasTable,
+    List<FacturaRecibidaCompra>
+  >
+  _facturaRecibidaComprasRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.facturaRecibidaCompras,
+        aliasName: 'tenants__id__factura_recibida_compras__tenant_id',
+      );
+
+  $$FacturaRecibidaComprasTableProcessedTableManager
+  get facturaRecibidaComprasRefs {
+    final manager = $$FacturaRecibidaComprasTableTableManager(
+      $_db,
+      $_db.facturaRecibidaCompras,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _facturaRecibidaComprasRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$PagosProveedorTable, List<PagosProveedorData>>
+  _pagosProveedorRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.pagosProveedor,
+    aliasName: 'tenants__id__pagos_proveedor__tenant_id',
+  );
+
+  $$PagosProveedorTableProcessedTableManager get pagosProveedorRefs {
+    final manager = $$PagosProveedorTableTableManager(
+      $_db,
+      $_db.pagosProveedor,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_pagosProveedorRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -30392,6 +34780,215 @@ class $$TenantsTableFilterComposer
           }) => $$IncidenciaDiarioTableFilterComposer(
             $db: $db,
             $table: $db.incidenciaDiario,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> albaranesProveedorRefs(
+    Expression<bool> Function($$AlbaranesProveedorTableFilterComposer f) f,
+  ) {
+    final $$AlbaranesProveedorTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.albaranesProveedor,
+      getReferencedColumn: (t) => t.tenantId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AlbaranesProveedorTableFilterComposer(
+            $db: $db,
+            $table: $db.albaranesProveedor,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> lineasAlbaranProveedorRefs(
+    Expression<bool> Function($$LineasAlbaranProveedorTableFilterComposer f) f,
+  ) {
+    final $$LineasAlbaranProveedorTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.lineasAlbaranProveedor,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$LineasAlbaranProveedorTableFilterComposer(
+                $db: $db,
+                $table: $db.lineasAlbaranProveedor,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<bool> asignacionesAlbaranObraRefs(
+    Expression<bool> Function($$AsignacionesAlbaranObraTableFilterComposer f) f,
+  ) {
+    final $$AsignacionesAlbaranObraTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.asignacionesAlbaranObra,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$AsignacionesAlbaranObraTableFilterComposer(
+                $db: $db,
+                $table: $db.asignacionesAlbaranObra,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<bool> facturasRecibidasRefs(
+    Expression<bool> Function($$FacturasRecibidasTableFilterComposer f) f,
+  ) {
+    final $$FacturasRecibidasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.facturasRecibidas,
+      getReferencedColumn: (t) => t.tenantId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FacturasRecibidasTableFilterComposer(
+            $db: $db,
+            $table: $db.facturasRecibidas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> facturaRecibidaAlbaranesRefs(
+    Expression<bool> Function($$FacturaRecibidaAlbaranesTableFilterComposer f)
+    f,
+  ) {
+    final $$FacturaRecibidaAlbaranesTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.facturaRecibidaAlbaranes,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$FacturaRecibidaAlbaranesTableFilterComposer(
+                $db: $db,
+                $table: $db.facturaRecibidaAlbaranes,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<bool> asignacionesFacturaRecibidaRefs(
+    Expression<bool> Function(
+      $$AsignacionesFacturaRecibidaTableFilterComposer f,
+    )
+    f,
+  ) {
+    final $$AsignacionesFacturaRecibidaTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.asignacionesFacturaRecibida,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$AsignacionesFacturaRecibidaTableFilterComposer(
+                $db: $db,
+                $table: $db.asignacionesFacturaRecibida,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<bool> facturaRecibidaComprasRefs(
+    Expression<bool> Function($$FacturaRecibidaComprasTableFilterComposer f) f,
+  ) {
+    final $$FacturaRecibidaComprasTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.facturaRecibidaCompras,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$FacturaRecibidaComprasTableFilterComposer(
+                $db: $db,
+                $table: $db.facturaRecibidaCompras,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<bool> pagosProveedorRefs(
+    Expression<bool> Function($$PagosProveedorTableFilterComposer f) f,
+  ) {
+    final $$PagosProveedorTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.pagosProveedor,
+      getReferencedColumn: (t) => t.tenantId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PagosProveedorTableFilterComposer(
+            $db: $db,
+            $table: $db.pagosProveedor,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -31386,6 +35983,218 @@ class $$TenantsTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> albaranesProveedorRefs<T extends Object>(
+    Expression<T> Function($$AlbaranesProveedorTableAnnotationComposer a) f,
+  ) {
+    final $$AlbaranesProveedorTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.albaranesProveedor,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$AlbaranesProveedorTableAnnotationComposer(
+                $db: $db,
+                $table: $db.albaranesProveedor,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> lineasAlbaranProveedorRefs<T extends Object>(
+    Expression<T> Function($$LineasAlbaranProveedorTableAnnotationComposer a) f,
+  ) {
+    final $$LineasAlbaranProveedorTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.lineasAlbaranProveedor,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$LineasAlbaranProveedorTableAnnotationComposer(
+                $db: $db,
+                $table: $db.lineasAlbaranProveedor,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> asignacionesAlbaranObraRefs<T extends Object>(
+    Expression<T> Function($$AsignacionesAlbaranObraTableAnnotationComposer a)
+    f,
+  ) {
+    final $$AsignacionesAlbaranObraTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.asignacionesAlbaranObra,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$AsignacionesAlbaranObraTableAnnotationComposer(
+                $db: $db,
+                $table: $db.asignacionesAlbaranObra,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> facturasRecibidasRefs<T extends Object>(
+    Expression<T> Function($$FacturasRecibidasTableAnnotationComposer a) f,
+  ) {
+    final $$FacturasRecibidasTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.facturasRecibidas,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$FacturasRecibidasTableAnnotationComposer(
+                $db: $db,
+                $table: $db.facturasRecibidas,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> facturaRecibidaAlbaranesRefs<T extends Object>(
+    Expression<T> Function($$FacturaRecibidaAlbaranesTableAnnotationComposer a)
+    f,
+  ) {
+    final $$FacturaRecibidaAlbaranesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.facturaRecibidaAlbaranes,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$FacturaRecibidaAlbaranesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.facturaRecibidaAlbaranes,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> asignacionesFacturaRecibidaRefs<T extends Object>(
+    Expression<T> Function(
+      $$AsignacionesFacturaRecibidaTableAnnotationComposer a,
+    )
+    f,
+  ) {
+    final $$AsignacionesFacturaRecibidaTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.asignacionesFacturaRecibida,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$AsignacionesFacturaRecibidaTableAnnotationComposer(
+                $db: $db,
+                $table: $db.asignacionesFacturaRecibida,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> facturaRecibidaComprasRefs<T extends Object>(
+    Expression<T> Function($$FacturaRecibidaComprasTableAnnotationComposer a) f,
+  ) {
+    final $$FacturaRecibidaComprasTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.facturaRecibidaCompras,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$FacturaRecibidaComprasTableAnnotationComposer(
+                $db: $db,
+                $table: $db.facturaRecibidaCompras,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> pagosProveedorRefs<T extends Object>(
+    Expression<T> Function($$PagosProveedorTableAnnotationComposer a) f,
+  ) {
+    final $$PagosProveedorTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.pagosProveedor,
+      getReferencedColumn: (t) => t.tenantId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PagosProveedorTableAnnotationComposer(
+            $db: $db,
+            $table: $db.pagosProveedor,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$TenantsTableTableManager
@@ -31438,6 +36247,14 @@ class $$TenantsTableTableManager
             bool incidenciasObraRefs,
             bool incidenciaDocumentosRefs,
             bool incidenciaDiarioRefs,
+            bool albaranesProveedorRefs,
+            bool lineasAlbaranProveedorRefs,
+            bool asignacionesAlbaranObraRefs,
+            bool facturasRecibidasRefs,
+            bool facturaRecibidaAlbaranesRefs,
+            bool asignacionesFacturaRecibidaRefs,
+            bool facturaRecibidaComprasRefs,
+            bool pagosProveedorRefs,
           })
         > {
   $$TenantsTableTableManager(_$AppDatabase db, $TenantsTable table)
@@ -31525,6 +36342,14 @@ class $$TenantsTableTableManager
                 incidenciasObraRefs = false,
                 incidenciaDocumentosRefs = false,
                 incidenciaDiarioRefs = false,
+                albaranesProveedorRefs = false,
+                lineasAlbaranProveedorRefs = false,
+                asignacionesAlbaranObraRefs = false,
+                facturasRecibidasRefs = false,
+                facturaRecibidaAlbaranesRefs = false,
+                asignacionesFacturaRecibidaRefs = false,
+                facturaRecibidaComprasRefs = false,
+                pagosProveedorRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -31572,6 +36397,16 @@ class $$TenantsTableTableManager
                     if (incidenciasObraRefs) db.incidenciasObra,
                     if (incidenciaDocumentosRefs) db.incidenciaDocumentos,
                     if (incidenciaDiarioRefs) db.incidenciaDiario,
+                    if (albaranesProveedorRefs) db.albaranesProveedor,
+                    if (lineasAlbaranProveedorRefs) db.lineasAlbaranProveedor,
+                    if (asignacionesAlbaranObraRefs) db.asignacionesAlbaranObra,
+                    if (facturasRecibidasRefs) db.facturasRecibidas,
+                    if (facturaRecibidaAlbaranesRefs)
+                      db.facturaRecibidaAlbaranes,
+                    if (asignacionesFacturaRecibidaRefs)
+                      db.asignacionesFacturaRecibida,
+                    if (facturaRecibidaComprasRefs) db.facturaRecibidaCompras,
+                    if (pagosProveedorRefs) db.pagosProveedor,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -32328,6 +37163,174 @@ class $$TenantsTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (albaranesProveedorRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          AlbaranesProveedorData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._albaranesProveedorRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).albaranesProveedorRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (lineasAlbaranProveedorRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          LineasAlbaranProveedorData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._lineasAlbaranProveedorRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).lineasAlbaranProveedorRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (asignacionesAlbaranObraRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          AsignacionesAlbaranObraData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._asignacionesAlbaranObraRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).asignacionesAlbaranObraRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (facturasRecibidasRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          FacturasRecibida
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._facturasRecibidasRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).facturasRecibidasRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (facturaRecibidaAlbaranesRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          FacturaRecibidaAlbarane
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._facturaRecibidaAlbaranesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).facturaRecibidaAlbaranesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (asignacionesFacturaRecibidaRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          AsignacionesFacturaRecibidaData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._asignacionesFacturaRecibidaRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).asignacionesFacturaRecibidaRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (facturaRecibidaComprasRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          FacturaRecibidaCompra
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._facturaRecibidaComprasRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).facturaRecibidaComprasRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (pagosProveedorRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          PagosProveedorData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._pagosProveedorRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).pagosProveedorRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -32385,6 +37388,14 @@ typedef $$TenantsTableProcessedTableManager =
         bool incidenciasObraRefs,
         bool incidenciaDocumentosRefs,
         bool incidenciaDiarioRefs,
+        bool albaranesProveedorRefs,
+        bool lineasAlbaranProveedorRefs,
+        bool asignacionesAlbaranObraRefs,
+        bool facturasRecibidasRefs,
+        bool facturaRecibidaAlbaranesRefs,
+        bool asignacionesFacturaRecibidaRefs,
+        bool facturaRecibidaComprasRefs,
+        bool pagosProveedorRefs,
       })
     >;
 typedef $$ClientesTableCreateCompanionBuilder =
@@ -49886,6 +54897,3149 @@ typedef $$IncidenciaDiarioTableProcessedTableManager =
       IncidenciaDiarioData,
       PrefetchHooks Function({bool tenantId})
     >;
+typedef $$AlbaranesProveedorTableCreateCompanionBuilder =
+    AlbaranesProveedorCompanion Function({
+      required String tenantId,
+      required String id,
+      required String proveedorId,
+      required String referenciaProveedor,
+      required DateTime fecha,
+      Value<String> estado,
+      Value<String?> observaciones,
+      Value<String?> documentoId,
+      required DateTime fechaCreacion,
+      required DateTime fechaModificacion,
+      Value<int> rowid,
+    });
+typedef $$AlbaranesProveedorTableUpdateCompanionBuilder =
+    AlbaranesProveedorCompanion Function({
+      Value<String> tenantId,
+      Value<String> id,
+      Value<String> proveedorId,
+      Value<String> referenciaProveedor,
+      Value<DateTime> fecha,
+      Value<String> estado,
+      Value<String?> observaciones,
+      Value<String?> documentoId,
+      Value<DateTime> fechaCreacion,
+      Value<DateTime> fechaModificacion,
+      Value<int> rowid,
+    });
+
+final class $$AlbaranesProveedorTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $AlbaranesProveedorTable,
+          AlbaranesProveedorData
+        > {
+  $$AlbaranesProveedorTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) =>
+      db.tenants.createAlias('albaranes_proveedor__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$AlbaranesProveedorTableFilterComposer
+    extends Composer<_$AppDatabase, $AlbaranesProveedorTable> {
+  $$AlbaranesProveedorTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get proveedorId => $composableBuilder(
+    column: $table.proveedorId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get referenciaProveedor => $composableBuilder(
+    column: $table.referenciaProveedor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fecha => $composableBuilder(
+    column: $table.fecha,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get estado => $composableBuilder(
+    column: $table.estado,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get documentoId => $composableBuilder(
+    column: $table.documentoId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AlbaranesProveedorTableOrderingComposer
+    extends Composer<_$AppDatabase, $AlbaranesProveedorTable> {
+  $$AlbaranesProveedorTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get proveedorId => $composableBuilder(
+    column: $table.proveedorId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get referenciaProveedor => $composableBuilder(
+    column: $table.referenciaProveedor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fecha => $composableBuilder(
+    column: $table.fecha,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get estado => $composableBuilder(
+    column: $table.estado,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get documentoId => $composableBuilder(
+    column: $table.documentoId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AlbaranesProveedorTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AlbaranesProveedorTable> {
+  $$AlbaranesProveedorTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get proveedorId => $composableBuilder(
+    column: $table.proveedorId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get referenciaProveedor => $composableBuilder(
+    column: $table.referenciaProveedor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fecha =>
+      $composableBuilder(column: $table.fecha, builder: (column) => column);
+
+  GeneratedColumn<String> get estado =>
+      $composableBuilder(column: $table.estado, builder: (column) => column);
+
+  GeneratedColumn<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get documentoId => $composableBuilder(
+    column: $table.documentoId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => column,
+  );
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AlbaranesProveedorTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AlbaranesProveedorTable,
+          AlbaranesProveedorData,
+          $$AlbaranesProveedorTableFilterComposer,
+          $$AlbaranesProveedorTableOrderingComposer,
+          $$AlbaranesProveedorTableAnnotationComposer,
+          $$AlbaranesProveedorTableCreateCompanionBuilder,
+          $$AlbaranesProveedorTableUpdateCompanionBuilder,
+          (AlbaranesProveedorData, $$AlbaranesProveedorTableReferences),
+          AlbaranesProveedorData,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$AlbaranesProveedorTableTableManager(
+    _$AppDatabase db,
+    $AlbaranesProveedorTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AlbaranesProveedorTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AlbaranesProveedorTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AlbaranesProveedorTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> id = const Value.absent(),
+                Value<String> proveedorId = const Value.absent(),
+                Value<String> referenciaProveedor = const Value.absent(),
+                Value<DateTime> fecha = const Value.absent(),
+                Value<String> estado = const Value.absent(),
+                Value<String?> observaciones = const Value.absent(),
+                Value<String?> documentoId = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<DateTime> fechaModificacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AlbaranesProveedorCompanion(
+                tenantId: tenantId,
+                id: id,
+                proveedorId: proveedorId,
+                referenciaProveedor: referenciaProveedor,
+                fecha: fecha,
+                estado: estado,
+                observaciones: observaciones,
+                documentoId: documentoId,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String id,
+                required String proveedorId,
+                required String referenciaProveedor,
+                required DateTime fecha,
+                Value<String> estado = const Value.absent(),
+                Value<String?> observaciones = const Value.absent(),
+                Value<String?> documentoId = const Value.absent(),
+                required DateTime fechaCreacion,
+                required DateTime fechaModificacion,
+                Value<int> rowid = const Value.absent(),
+              }) => AlbaranesProveedorCompanion.insert(
+                tenantId: tenantId,
+                id: id,
+                proveedorId: proveedorId,
+                referenciaProveedor: referenciaProveedor,
+                fecha: fecha,
+                estado: estado,
+                observaciones: observaciones,
+                documentoId: documentoId,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$AlbaranesProveedorTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable:
+                                    $$AlbaranesProveedorTableReferences
+                                        ._tenantIdTable(db),
+                                referencedColumn:
+                                    $$AlbaranesProveedorTableReferences
+                                        ._tenantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$AlbaranesProveedorTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AlbaranesProveedorTable,
+      AlbaranesProveedorData,
+      $$AlbaranesProveedorTableFilterComposer,
+      $$AlbaranesProveedorTableOrderingComposer,
+      $$AlbaranesProveedorTableAnnotationComposer,
+      $$AlbaranesProveedorTableCreateCompanionBuilder,
+      $$AlbaranesProveedorTableUpdateCompanionBuilder,
+      (AlbaranesProveedorData, $$AlbaranesProveedorTableReferences),
+      AlbaranesProveedorData,
+      PrefetchHooks Function({bool tenantId})
+    >;
+typedef $$LineasAlbaranProveedorTableCreateCompanionBuilder =
+    LineasAlbaranProveedorCompanion Function({
+      required String tenantId,
+      required String id,
+      required String albaranId,
+      required String descripcionOriginal,
+      required double cantidad,
+      Value<String?> unidad,
+      Value<int?> precioUnitarioCentimos,
+      Value<int?> importeCentimos,
+      Value<String?> observaciones,
+      Value<int> rowid,
+    });
+typedef $$LineasAlbaranProveedorTableUpdateCompanionBuilder =
+    LineasAlbaranProveedorCompanion Function({
+      Value<String> tenantId,
+      Value<String> id,
+      Value<String> albaranId,
+      Value<String> descripcionOriginal,
+      Value<double> cantidad,
+      Value<String?> unidad,
+      Value<int?> precioUnitarioCentimos,
+      Value<int?> importeCentimos,
+      Value<String?> observaciones,
+      Value<int> rowid,
+    });
+
+final class $$LineasAlbaranProveedorTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $LineasAlbaranProveedorTable,
+          LineasAlbaranProveedorData
+        > {
+  $$LineasAlbaranProveedorTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) => db.tenants
+      .createAlias('lineas_albaran_proveedor__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$LineasAlbaranProveedorTableFilterComposer
+    extends Composer<_$AppDatabase, $LineasAlbaranProveedorTable> {
+  $$LineasAlbaranProveedorTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get albaranId => $composableBuilder(
+    column: $table.albaranId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get descripcionOriginal => $composableBuilder(
+    column: $table.descripcionOriginal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get cantidad => $composableBuilder(
+    column: $table.cantidad,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get unidad => $composableBuilder(
+    column: $table.unidad,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get precioUnitarioCentimos => $composableBuilder(
+    column: $table.precioUnitarioCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get importeCentimos => $composableBuilder(
+    column: $table.importeCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$LineasAlbaranProveedorTableOrderingComposer
+    extends Composer<_$AppDatabase, $LineasAlbaranProveedorTable> {
+  $$LineasAlbaranProveedorTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get albaranId => $composableBuilder(
+    column: $table.albaranId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get descripcionOriginal => $composableBuilder(
+    column: $table.descripcionOriginal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get cantidad => $composableBuilder(
+    column: $table.cantidad,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get unidad => $composableBuilder(
+    column: $table.unidad,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get precioUnitarioCentimos => $composableBuilder(
+    column: $table.precioUnitarioCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get importeCentimos => $composableBuilder(
+    column: $table.importeCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$LineasAlbaranProveedorTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LineasAlbaranProveedorTable> {
+  $$LineasAlbaranProveedorTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get albaranId =>
+      $composableBuilder(column: $table.albaranId, builder: (column) => column);
+
+  GeneratedColumn<String> get descripcionOriginal => $composableBuilder(
+    column: $table.descripcionOriginal,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get cantidad =>
+      $composableBuilder(column: $table.cantidad, builder: (column) => column);
+
+  GeneratedColumn<String> get unidad =>
+      $composableBuilder(column: $table.unidad, builder: (column) => column);
+
+  GeneratedColumn<int> get precioUnitarioCentimos => $composableBuilder(
+    column: $table.precioUnitarioCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get importeCentimos => $composableBuilder(
+    column: $table.importeCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => column,
+  );
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$LineasAlbaranProveedorTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LineasAlbaranProveedorTable,
+          LineasAlbaranProveedorData,
+          $$LineasAlbaranProveedorTableFilterComposer,
+          $$LineasAlbaranProveedorTableOrderingComposer,
+          $$LineasAlbaranProveedorTableAnnotationComposer,
+          $$LineasAlbaranProveedorTableCreateCompanionBuilder,
+          $$LineasAlbaranProveedorTableUpdateCompanionBuilder,
+          (LineasAlbaranProveedorData, $$LineasAlbaranProveedorTableReferences),
+          LineasAlbaranProveedorData,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$LineasAlbaranProveedorTableTableManager(
+    _$AppDatabase db,
+    $LineasAlbaranProveedorTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LineasAlbaranProveedorTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$LineasAlbaranProveedorTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$LineasAlbaranProveedorTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> id = const Value.absent(),
+                Value<String> albaranId = const Value.absent(),
+                Value<String> descripcionOriginal = const Value.absent(),
+                Value<double> cantidad = const Value.absent(),
+                Value<String?> unidad = const Value.absent(),
+                Value<int?> precioUnitarioCentimos = const Value.absent(),
+                Value<int?> importeCentimos = const Value.absent(),
+                Value<String?> observaciones = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LineasAlbaranProveedorCompanion(
+                tenantId: tenantId,
+                id: id,
+                albaranId: albaranId,
+                descripcionOriginal: descripcionOriginal,
+                cantidad: cantidad,
+                unidad: unidad,
+                precioUnitarioCentimos: precioUnitarioCentimos,
+                importeCentimos: importeCentimos,
+                observaciones: observaciones,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String id,
+                required String albaranId,
+                required String descripcionOriginal,
+                required double cantidad,
+                Value<String?> unidad = const Value.absent(),
+                Value<int?> precioUnitarioCentimos = const Value.absent(),
+                Value<int?> importeCentimos = const Value.absent(),
+                Value<String?> observaciones = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LineasAlbaranProveedorCompanion.insert(
+                tenantId: tenantId,
+                id: id,
+                albaranId: albaranId,
+                descripcionOriginal: descripcionOriginal,
+                cantidad: cantidad,
+                unidad: unidad,
+                precioUnitarioCentimos: precioUnitarioCentimos,
+                importeCentimos: importeCentimos,
+                observaciones: observaciones,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$LineasAlbaranProveedorTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable:
+                                    $$LineasAlbaranProveedorTableReferences
+                                        ._tenantIdTable(db),
+                                referencedColumn:
+                                    $$LineasAlbaranProveedorTableReferences
+                                        ._tenantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$LineasAlbaranProveedorTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LineasAlbaranProveedorTable,
+      LineasAlbaranProveedorData,
+      $$LineasAlbaranProveedorTableFilterComposer,
+      $$LineasAlbaranProveedorTableOrderingComposer,
+      $$LineasAlbaranProveedorTableAnnotationComposer,
+      $$LineasAlbaranProveedorTableCreateCompanionBuilder,
+      $$LineasAlbaranProveedorTableUpdateCompanionBuilder,
+      (LineasAlbaranProveedorData, $$LineasAlbaranProveedorTableReferences),
+      LineasAlbaranProveedorData,
+      PrefetchHooks Function({bool tenantId})
+    >;
+typedef $$AsignacionesAlbaranObraTableCreateCompanionBuilder =
+    AsignacionesAlbaranObraCompanion Function({
+      required String tenantId,
+      required String id,
+      required String lineaAlbaranId,
+      Value<String?> expedienteId,
+      Value<int?> importeCentimos,
+      Value<int> rowid,
+    });
+typedef $$AsignacionesAlbaranObraTableUpdateCompanionBuilder =
+    AsignacionesAlbaranObraCompanion Function({
+      Value<String> tenantId,
+      Value<String> id,
+      Value<String> lineaAlbaranId,
+      Value<String?> expedienteId,
+      Value<int?> importeCentimos,
+      Value<int> rowid,
+    });
+
+final class $$AsignacionesAlbaranObraTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $AsignacionesAlbaranObraTable,
+          AsignacionesAlbaranObraData
+        > {
+  $$AsignacionesAlbaranObraTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) => db.tenants
+      .createAlias('asignaciones_albaran_obra__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$AsignacionesAlbaranObraTableFilterComposer
+    extends Composer<_$AppDatabase, $AsignacionesAlbaranObraTable> {
+  $$AsignacionesAlbaranObraTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lineaAlbaranId => $composableBuilder(
+    column: $table.lineaAlbaranId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get importeCentimos => $composableBuilder(
+    column: $table.importeCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AsignacionesAlbaranObraTableOrderingComposer
+    extends Composer<_$AppDatabase, $AsignacionesAlbaranObraTable> {
+  $$AsignacionesAlbaranObraTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lineaAlbaranId => $composableBuilder(
+    column: $table.lineaAlbaranId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get importeCentimos => $composableBuilder(
+    column: $table.importeCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AsignacionesAlbaranObraTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AsignacionesAlbaranObraTable> {
+  $$AsignacionesAlbaranObraTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get lineaAlbaranId => $composableBuilder(
+    column: $table.lineaAlbaranId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get importeCentimos => $composableBuilder(
+    column: $table.importeCentimos,
+    builder: (column) => column,
+  );
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AsignacionesAlbaranObraTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AsignacionesAlbaranObraTable,
+          AsignacionesAlbaranObraData,
+          $$AsignacionesAlbaranObraTableFilterComposer,
+          $$AsignacionesAlbaranObraTableOrderingComposer,
+          $$AsignacionesAlbaranObraTableAnnotationComposer,
+          $$AsignacionesAlbaranObraTableCreateCompanionBuilder,
+          $$AsignacionesAlbaranObraTableUpdateCompanionBuilder,
+          (
+            AsignacionesAlbaranObraData,
+            $$AsignacionesAlbaranObraTableReferences,
+          ),
+          AsignacionesAlbaranObraData,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$AsignacionesAlbaranObraTableTableManager(
+    _$AppDatabase db,
+    $AsignacionesAlbaranObraTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AsignacionesAlbaranObraTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$AsignacionesAlbaranObraTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$AsignacionesAlbaranObraTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> id = const Value.absent(),
+                Value<String> lineaAlbaranId = const Value.absent(),
+                Value<String?> expedienteId = const Value.absent(),
+                Value<int?> importeCentimos = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AsignacionesAlbaranObraCompanion(
+                tenantId: tenantId,
+                id: id,
+                lineaAlbaranId: lineaAlbaranId,
+                expedienteId: expedienteId,
+                importeCentimos: importeCentimos,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String id,
+                required String lineaAlbaranId,
+                Value<String?> expedienteId = const Value.absent(),
+                Value<int?> importeCentimos = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AsignacionesAlbaranObraCompanion.insert(
+                tenantId: tenantId,
+                id: id,
+                lineaAlbaranId: lineaAlbaranId,
+                expedienteId: expedienteId,
+                importeCentimos: importeCentimos,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$AsignacionesAlbaranObraTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable:
+                                    $$AsignacionesAlbaranObraTableReferences
+                                        ._tenantIdTable(db),
+                                referencedColumn:
+                                    $$AsignacionesAlbaranObraTableReferences
+                                        ._tenantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$AsignacionesAlbaranObraTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AsignacionesAlbaranObraTable,
+      AsignacionesAlbaranObraData,
+      $$AsignacionesAlbaranObraTableFilterComposer,
+      $$AsignacionesAlbaranObraTableOrderingComposer,
+      $$AsignacionesAlbaranObraTableAnnotationComposer,
+      $$AsignacionesAlbaranObraTableCreateCompanionBuilder,
+      $$AsignacionesAlbaranObraTableUpdateCompanionBuilder,
+      (AsignacionesAlbaranObraData, $$AsignacionesAlbaranObraTableReferences),
+      AsignacionesAlbaranObraData,
+      PrefetchHooks Function({bool tenantId})
+    >;
+typedef $$FacturasRecibidasTableCreateCompanionBuilder =
+    FacturasRecibidasCompanion Function({
+      required String tenantId,
+      required String id,
+      required String proveedorId,
+      required String numeroNormalizado,
+      required String numeroProveedor,
+      required DateTime fechaFactura,
+      Value<DateTime?> fechaVencimiento,
+      required int baseCentimos,
+      required int ivaCentimos,
+      required int totalCentimos,
+      Value<String> estado,
+      Value<String?> documentoId,
+      required DateTime fechaCreacion,
+      required DateTime fechaModificacion,
+      Value<int> rowid,
+    });
+typedef $$FacturasRecibidasTableUpdateCompanionBuilder =
+    FacturasRecibidasCompanion Function({
+      Value<String> tenantId,
+      Value<String> id,
+      Value<String> proveedorId,
+      Value<String> numeroNormalizado,
+      Value<String> numeroProveedor,
+      Value<DateTime> fechaFactura,
+      Value<DateTime?> fechaVencimiento,
+      Value<int> baseCentimos,
+      Value<int> ivaCentimos,
+      Value<int> totalCentimos,
+      Value<String> estado,
+      Value<String?> documentoId,
+      Value<DateTime> fechaCreacion,
+      Value<DateTime> fechaModificacion,
+      Value<int> rowid,
+    });
+
+final class $$FacturasRecibidasTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $FacturasRecibidasTable,
+          FacturasRecibida
+        > {
+  $$FacturasRecibidasTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) =>
+      db.tenants.createAlias('facturas_recibidas__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$FacturasRecibidasTableFilterComposer
+    extends Composer<_$AppDatabase, $FacturasRecibidasTable> {
+  $$FacturasRecibidasTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get proveedorId => $composableBuilder(
+    column: $table.proveedorId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get numeroNormalizado => $composableBuilder(
+    column: $table.numeroNormalizado,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get numeroProveedor => $composableBuilder(
+    column: $table.numeroProveedor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaFactura => $composableBuilder(
+    column: $table.fechaFactura,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaVencimiento => $composableBuilder(
+    column: $table.fechaVencimiento,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get baseCentimos => $composableBuilder(
+    column: $table.baseCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get ivaCentimos => $composableBuilder(
+    column: $table.ivaCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get totalCentimos => $composableBuilder(
+    column: $table.totalCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get estado => $composableBuilder(
+    column: $table.estado,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get documentoId => $composableBuilder(
+    column: $table.documentoId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FacturasRecibidasTableOrderingComposer
+    extends Composer<_$AppDatabase, $FacturasRecibidasTable> {
+  $$FacturasRecibidasTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get proveedorId => $composableBuilder(
+    column: $table.proveedorId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get numeroNormalizado => $composableBuilder(
+    column: $table.numeroNormalizado,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get numeroProveedor => $composableBuilder(
+    column: $table.numeroProveedor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaFactura => $composableBuilder(
+    column: $table.fechaFactura,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaVencimiento => $composableBuilder(
+    column: $table.fechaVencimiento,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get baseCentimos => $composableBuilder(
+    column: $table.baseCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get ivaCentimos => $composableBuilder(
+    column: $table.ivaCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get totalCentimos => $composableBuilder(
+    column: $table.totalCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get estado => $composableBuilder(
+    column: $table.estado,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get documentoId => $composableBuilder(
+    column: $table.documentoId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FacturasRecibidasTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FacturasRecibidasTable> {
+  $$FacturasRecibidasTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get proveedorId => $composableBuilder(
+    column: $table.proveedorId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get numeroNormalizado => $composableBuilder(
+    column: $table.numeroNormalizado,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get numeroProveedor => $composableBuilder(
+    column: $table.numeroProveedor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaFactura => $composableBuilder(
+    column: $table.fechaFactura,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaVencimiento => $composableBuilder(
+    column: $table.fechaVencimiento,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get baseCentimos => $composableBuilder(
+    column: $table.baseCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get ivaCentimos => $composableBuilder(
+    column: $table.ivaCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get totalCentimos => $composableBuilder(
+    column: $table.totalCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get estado =>
+      $composableBuilder(column: $table.estado, builder: (column) => column);
+
+  GeneratedColumn<String> get documentoId => $composableBuilder(
+    column: $table.documentoId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => column,
+  );
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FacturasRecibidasTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FacturasRecibidasTable,
+          FacturasRecibida,
+          $$FacturasRecibidasTableFilterComposer,
+          $$FacturasRecibidasTableOrderingComposer,
+          $$FacturasRecibidasTableAnnotationComposer,
+          $$FacturasRecibidasTableCreateCompanionBuilder,
+          $$FacturasRecibidasTableUpdateCompanionBuilder,
+          (FacturasRecibida, $$FacturasRecibidasTableReferences),
+          FacturasRecibida,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$FacturasRecibidasTableTableManager(
+    _$AppDatabase db,
+    $FacturasRecibidasTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FacturasRecibidasTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FacturasRecibidasTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FacturasRecibidasTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> id = const Value.absent(),
+                Value<String> proveedorId = const Value.absent(),
+                Value<String> numeroNormalizado = const Value.absent(),
+                Value<String> numeroProveedor = const Value.absent(),
+                Value<DateTime> fechaFactura = const Value.absent(),
+                Value<DateTime?> fechaVencimiento = const Value.absent(),
+                Value<int> baseCentimos = const Value.absent(),
+                Value<int> ivaCentimos = const Value.absent(),
+                Value<int> totalCentimos = const Value.absent(),
+                Value<String> estado = const Value.absent(),
+                Value<String?> documentoId = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<DateTime> fechaModificacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FacturasRecibidasCompanion(
+                tenantId: tenantId,
+                id: id,
+                proveedorId: proveedorId,
+                numeroNormalizado: numeroNormalizado,
+                numeroProveedor: numeroProveedor,
+                fechaFactura: fechaFactura,
+                fechaVencimiento: fechaVencimiento,
+                baseCentimos: baseCentimos,
+                ivaCentimos: ivaCentimos,
+                totalCentimos: totalCentimos,
+                estado: estado,
+                documentoId: documentoId,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String id,
+                required String proveedorId,
+                required String numeroNormalizado,
+                required String numeroProveedor,
+                required DateTime fechaFactura,
+                Value<DateTime?> fechaVencimiento = const Value.absent(),
+                required int baseCentimos,
+                required int ivaCentimos,
+                required int totalCentimos,
+                Value<String> estado = const Value.absent(),
+                Value<String?> documentoId = const Value.absent(),
+                required DateTime fechaCreacion,
+                required DateTime fechaModificacion,
+                Value<int> rowid = const Value.absent(),
+              }) => FacturasRecibidasCompanion.insert(
+                tenantId: tenantId,
+                id: id,
+                proveedorId: proveedorId,
+                numeroNormalizado: numeroNormalizado,
+                numeroProveedor: numeroProveedor,
+                fechaFactura: fechaFactura,
+                fechaVencimiento: fechaVencimiento,
+                baseCentimos: baseCentimos,
+                ivaCentimos: ivaCentimos,
+                totalCentimos: totalCentimos,
+                estado: estado,
+                documentoId: documentoId,
+                fechaCreacion: fechaCreacion,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$FacturasRecibidasTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable:
+                                    $$FacturasRecibidasTableReferences
+                                        ._tenantIdTable(db),
+                                referencedColumn:
+                                    $$FacturasRecibidasTableReferences
+                                        ._tenantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$FacturasRecibidasTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FacturasRecibidasTable,
+      FacturasRecibida,
+      $$FacturasRecibidasTableFilterComposer,
+      $$FacturasRecibidasTableOrderingComposer,
+      $$FacturasRecibidasTableAnnotationComposer,
+      $$FacturasRecibidasTableCreateCompanionBuilder,
+      $$FacturasRecibidasTableUpdateCompanionBuilder,
+      (FacturasRecibida, $$FacturasRecibidasTableReferences),
+      FacturasRecibida,
+      PrefetchHooks Function({bool tenantId})
+    >;
+typedef $$FacturaRecibidaAlbaranesTableCreateCompanionBuilder =
+    FacturaRecibidaAlbaranesCompanion Function({
+      required String tenantId,
+      required String facturaId,
+      required String albaranId,
+      Value<int> rowid,
+    });
+typedef $$FacturaRecibidaAlbaranesTableUpdateCompanionBuilder =
+    FacturaRecibidaAlbaranesCompanion Function({
+      Value<String> tenantId,
+      Value<String> facturaId,
+      Value<String> albaranId,
+      Value<int> rowid,
+    });
+
+final class $$FacturaRecibidaAlbaranesTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $FacturaRecibidaAlbaranesTable,
+          FacturaRecibidaAlbarane
+        > {
+  $$FacturaRecibidaAlbaranesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) => db.tenants
+      .createAlias('factura_recibida_albaranes__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$FacturaRecibidaAlbaranesTableFilterComposer
+    extends Composer<_$AppDatabase, $FacturaRecibidaAlbaranesTable> {
+  $$FacturaRecibidaAlbaranesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get facturaId => $composableBuilder(
+    column: $table.facturaId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get albaranId => $composableBuilder(
+    column: $table.albaranId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FacturaRecibidaAlbaranesTableOrderingComposer
+    extends Composer<_$AppDatabase, $FacturaRecibidaAlbaranesTable> {
+  $$FacturaRecibidaAlbaranesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get facturaId => $composableBuilder(
+    column: $table.facturaId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get albaranId => $composableBuilder(
+    column: $table.albaranId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FacturaRecibidaAlbaranesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FacturaRecibidaAlbaranesTable> {
+  $$FacturaRecibidaAlbaranesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get facturaId =>
+      $composableBuilder(column: $table.facturaId, builder: (column) => column);
+
+  GeneratedColumn<String> get albaranId =>
+      $composableBuilder(column: $table.albaranId, builder: (column) => column);
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FacturaRecibidaAlbaranesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FacturaRecibidaAlbaranesTable,
+          FacturaRecibidaAlbarane,
+          $$FacturaRecibidaAlbaranesTableFilterComposer,
+          $$FacturaRecibidaAlbaranesTableOrderingComposer,
+          $$FacturaRecibidaAlbaranesTableAnnotationComposer,
+          $$FacturaRecibidaAlbaranesTableCreateCompanionBuilder,
+          $$FacturaRecibidaAlbaranesTableUpdateCompanionBuilder,
+          (FacturaRecibidaAlbarane, $$FacturaRecibidaAlbaranesTableReferences),
+          FacturaRecibidaAlbarane,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$FacturaRecibidaAlbaranesTableTableManager(
+    _$AppDatabase db,
+    $FacturaRecibidaAlbaranesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FacturaRecibidaAlbaranesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$FacturaRecibidaAlbaranesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$FacturaRecibidaAlbaranesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> facturaId = const Value.absent(),
+                Value<String> albaranId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FacturaRecibidaAlbaranesCompanion(
+                tenantId: tenantId,
+                facturaId: facturaId,
+                albaranId: albaranId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String facturaId,
+                required String albaranId,
+                Value<int> rowid = const Value.absent(),
+              }) => FacturaRecibidaAlbaranesCompanion.insert(
+                tenantId: tenantId,
+                facturaId: facturaId,
+                albaranId: albaranId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$FacturaRecibidaAlbaranesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable:
+                                    $$FacturaRecibidaAlbaranesTableReferences
+                                        ._tenantIdTable(db),
+                                referencedColumn:
+                                    $$FacturaRecibidaAlbaranesTableReferences
+                                        ._tenantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$FacturaRecibidaAlbaranesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FacturaRecibidaAlbaranesTable,
+      FacturaRecibidaAlbarane,
+      $$FacturaRecibidaAlbaranesTableFilterComposer,
+      $$FacturaRecibidaAlbaranesTableOrderingComposer,
+      $$FacturaRecibidaAlbaranesTableAnnotationComposer,
+      $$FacturaRecibidaAlbaranesTableCreateCompanionBuilder,
+      $$FacturaRecibidaAlbaranesTableUpdateCompanionBuilder,
+      (FacturaRecibidaAlbarane, $$FacturaRecibidaAlbaranesTableReferences),
+      FacturaRecibidaAlbarane,
+      PrefetchHooks Function({bool tenantId})
+    >;
+typedef $$AsignacionesFacturaRecibidaTableCreateCompanionBuilder =
+    AsignacionesFacturaRecibidaCompanion Function({
+      required String tenantId,
+      required String id,
+      required String facturaId,
+      Value<String?> expedienteId,
+      required int baseCentimos,
+      Value<int> ivaNoRecuperableCentimos,
+      Value<int> rowid,
+    });
+typedef $$AsignacionesFacturaRecibidaTableUpdateCompanionBuilder =
+    AsignacionesFacturaRecibidaCompanion Function({
+      Value<String> tenantId,
+      Value<String> id,
+      Value<String> facturaId,
+      Value<String?> expedienteId,
+      Value<int> baseCentimos,
+      Value<int> ivaNoRecuperableCentimos,
+      Value<int> rowid,
+    });
+
+final class $$AsignacionesFacturaRecibidaTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $AsignacionesFacturaRecibidaTable,
+          AsignacionesFacturaRecibidaData
+        > {
+  $$AsignacionesFacturaRecibidaTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) => db.tenants
+      .createAlias('asignaciones_factura_recibida__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$AsignacionesFacturaRecibidaTableFilterComposer
+    extends Composer<_$AppDatabase, $AsignacionesFacturaRecibidaTable> {
+  $$AsignacionesFacturaRecibidaTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get facturaId => $composableBuilder(
+    column: $table.facturaId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get baseCentimos => $composableBuilder(
+    column: $table.baseCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get ivaNoRecuperableCentimos => $composableBuilder(
+    column: $table.ivaNoRecuperableCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AsignacionesFacturaRecibidaTableOrderingComposer
+    extends Composer<_$AppDatabase, $AsignacionesFacturaRecibidaTable> {
+  $$AsignacionesFacturaRecibidaTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get facturaId => $composableBuilder(
+    column: $table.facturaId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get baseCentimos => $composableBuilder(
+    column: $table.baseCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get ivaNoRecuperableCentimos => $composableBuilder(
+    column: $table.ivaNoRecuperableCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AsignacionesFacturaRecibidaTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AsignacionesFacturaRecibidaTable> {
+  $$AsignacionesFacturaRecibidaTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get facturaId =>
+      $composableBuilder(column: $table.facturaId, builder: (column) => column);
+
+  GeneratedColumn<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get baseCentimos => $composableBuilder(
+    column: $table.baseCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get ivaNoRecuperableCentimos => $composableBuilder(
+    column: $table.ivaNoRecuperableCentimos,
+    builder: (column) => column,
+  );
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AsignacionesFacturaRecibidaTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AsignacionesFacturaRecibidaTable,
+          AsignacionesFacturaRecibidaData,
+          $$AsignacionesFacturaRecibidaTableFilterComposer,
+          $$AsignacionesFacturaRecibidaTableOrderingComposer,
+          $$AsignacionesFacturaRecibidaTableAnnotationComposer,
+          $$AsignacionesFacturaRecibidaTableCreateCompanionBuilder,
+          $$AsignacionesFacturaRecibidaTableUpdateCompanionBuilder,
+          (
+            AsignacionesFacturaRecibidaData,
+            $$AsignacionesFacturaRecibidaTableReferences,
+          ),
+          AsignacionesFacturaRecibidaData,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$AsignacionesFacturaRecibidaTableTableManager(
+    _$AppDatabase db,
+    $AsignacionesFacturaRecibidaTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AsignacionesFacturaRecibidaTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$AsignacionesFacturaRecibidaTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$AsignacionesFacturaRecibidaTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> id = const Value.absent(),
+                Value<String> facturaId = const Value.absent(),
+                Value<String?> expedienteId = const Value.absent(),
+                Value<int> baseCentimos = const Value.absent(),
+                Value<int> ivaNoRecuperableCentimos = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AsignacionesFacturaRecibidaCompanion(
+                tenantId: tenantId,
+                id: id,
+                facturaId: facturaId,
+                expedienteId: expedienteId,
+                baseCentimos: baseCentimos,
+                ivaNoRecuperableCentimos: ivaNoRecuperableCentimos,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String id,
+                required String facturaId,
+                Value<String?> expedienteId = const Value.absent(),
+                required int baseCentimos,
+                Value<int> ivaNoRecuperableCentimos = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AsignacionesFacturaRecibidaCompanion.insert(
+                tenantId: tenantId,
+                id: id,
+                facturaId: facturaId,
+                expedienteId: expedienteId,
+                baseCentimos: baseCentimos,
+                ivaNoRecuperableCentimos: ivaNoRecuperableCentimos,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$AsignacionesFacturaRecibidaTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable:
+                                    $$AsignacionesFacturaRecibidaTableReferences
+                                        ._tenantIdTable(db),
+                                referencedColumn:
+                                    $$AsignacionesFacturaRecibidaTableReferences
+                                        ._tenantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$AsignacionesFacturaRecibidaTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AsignacionesFacturaRecibidaTable,
+      AsignacionesFacturaRecibidaData,
+      $$AsignacionesFacturaRecibidaTableFilterComposer,
+      $$AsignacionesFacturaRecibidaTableOrderingComposer,
+      $$AsignacionesFacturaRecibidaTableAnnotationComposer,
+      $$AsignacionesFacturaRecibidaTableCreateCompanionBuilder,
+      $$AsignacionesFacturaRecibidaTableUpdateCompanionBuilder,
+      (
+        AsignacionesFacturaRecibidaData,
+        $$AsignacionesFacturaRecibidaTableReferences,
+      ),
+      AsignacionesFacturaRecibidaData,
+      PrefetchHooks Function({bool tenantId})
+    >;
+typedef $$FacturaRecibidaComprasTableCreateCompanionBuilder =
+    FacturaRecibidaComprasCompanion Function({
+      required String tenantId,
+      required String facturaId,
+      required String asignacionId,
+      required String compraId,
+      Value<int> rowid,
+    });
+typedef $$FacturaRecibidaComprasTableUpdateCompanionBuilder =
+    FacturaRecibidaComprasCompanion Function({
+      Value<String> tenantId,
+      Value<String> facturaId,
+      Value<String> asignacionId,
+      Value<String> compraId,
+      Value<int> rowid,
+    });
+
+final class $$FacturaRecibidaComprasTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $FacturaRecibidaComprasTable,
+          FacturaRecibidaCompra
+        > {
+  $$FacturaRecibidaComprasTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) => db.tenants
+      .createAlias('factura_recibida_compras__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$FacturaRecibidaComprasTableFilterComposer
+    extends Composer<_$AppDatabase, $FacturaRecibidaComprasTable> {
+  $$FacturaRecibidaComprasTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get facturaId => $composableBuilder(
+    column: $table.facturaId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get asignacionId => $composableBuilder(
+    column: $table.asignacionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get compraId => $composableBuilder(
+    column: $table.compraId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FacturaRecibidaComprasTableOrderingComposer
+    extends Composer<_$AppDatabase, $FacturaRecibidaComprasTable> {
+  $$FacturaRecibidaComprasTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get facturaId => $composableBuilder(
+    column: $table.facturaId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get asignacionId => $composableBuilder(
+    column: $table.asignacionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get compraId => $composableBuilder(
+    column: $table.compraId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FacturaRecibidaComprasTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FacturaRecibidaComprasTable> {
+  $$FacturaRecibidaComprasTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get facturaId =>
+      $composableBuilder(column: $table.facturaId, builder: (column) => column);
+
+  GeneratedColumn<String> get asignacionId => $composableBuilder(
+    column: $table.asignacionId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get compraId =>
+      $composableBuilder(column: $table.compraId, builder: (column) => column);
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FacturaRecibidaComprasTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FacturaRecibidaComprasTable,
+          FacturaRecibidaCompra,
+          $$FacturaRecibidaComprasTableFilterComposer,
+          $$FacturaRecibidaComprasTableOrderingComposer,
+          $$FacturaRecibidaComprasTableAnnotationComposer,
+          $$FacturaRecibidaComprasTableCreateCompanionBuilder,
+          $$FacturaRecibidaComprasTableUpdateCompanionBuilder,
+          (FacturaRecibidaCompra, $$FacturaRecibidaComprasTableReferences),
+          FacturaRecibidaCompra,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$FacturaRecibidaComprasTableTableManager(
+    _$AppDatabase db,
+    $FacturaRecibidaComprasTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FacturaRecibidaComprasTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$FacturaRecibidaComprasTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$FacturaRecibidaComprasTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> facturaId = const Value.absent(),
+                Value<String> asignacionId = const Value.absent(),
+                Value<String> compraId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FacturaRecibidaComprasCompanion(
+                tenantId: tenantId,
+                facturaId: facturaId,
+                asignacionId: asignacionId,
+                compraId: compraId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String facturaId,
+                required String asignacionId,
+                required String compraId,
+                Value<int> rowid = const Value.absent(),
+              }) => FacturaRecibidaComprasCompanion.insert(
+                tenantId: tenantId,
+                facturaId: facturaId,
+                asignacionId: asignacionId,
+                compraId: compraId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$FacturaRecibidaComprasTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable:
+                                    $$FacturaRecibidaComprasTableReferences
+                                        ._tenantIdTable(db),
+                                referencedColumn:
+                                    $$FacturaRecibidaComprasTableReferences
+                                        ._tenantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$FacturaRecibidaComprasTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FacturaRecibidaComprasTable,
+      FacturaRecibidaCompra,
+      $$FacturaRecibidaComprasTableFilterComposer,
+      $$FacturaRecibidaComprasTableOrderingComposer,
+      $$FacturaRecibidaComprasTableAnnotationComposer,
+      $$FacturaRecibidaComprasTableCreateCompanionBuilder,
+      $$FacturaRecibidaComprasTableUpdateCompanionBuilder,
+      (FacturaRecibidaCompra, $$FacturaRecibidaComprasTableReferences),
+      FacturaRecibidaCompra,
+      PrefetchHooks Function({bool tenantId})
+    >;
+typedef $$PagosProveedorTableCreateCompanionBuilder =
+    PagosProveedorCompanion Function({
+      required String tenantId,
+      required String id,
+      required String facturaId,
+      required DateTime fecha,
+      required int importeCentimos,
+      Value<String?> metodo,
+      Value<String?> referencia,
+      Value<String?> observaciones,
+      required DateTime fechaCreacion,
+      Value<int> rowid,
+    });
+typedef $$PagosProveedorTableUpdateCompanionBuilder =
+    PagosProveedorCompanion Function({
+      Value<String> tenantId,
+      Value<String> id,
+      Value<String> facturaId,
+      Value<DateTime> fecha,
+      Value<int> importeCentimos,
+      Value<String?> metodo,
+      Value<String?> referencia,
+      Value<String?> observaciones,
+      Value<DateTime> fechaCreacion,
+      Value<int> rowid,
+    });
+
+final class $$PagosProveedorTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $PagosProveedorTable,
+          PagosProveedorData
+        > {
+  $$PagosProveedorTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) =>
+      db.tenants.createAlias('pagos_proveedor__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$PagosProveedorTableFilterComposer
+    extends Composer<_$AppDatabase, $PagosProveedorTable> {
+  $$PagosProveedorTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get facturaId => $composableBuilder(
+    column: $table.facturaId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fecha => $composableBuilder(
+    column: $table.fecha,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get importeCentimos => $composableBuilder(
+    column: $table.importeCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get metodo => $composableBuilder(
+    column: $table.metodo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get referencia => $composableBuilder(
+    column: $table.referencia,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PagosProveedorTableOrderingComposer
+    extends Composer<_$AppDatabase, $PagosProveedorTable> {
+  $$PagosProveedorTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get facturaId => $composableBuilder(
+    column: $table.facturaId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fecha => $composableBuilder(
+    column: $table.fecha,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get importeCentimos => $composableBuilder(
+    column: $table.importeCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get metodo => $composableBuilder(
+    column: $table.metodo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get referencia => $composableBuilder(
+    column: $table.referencia,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PagosProveedorTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PagosProveedorTable> {
+  $$PagosProveedorTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get facturaId =>
+      $composableBuilder(column: $table.facturaId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get fecha =>
+      $composableBuilder(column: $table.fecha, builder: (column) => column);
+
+  GeneratedColumn<int> get importeCentimos => $composableBuilder(
+    column: $table.importeCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get metodo =>
+      $composableBuilder(column: $table.metodo, builder: (column) => column);
+
+  GeneratedColumn<String> get referencia => $composableBuilder(
+    column: $table.referencia,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get observaciones => $composableBuilder(
+    column: $table.observaciones,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaCreacion => $composableBuilder(
+    column: $table.fechaCreacion,
+    builder: (column) => column,
+  );
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PagosProveedorTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PagosProveedorTable,
+          PagosProveedorData,
+          $$PagosProveedorTableFilterComposer,
+          $$PagosProveedorTableOrderingComposer,
+          $$PagosProveedorTableAnnotationComposer,
+          $$PagosProveedorTableCreateCompanionBuilder,
+          $$PagosProveedorTableUpdateCompanionBuilder,
+          (PagosProveedorData, $$PagosProveedorTableReferences),
+          PagosProveedorData,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$PagosProveedorTableTableManager(
+    _$AppDatabase db,
+    $PagosProveedorTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PagosProveedorTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PagosProveedorTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PagosProveedorTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> id = const Value.absent(),
+                Value<String> facturaId = const Value.absent(),
+                Value<DateTime> fecha = const Value.absent(),
+                Value<int> importeCentimos = const Value.absent(),
+                Value<String?> metodo = const Value.absent(),
+                Value<String?> referencia = const Value.absent(),
+                Value<String?> observaciones = const Value.absent(),
+                Value<DateTime> fechaCreacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PagosProveedorCompanion(
+                tenantId: tenantId,
+                id: id,
+                facturaId: facturaId,
+                fecha: fecha,
+                importeCentimos: importeCentimos,
+                metodo: metodo,
+                referencia: referencia,
+                observaciones: observaciones,
+                fechaCreacion: fechaCreacion,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String id,
+                required String facturaId,
+                required DateTime fecha,
+                required int importeCentimos,
+                Value<String?> metodo = const Value.absent(),
+                Value<String?> referencia = const Value.absent(),
+                Value<String?> observaciones = const Value.absent(),
+                required DateTime fechaCreacion,
+                Value<int> rowid = const Value.absent(),
+              }) => PagosProveedorCompanion.insert(
+                tenantId: tenantId,
+                id: id,
+                facturaId: facturaId,
+                fecha: fecha,
+                importeCentimos: importeCentimos,
+                metodo: metodo,
+                referencia: referencia,
+                observaciones: observaciones,
+                fechaCreacion: fechaCreacion,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$PagosProveedorTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable: $$PagosProveedorTableReferences
+                                    ._tenantIdTable(db),
+                                referencedColumn:
+                                    $$PagosProveedorTableReferences
+                                        ._tenantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$PagosProveedorTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PagosProveedorTable,
+      PagosProveedorData,
+      $$PagosProveedorTableFilterComposer,
+      $$PagosProveedorTableOrderingComposer,
+      $$PagosProveedorTableAnnotationComposer,
+      $$PagosProveedorTableCreateCompanionBuilder,
+      $$PagosProveedorTableUpdateCompanionBuilder,
+      (PagosProveedorData, $$PagosProveedorTableReferences),
+      PagosProveedorData,
+      PrefetchHooks Function({bool tenantId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -49991,4 +58145,36 @@ class $AppDatabaseManager {
       $$IncidenciaDocumentosTableTableManager(_db, _db.incidenciaDocumentos);
   $$IncidenciaDiarioTableTableManager get incidenciaDiario =>
       $$IncidenciaDiarioTableTableManager(_db, _db.incidenciaDiario);
+  $$AlbaranesProveedorTableTableManager get albaranesProveedor =>
+      $$AlbaranesProveedorTableTableManager(_db, _db.albaranesProveedor);
+  $$LineasAlbaranProveedorTableTableManager get lineasAlbaranProveedor =>
+      $$LineasAlbaranProveedorTableTableManager(
+        _db,
+        _db.lineasAlbaranProveedor,
+      );
+  $$AsignacionesAlbaranObraTableTableManager get asignacionesAlbaranObra =>
+      $$AsignacionesAlbaranObraTableTableManager(
+        _db,
+        _db.asignacionesAlbaranObra,
+      );
+  $$FacturasRecibidasTableTableManager get facturasRecibidas =>
+      $$FacturasRecibidasTableTableManager(_db, _db.facturasRecibidas);
+  $$FacturaRecibidaAlbaranesTableTableManager get facturaRecibidaAlbaranes =>
+      $$FacturaRecibidaAlbaranesTableTableManager(
+        _db,
+        _db.facturaRecibidaAlbaranes,
+      );
+  $$AsignacionesFacturaRecibidaTableTableManager
+  get asignacionesFacturaRecibida =>
+      $$AsignacionesFacturaRecibidaTableTableManager(
+        _db,
+        _db.asignacionesFacturaRecibida,
+      );
+  $$FacturaRecibidaComprasTableTableManager get facturaRecibidaCompras =>
+      $$FacturaRecibidaComprasTableTableManager(
+        _db,
+        _db.facturaRecibidaCompras,
+      );
+  $$PagosProveedorTableTableManager get pagosProveedor =>
+      $$PagosProveedorTableTableManager(_db, _db.pagosProveedor);
 }

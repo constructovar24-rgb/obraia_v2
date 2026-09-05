@@ -43,6 +43,7 @@ import 'tables/diario_obra.dart';
 import 'tables/incidencias_obra.dart';
 import 'tables/incidencia_documentos.dart';
 import 'tables/incidencia_diario.dart';
+import 'tables/circuito_proveedor.dart';
 import 'dao/expedientes_dao.dart';
 import 'dao/clientes_dao.dart';
 import 'dao/presupuestos_dao.dart';
@@ -67,6 +68,7 @@ import 'dao/cierre_economico_dao.dart';
 import 'dao/planificacion_obra_dao.dart';
 import 'dao/diario_obra_dao.dart';
 import 'dao/incidencias_obra_dao.dart';
+import 'dao/circuito_proveedor_dao.dart';
 import 'pre_migration_recovery_service.dart';
 
 part 'app_database.g.dart';
@@ -110,6 +112,14 @@ part 'app_database.g.dart';
     IncidenciasObra,
     IncidenciaDocumentos,
     IncidenciaDiario,
+    AlbaranesProveedor,
+    LineasAlbaranProveedor,
+    AsignacionesAlbaranObra,
+    FacturasRecibidas,
+    FacturaRecibidaAlbaranes,
+    AsignacionesFacturaRecibida,
+    FacturaRecibidaCompras,
+    PagosProveedor,
   ],
   daos: [
     ExpedientesDao,
@@ -136,6 +146,7 @@ part 'app_database.g.dart';
     PlanificacionObraDao,
     DiarioObraDao,
     IncidenciasObraDao,
+    CircuitoProveedorDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -163,7 +174,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 31;
+  int get schemaVersion => 32;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -467,6 +478,17 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(incidenciaDiario);
         await _crearIndicesIncidencias();
       }
+      if (from < 32 && await _existeTabla('expedientes')) {
+        await m.createTable(albaranesProveedor);
+        await m.createTable(lineasAlbaranProveedor);
+        await m.createTable(asignacionesAlbaranObra);
+        await m.createTable(facturasRecibidas);
+        await m.createTable(facturaRecibidaAlbaranes);
+        await m.createTable(asignacionesFacturaRecibida);
+        await m.createTable(facturaRecibidaCompras);
+        await m.createTable(pagosProveedor);
+        await _crearIndicesCircuitoProveedor();
+      }
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
@@ -736,6 +758,21 @@ class AppDatabase extends _$AppDatabase {
     await _crearIndicesPlanificacion();
     await _crearIndicesDiarioObra();
     await _crearIndicesIncidencias();
+    await _crearIndicesCircuitoProveedor();
+  }
+
+  Future<void> _crearIndicesCircuitoProveedor() async {
+    if (!await _existeTabla('albaranes_proveedor')) return;
+    for (final sql in <String>[
+      'CREATE INDEX IF NOT EXISTS albaranes_tenant_proveedor_fecha_idx ON albaranes_proveedor(tenant_id,proveedor_id,fecha)',
+      'CREATE INDEX IF NOT EXISTS lineas_albaran_tenant_albaran_idx ON lineas_albaran_proveedor(tenant_id,albaran_id)',
+      'CREATE INDEX IF NOT EXISTS asignaciones_albaran_tenant_obra_idx ON asignaciones_albaran_obra(tenant_id,expediente_id)',
+      'CREATE INDEX IF NOT EXISTS facturas_recibidas_tenant_proveedor_fecha_idx ON facturas_recibidas(tenant_id,proveedor_id,fecha_factura)',
+      'CREATE INDEX IF NOT EXISTS asignaciones_factura_tenant_obra_idx ON asignaciones_factura_recibida(tenant_id,expediente_id)',
+      'CREATE INDEX IF NOT EXISTS pagos_proveedor_tenant_factura_fecha_idx ON pagos_proveedor(tenant_id,factura_id,fecha)',
+    ]) {
+      await customStatement(sql);
+    }
   }
 
   Future<void> _crearIndicesIncidencias() async {
@@ -1074,7 +1111,7 @@ LazyDatabase _openConnection() {
     final file = await AppDatabase.defaultDatabaseFile();
     await const PreMigrationRecoveryService().protectBeforeUpgrade(
       file,
-      supportedVersions: {22, 23, 24, 25, 26, 27, 28, 29, 30},
+      supportedVersions: {22, 23, 24, 25, 26, 27, 28, 29, 30, 31},
     );
     return NativeDatabase(file);
   });

@@ -1,5 +1,7 @@
 # Plan maestro de OBRA IA
 
+**Fase 4-D implementada técnicamente:** circuito tenant-scoped Proveedor → Albarán → Obra → Factura recibida → Pago sobre schema 32. Reparte líneas y facturas entre obras sin duplicar originales ni costes; la reconciliación usa Compras y `hechos_coste`, y los pagos no son coste. El backup de archivos originales sigue pendiente antes del uso documental intensivo.
+
 **Fase 4-C implementada técnicamente:** evidencias y fotografías continúan en el modelo Documentos y se relacionan sin duplicación con incidencias profesionales tenant-scoped. Las incidencias admiten ciclo abierta, seguimiento, resuelta, reapertura y cancelación; prioridades baja/media/alta; resolución trazable; vínculos con Diario y Timeline atómico. Esquema v31; Fase 4-D no iniciada. Persiste como deuda la protección de archivos originales, hoy referenciados por rutas locales fuera del backup SQLite.
 
 **Fase 4-B implementada técnicamente:** Diario de obra por Expediente con entradas cronológicas, trazables y tenant-scoped; texto libre de trabajos, observaciones, meteorología manual, incidencia textual y actuación opcional. Resume horas desde los partes de 3-D sin duplicarlas y no altera economía ni estado operativo. La migración v29 a v30 no fabrica entradas legacy. Fase 4-C no iniciada.

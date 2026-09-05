@@ -2,6 +2,13 @@
 
 ## No publicado
 
+### Circuito básico de proveedores — Fase 4-D
+
+- Añadidos albaranes con líneas, repartos multiobra, facturas recibidas, relaciones factura-albarán y pagos parciales o totales.
+- La reconciliación usa Compras y `hechos_coste` de forma idempotente: no duplica coste, excluye IVA recuperable y pagar no genera coste.
+- Integrada la superficie «Compras / Suministros» y una migración v31→v32 sin inventar datos legacy.
+- Los originales reutilizan Documentos; el backup de los archivos físicos continúa como deuda prioritaria.
+
 ### Evidencias e incidencias de obra — Fase 4-C
 
 - Reutilizado Documentos como única fuente para fotografías, planos, PDFs y otras evidencias, sin copiar ni crear un almacenamiento paralelo.

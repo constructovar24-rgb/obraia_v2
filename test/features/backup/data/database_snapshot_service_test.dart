@@ -190,6 +190,14 @@ const _expectedTables = <String>{
   'proveedores',
   'timeline_events',
   'movimientos_credito_cliente',
+  'albaranes_proveedor',
+  'lineas_albaran_proveedor',
+  'asignaciones_albaran_obra',
+  'facturas_recibidas',
+  'factura_recibida_albaranes',
+  'asignaciones_factura_recibida',
+  'factura_recibida_compras',
+  'pagos_proveedor',
 };
 
 class _RollbackForTest implements Exception {
