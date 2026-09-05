@@ -150,5 +150,15 @@ String timelineEventTypeLabel(TimelineEventType tipo) {
       return 'Coste laboral confirmado';
     case TimelineEventType.parteTrabajoRevertido:
       return 'Parte de trabajo revertido';
+    case TimelineEventType.compromisoEconomicoCreado:
+      return 'Compromiso económico creado';
+    case TimelineEventType.compromisoEconomicoAjustado:
+      return 'Compromiso económico ajustado';
+    case TimelineEventType.compromisoEconomicoCancelado:
+      return 'Compromiso económico cancelado';
+    case TimelineEventType.compromisoEconomicoConsumido:
+      return 'Compromiso económico consumido';
+    case TimelineEventType.estimacionCosteRestanteActualizada:
+      return 'Estimación de coste restante actualizada';
   }
 }

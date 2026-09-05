@@ -48,6 +48,9 @@ class BackupArchiveService {
     'personas_laborales',
     'tarifas_persona',
     'partes_trabajo',
+    'compromisos_economicos',
+    'aplicaciones_compromiso_coste',
+    'estimaciones_coste_restante',
   };
 
   final DatabaseSnapshotService _snapshotService;
@@ -410,6 +413,11 @@ class BackupArchiveService {
           .whereType<String>()
           .toSet();
       final expectedTables = _expectedTables.difference({
+        if (schemaVersion < 27) ...{
+          'compromisos_economicos',
+          'aplicaciones_compromiso_coste',
+          'estimaciones_coste_restante',
+        },
         if (schemaVersion < 26) ...{
           'personas_laborales',
           'tarifas_persona',

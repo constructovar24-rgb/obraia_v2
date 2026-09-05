@@ -210,3 +210,9 @@
 ### Cambios
 
 - Inicio de la documentación técnica y funcional de OBRA IA v3.
+# Fase 3-E
+
+- Añadidos compromisos económicos tenant-scoped, aplicaciones explícitas contra hechos de coste y estimaciones restantes versionadas.
+- Añadido forecast de obra con cobertura explícita, comparación con el plan original y soporte de beneficio/margen negativos.
+- Añadida migración segura v26→v27, regeneración Drift, compatibilidad de backup y panel mínimo en el resumen del Expediente.
+- Añadidas pruebas de consumo parcial/completo, sobreconsumo, reversión, versionado, rollback de Timeline y migración sin datos fabricados.

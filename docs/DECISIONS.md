@@ -108,3 +108,12 @@ Este documento está preparado para registrar decisiones arquitectónicas, tecno
 - 2026-09-04: El parte congela la tarifa aplicable a la fecha trabajada y redondea una sola vez a céntimos. Cambios posteriores de tarifa no reescriben el pasado.
 - 2026-09-04: Las horas sin tarifa se conservan como pendientes sin hecho económico. La valoración posterior crea el alta en el ledger; nunca se inventa coste cero.
 - 2026-09-04: Un parte valorado no se corrige sobrescribiendo magnitudes económicas: se revierte mediante contramovimiento y se registra un parte de reemplazo.
+# Fase 3-E — previsión económica reproducible
+
+- El coste real procede exclusivamente de `hechos_coste`.
+- Un compromiso es una obligación firme todavía no incurrida. Su saldo es importe comprometido menos aplicaciones efectivas a hechos reales; cancelar lo excluye y revertir un hecho aplicado reabre el saldo.
+- El restante estimado es coste adicional que no está incluido ni en el real ni en compromisos pendientes. Se registra mediante versiones append-oriented justificadas.
+- `coste final = real + compromiso pendiente + restante adicional`. Beneficio y margen usan exclusivamente la venta del plan aceptado, nunca facturado ni cobrado.
+- La cobertura es completa solo cuando todas las categorías relevantes del plan tienen una estimación vigente explícita, incluso cero; con información incompleta es parcial y sin ella no disponible. Un dato desconocido nunca se publica como cero.
+- Las obras sin plan admiten hechos, compromisos y estimaciones, pero no inventan venta, beneficio ni margen. No se crean datos históricos al migrar.
+- 3-E incluye una superficie mínima de validación dentro del Expediente. El centro económico completo, cierre y alertas quedan para incrementos posteriores; 3-F no está iniciado.

@@ -383,3 +383,10 @@ La rentabilidad de una obra será fiable cuando:
 10. toda cifra navegue hasta sus datos origen y pueda reconstruirse;
 11. datos incompletos se identifiquen como tales;
 12. aislamiento multi-tenant, precisión, migración, concurrencia y backup estén probados.
+# Implementación 3-E: compromisos y coste final estimado
+
+El plan aceptado continúa siendo la referencia original e inmutable. El coste real se obtiene únicamente sumando el ledger `hechos_coste`. Un compromiso representa una obligación firme pendiente y solo se consume mediante una aplicación explícita a un hecho real; las reversiones del ledger neutralizan esa aplicación a efectos de saldo. El coste restante estimado significa siempre coste adicional no incluido en real ni compromisos.
+
+La proyección aplica `coste final = real + pendiente comprometido + restante adicional`. Solo publica coste final, beneficio y margen cuando la cobertura es completa. Esta exige una estimación vigente explícita para cada categoría relevante del plan; cualquier subconjunto es cobertura parcial y la ausencia de información es no disponible. Las obras sin plan pueden registrar operación, pero no tienen venta, beneficio ni margen fiables.
+
+Las estimaciones conservan todas sus versiones por serie, fecha y justificación. Los compromisos admiten ajuste y cancelación con Timeline transaccional; una reducción nunca puede quedar por debajo del consumo efectivo. La migración v26→v27 crea estructuras vacías y no fabrica historia legacy. El panel de Expediente sirve para validar el dominio; conciliación automática, cierre, alertas, permisos/autores y el centro económico completo permanecen fuera de 3-E.

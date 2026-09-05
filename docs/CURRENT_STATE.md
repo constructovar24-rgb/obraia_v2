@@ -5,7 +5,7 @@ Fotografía verificada el **3 de septiembre de 2026**. Debe actualizarse cuando 
 ## Base tecnológica
 
 - Flutter/Dart con Riverpod.
-- Drift sobre SQLite; 26 tablas y `schemaVersion` 26. Las conexiones activan claves foráneas y todas las tablas empresariales, incluidas las económicas, exigen `tenantId`.
+- Drift sobre SQLite; 29 tablas y `schemaVersion` 27. Las conexiones activan claves foráneas y todas las tablas empresariales, incluidas las económicas, exigen `tenantId`.
 - `pdf` y `printing` para generación documental.
 - Windows como plataforma prioritaria.
 - 171 archivos Dart en la auditoría de esta línea base.
@@ -39,6 +39,8 @@ Fase 3-B está implementada técnicamente. Cada tenant dispone de categorías ec
 Fase 3-C está implementada técnicamente sobre schema v25. `hechos_coste` es el ledger append-only y tenant-scoped del coste real: admite altas, reversiones y ajustes firmados, origen idempotente, categoría opcional y vínculos opcionales al plan/partida. Una Compra permanece provisional hasta confirmación explícita; entonces su base neta se registra atómicamente con clasificación y Timeline. Revertir o eliminar una Compra devengada añade el contramovimiento y nunca borra historia. Los estados manuales pendiente/pagada/anulada no determinan devengo y ninguna Compra legacy se convierte automáticamente.
 
 Fase 3-D está implementada técnicamente sobre schema v26. Personas laborales, tarifas internas históricas y partes son tenant-scoped. Cada parte valorado congela tarifa y coste y genera un único `hechos_coste`; las horas sin tarifa permanecen explícitamente pendientes, sin coste cero ficticio, y pueden valorarse después usando la tarifa aplicable a la fecha del trabajo. La reversión conserva parte y alta originales y añade un contramovimiento. Los agregados separan horas valoradas y pendientes y declaran cobertura completa, parcial o sin valorar. Titular/autónomo y empleado generan coste económico, nunca nómina ni salida de caja automática.
+
+Fase 3-E está implementada técnicamente sobre schema v27. Los compromisos registran coste futuro identificable, admiten ajustes y cancelación auditables y se consumen mediante aplicaciones explícitas contra `hechos_coste`; una reversión del hecho reabre el saldo sin borrar historia. Las estimaciones de coste restante son adicionales al coste real y al compromiso pendiente, conservan versiones y justificación. El forecast solo publica coste final, beneficio y margen cuando su cobertura es completa; desconocido nunca equivale a cero. Todas las operaciones escriben Timeline en la misma transacción y permanecen aisladas por tenant.
 
 El esquema v24 añade categorías, configuración económica, costes previstos de borrador, planes y partidas de plan con claves compuestas e índices tenant-first. La migración v23 → v24 conserva los datos, inicializa categorías/configuración por tenant y no fabrica planes ni costes para presupuestos legacy. Backup/restauración y la copia preventiva admiten la nueva versión. Fase 3-C no se ha iniciado.
 

@@ -30,6 +30,11 @@ enum TimelineEventType {
   horasTrabajoRegistradas,
   costeLaboralConfirmado,
   parteTrabajoRevertido,
+  compromisoEconomicoCreado,
+  compromisoEconomicoAjustado,
+  compromisoEconomicoCancelado,
+  compromisoEconomicoConsumido,
+  estimacionCosteRestanteActualizada,
 }
 
 enum TimelineCreditoTipo {

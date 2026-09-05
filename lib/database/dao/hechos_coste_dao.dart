@@ -56,4 +56,9 @@ class HechosCosteDao extends DatabaseAccessor<AppDatabase>
                 t.expedienteId.equals(expedienteId),
           ))
           .get();
+
+  Future<HechosCosteData?> obtenerPorId(String id) =>
+      (select(hechosCoste)
+            ..where((t) => t.tenantId.equals(_tenantId) & t.id.equals(id)))
+          .getSingleOrNull();
 }
