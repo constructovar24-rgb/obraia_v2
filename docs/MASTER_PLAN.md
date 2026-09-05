@@ -1,5 +1,7 @@
 # Plan maestro de OBRA IA
 
+**Fase 4-E implementada técnicamente:** motor «Qué toca ahora» derivado y reutilizable, con prioridades estables, explicación y destino de navegación. Las reglas consultan hechos tenant-scoped y alertas económicas canónicas; no persisten recomendaciones, no ejecutan acciones, no sustituyen el próximo paso manual y no usan IA. Schema 32.
+
 **Fase 4-D implementada técnicamente:** circuito tenant-scoped Proveedor → Albarán → Obra → Factura recibida → Pago sobre schema 32. Reparte líneas y facturas entre obras sin duplicar originales ni costes; la reconciliación usa Compras y `hechos_coste`, y los pagos no son coste. El backup de archivos originales sigue pendiente antes del uso documental intensivo.
 
 **Fase 4-C implementada técnicamente:** evidencias y fotografías continúan en el modelo Documentos y se relacionan sin duplicación con incidencias profesionales tenant-scoped. Las incidencias admiten ciclo abierta, seguimiento, resuelta, reapertura y cancelación; prioridades baja/media/alta; resolución trazable; vínculos con Diario y Timeline atómico. Esquema v31; Fase 4-D no iniciada. Persiste como deuda la protección de archivos originales, hoy referenciados por rutas locales fuera del backup SQLite.

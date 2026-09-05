@@ -239,6 +239,33 @@ class CircuitoProveedorRepository {
   ) => database.circuitoProveedorDao.observarAsignacionesFacturaObra(
     expedienteId,
   );
+  Future<SenalesSuministrosObra> obtenerSenalesObra(
+    String expedienteId,
+    DateTime hoy,
+  ) async {
+    final rows = await database.circuitoProveedorDao.senalesObra(expedienteId);
+    final day = DateTime(hoy.year, hoy.month, hoy.day);
+    return SenalesSuministrosObra(
+      albaranesPendientesFactura: await database.circuitoProveedorDao
+          .albaranesPendientesObra(expedienteId),
+      imputacionesPendientesReconciliar: rows
+          .where(
+            (r) =>
+                r.read<int>('reconciliada') == 0 &&
+                r.read<String>('estado') != 'cancelada',
+          )
+          .length,
+      facturaVencidaPendiente: rows.any((r) {
+        final due = r.readNullable<DateTime>('fecha_vencimiento');
+        final state = r.read<String>('estado');
+        return due != null &&
+            due.isBefore(day) &&
+            state != 'pagada' &&
+            state != 'cancelada';
+      }),
+    );
+  }
+
   static String _normalizar(String value) =>
       value.toUpperCase().replaceAll(RegExp(r'[^A-Z0-9]'), '');
 }

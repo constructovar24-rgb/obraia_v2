@@ -2,6 +2,13 @@
 
 ## No publicado
 
+### Motor «Qué toca ahora» — Fase 4-E
+
+- Añadido un motor de dominio puro con reglas comerciales, de planificación, incidencias, suministros, cobros y economía.
+- Cada recomendación incluye regla estable, prioridad, categoría, explicación y destino; el orden es determinista.
+- El próximo paso manual permanece independiente y el motor no persiste ni ejecuta acciones, no modifica economía y no usa IA.
+- Integrado un panel compacto de hasta cinco recomendaciones en el Resumen del Expediente, con vista completa y navegación.
+
 ### Circuito básico de proveedores — Fase 4-D
 
 - Añadidos albaranes con líneas, repartos multiobra, facturas recibidas, relaciones factura-albarán y pagos parciales o totales.

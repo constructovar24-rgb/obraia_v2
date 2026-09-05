@@ -12,6 +12,7 @@ import '../../../timeline/presentation/providers/timeline_providers.dart';
 import '../../../planificacion/presentation/widgets/planificacion_resumen_compacto.dart';
 import '../../../diario_obra/presentation/widgets/diario_resumen_compacto.dart';
 import '../../../incidencias/presentation/widgets/incidencias_resumen_compacto.dart';
+import '../../../que_toca_ahora/presentation/widgets/que_toca_ahora_panel.dart';
 import '../providers/expediente_workspace_providers.dart';
 
 class ExpedienteResumenTab extends ConsumerWidget {
@@ -43,6 +44,8 @@ class ExpedienteResumenTab extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              QueTocaAhoraPanel(expedienteId: expedienteId),
+              const SizedBox(height: AppSpacing.lg),
               Text(
                 'Resumen administrativo',
                 style: Theme.of(context).textTheme.titleLarge,

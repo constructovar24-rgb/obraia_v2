@@ -129,4 +129,38 @@ class CircuitoProveedorDao extends DatabaseAccessor<AppDatabase>
                 t.expedienteId.equals(expedienteId),
           ))
           .watch();
+
+  Future<List<QueryRow>> senalesObra(String expedienteId) => customSelect(
+    '''SELECT fr.fecha_vencimiento, fr.estado,
+              CASE WHEN frc.compra_id IS NULL THEN 0 ELSE 1 END AS reconciliada
+       FROM asignaciones_factura_recibida afr
+       JOIN facturas_recibidas fr ON fr.tenant_id = afr.tenant_id AND fr.id = afr.factura_id
+       LEFT JOIN factura_recibida_compras frc ON frc.tenant_id = afr.tenant_id AND frc.asignacion_id = afr.id
+       WHERE afr.tenant_id = ? AND afr.expediente_id = ?''',
+    variables: [Variable<String>(_tenant), Variable<String>(expedienteId)],
+    readsFrom: {
+      asignacionesFacturaRecibida,
+      facturasRecibidas,
+      facturaRecibidaCompras,
+    },
+  ).get();
+
+  Future<int> albaranesPendientesObra(String expedienteId) async {
+    final row = await customSelect(
+      '''SELECT COUNT(DISTINCT ap.id) AS total
+         FROM albaranes_proveedor ap
+         JOIN lineas_albaran_proveedor lap ON lap.tenant_id = ap.tenant_id AND lap.albaran_id = ap.id
+         JOIN asignaciones_albaran_obra aa ON aa.tenant_id = lap.tenant_id AND aa.linea_albaran_id = lap.id
+         LEFT JOIN factura_recibida_albaranes fra ON fra.tenant_id = ap.tenant_id AND fra.albaran_id = ap.id
+         WHERE ap.tenant_id = ? AND aa.expediente_id = ? AND ap.estado IN ('recibido','revisado') AND fra.factura_id IS NULL''',
+      variables: [Variable<String>(_tenant), Variable<String>(expedienteId)],
+      readsFrom: {
+        albaranesProveedor,
+        lineasAlbaranProveedor,
+        asignacionesAlbaranObra,
+        facturaRecibidaAlbaranes,
+      },
+    ).getSingle();
+    return row.read<int>('total');
+  }
 }
