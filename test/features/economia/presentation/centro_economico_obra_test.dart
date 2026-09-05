@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:obraia_v2/database/app_database.dart';
 import 'package:obraia_v2/database/database_provider.dart';
+import 'package:obraia_v2/features/economia/domain/cierre_economico.dart';
 import 'package:obraia_v2/features/economia/domain/prevision_economica.dart';
+import 'package:obraia_v2/features/economia/presentation/providers/cierre_economico_providers.dart';
 import 'package:obraia_v2/features/economia/presentation/providers/prevision_economica_providers.dart';
 import 'package:obraia_v2/features/economia/presentation/widgets/centro_economico_obra.dart';
 import 'package:obraia_v2/features/mano_obra/domain/mano_obra.dart';
@@ -24,6 +26,20 @@ void main() {
       estimacionesCosteRestanteProvider.overrideWith(
         (ref, id) async => const [],
       ),
+      estadoCierreEconomicoProvider.overrideWith(
+        (ref, id) => Stream.value(
+          const EstadoCierreEconomico(
+            estado: EstadoEconomicoObra.abierto,
+            numeroCierres: 0,
+          ),
+        ),
+      ),
+      precheckCierreEconomicoProvider.overrideWith(
+        (ref, id) async => const PrecheckCierreEconomico([]),
+      ),
+      alertasEconomicasProvider.overrideWith((ref, id) async => const []),
+      historialCierresProvider.overrideWith((ref, id) async => const []),
+      historialReaperturasProvider.overrideWith((ref, id) async => const []),
     ],
     child: const MaterialApp(
       home: DefaultTabController(

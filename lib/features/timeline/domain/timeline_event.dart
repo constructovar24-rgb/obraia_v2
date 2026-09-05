@@ -35,6 +35,9 @@ enum TimelineEventType {
   compromisoEconomicoCancelado,
   compromisoEconomicoConsumido,
   estimacionCosteRestanteActualizada,
+  economiaCerrada,
+  economiaCerradaConAdvertencias,
+  economiaReabierta,
 }
 
 enum TimelineCreditoTipo {

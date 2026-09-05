@@ -23179,6 +23179,2163 @@ class EstimacionesCosteRestanteCompanion
   }
 }
 
+class $EstadosEconomicosObraTable extends EstadosEconomicosObra
+    with TableInfo<$EstadosEconomicosObraTable, EstadosEconomicosObraData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EstadosEconomicosObraTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _expedienteIdMeta = const VerificationMeta(
+    'expedienteId',
+  );
+  @override
+  late final GeneratedColumn<String> expedienteId = GeneratedColumn<String>(
+    'expediente_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _estadoMeta = const VerificationMeta('estado');
+  @override
+  late final GeneratedColumn<String> estado = GeneratedColumn<String>(
+    'estado',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _numeroCierresMeta = const VerificationMeta(
+    'numeroCierres',
+  );
+  @override
+  late final GeneratedColumn<int> numeroCierres = GeneratedColumn<int>(
+    'numero_cierres',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _fechaModificacionMeta = const VerificationMeta(
+    'fechaModificacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaModificacion =
+      GeneratedColumn<DateTime>(
+        'fecha_modificacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    expedienteId,
+    estado,
+    numeroCierres,
+    fechaModificacion,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'estados_economicos_obra';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<EstadosEconomicosObraData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('expediente_id')) {
+      context.handle(
+        _expedienteIdMeta,
+        expedienteId.isAcceptableOrUnknown(
+          data['expediente_id']!,
+          _expedienteIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_expedienteIdMeta);
+    }
+    if (data.containsKey('estado')) {
+      context.handle(
+        _estadoMeta,
+        estado.isAcceptableOrUnknown(data['estado']!, _estadoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_estadoMeta);
+    }
+    if (data.containsKey('numero_cierres')) {
+      context.handle(
+        _numeroCierresMeta,
+        numeroCierres.isAcceptableOrUnknown(
+          data['numero_cierres']!,
+          _numeroCierresMeta,
+        ),
+      );
+    }
+    if (data.containsKey('fecha_modificacion')) {
+      context.handle(
+        _fechaModificacionMeta,
+        fechaModificacion.isAcceptableOrUnknown(
+          data['fecha_modificacion']!,
+          _fechaModificacionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaModificacionMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {tenantId, expedienteId};
+  @override
+  EstadosEconomicosObraData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EstadosEconomicosObraData(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      expedienteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}expediente_id'],
+      )!,
+      estado: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}estado'],
+      )!,
+      numeroCierres: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}numero_cierres'],
+      )!,
+      fechaModificacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_modificacion'],
+      )!,
+    );
+  }
+
+  @override
+  $EstadosEconomicosObraTable createAlias(String alias) {
+    return $EstadosEconomicosObraTable(attachedDatabase, alias);
+  }
+}
+
+class EstadosEconomicosObraData extends DataClass
+    implements Insertable<EstadosEconomicosObraData> {
+  final String tenantId;
+  final String expedienteId;
+  final String estado;
+  final int numeroCierres;
+  final DateTime fechaModificacion;
+  const EstadosEconomicosObraData({
+    required this.tenantId,
+    required this.expedienteId,
+    required this.estado,
+    required this.numeroCierres,
+    required this.fechaModificacion,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['expediente_id'] = Variable<String>(expedienteId);
+    map['estado'] = Variable<String>(estado);
+    map['numero_cierres'] = Variable<int>(numeroCierres);
+    map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion);
+    return map;
+  }
+
+  EstadosEconomicosObraCompanion toCompanion(bool nullToAbsent) {
+    return EstadosEconomicosObraCompanion(
+      tenantId: Value(tenantId),
+      expedienteId: Value(expedienteId),
+      estado: Value(estado),
+      numeroCierres: Value(numeroCierres),
+      fechaModificacion: Value(fechaModificacion),
+    );
+  }
+
+  factory EstadosEconomicosObraData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EstadosEconomicosObraData(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      expedienteId: serializer.fromJson<String>(json['expedienteId']),
+      estado: serializer.fromJson<String>(json['estado']),
+      numeroCierres: serializer.fromJson<int>(json['numeroCierres']),
+      fechaModificacion: serializer.fromJson<DateTime>(
+        json['fechaModificacion'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'expedienteId': serializer.toJson<String>(expedienteId),
+      'estado': serializer.toJson<String>(estado),
+      'numeroCierres': serializer.toJson<int>(numeroCierres),
+      'fechaModificacion': serializer.toJson<DateTime>(fechaModificacion),
+    };
+  }
+
+  EstadosEconomicosObraData copyWith({
+    String? tenantId,
+    String? expedienteId,
+    String? estado,
+    int? numeroCierres,
+    DateTime? fechaModificacion,
+  }) => EstadosEconomicosObraData(
+    tenantId: tenantId ?? this.tenantId,
+    expedienteId: expedienteId ?? this.expedienteId,
+    estado: estado ?? this.estado,
+    numeroCierres: numeroCierres ?? this.numeroCierres,
+    fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+  );
+  EstadosEconomicosObraData copyWithCompanion(
+    EstadosEconomicosObraCompanion data,
+  ) {
+    return EstadosEconomicosObraData(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      expedienteId: data.expedienteId.present
+          ? data.expedienteId.value
+          : this.expedienteId,
+      estado: data.estado.present ? data.estado.value : this.estado,
+      numeroCierres: data.numeroCierres.present
+          ? data.numeroCierres.value
+          : this.numeroCierres,
+      fechaModificacion: data.fechaModificacion.present
+          ? data.fechaModificacion.value
+          : this.fechaModificacion,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EstadosEconomicosObraData(')
+          ..write('tenantId: $tenantId, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('estado: $estado, ')
+          ..write('numeroCierres: $numeroCierres, ')
+          ..write('fechaModificacion: $fechaModificacion')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    tenantId,
+    expedienteId,
+    estado,
+    numeroCierres,
+    fechaModificacion,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EstadosEconomicosObraData &&
+          other.tenantId == this.tenantId &&
+          other.expedienteId == this.expedienteId &&
+          other.estado == this.estado &&
+          other.numeroCierres == this.numeroCierres &&
+          other.fechaModificacion == this.fechaModificacion);
+}
+
+class EstadosEconomicosObraCompanion
+    extends UpdateCompanion<EstadosEconomicosObraData> {
+  final Value<String> tenantId;
+  final Value<String> expedienteId;
+  final Value<String> estado;
+  final Value<int> numeroCierres;
+  final Value<DateTime> fechaModificacion;
+  final Value<int> rowid;
+  const EstadosEconomicosObraCompanion({
+    this.tenantId = const Value.absent(),
+    this.expedienteId = const Value.absent(),
+    this.estado = const Value.absent(),
+    this.numeroCierres = const Value.absent(),
+    this.fechaModificacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EstadosEconomicosObraCompanion.insert({
+    required String tenantId,
+    required String expedienteId,
+    required String estado,
+    this.numeroCierres = const Value.absent(),
+    required DateTime fechaModificacion,
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       expedienteId = Value(expedienteId),
+       estado = Value(estado),
+       fechaModificacion = Value(fechaModificacion);
+  static Insertable<EstadosEconomicosObraData> custom({
+    Expression<String>? tenantId,
+    Expression<String>? expedienteId,
+    Expression<String>? estado,
+    Expression<int>? numeroCierres,
+    Expression<DateTime>? fechaModificacion,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (expedienteId != null) 'expediente_id': expedienteId,
+      if (estado != null) 'estado': estado,
+      if (numeroCierres != null) 'numero_cierres': numeroCierres,
+      if (fechaModificacion != null) 'fecha_modificacion': fechaModificacion,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EstadosEconomicosObraCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? expedienteId,
+    Value<String>? estado,
+    Value<int>? numeroCierres,
+    Value<DateTime>? fechaModificacion,
+    Value<int>? rowid,
+  }) {
+    return EstadosEconomicosObraCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      expedienteId: expedienteId ?? this.expedienteId,
+      estado: estado ?? this.estado,
+      numeroCierres: numeroCierres ?? this.numeroCierres,
+      fechaModificacion: fechaModificacion ?? this.fechaModificacion,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (expedienteId.present) {
+      map['expediente_id'] = Variable<String>(expedienteId.value);
+    }
+    if (estado.present) {
+      map['estado'] = Variable<String>(estado.value);
+    }
+    if (numeroCierres.present) {
+      map['numero_cierres'] = Variable<int>(numeroCierres.value);
+    }
+    if (fechaModificacion.present) {
+      map['fecha_modificacion'] = Variable<DateTime>(fechaModificacion.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EstadosEconomicosObraCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('estado: $estado, ')
+          ..write('numeroCierres: $numeroCierres, ')
+          ..write('fechaModificacion: $fechaModificacion, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CierresEconomicosObraTable extends CierresEconomicosObra
+    with TableInfo<$CierresEconomicosObraTable, CierresEconomicosObraData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CierresEconomicosObraTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _expedienteIdMeta = const VerificationMeta(
+    'expedienteId',
+  );
+  @override
+  late final GeneratedColumn<String> expedienteId = GeneratedColumn<String>(
+    'expediente_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _numeroMeta = const VerificationMeta('numero');
+  @override
+  late final GeneratedColumn<int> numero = GeneratedColumn<int>(
+    'numero',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fechaCierreMeta = const VerificationMeta(
+    'fechaCierre',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaCierre = GeneratedColumn<DateTime>(
+    'fecha_cierre',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ventaPlanificadaCentimosMeta =
+      const VerificationMeta('ventaPlanificadaCentimos');
+  @override
+  late final GeneratedColumn<int> ventaPlanificadaCentimos =
+      GeneratedColumn<int>(
+        'venta_planificada_centimos',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _costePlanificadoCentimosMeta =
+      const VerificationMeta('costePlanificadoCentimos');
+  @override
+  late final GeneratedColumn<int> costePlanificadoCentimos =
+      GeneratedColumn<int>(
+        'coste_planificado_centimos',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _costeRealCentimosMeta = const VerificationMeta(
+    'costeRealCentimos',
+  );
+  @override
+  late final GeneratedColumn<int> costeRealCentimos = GeneratedColumn<int>(
+    'coste_real_centimos',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _compromisoPendienteCentimosMeta =
+      const VerificationMeta('compromisoPendienteCentimos');
+  @override
+  late final GeneratedColumn<int> compromisoPendienteCentimos =
+      GeneratedColumn<int>(
+        'compromiso_pendiente_centimos',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _restanteEstimadoCentimosMeta =
+      const VerificationMeta('restanteEstimadoCentimos');
+  @override
+  late final GeneratedColumn<int> restanteEstimadoCentimos =
+      GeneratedColumn<int>(
+        'restante_estimado_centimos',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _costeFinalEstimadoCentimosMeta =
+      const VerificationMeta('costeFinalEstimadoCentimos');
+  @override
+  late final GeneratedColumn<int> costeFinalEstimadoCentimos =
+      GeneratedColumn<int>(
+        'coste_final_estimado_centimos',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _beneficioPrevistoCentimosMeta =
+      const VerificationMeta('beneficioPrevistoCentimos');
+  @override
+  late final GeneratedColumn<int> beneficioPrevistoCentimos =
+      GeneratedColumn<int>(
+        'beneficio_previsto_centimos',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _beneficioFinalCentimosMeta =
+      const VerificationMeta('beneficioFinalCentimos');
+  @override
+  late final GeneratedColumn<int> beneficioFinalCentimos = GeneratedColumn<int>(
+    'beneficio_final_centimos',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _margenPrevistoPorcentajeMeta =
+      const VerificationMeta('margenPrevistoPorcentaje');
+  @override
+  late final GeneratedColumn<double> margenPrevistoPorcentaje =
+      GeneratedColumn<double>(
+        'margen_previsto_porcentaje',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _margenFinalPorcentajeMeta =
+      const VerificationMeta('margenFinalPorcentaje');
+  @override
+  late final GeneratedColumn<double> margenFinalPorcentaje =
+      GeneratedColumn<double>(
+        'margen_final_porcentaje',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _coberturaMeta = const VerificationMeta(
+    'cobertura',
+  );
+  @override
+  late final GeneratedColumn<String> cobertura = GeneratedColumn<String>(
+    'cobertura',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _desviacionCosteCentimosMeta =
+      const VerificationMeta('desviacionCosteCentimos');
+  @override
+  late final GeneratedColumn<int> desviacionCosteCentimos =
+      GeneratedColumn<int>(
+        'desviacion_coste_centimos',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _desviacionBeneficioCentimosMeta =
+      const VerificationMeta('desviacionBeneficioCentimos');
+  @override
+  late final GeneratedColumn<int> desviacionBeneficioCentimos =
+      GeneratedColumn<int>(
+        'desviacion_beneficio_centimos',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _conAdvertenciasMeta = const VerificationMeta(
+    'conAdvertencias',
+  );
+  @override
+  late final GeneratedColumn<bool> conAdvertencias = GeneratedColumn<bool>(
+    'con_advertencias',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("con_advertencias" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _resumenPrecheckMeta = const VerificationMeta(
+    'resumenPrecheck',
+  );
+  @override
+  late final GeneratedColumn<String> resumenPrecheck = GeneratedColumn<String>(
+    'resumen_precheck',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    id,
+    expedienteId,
+    numero,
+    fechaCierre,
+    ventaPlanificadaCentimos,
+    costePlanificadoCentimos,
+    costeRealCentimos,
+    compromisoPendienteCentimos,
+    restanteEstimadoCentimos,
+    costeFinalEstimadoCentimos,
+    beneficioPrevistoCentimos,
+    beneficioFinalCentimos,
+    margenPrevistoPorcentaje,
+    margenFinalPorcentaje,
+    cobertura,
+    desviacionCosteCentimos,
+    desviacionBeneficioCentimos,
+    conAdvertencias,
+    resumenPrecheck,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'cierres_economicos_obra';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CierresEconomicosObraData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('expediente_id')) {
+      context.handle(
+        _expedienteIdMeta,
+        expedienteId.isAcceptableOrUnknown(
+          data['expediente_id']!,
+          _expedienteIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_expedienteIdMeta);
+    }
+    if (data.containsKey('numero')) {
+      context.handle(
+        _numeroMeta,
+        numero.isAcceptableOrUnknown(data['numero']!, _numeroMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_numeroMeta);
+    }
+    if (data.containsKey('fecha_cierre')) {
+      context.handle(
+        _fechaCierreMeta,
+        fechaCierre.isAcceptableOrUnknown(
+          data['fecha_cierre']!,
+          _fechaCierreMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaCierreMeta);
+    }
+    if (data.containsKey('venta_planificada_centimos')) {
+      context.handle(
+        _ventaPlanificadaCentimosMeta,
+        ventaPlanificadaCentimos.isAcceptableOrUnknown(
+          data['venta_planificada_centimos']!,
+          _ventaPlanificadaCentimosMeta,
+        ),
+      );
+    }
+    if (data.containsKey('coste_planificado_centimos')) {
+      context.handle(
+        _costePlanificadoCentimosMeta,
+        costePlanificadoCentimos.isAcceptableOrUnknown(
+          data['coste_planificado_centimos']!,
+          _costePlanificadoCentimosMeta,
+        ),
+      );
+    }
+    if (data.containsKey('coste_real_centimos')) {
+      context.handle(
+        _costeRealCentimosMeta,
+        costeRealCentimos.isAcceptableOrUnknown(
+          data['coste_real_centimos']!,
+          _costeRealCentimosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_costeRealCentimosMeta);
+    }
+    if (data.containsKey('compromiso_pendiente_centimos')) {
+      context.handle(
+        _compromisoPendienteCentimosMeta,
+        compromisoPendienteCentimos.isAcceptableOrUnknown(
+          data['compromiso_pendiente_centimos']!,
+          _compromisoPendienteCentimosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_compromisoPendienteCentimosMeta);
+    }
+    if (data.containsKey('restante_estimado_centimos')) {
+      context.handle(
+        _restanteEstimadoCentimosMeta,
+        restanteEstimadoCentimos.isAcceptableOrUnknown(
+          data['restante_estimado_centimos']!,
+          _restanteEstimadoCentimosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_restanteEstimadoCentimosMeta);
+    }
+    if (data.containsKey('coste_final_estimado_centimos')) {
+      context.handle(
+        _costeFinalEstimadoCentimosMeta,
+        costeFinalEstimadoCentimos.isAcceptableOrUnknown(
+          data['coste_final_estimado_centimos']!,
+          _costeFinalEstimadoCentimosMeta,
+        ),
+      );
+    }
+    if (data.containsKey('beneficio_previsto_centimos')) {
+      context.handle(
+        _beneficioPrevistoCentimosMeta,
+        beneficioPrevistoCentimos.isAcceptableOrUnknown(
+          data['beneficio_previsto_centimos']!,
+          _beneficioPrevistoCentimosMeta,
+        ),
+      );
+    }
+    if (data.containsKey('beneficio_final_centimos')) {
+      context.handle(
+        _beneficioFinalCentimosMeta,
+        beneficioFinalCentimos.isAcceptableOrUnknown(
+          data['beneficio_final_centimos']!,
+          _beneficioFinalCentimosMeta,
+        ),
+      );
+    }
+    if (data.containsKey('margen_previsto_porcentaje')) {
+      context.handle(
+        _margenPrevistoPorcentajeMeta,
+        margenPrevistoPorcentaje.isAcceptableOrUnknown(
+          data['margen_previsto_porcentaje']!,
+          _margenPrevistoPorcentajeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('margen_final_porcentaje')) {
+      context.handle(
+        _margenFinalPorcentajeMeta,
+        margenFinalPorcentaje.isAcceptableOrUnknown(
+          data['margen_final_porcentaje']!,
+          _margenFinalPorcentajeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('cobertura')) {
+      context.handle(
+        _coberturaMeta,
+        cobertura.isAcceptableOrUnknown(data['cobertura']!, _coberturaMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_coberturaMeta);
+    }
+    if (data.containsKey('desviacion_coste_centimos')) {
+      context.handle(
+        _desviacionCosteCentimosMeta,
+        desviacionCosteCentimos.isAcceptableOrUnknown(
+          data['desviacion_coste_centimos']!,
+          _desviacionCosteCentimosMeta,
+        ),
+      );
+    }
+    if (data.containsKey('desviacion_beneficio_centimos')) {
+      context.handle(
+        _desviacionBeneficioCentimosMeta,
+        desviacionBeneficioCentimos.isAcceptableOrUnknown(
+          data['desviacion_beneficio_centimos']!,
+          _desviacionBeneficioCentimosMeta,
+        ),
+      );
+    }
+    if (data.containsKey('con_advertencias')) {
+      context.handle(
+        _conAdvertenciasMeta,
+        conAdvertencias.isAcceptableOrUnknown(
+          data['con_advertencias']!,
+          _conAdvertenciasMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_conAdvertenciasMeta);
+    }
+    if (data.containsKey('resumen_precheck')) {
+      context.handle(
+        _resumenPrecheckMeta,
+        resumenPrecheck.isAcceptableOrUnknown(
+          data['resumen_precheck']!,
+          _resumenPrecheckMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_resumenPrecheckMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {tenantId, id},
+    {tenantId, expedienteId, numero},
+  ];
+  @override
+  CierresEconomicosObraData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CierresEconomicosObraData(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      expedienteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}expediente_id'],
+      )!,
+      numero: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}numero'],
+      )!,
+      fechaCierre: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_cierre'],
+      )!,
+      ventaPlanificadaCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}venta_planificada_centimos'],
+      ),
+      costePlanificadoCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}coste_planificado_centimos'],
+      ),
+      costeRealCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}coste_real_centimos'],
+      )!,
+      compromisoPendienteCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}compromiso_pendiente_centimos'],
+      )!,
+      restanteEstimadoCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}restante_estimado_centimos'],
+      )!,
+      costeFinalEstimadoCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}coste_final_estimado_centimos'],
+      ),
+      beneficioPrevistoCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}beneficio_previsto_centimos'],
+      ),
+      beneficioFinalCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}beneficio_final_centimos'],
+      ),
+      margenPrevistoPorcentaje: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}margen_previsto_porcentaje'],
+      ),
+      margenFinalPorcentaje: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}margen_final_porcentaje'],
+      ),
+      cobertura: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cobertura'],
+      )!,
+      desviacionCosteCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}desviacion_coste_centimos'],
+      ),
+      desviacionBeneficioCentimos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}desviacion_beneficio_centimos'],
+      ),
+      conAdvertencias: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}con_advertencias'],
+      )!,
+      resumenPrecheck: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}resumen_precheck'],
+      )!,
+    );
+  }
+
+  @override
+  $CierresEconomicosObraTable createAlias(String alias) {
+    return $CierresEconomicosObraTable(attachedDatabase, alias);
+  }
+}
+
+class CierresEconomicosObraData extends DataClass
+    implements Insertable<CierresEconomicosObraData> {
+  final String tenantId;
+  final String id;
+  final String expedienteId;
+  final int numero;
+  final DateTime fechaCierre;
+  final int? ventaPlanificadaCentimos;
+  final int? costePlanificadoCentimos;
+  final int costeRealCentimos;
+  final int compromisoPendienteCentimos;
+  final int restanteEstimadoCentimos;
+  final int? costeFinalEstimadoCentimos;
+  final int? beneficioPrevistoCentimos;
+  final int? beneficioFinalCentimos;
+  final double? margenPrevistoPorcentaje;
+  final double? margenFinalPorcentaje;
+  final String cobertura;
+  final int? desviacionCosteCentimos;
+  final int? desviacionBeneficioCentimos;
+  final bool conAdvertencias;
+  final String resumenPrecheck;
+  const CierresEconomicosObraData({
+    required this.tenantId,
+    required this.id,
+    required this.expedienteId,
+    required this.numero,
+    required this.fechaCierre,
+    this.ventaPlanificadaCentimos,
+    this.costePlanificadoCentimos,
+    required this.costeRealCentimos,
+    required this.compromisoPendienteCentimos,
+    required this.restanteEstimadoCentimos,
+    this.costeFinalEstimadoCentimos,
+    this.beneficioPrevistoCentimos,
+    this.beneficioFinalCentimos,
+    this.margenPrevistoPorcentaje,
+    this.margenFinalPorcentaje,
+    required this.cobertura,
+    this.desviacionCosteCentimos,
+    this.desviacionBeneficioCentimos,
+    required this.conAdvertencias,
+    required this.resumenPrecheck,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['id'] = Variable<String>(id);
+    map['expediente_id'] = Variable<String>(expedienteId);
+    map['numero'] = Variable<int>(numero);
+    map['fecha_cierre'] = Variable<DateTime>(fechaCierre);
+    if (!nullToAbsent || ventaPlanificadaCentimos != null) {
+      map['venta_planificada_centimos'] = Variable<int>(
+        ventaPlanificadaCentimos,
+      );
+    }
+    if (!nullToAbsent || costePlanificadoCentimos != null) {
+      map['coste_planificado_centimos'] = Variable<int>(
+        costePlanificadoCentimos,
+      );
+    }
+    map['coste_real_centimos'] = Variable<int>(costeRealCentimos);
+    map['compromiso_pendiente_centimos'] = Variable<int>(
+      compromisoPendienteCentimos,
+    );
+    map['restante_estimado_centimos'] = Variable<int>(restanteEstimadoCentimos);
+    if (!nullToAbsent || costeFinalEstimadoCentimos != null) {
+      map['coste_final_estimado_centimos'] = Variable<int>(
+        costeFinalEstimadoCentimos,
+      );
+    }
+    if (!nullToAbsent || beneficioPrevistoCentimos != null) {
+      map['beneficio_previsto_centimos'] = Variable<int>(
+        beneficioPrevistoCentimos,
+      );
+    }
+    if (!nullToAbsent || beneficioFinalCentimos != null) {
+      map['beneficio_final_centimos'] = Variable<int>(beneficioFinalCentimos);
+    }
+    if (!nullToAbsent || margenPrevistoPorcentaje != null) {
+      map['margen_previsto_porcentaje'] = Variable<double>(
+        margenPrevistoPorcentaje,
+      );
+    }
+    if (!nullToAbsent || margenFinalPorcentaje != null) {
+      map['margen_final_porcentaje'] = Variable<double>(margenFinalPorcentaje);
+    }
+    map['cobertura'] = Variable<String>(cobertura);
+    if (!nullToAbsent || desviacionCosteCentimos != null) {
+      map['desviacion_coste_centimos'] = Variable<int>(desviacionCosteCentimos);
+    }
+    if (!nullToAbsent || desviacionBeneficioCentimos != null) {
+      map['desviacion_beneficio_centimos'] = Variable<int>(
+        desviacionBeneficioCentimos,
+      );
+    }
+    map['con_advertencias'] = Variable<bool>(conAdvertencias);
+    map['resumen_precheck'] = Variable<String>(resumenPrecheck);
+    return map;
+  }
+
+  CierresEconomicosObraCompanion toCompanion(bool nullToAbsent) {
+    return CierresEconomicosObraCompanion(
+      tenantId: Value(tenantId),
+      id: Value(id),
+      expedienteId: Value(expedienteId),
+      numero: Value(numero),
+      fechaCierre: Value(fechaCierre),
+      ventaPlanificadaCentimos: ventaPlanificadaCentimos == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ventaPlanificadaCentimos),
+      costePlanificadoCentimos: costePlanificadoCentimos == null && nullToAbsent
+          ? const Value.absent()
+          : Value(costePlanificadoCentimos),
+      costeRealCentimos: Value(costeRealCentimos),
+      compromisoPendienteCentimos: Value(compromisoPendienteCentimos),
+      restanteEstimadoCentimos: Value(restanteEstimadoCentimos),
+      costeFinalEstimadoCentimos:
+          costeFinalEstimadoCentimos == null && nullToAbsent
+          ? const Value.absent()
+          : Value(costeFinalEstimadoCentimos),
+      beneficioPrevistoCentimos:
+          beneficioPrevistoCentimos == null && nullToAbsent
+          ? const Value.absent()
+          : Value(beneficioPrevistoCentimos),
+      beneficioFinalCentimos: beneficioFinalCentimos == null && nullToAbsent
+          ? const Value.absent()
+          : Value(beneficioFinalCentimos),
+      margenPrevistoPorcentaje: margenPrevistoPorcentaje == null && nullToAbsent
+          ? const Value.absent()
+          : Value(margenPrevistoPorcentaje),
+      margenFinalPorcentaje: margenFinalPorcentaje == null && nullToAbsent
+          ? const Value.absent()
+          : Value(margenFinalPorcentaje),
+      cobertura: Value(cobertura),
+      desviacionCosteCentimos: desviacionCosteCentimos == null && nullToAbsent
+          ? const Value.absent()
+          : Value(desviacionCosteCentimos),
+      desviacionBeneficioCentimos:
+          desviacionBeneficioCentimos == null && nullToAbsent
+          ? const Value.absent()
+          : Value(desviacionBeneficioCentimos),
+      conAdvertencias: Value(conAdvertencias),
+      resumenPrecheck: Value(resumenPrecheck),
+    );
+  }
+
+  factory CierresEconomicosObraData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CierresEconomicosObraData(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      id: serializer.fromJson<String>(json['id']),
+      expedienteId: serializer.fromJson<String>(json['expedienteId']),
+      numero: serializer.fromJson<int>(json['numero']),
+      fechaCierre: serializer.fromJson<DateTime>(json['fechaCierre']),
+      ventaPlanificadaCentimos: serializer.fromJson<int?>(
+        json['ventaPlanificadaCentimos'],
+      ),
+      costePlanificadoCentimos: serializer.fromJson<int?>(
+        json['costePlanificadoCentimos'],
+      ),
+      costeRealCentimos: serializer.fromJson<int>(json['costeRealCentimos']),
+      compromisoPendienteCentimos: serializer.fromJson<int>(
+        json['compromisoPendienteCentimos'],
+      ),
+      restanteEstimadoCentimos: serializer.fromJson<int>(
+        json['restanteEstimadoCentimos'],
+      ),
+      costeFinalEstimadoCentimos: serializer.fromJson<int?>(
+        json['costeFinalEstimadoCentimos'],
+      ),
+      beneficioPrevistoCentimos: serializer.fromJson<int?>(
+        json['beneficioPrevistoCentimos'],
+      ),
+      beneficioFinalCentimos: serializer.fromJson<int?>(
+        json['beneficioFinalCentimos'],
+      ),
+      margenPrevistoPorcentaje: serializer.fromJson<double?>(
+        json['margenPrevistoPorcentaje'],
+      ),
+      margenFinalPorcentaje: serializer.fromJson<double?>(
+        json['margenFinalPorcentaje'],
+      ),
+      cobertura: serializer.fromJson<String>(json['cobertura']),
+      desviacionCosteCentimos: serializer.fromJson<int?>(
+        json['desviacionCosteCentimos'],
+      ),
+      desviacionBeneficioCentimos: serializer.fromJson<int?>(
+        json['desviacionBeneficioCentimos'],
+      ),
+      conAdvertencias: serializer.fromJson<bool>(json['conAdvertencias']),
+      resumenPrecheck: serializer.fromJson<String>(json['resumenPrecheck']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'id': serializer.toJson<String>(id),
+      'expedienteId': serializer.toJson<String>(expedienteId),
+      'numero': serializer.toJson<int>(numero),
+      'fechaCierre': serializer.toJson<DateTime>(fechaCierre),
+      'ventaPlanificadaCentimos': serializer.toJson<int?>(
+        ventaPlanificadaCentimos,
+      ),
+      'costePlanificadoCentimos': serializer.toJson<int?>(
+        costePlanificadoCentimos,
+      ),
+      'costeRealCentimos': serializer.toJson<int>(costeRealCentimos),
+      'compromisoPendienteCentimos': serializer.toJson<int>(
+        compromisoPendienteCentimos,
+      ),
+      'restanteEstimadoCentimos': serializer.toJson<int>(
+        restanteEstimadoCentimos,
+      ),
+      'costeFinalEstimadoCentimos': serializer.toJson<int?>(
+        costeFinalEstimadoCentimos,
+      ),
+      'beneficioPrevistoCentimos': serializer.toJson<int?>(
+        beneficioPrevistoCentimos,
+      ),
+      'beneficioFinalCentimos': serializer.toJson<int?>(beneficioFinalCentimos),
+      'margenPrevistoPorcentaje': serializer.toJson<double?>(
+        margenPrevistoPorcentaje,
+      ),
+      'margenFinalPorcentaje': serializer.toJson<double?>(
+        margenFinalPorcentaje,
+      ),
+      'cobertura': serializer.toJson<String>(cobertura),
+      'desviacionCosteCentimos': serializer.toJson<int?>(
+        desviacionCosteCentimos,
+      ),
+      'desviacionBeneficioCentimos': serializer.toJson<int?>(
+        desviacionBeneficioCentimos,
+      ),
+      'conAdvertencias': serializer.toJson<bool>(conAdvertencias),
+      'resumenPrecheck': serializer.toJson<String>(resumenPrecheck),
+    };
+  }
+
+  CierresEconomicosObraData copyWith({
+    String? tenantId,
+    String? id,
+    String? expedienteId,
+    int? numero,
+    DateTime? fechaCierre,
+    Value<int?> ventaPlanificadaCentimos = const Value.absent(),
+    Value<int?> costePlanificadoCentimos = const Value.absent(),
+    int? costeRealCentimos,
+    int? compromisoPendienteCentimos,
+    int? restanteEstimadoCentimos,
+    Value<int?> costeFinalEstimadoCentimos = const Value.absent(),
+    Value<int?> beneficioPrevistoCentimos = const Value.absent(),
+    Value<int?> beneficioFinalCentimos = const Value.absent(),
+    Value<double?> margenPrevistoPorcentaje = const Value.absent(),
+    Value<double?> margenFinalPorcentaje = const Value.absent(),
+    String? cobertura,
+    Value<int?> desviacionCosteCentimos = const Value.absent(),
+    Value<int?> desviacionBeneficioCentimos = const Value.absent(),
+    bool? conAdvertencias,
+    String? resumenPrecheck,
+  }) => CierresEconomicosObraData(
+    tenantId: tenantId ?? this.tenantId,
+    id: id ?? this.id,
+    expedienteId: expedienteId ?? this.expedienteId,
+    numero: numero ?? this.numero,
+    fechaCierre: fechaCierre ?? this.fechaCierre,
+    ventaPlanificadaCentimos: ventaPlanificadaCentimos.present
+        ? ventaPlanificadaCentimos.value
+        : this.ventaPlanificadaCentimos,
+    costePlanificadoCentimos: costePlanificadoCentimos.present
+        ? costePlanificadoCentimos.value
+        : this.costePlanificadoCentimos,
+    costeRealCentimos: costeRealCentimos ?? this.costeRealCentimos,
+    compromisoPendienteCentimos:
+        compromisoPendienteCentimos ?? this.compromisoPendienteCentimos,
+    restanteEstimadoCentimos:
+        restanteEstimadoCentimos ?? this.restanteEstimadoCentimos,
+    costeFinalEstimadoCentimos: costeFinalEstimadoCentimos.present
+        ? costeFinalEstimadoCentimos.value
+        : this.costeFinalEstimadoCentimos,
+    beneficioPrevistoCentimos: beneficioPrevistoCentimos.present
+        ? beneficioPrevistoCentimos.value
+        : this.beneficioPrevistoCentimos,
+    beneficioFinalCentimos: beneficioFinalCentimos.present
+        ? beneficioFinalCentimos.value
+        : this.beneficioFinalCentimos,
+    margenPrevistoPorcentaje: margenPrevistoPorcentaje.present
+        ? margenPrevistoPorcentaje.value
+        : this.margenPrevistoPorcentaje,
+    margenFinalPorcentaje: margenFinalPorcentaje.present
+        ? margenFinalPorcentaje.value
+        : this.margenFinalPorcentaje,
+    cobertura: cobertura ?? this.cobertura,
+    desviacionCosteCentimos: desviacionCosteCentimos.present
+        ? desviacionCosteCentimos.value
+        : this.desviacionCosteCentimos,
+    desviacionBeneficioCentimos: desviacionBeneficioCentimos.present
+        ? desviacionBeneficioCentimos.value
+        : this.desviacionBeneficioCentimos,
+    conAdvertencias: conAdvertencias ?? this.conAdvertencias,
+    resumenPrecheck: resumenPrecheck ?? this.resumenPrecheck,
+  );
+  CierresEconomicosObraData copyWithCompanion(
+    CierresEconomicosObraCompanion data,
+  ) {
+    return CierresEconomicosObraData(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      id: data.id.present ? data.id.value : this.id,
+      expedienteId: data.expedienteId.present
+          ? data.expedienteId.value
+          : this.expedienteId,
+      numero: data.numero.present ? data.numero.value : this.numero,
+      fechaCierre: data.fechaCierre.present
+          ? data.fechaCierre.value
+          : this.fechaCierre,
+      ventaPlanificadaCentimos: data.ventaPlanificadaCentimos.present
+          ? data.ventaPlanificadaCentimos.value
+          : this.ventaPlanificadaCentimos,
+      costePlanificadoCentimos: data.costePlanificadoCentimos.present
+          ? data.costePlanificadoCentimos.value
+          : this.costePlanificadoCentimos,
+      costeRealCentimos: data.costeRealCentimos.present
+          ? data.costeRealCentimos.value
+          : this.costeRealCentimos,
+      compromisoPendienteCentimos: data.compromisoPendienteCentimos.present
+          ? data.compromisoPendienteCentimos.value
+          : this.compromisoPendienteCentimos,
+      restanteEstimadoCentimos: data.restanteEstimadoCentimos.present
+          ? data.restanteEstimadoCentimos.value
+          : this.restanteEstimadoCentimos,
+      costeFinalEstimadoCentimos: data.costeFinalEstimadoCentimos.present
+          ? data.costeFinalEstimadoCentimos.value
+          : this.costeFinalEstimadoCentimos,
+      beneficioPrevistoCentimos: data.beneficioPrevistoCentimos.present
+          ? data.beneficioPrevistoCentimos.value
+          : this.beneficioPrevistoCentimos,
+      beneficioFinalCentimos: data.beneficioFinalCentimos.present
+          ? data.beneficioFinalCentimos.value
+          : this.beneficioFinalCentimos,
+      margenPrevistoPorcentaje: data.margenPrevistoPorcentaje.present
+          ? data.margenPrevistoPorcentaje.value
+          : this.margenPrevistoPorcentaje,
+      margenFinalPorcentaje: data.margenFinalPorcentaje.present
+          ? data.margenFinalPorcentaje.value
+          : this.margenFinalPorcentaje,
+      cobertura: data.cobertura.present ? data.cobertura.value : this.cobertura,
+      desviacionCosteCentimos: data.desviacionCosteCentimos.present
+          ? data.desviacionCosteCentimos.value
+          : this.desviacionCosteCentimos,
+      desviacionBeneficioCentimos: data.desviacionBeneficioCentimos.present
+          ? data.desviacionBeneficioCentimos.value
+          : this.desviacionBeneficioCentimos,
+      conAdvertencias: data.conAdvertencias.present
+          ? data.conAdvertencias.value
+          : this.conAdvertencias,
+      resumenPrecheck: data.resumenPrecheck.present
+          ? data.resumenPrecheck.value
+          : this.resumenPrecheck,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CierresEconomicosObraData(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('numero: $numero, ')
+          ..write('fechaCierre: $fechaCierre, ')
+          ..write('ventaPlanificadaCentimos: $ventaPlanificadaCentimos, ')
+          ..write('costePlanificadoCentimos: $costePlanificadoCentimos, ')
+          ..write('costeRealCentimos: $costeRealCentimos, ')
+          ..write('compromisoPendienteCentimos: $compromisoPendienteCentimos, ')
+          ..write('restanteEstimadoCentimos: $restanteEstimadoCentimos, ')
+          ..write('costeFinalEstimadoCentimos: $costeFinalEstimadoCentimos, ')
+          ..write('beneficioPrevistoCentimos: $beneficioPrevistoCentimos, ')
+          ..write('beneficioFinalCentimos: $beneficioFinalCentimos, ')
+          ..write('margenPrevistoPorcentaje: $margenPrevistoPorcentaje, ')
+          ..write('margenFinalPorcentaje: $margenFinalPorcentaje, ')
+          ..write('cobertura: $cobertura, ')
+          ..write('desviacionCosteCentimos: $desviacionCosteCentimos, ')
+          ..write('desviacionBeneficioCentimos: $desviacionBeneficioCentimos, ')
+          ..write('conAdvertencias: $conAdvertencias, ')
+          ..write('resumenPrecheck: $resumenPrecheck')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    tenantId,
+    id,
+    expedienteId,
+    numero,
+    fechaCierre,
+    ventaPlanificadaCentimos,
+    costePlanificadoCentimos,
+    costeRealCentimos,
+    compromisoPendienteCentimos,
+    restanteEstimadoCentimos,
+    costeFinalEstimadoCentimos,
+    beneficioPrevistoCentimos,
+    beneficioFinalCentimos,
+    margenPrevistoPorcentaje,
+    margenFinalPorcentaje,
+    cobertura,
+    desviacionCosteCentimos,
+    desviacionBeneficioCentimos,
+    conAdvertencias,
+    resumenPrecheck,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CierresEconomicosObraData &&
+          other.tenantId == this.tenantId &&
+          other.id == this.id &&
+          other.expedienteId == this.expedienteId &&
+          other.numero == this.numero &&
+          other.fechaCierre == this.fechaCierre &&
+          other.ventaPlanificadaCentimos == this.ventaPlanificadaCentimos &&
+          other.costePlanificadoCentimos == this.costePlanificadoCentimos &&
+          other.costeRealCentimos == this.costeRealCentimos &&
+          other.compromisoPendienteCentimos ==
+              this.compromisoPendienteCentimos &&
+          other.restanteEstimadoCentimos == this.restanteEstimadoCentimos &&
+          other.costeFinalEstimadoCentimos == this.costeFinalEstimadoCentimos &&
+          other.beneficioPrevistoCentimos == this.beneficioPrevistoCentimos &&
+          other.beneficioFinalCentimos == this.beneficioFinalCentimos &&
+          other.margenPrevistoPorcentaje == this.margenPrevistoPorcentaje &&
+          other.margenFinalPorcentaje == this.margenFinalPorcentaje &&
+          other.cobertura == this.cobertura &&
+          other.desviacionCosteCentimos == this.desviacionCosteCentimos &&
+          other.desviacionBeneficioCentimos ==
+              this.desviacionBeneficioCentimos &&
+          other.conAdvertencias == this.conAdvertencias &&
+          other.resumenPrecheck == this.resumenPrecheck);
+}
+
+class CierresEconomicosObraCompanion
+    extends UpdateCompanion<CierresEconomicosObraData> {
+  final Value<String> tenantId;
+  final Value<String> id;
+  final Value<String> expedienteId;
+  final Value<int> numero;
+  final Value<DateTime> fechaCierre;
+  final Value<int?> ventaPlanificadaCentimos;
+  final Value<int?> costePlanificadoCentimos;
+  final Value<int> costeRealCentimos;
+  final Value<int> compromisoPendienteCentimos;
+  final Value<int> restanteEstimadoCentimos;
+  final Value<int?> costeFinalEstimadoCentimos;
+  final Value<int?> beneficioPrevistoCentimos;
+  final Value<int?> beneficioFinalCentimos;
+  final Value<double?> margenPrevistoPorcentaje;
+  final Value<double?> margenFinalPorcentaje;
+  final Value<String> cobertura;
+  final Value<int?> desviacionCosteCentimos;
+  final Value<int?> desviacionBeneficioCentimos;
+  final Value<bool> conAdvertencias;
+  final Value<String> resumenPrecheck;
+  final Value<int> rowid;
+  const CierresEconomicosObraCompanion({
+    this.tenantId = const Value.absent(),
+    this.id = const Value.absent(),
+    this.expedienteId = const Value.absent(),
+    this.numero = const Value.absent(),
+    this.fechaCierre = const Value.absent(),
+    this.ventaPlanificadaCentimos = const Value.absent(),
+    this.costePlanificadoCentimos = const Value.absent(),
+    this.costeRealCentimos = const Value.absent(),
+    this.compromisoPendienteCentimos = const Value.absent(),
+    this.restanteEstimadoCentimos = const Value.absent(),
+    this.costeFinalEstimadoCentimos = const Value.absent(),
+    this.beneficioPrevistoCentimos = const Value.absent(),
+    this.beneficioFinalCentimos = const Value.absent(),
+    this.margenPrevistoPorcentaje = const Value.absent(),
+    this.margenFinalPorcentaje = const Value.absent(),
+    this.cobertura = const Value.absent(),
+    this.desviacionCosteCentimos = const Value.absent(),
+    this.desviacionBeneficioCentimos = const Value.absent(),
+    this.conAdvertencias = const Value.absent(),
+    this.resumenPrecheck = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CierresEconomicosObraCompanion.insert({
+    required String tenantId,
+    required String id,
+    required String expedienteId,
+    required int numero,
+    required DateTime fechaCierre,
+    this.ventaPlanificadaCentimos = const Value.absent(),
+    this.costePlanificadoCentimos = const Value.absent(),
+    required int costeRealCentimos,
+    required int compromisoPendienteCentimos,
+    required int restanteEstimadoCentimos,
+    this.costeFinalEstimadoCentimos = const Value.absent(),
+    this.beneficioPrevistoCentimos = const Value.absent(),
+    this.beneficioFinalCentimos = const Value.absent(),
+    this.margenPrevistoPorcentaje = const Value.absent(),
+    this.margenFinalPorcentaje = const Value.absent(),
+    required String cobertura,
+    this.desviacionCosteCentimos = const Value.absent(),
+    this.desviacionBeneficioCentimos = const Value.absent(),
+    required bool conAdvertencias,
+    required String resumenPrecheck,
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       id = Value(id),
+       expedienteId = Value(expedienteId),
+       numero = Value(numero),
+       fechaCierre = Value(fechaCierre),
+       costeRealCentimos = Value(costeRealCentimos),
+       compromisoPendienteCentimos = Value(compromisoPendienteCentimos),
+       restanteEstimadoCentimos = Value(restanteEstimadoCentimos),
+       cobertura = Value(cobertura),
+       conAdvertencias = Value(conAdvertencias),
+       resumenPrecheck = Value(resumenPrecheck);
+  static Insertable<CierresEconomicosObraData> custom({
+    Expression<String>? tenantId,
+    Expression<String>? id,
+    Expression<String>? expedienteId,
+    Expression<int>? numero,
+    Expression<DateTime>? fechaCierre,
+    Expression<int>? ventaPlanificadaCentimos,
+    Expression<int>? costePlanificadoCentimos,
+    Expression<int>? costeRealCentimos,
+    Expression<int>? compromisoPendienteCentimos,
+    Expression<int>? restanteEstimadoCentimos,
+    Expression<int>? costeFinalEstimadoCentimos,
+    Expression<int>? beneficioPrevistoCentimos,
+    Expression<int>? beneficioFinalCentimos,
+    Expression<double>? margenPrevistoPorcentaje,
+    Expression<double>? margenFinalPorcentaje,
+    Expression<String>? cobertura,
+    Expression<int>? desviacionCosteCentimos,
+    Expression<int>? desviacionBeneficioCentimos,
+    Expression<bool>? conAdvertencias,
+    Expression<String>? resumenPrecheck,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (id != null) 'id': id,
+      if (expedienteId != null) 'expediente_id': expedienteId,
+      if (numero != null) 'numero': numero,
+      if (fechaCierre != null) 'fecha_cierre': fechaCierre,
+      if (ventaPlanificadaCentimos != null)
+        'venta_planificada_centimos': ventaPlanificadaCentimos,
+      if (costePlanificadoCentimos != null)
+        'coste_planificado_centimos': costePlanificadoCentimos,
+      if (costeRealCentimos != null) 'coste_real_centimos': costeRealCentimos,
+      if (compromisoPendienteCentimos != null)
+        'compromiso_pendiente_centimos': compromisoPendienteCentimos,
+      if (restanteEstimadoCentimos != null)
+        'restante_estimado_centimos': restanteEstimadoCentimos,
+      if (costeFinalEstimadoCentimos != null)
+        'coste_final_estimado_centimos': costeFinalEstimadoCentimos,
+      if (beneficioPrevistoCentimos != null)
+        'beneficio_previsto_centimos': beneficioPrevistoCentimos,
+      if (beneficioFinalCentimos != null)
+        'beneficio_final_centimos': beneficioFinalCentimos,
+      if (margenPrevistoPorcentaje != null)
+        'margen_previsto_porcentaje': margenPrevistoPorcentaje,
+      if (margenFinalPorcentaje != null)
+        'margen_final_porcentaje': margenFinalPorcentaje,
+      if (cobertura != null) 'cobertura': cobertura,
+      if (desviacionCosteCentimos != null)
+        'desviacion_coste_centimos': desviacionCosteCentimos,
+      if (desviacionBeneficioCentimos != null)
+        'desviacion_beneficio_centimos': desviacionBeneficioCentimos,
+      if (conAdvertencias != null) 'con_advertencias': conAdvertencias,
+      if (resumenPrecheck != null) 'resumen_precheck': resumenPrecheck,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CierresEconomicosObraCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? id,
+    Value<String>? expedienteId,
+    Value<int>? numero,
+    Value<DateTime>? fechaCierre,
+    Value<int?>? ventaPlanificadaCentimos,
+    Value<int?>? costePlanificadoCentimos,
+    Value<int>? costeRealCentimos,
+    Value<int>? compromisoPendienteCentimos,
+    Value<int>? restanteEstimadoCentimos,
+    Value<int?>? costeFinalEstimadoCentimos,
+    Value<int?>? beneficioPrevistoCentimos,
+    Value<int?>? beneficioFinalCentimos,
+    Value<double?>? margenPrevistoPorcentaje,
+    Value<double?>? margenFinalPorcentaje,
+    Value<String>? cobertura,
+    Value<int?>? desviacionCosteCentimos,
+    Value<int?>? desviacionBeneficioCentimos,
+    Value<bool>? conAdvertencias,
+    Value<String>? resumenPrecheck,
+    Value<int>? rowid,
+  }) {
+    return CierresEconomicosObraCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      id: id ?? this.id,
+      expedienteId: expedienteId ?? this.expedienteId,
+      numero: numero ?? this.numero,
+      fechaCierre: fechaCierre ?? this.fechaCierre,
+      ventaPlanificadaCentimos:
+          ventaPlanificadaCentimos ?? this.ventaPlanificadaCentimos,
+      costePlanificadoCentimos:
+          costePlanificadoCentimos ?? this.costePlanificadoCentimos,
+      costeRealCentimos: costeRealCentimos ?? this.costeRealCentimos,
+      compromisoPendienteCentimos:
+          compromisoPendienteCentimos ?? this.compromisoPendienteCentimos,
+      restanteEstimadoCentimos:
+          restanteEstimadoCentimos ?? this.restanteEstimadoCentimos,
+      costeFinalEstimadoCentimos:
+          costeFinalEstimadoCentimos ?? this.costeFinalEstimadoCentimos,
+      beneficioPrevistoCentimos:
+          beneficioPrevistoCentimos ?? this.beneficioPrevistoCentimos,
+      beneficioFinalCentimos:
+          beneficioFinalCentimos ?? this.beneficioFinalCentimos,
+      margenPrevistoPorcentaje:
+          margenPrevistoPorcentaje ?? this.margenPrevistoPorcentaje,
+      margenFinalPorcentaje:
+          margenFinalPorcentaje ?? this.margenFinalPorcentaje,
+      cobertura: cobertura ?? this.cobertura,
+      desviacionCosteCentimos:
+          desviacionCosteCentimos ?? this.desviacionCosteCentimos,
+      desviacionBeneficioCentimos:
+          desviacionBeneficioCentimos ?? this.desviacionBeneficioCentimos,
+      conAdvertencias: conAdvertencias ?? this.conAdvertencias,
+      resumenPrecheck: resumenPrecheck ?? this.resumenPrecheck,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (expedienteId.present) {
+      map['expediente_id'] = Variable<String>(expedienteId.value);
+    }
+    if (numero.present) {
+      map['numero'] = Variable<int>(numero.value);
+    }
+    if (fechaCierre.present) {
+      map['fecha_cierre'] = Variable<DateTime>(fechaCierre.value);
+    }
+    if (ventaPlanificadaCentimos.present) {
+      map['venta_planificada_centimos'] = Variable<int>(
+        ventaPlanificadaCentimos.value,
+      );
+    }
+    if (costePlanificadoCentimos.present) {
+      map['coste_planificado_centimos'] = Variable<int>(
+        costePlanificadoCentimos.value,
+      );
+    }
+    if (costeRealCentimos.present) {
+      map['coste_real_centimos'] = Variable<int>(costeRealCentimos.value);
+    }
+    if (compromisoPendienteCentimos.present) {
+      map['compromiso_pendiente_centimos'] = Variable<int>(
+        compromisoPendienteCentimos.value,
+      );
+    }
+    if (restanteEstimadoCentimos.present) {
+      map['restante_estimado_centimos'] = Variable<int>(
+        restanteEstimadoCentimos.value,
+      );
+    }
+    if (costeFinalEstimadoCentimos.present) {
+      map['coste_final_estimado_centimos'] = Variable<int>(
+        costeFinalEstimadoCentimos.value,
+      );
+    }
+    if (beneficioPrevistoCentimos.present) {
+      map['beneficio_previsto_centimos'] = Variable<int>(
+        beneficioPrevistoCentimos.value,
+      );
+    }
+    if (beneficioFinalCentimos.present) {
+      map['beneficio_final_centimos'] = Variable<int>(
+        beneficioFinalCentimos.value,
+      );
+    }
+    if (margenPrevistoPorcentaje.present) {
+      map['margen_previsto_porcentaje'] = Variable<double>(
+        margenPrevistoPorcentaje.value,
+      );
+    }
+    if (margenFinalPorcentaje.present) {
+      map['margen_final_porcentaje'] = Variable<double>(
+        margenFinalPorcentaje.value,
+      );
+    }
+    if (cobertura.present) {
+      map['cobertura'] = Variable<String>(cobertura.value);
+    }
+    if (desviacionCosteCentimos.present) {
+      map['desviacion_coste_centimos'] = Variable<int>(
+        desviacionCosteCentimos.value,
+      );
+    }
+    if (desviacionBeneficioCentimos.present) {
+      map['desviacion_beneficio_centimos'] = Variable<int>(
+        desviacionBeneficioCentimos.value,
+      );
+    }
+    if (conAdvertencias.present) {
+      map['con_advertencias'] = Variable<bool>(conAdvertencias.value);
+    }
+    if (resumenPrecheck.present) {
+      map['resumen_precheck'] = Variable<String>(resumenPrecheck.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CierresEconomicosObraCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('numero: $numero, ')
+          ..write('fechaCierre: $fechaCierre, ')
+          ..write('ventaPlanificadaCentimos: $ventaPlanificadaCentimos, ')
+          ..write('costePlanificadoCentimos: $costePlanificadoCentimos, ')
+          ..write('costeRealCentimos: $costeRealCentimos, ')
+          ..write('compromisoPendienteCentimos: $compromisoPendienteCentimos, ')
+          ..write('restanteEstimadoCentimos: $restanteEstimadoCentimos, ')
+          ..write('costeFinalEstimadoCentimos: $costeFinalEstimadoCentimos, ')
+          ..write('beneficioPrevistoCentimos: $beneficioPrevistoCentimos, ')
+          ..write('beneficioFinalCentimos: $beneficioFinalCentimos, ')
+          ..write('margenPrevistoPorcentaje: $margenPrevistoPorcentaje, ')
+          ..write('margenFinalPorcentaje: $margenFinalPorcentaje, ')
+          ..write('cobertura: $cobertura, ')
+          ..write('desviacionCosteCentimos: $desviacionCosteCentimos, ')
+          ..write('desviacionBeneficioCentimos: $desviacionBeneficioCentimos, ')
+          ..write('conAdvertencias: $conAdvertencias, ')
+          ..write('resumenPrecheck: $resumenPrecheck, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ReaperturasEconomicasObraTable extends ReaperturasEconomicasObra
+    with
+        TableInfo<
+          $ReaperturasEconomicasObraTable,
+          ReaperturasEconomicasObraData
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ReaperturasEconomicasObraTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _expedienteIdMeta = const VerificationMeta(
+    'expedienteId',
+  );
+  @override
+  late final GeneratedColumn<String> expedienteId = GeneratedColumn<String>(
+    'expediente_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _cierreIdMeta = const VerificationMeta(
+    'cierreId',
+  );
+  @override
+  late final GeneratedColumn<String> cierreId = GeneratedColumn<String>(
+    'cierre_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fechaReaperturaMeta = const VerificationMeta(
+    'fechaReapertura',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaReapertura =
+      GeneratedColumn<DateTime>(
+        'fecha_reapertura',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _motivoMeta = const VerificationMeta('motivo');
+  @override
+  late final GeneratedColumn<String> motivo = GeneratedColumn<String>(
+    'motivo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    id,
+    expedienteId,
+    cierreId,
+    fechaReapertura,
+    motivo,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'reaperturas_economicas_obra';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ReaperturasEconomicasObraData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('expediente_id')) {
+      context.handle(
+        _expedienteIdMeta,
+        expedienteId.isAcceptableOrUnknown(
+          data['expediente_id']!,
+          _expedienteIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_expedienteIdMeta);
+    }
+    if (data.containsKey('cierre_id')) {
+      context.handle(
+        _cierreIdMeta,
+        cierreId.isAcceptableOrUnknown(data['cierre_id']!, _cierreIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_cierreIdMeta);
+    }
+    if (data.containsKey('fecha_reapertura')) {
+      context.handle(
+        _fechaReaperturaMeta,
+        fechaReapertura.isAcceptableOrUnknown(
+          data['fecha_reapertura']!,
+          _fechaReaperturaMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaReaperturaMeta);
+    }
+    if (data.containsKey('motivo')) {
+      context.handle(
+        _motivoMeta,
+        motivo.isAcceptableOrUnknown(data['motivo']!, _motivoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_motivoMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {tenantId, id},
+  ];
+  @override
+  ReaperturasEconomicasObraData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ReaperturasEconomicasObraData(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      expedienteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}expediente_id'],
+      )!,
+      cierreId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cierre_id'],
+      )!,
+      fechaReapertura: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_reapertura'],
+      )!,
+      motivo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}motivo'],
+      )!,
+    );
+  }
+
+  @override
+  $ReaperturasEconomicasObraTable createAlias(String alias) {
+    return $ReaperturasEconomicasObraTable(attachedDatabase, alias);
+  }
+}
+
+class ReaperturasEconomicasObraData extends DataClass
+    implements Insertable<ReaperturasEconomicasObraData> {
+  final String tenantId;
+  final String id;
+  final String expedienteId;
+  final String cierreId;
+  final DateTime fechaReapertura;
+  final String motivo;
+  const ReaperturasEconomicasObraData({
+    required this.tenantId,
+    required this.id,
+    required this.expedienteId,
+    required this.cierreId,
+    required this.fechaReapertura,
+    required this.motivo,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['id'] = Variable<String>(id);
+    map['expediente_id'] = Variable<String>(expedienteId);
+    map['cierre_id'] = Variable<String>(cierreId);
+    map['fecha_reapertura'] = Variable<DateTime>(fechaReapertura);
+    map['motivo'] = Variable<String>(motivo);
+    return map;
+  }
+
+  ReaperturasEconomicasObraCompanion toCompanion(bool nullToAbsent) {
+    return ReaperturasEconomicasObraCompanion(
+      tenantId: Value(tenantId),
+      id: Value(id),
+      expedienteId: Value(expedienteId),
+      cierreId: Value(cierreId),
+      fechaReapertura: Value(fechaReapertura),
+      motivo: Value(motivo),
+    );
+  }
+
+  factory ReaperturasEconomicasObraData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ReaperturasEconomicasObraData(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      id: serializer.fromJson<String>(json['id']),
+      expedienteId: serializer.fromJson<String>(json['expedienteId']),
+      cierreId: serializer.fromJson<String>(json['cierreId']),
+      fechaReapertura: serializer.fromJson<DateTime>(json['fechaReapertura']),
+      motivo: serializer.fromJson<String>(json['motivo']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'id': serializer.toJson<String>(id),
+      'expedienteId': serializer.toJson<String>(expedienteId),
+      'cierreId': serializer.toJson<String>(cierreId),
+      'fechaReapertura': serializer.toJson<DateTime>(fechaReapertura),
+      'motivo': serializer.toJson<String>(motivo),
+    };
+  }
+
+  ReaperturasEconomicasObraData copyWith({
+    String? tenantId,
+    String? id,
+    String? expedienteId,
+    String? cierreId,
+    DateTime? fechaReapertura,
+    String? motivo,
+  }) => ReaperturasEconomicasObraData(
+    tenantId: tenantId ?? this.tenantId,
+    id: id ?? this.id,
+    expedienteId: expedienteId ?? this.expedienteId,
+    cierreId: cierreId ?? this.cierreId,
+    fechaReapertura: fechaReapertura ?? this.fechaReapertura,
+    motivo: motivo ?? this.motivo,
+  );
+  ReaperturasEconomicasObraData copyWithCompanion(
+    ReaperturasEconomicasObraCompanion data,
+  ) {
+    return ReaperturasEconomicasObraData(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      id: data.id.present ? data.id.value : this.id,
+      expedienteId: data.expedienteId.present
+          ? data.expedienteId.value
+          : this.expedienteId,
+      cierreId: data.cierreId.present ? data.cierreId.value : this.cierreId,
+      fechaReapertura: data.fechaReapertura.present
+          ? data.fechaReapertura.value
+          : this.fechaReapertura,
+      motivo: data.motivo.present ? data.motivo.value : this.motivo,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReaperturasEconomicasObraData(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('cierreId: $cierreId, ')
+          ..write('fechaReapertura: $fechaReapertura, ')
+          ..write('motivo: $motivo')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    tenantId,
+    id,
+    expedienteId,
+    cierreId,
+    fechaReapertura,
+    motivo,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ReaperturasEconomicasObraData &&
+          other.tenantId == this.tenantId &&
+          other.id == this.id &&
+          other.expedienteId == this.expedienteId &&
+          other.cierreId == this.cierreId &&
+          other.fechaReapertura == this.fechaReapertura &&
+          other.motivo == this.motivo);
+}
+
+class ReaperturasEconomicasObraCompanion
+    extends UpdateCompanion<ReaperturasEconomicasObraData> {
+  final Value<String> tenantId;
+  final Value<String> id;
+  final Value<String> expedienteId;
+  final Value<String> cierreId;
+  final Value<DateTime> fechaReapertura;
+  final Value<String> motivo;
+  final Value<int> rowid;
+  const ReaperturasEconomicasObraCompanion({
+    this.tenantId = const Value.absent(),
+    this.id = const Value.absent(),
+    this.expedienteId = const Value.absent(),
+    this.cierreId = const Value.absent(),
+    this.fechaReapertura = const Value.absent(),
+    this.motivo = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ReaperturasEconomicasObraCompanion.insert({
+    required String tenantId,
+    required String id,
+    required String expedienteId,
+    required String cierreId,
+    required DateTime fechaReapertura,
+    required String motivo,
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       id = Value(id),
+       expedienteId = Value(expedienteId),
+       cierreId = Value(cierreId),
+       fechaReapertura = Value(fechaReapertura),
+       motivo = Value(motivo);
+  static Insertable<ReaperturasEconomicasObraData> custom({
+    Expression<String>? tenantId,
+    Expression<String>? id,
+    Expression<String>? expedienteId,
+    Expression<String>? cierreId,
+    Expression<DateTime>? fechaReapertura,
+    Expression<String>? motivo,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (id != null) 'id': id,
+      if (expedienteId != null) 'expediente_id': expedienteId,
+      if (cierreId != null) 'cierre_id': cierreId,
+      if (fechaReapertura != null) 'fecha_reapertura': fechaReapertura,
+      if (motivo != null) 'motivo': motivo,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ReaperturasEconomicasObraCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? id,
+    Value<String>? expedienteId,
+    Value<String>? cierreId,
+    Value<DateTime>? fechaReapertura,
+    Value<String>? motivo,
+    Value<int>? rowid,
+  }) {
+    return ReaperturasEconomicasObraCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      id: id ?? this.id,
+      expedienteId: expedienteId ?? this.expedienteId,
+      cierreId: cierreId ?? this.cierreId,
+      fechaReapertura: fechaReapertura ?? this.fechaReapertura,
+      motivo: motivo ?? this.motivo,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (expedienteId.present) {
+      map['expediente_id'] = Variable<String>(expedienteId.value);
+    }
+    if (cierreId.present) {
+      map['cierre_id'] = Variable<String>(cierreId.value);
+    }
+    if (fechaReapertura.present) {
+      map['fecha_reapertura'] = Variable<DateTime>(fechaReapertura.value);
+    }
+    if (motivo.present) {
+      map['motivo'] = Variable<String>(motivo.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReaperturasEconomicasObraCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('expedienteId: $expedienteId, ')
+          ..write('cierreId: $cierreId, ')
+          ..write('fechaReapertura: $fechaReapertura, ')
+          ..write('motivo: $motivo, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -23228,6 +25385,12 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $AplicacionesCompromisoCosteTable(this);
   late final $EstimacionesCosteRestanteTable estimacionesCosteRestante =
       $EstimacionesCosteRestanteTable(this);
+  late final $EstadosEconomicosObraTable estadosEconomicosObra =
+      $EstadosEconomicosObraTable(this);
+  late final $CierresEconomicosObraTable cierresEconomicosObra =
+      $CierresEconomicosObraTable(this);
+  late final $ReaperturasEconomicasObraTable reaperturasEconomicasObra =
+      $ReaperturasEconomicasObraTable(this);
   late final ExpedientesDao expedientesDao = ExpedientesDao(
     this as AppDatabase,
   );
@@ -23273,6 +25436,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final ManoObraDao manoObraDao = ManoObraDao(this as AppDatabase);
   late final PrevisionEconomicaDao previsionEconomicaDao =
       PrevisionEconomicaDao(this as AppDatabase);
+  late final CierreEconomicoDao cierreEconomicoDao = CierreEconomicoDao(
+    this as AppDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -23307,6 +25473,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     compromisosEconomicos,
     aplicacionesCompromisoCoste,
     estimacionesCosteRestante,
+    estadosEconomicosObra,
+    cierresEconomicosObra,
+    reaperturasEconomicasObra,
   ];
 }
 
@@ -23923,6 +26092,81 @@ final class $$TenantsTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _estimacionesCosteRestanteRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $EstadosEconomicosObraTable,
+    List<EstadosEconomicosObraData>
+  >
+  _estadosEconomicosObraRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.estadosEconomicosObra,
+        aliasName: 'tenants__id__estados_economicos_obra__tenant_id',
+      );
+
+  $$EstadosEconomicosObraTableProcessedTableManager
+  get estadosEconomicosObraRefs {
+    final manager = $$EstadosEconomicosObraTableTableManager(
+      $_db,
+      $_db.estadosEconomicosObra,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _estadosEconomicosObraRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $CierresEconomicosObraTable,
+    List<CierresEconomicosObraData>
+  >
+  _cierresEconomicosObraRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.cierresEconomicosObra,
+        aliasName: 'tenants__id__cierres_economicos_obra__tenant_id',
+      );
+
+  $$CierresEconomicosObraTableProcessedTableManager
+  get cierresEconomicosObraRefs {
+    final manager = $$CierresEconomicosObraTableTableManager(
+      $_db,
+      $_db.cierresEconomicosObra,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _cierresEconomicosObraRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $ReaperturasEconomicasObraTable,
+    List<ReaperturasEconomicasObraData>
+  >
+  _reaperturasEconomicasObraRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.reaperturasEconomicasObra,
+        aliasName: 'tenants__id__reaperturas_economicas_obra__tenant_id',
+      );
+
+  $$ReaperturasEconomicasObraTableProcessedTableManager
+  get reaperturasEconomicasObraRefs {
+    final manager = $$ReaperturasEconomicasObraTableTableManager(
+      $_db,
+      $_db.reaperturasEconomicasObra,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _reaperturasEconomicasObraRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -24671,6 +26915,85 @@ class $$TenantsTableFilterComposer
               }) => $$EstimacionesCosteRestanteTableFilterComposer(
                 $db: $db,
                 $table: $db.estimacionesCosteRestante,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<bool> estadosEconomicosObraRefs(
+    Expression<bool> Function($$EstadosEconomicosObraTableFilterComposer f) f,
+  ) {
+    final $$EstadosEconomicosObraTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.estadosEconomicosObra,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$EstadosEconomicosObraTableFilterComposer(
+                $db: $db,
+                $table: $db.estadosEconomicosObra,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<bool> cierresEconomicosObraRefs(
+    Expression<bool> Function($$CierresEconomicosObraTableFilterComposer f) f,
+  ) {
+    final $$CierresEconomicosObraTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.cierresEconomicosObra,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$CierresEconomicosObraTableFilterComposer(
+                $db: $db,
+                $table: $db.cierresEconomicosObra,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<bool> reaperturasEconomicasObraRefs(
+    Expression<bool> Function($$ReaperturasEconomicasObraTableFilterComposer f)
+    f,
+  ) {
+    final $$ReaperturasEconomicasObraTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.reaperturasEconomicasObra,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ReaperturasEconomicasObraTableFilterComposer(
+                $db: $db,
+                $table: $db.reaperturasEconomicasObra,
                 $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
                 joinBuilder: joinBuilder,
                 $removeJoinBuilderFromRootComposer:
@@ -25460,6 +27783,85 @@ class $$TenantsTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> estadosEconomicosObraRefs<T extends Object>(
+    Expression<T> Function($$EstadosEconomicosObraTableAnnotationComposer a) f,
+  ) {
+    final $$EstadosEconomicosObraTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.estadosEconomicosObra,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$EstadosEconomicosObraTableAnnotationComposer(
+                $db: $db,
+                $table: $db.estadosEconomicosObra,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> cierresEconomicosObraRefs<T extends Object>(
+    Expression<T> Function($$CierresEconomicosObraTableAnnotationComposer a) f,
+  ) {
+    final $$CierresEconomicosObraTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.cierresEconomicosObra,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$CierresEconomicosObraTableAnnotationComposer(
+                $db: $db,
+                $table: $db.cierresEconomicosObra,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> reaperturasEconomicasObraRefs<T extends Object>(
+    Expression<T> Function($$ReaperturasEconomicasObraTableAnnotationComposer a)
+    f,
+  ) {
+    final $$ReaperturasEconomicasObraTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.reaperturasEconomicasObra,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ReaperturasEconomicasObraTableAnnotationComposer(
+                $db: $db,
+                $table: $db.reaperturasEconomicasObra,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$TenantsTableTableManager
@@ -25504,6 +27906,9 @@ class $$TenantsTableTableManager
             bool compromisosEconomicosRefs,
             bool aplicacionesCompromisoCosteRefs,
             bool estimacionesCosteRestanteRefs,
+            bool estadosEconomicosObraRefs,
+            bool cierresEconomicosObraRefs,
+            bool reaperturasEconomicasObraRefs,
           })
         > {
   $$TenantsTableTableManager(_$AppDatabase db, $TenantsTable table)
@@ -25583,6 +27988,9 @@ class $$TenantsTableTableManager
                 compromisosEconomicosRefs = false,
                 aplicacionesCompromisoCosteRefs = false,
                 estimacionesCosteRestanteRefs = false,
+                estadosEconomicosObraRefs = false,
+                cierresEconomicosObraRefs = false,
+                reaperturasEconomicasObraRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -25621,6 +28029,10 @@ class $$TenantsTableTableManager
                       db.aplicacionesCompromisoCoste,
                     if (estimacionesCosteRestanteRefs)
                       db.estimacionesCosteRestante,
+                    if (estadosEconomicosObraRefs) db.estadosEconomicosObra,
+                    if (cierresEconomicosObraRefs) db.cierresEconomicosObra,
+                    if (reaperturasEconomicasObraRefs)
+                      db.reaperturasEconomicasObra,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -26209,6 +28621,69 @@ class $$TenantsTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (estadosEconomicosObraRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          EstadosEconomicosObraData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._estadosEconomicosObraRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).estadosEconomicosObraRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (cierresEconomicosObraRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          CierresEconomicosObraData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._cierresEconomicosObraRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).cierresEconomicosObraRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (reaperturasEconomicasObraRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          ReaperturasEconomicasObraData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._reaperturasEconomicasObraRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).reaperturasEconomicasObraRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -26258,6 +28733,9 @@ typedef $$TenantsTableProcessedTableManager =
         bool compromisosEconomicosRefs,
         bool aplicacionesCompromisoCosteRefs,
         bool estimacionesCosteRestanteRefs,
+        bool estadosEconomicosObraRefs,
+        bool cierresEconomicosObraRefs,
+        bool reaperturasEconomicasObraRefs,
       })
     >;
 typedef $$ClientesTableCreateCompanionBuilder =
@@ -40246,6 +42724,1375 @@ typedef $$EstimacionesCosteRestanteTableProcessedTableManager =
       EstimacionesCosteRestanteData,
       PrefetchHooks Function({bool tenantId})
     >;
+typedef $$EstadosEconomicosObraTableCreateCompanionBuilder =
+    EstadosEconomicosObraCompanion Function({
+      required String tenantId,
+      required String expedienteId,
+      required String estado,
+      Value<int> numeroCierres,
+      required DateTime fechaModificacion,
+      Value<int> rowid,
+    });
+typedef $$EstadosEconomicosObraTableUpdateCompanionBuilder =
+    EstadosEconomicosObraCompanion Function({
+      Value<String> tenantId,
+      Value<String> expedienteId,
+      Value<String> estado,
+      Value<int> numeroCierres,
+      Value<DateTime> fechaModificacion,
+      Value<int> rowid,
+    });
+
+final class $$EstadosEconomicosObraTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $EstadosEconomicosObraTable,
+          EstadosEconomicosObraData
+        > {
+  $$EstadosEconomicosObraTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) =>
+      db.tenants.createAlias('estados_economicos_obra__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$EstadosEconomicosObraTableFilterComposer
+    extends Composer<_$AppDatabase, $EstadosEconomicosObraTable> {
+  $$EstadosEconomicosObraTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get estado => $composableBuilder(
+    column: $table.estado,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get numeroCierres => $composableBuilder(
+    column: $table.numeroCierres,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$EstadosEconomicosObraTableOrderingComposer
+    extends Composer<_$AppDatabase, $EstadosEconomicosObraTable> {
+  $$EstadosEconomicosObraTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get estado => $composableBuilder(
+    column: $table.estado,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get numeroCierres => $composableBuilder(
+    column: $table.numeroCierres,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$EstadosEconomicosObraTableAnnotationComposer
+    extends Composer<_$AppDatabase, $EstadosEconomicosObraTable> {
+  $$EstadosEconomicosObraTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get estado =>
+      $composableBuilder(column: $table.estado, builder: (column) => column);
+
+  GeneratedColumn<int> get numeroCierres => $composableBuilder(
+    column: $table.numeroCierres,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fechaModificacion => $composableBuilder(
+    column: $table.fechaModificacion,
+    builder: (column) => column,
+  );
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$EstadosEconomicosObraTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $EstadosEconomicosObraTable,
+          EstadosEconomicosObraData,
+          $$EstadosEconomicosObraTableFilterComposer,
+          $$EstadosEconomicosObraTableOrderingComposer,
+          $$EstadosEconomicosObraTableAnnotationComposer,
+          $$EstadosEconomicosObraTableCreateCompanionBuilder,
+          $$EstadosEconomicosObraTableUpdateCompanionBuilder,
+          (EstadosEconomicosObraData, $$EstadosEconomicosObraTableReferences),
+          EstadosEconomicosObraData,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$EstadosEconomicosObraTableTableManager(
+    _$AppDatabase db,
+    $EstadosEconomicosObraTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EstadosEconomicosObraTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$EstadosEconomicosObraTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$EstadosEconomicosObraTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> expedienteId = const Value.absent(),
+                Value<String> estado = const Value.absent(),
+                Value<int> numeroCierres = const Value.absent(),
+                Value<DateTime> fechaModificacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EstadosEconomicosObraCompanion(
+                tenantId: tenantId,
+                expedienteId: expedienteId,
+                estado: estado,
+                numeroCierres: numeroCierres,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String expedienteId,
+                required String estado,
+                Value<int> numeroCierres = const Value.absent(),
+                required DateTime fechaModificacion,
+                Value<int> rowid = const Value.absent(),
+              }) => EstadosEconomicosObraCompanion.insert(
+                tenantId: tenantId,
+                expedienteId: expedienteId,
+                estado: estado,
+                numeroCierres: numeroCierres,
+                fechaModificacion: fechaModificacion,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$EstadosEconomicosObraTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable:
+                                    $$EstadosEconomicosObraTableReferences
+                                        ._tenantIdTable(db),
+                                referencedColumn:
+                                    $$EstadosEconomicosObraTableReferences
+                                        ._tenantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$EstadosEconomicosObraTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $EstadosEconomicosObraTable,
+      EstadosEconomicosObraData,
+      $$EstadosEconomicosObraTableFilterComposer,
+      $$EstadosEconomicosObraTableOrderingComposer,
+      $$EstadosEconomicosObraTableAnnotationComposer,
+      $$EstadosEconomicosObraTableCreateCompanionBuilder,
+      $$EstadosEconomicosObraTableUpdateCompanionBuilder,
+      (EstadosEconomicosObraData, $$EstadosEconomicosObraTableReferences),
+      EstadosEconomicosObraData,
+      PrefetchHooks Function({bool tenantId})
+    >;
+typedef $$CierresEconomicosObraTableCreateCompanionBuilder =
+    CierresEconomicosObraCompanion Function({
+      required String tenantId,
+      required String id,
+      required String expedienteId,
+      required int numero,
+      required DateTime fechaCierre,
+      Value<int?> ventaPlanificadaCentimos,
+      Value<int?> costePlanificadoCentimos,
+      required int costeRealCentimos,
+      required int compromisoPendienteCentimos,
+      required int restanteEstimadoCentimos,
+      Value<int?> costeFinalEstimadoCentimos,
+      Value<int?> beneficioPrevistoCentimos,
+      Value<int?> beneficioFinalCentimos,
+      Value<double?> margenPrevistoPorcentaje,
+      Value<double?> margenFinalPorcentaje,
+      required String cobertura,
+      Value<int?> desviacionCosteCentimos,
+      Value<int?> desviacionBeneficioCentimos,
+      required bool conAdvertencias,
+      required String resumenPrecheck,
+      Value<int> rowid,
+    });
+typedef $$CierresEconomicosObraTableUpdateCompanionBuilder =
+    CierresEconomicosObraCompanion Function({
+      Value<String> tenantId,
+      Value<String> id,
+      Value<String> expedienteId,
+      Value<int> numero,
+      Value<DateTime> fechaCierre,
+      Value<int?> ventaPlanificadaCentimos,
+      Value<int?> costePlanificadoCentimos,
+      Value<int> costeRealCentimos,
+      Value<int> compromisoPendienteCentimos,
+      Value<int> restanteEstimadoCentimos,
+      Value<int?> costeFinalEstimadoCentimos,
+      Value<int?> beneficioPrevistoCentimos,
+      Value<int?> beneficioFinalCentimos,
+      Value<double?> margenPrevistoPorcentaje,
+      Value<double?> margenFinalPorcentaje,
+      Value<String> cobertura,
+      Value<int?> desviacionCosteCentimos,
+      Value<int?> desviacionBeneficioCentimos,
+      Value<bool> conAdvertencias,
+      Value<String> resumenPrecheck,
+      Value<int> rowid,
+    });
+
+final class $$CierresEconomicosObraTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $CierresEconomicosObraTable,
+          CierresEconomicosObraData
+        > {
+  $$CierresEconomicosObraTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) =>
+      db.tenants.createAlias('cierres_economicos_obra__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$CierresEconomicosObraTableFilterComposer
+    extends Composer<_$AppDatabase, $CierresEconomicosObraTable> {
+  $$CierresEconomicosObraTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get numero => $composableBuilder(
+    column: $table.numero,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaCierre => $composableBuilder(
+    column: $table.fechaCierre,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get ventaPlanificadaCentimos => $composableBuilder(
+    column: $table.ventaPlanificadaCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get costePlanificadoCentimos => $composableBuilder(
+    column: $table.costePlanificadoCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get costeRealCentimos => $composableBuilder(
+    column: $table.costeRealCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get compromisoPendienteCentimos => $composableBuilder(
+    column: $table.compromisoPendienteCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get restanteEstimadoCentimos => $composableBuilder(
+    column: $table.restanteEstimadoCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get costeFinalEstimadoCentimos => $composableBuilder(
+    column: $table.costeFinalEstimadoCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get beneficioPrevistoCentimos => $composableBuilder(
+    column: $table.beneficioPrevistoCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get beneficioFinalCentimos => $composableBuilder(
+    column: $table.beneficioFinalCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get margenPrevistoPorcentaje => $composableBuilder(
+    column: $table.margenPrevistoPorcentaje,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get margenFinalPorcentaje => $composableBuilder(
+    column: $table.margenFinalPorcentaje,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cobertura => $composableBuilder(
+    column: $table.cobertura,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get desviacionCosteCentimos => $composableBuilder(
+    column: $table.desviacionCosteCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get desviacionBeneficioCentimos => $composableBuilder(
+    column: $table.desviacionBeneficioCentimos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get conAdvertencias => $composableBuilder(
+    column: $table.conAdvertencias,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get resumenPrecheck => $composableBuilder(
+    column: $table.resumenPrecheck,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CierresEconomicosObraTableOrderingComposer
+    extends Composer<_$AppDatabase, $CierresEconomicosObraTable> {
+  $$CierresEconomicosObraTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get numero => $composableBuilder(
+    column: $table.numero,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaCierre => $composableBuilder(
+    column: $table.fechaCierre,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get ventaPlanificadaCentimos => $composableBuilder(
+    column: $table.ventaPlanificadaCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get costePlanificadoCentimos => $composableBuilder(
+    column: $table.costePlanificadoCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get costeRealCentimos => $composableBuilder(
+    column: $table.costeRealCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get compromisoPendienteCentimos => $composableBuilder(
+    column: $table.compromisoPendienteCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get restanteEstimadoCentimos => $composableBuilder(
+    column: $table.restanteEstimadoCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get costeFinalEstimadoCentimos => $composableBuilder(
+    column: $table.costeFinalEstimadoCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get beneficioPrevistoCentimos => $composableBuilder(
+    column: $table.beneficioPrevistoCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get beneficioFinalCentimos => $composableBuilder(
+    column: $table.beneficioFinalCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get margenPrevistoPorcentaje => $composableBuilder(
+    column: $table.margenPrevistoPorcentaje,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get margenFinalPorcentaje => $composableBuilder(
+    column: $table.margenFinalPorcentaje,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cobertura => $composableBuilder(
+    column: $table.cobertura,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get desviacionCosteCentimos => $composableBuilder(
+    column: $table.desviacionCosteCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get desviacionBeneficioCentimos => $composableBuilder(
+    column: $table.desviacionBeneficioCentimos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get conAdvertencias => $composableBuilder(
+    column: $table.conAdvertencias,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get resumenPrecheck => $composableBuilder(
+    column: $table.resumenPrecheck,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CierresEconomicosObraTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CierresEconomicosObraTable> {
+  $$CierresEconomicosObraTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get numero =>
+      $composableBuilder(column: $table.numero, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get fechaCierre => $composableBuilder(
+    column: $table.fechaCierre,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get ventaPlanificadaCentimos => $composableBuilder(
+    column: $table.ventaPlanificadaCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get costePlanificadoCentimos => $composableBuilder(
+    column: $table.costePlanificadoCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get costeRealCentimos => $composableBuilder(
+    column: $table.costeRealCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get compromisoPendienteCentimos => $composableBuilder(
+    column: $table.compromisoPendienteCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get restanteEstimadoCentimos => $composableBuilder(
+    column: $table.restanteEstimadoCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get costeFinalEstimadoCentimos => $composableBuilder(
+    column: $table.costeFinalEstimadoCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get beneficioPrevistoCentimos => $composableBuilder(
+    column: $table.beneficioPrevistoCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get beneficioFinalCentimos => $composableBuilder(
+    column: $table.beneficioFinalCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get margenPrevistoPorcentaje => $composableBuilder(
+    column: $table.margenPrevistoPorcentaje,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get margenFinalPorcentaje => $composableBuilder(
+    column: $table.margenFinalPorcentaje,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get cobertura =>
+      $composableBuilder(column: $table.cobertura, builder: (column) => column);
+
+  GeneratedColumn<int> get desviacionCosteCentimos => $composableBuilder(
+    column: $table.desviacionCosteCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get desviacionBeneficioCentimos => $composableBuilder(
+    column: $table.desviacionBeneficioCentimos,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get conAdvertencias => $composableBuilder(
+    column: $table.conAdvertencias,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get resumenPrecheck => $composableBuilder(
+    column: $table.resumenPrecheck,
+    builder: (column) => column,
+  );
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CierresEconomicosObraTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CierresEconomicosObraTable,
+          CierresEconomicosObraData,
+          $$CierresEconomicosObraTableFilterComposer,
+          $$CierresEconomicosObraTableOrderingComposer,
+          $$CierresEconomicosObraTableAnnotationComposer,
+          $$CierresEconomicosObraTableCreateCompanionBuilder,
+          $$CierresEconomicosObraTableUpdateCompanionBuilder,
+          (CierresEconomicosObraData, $$CierresEconomicosObraTableReferences),
+          CierresEconomicosObraData,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$CierresEconomicosObraTableTableManager(
+    _$AppDatabase db,
+    $CierresEconomicosObraTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CierresEconomicosObraTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$CierresEconomicosObraTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CierresEconomicosObraTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> id = const Value.absent(),
+                Value<String> expedienteId = const Value.absent(),
+                Value<int> numero = const Value.absent(),
+                Value<DateTime> fechaCierre = const Value.absent(),
+                Value<int?> ventaPlanificadaCentimos = const Value.absent(),
+                Value<int?> costePlanificadoCentimos = const Value.absent(),
+                Value<int> costeRealCentimos = const Value.absent(),
+                Value<int> compromisoPendienteCentimos = const Value.absent(),
+                Value<int> restanteEstimadoCentimos = const Value.absent(),
+                Value<int?> costeFinalEstimadoCentimos = const Value.absent(),
+                Value<int?> beneficioPrevistoCentimos = const Value.absent(),
+                Value<int?> beneficioFinalCentimos = const Value.absent(),
+                Value<double?> margenPrevistoPorcentaje = const Value.absent(),
+                Value<double?> margenFinalPorcentaje = const Value.absent(),
+                Value<String> cobertura = const Value.absent(),
+                Value<int?> desviacionCosteCentimos = const Value.absent(),
+                Value<int?> desviacionBeneficioCentimos = const Value.absent(),
+                Value<bool> conAdvertencias = const Value.absent(),
+                Value<String> resumenPrecheck = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CierresEconomicosObraCompanion(
+                tenantId: tenantId,
+                id: id,
+                expedienteId: expedienteId,
+                numero: numero,
+                fechaCierre: fechaCierre,
+                ventaPlanificadaCentimos: ventaPlanificadaCentimos,
+                costePlanificadoCentimos: costePlanificadoCentimos,
+                costeRealCentimos: costeRealCentimos,
+                compromisoPendienteCentimos: compromisoPendienteCentimos,
+                restanteEstimadoCentimos: restanteEstimadoCentimos,
+                costeFinalEstimadoCentimos: costeFinalEstimadoCentimos,
+                beneficioPrevistoCentimos: beneficioPrevistoCentimos,
+                beneficioFinalCentimos: beneficioFinalCentimos,
+                margenPrevistoPorcentaje: margenPrevistoPorcentaje,
+                margenFinalPorcentaje: margenFinalPorcentaje,
+                cobertura: cobertura,
+                desviacionCosteCentimos: desviacionCosteCentimos,
+                desviacionBeneficioCentimos: desviacionBeneficioCentimos,
+                conAdvertencias: conAdvertencias,
+                resumenPrecheck: resumenPrecheck,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String id,
+                required String expedienteId,
+                required int numero,
+                required DateTime fechaCierre,
+                Value<int?> ventaPlanificadaCentimos = const Value.absent(),
+                Value<int?> costePlanificadoCentimos = const Value.absent(),
+                required int costeRealCentimos,
+                required int compromisoPendienteCentimos,
+                required int restanteEstimadoCentimos,
+                Value<int?> costeFinalEstimadoCentimos = const Value.absent(),
+                Value<int?> beneficioPrevistoCentimos = const Value.absent(),
+                Value<int?> beneficioFinalCentimos = const Value.absent(),
+                Value<double?> margenPrevistoPorcentaje = const Value.absent(),
+                Value<double?> margenFinalPorcentaje = const Value.absent(),
+                required String cobertura,
+                Value<int?> desviacionCosteCentimos = const Value.absent(),
+                Value<int?> desviacionBeneficioCentimos = const Value.absent(),
+                required bool conAdvertencias,
+                required String resumenPrecheck,
+                Value<int> rowid = const Value.absent(),
+              }) => CierresEconomicosObraCompanion.insert(
+                tenantId: tenantId,
+                id: id,
+                expedienteId: expedienteId,
+                numero: numero,
+                fechaCierre: fechaCierre,
+                ventaPlanificadaCentimos: ventaPlanificadaCentimos,
+                costePlanificadoCentimos: costePlanificadoCentimos,
+                costeRealCentimos: costeRealCentimos,
+                compromisoPendienteCentimos: compromisoPendienteCentimos,
+                restanteEstimadoCentimos: restanteEstimadoCentimos,
+                costeFinalEstimadoCentimos: costeFinalEstimadoCentimos,
+                beneficioPrevistoCentimos: beneficioPrevistoCentimos,
+                beneficioFinalCentimos: beneficioFinalCentimos,
+                margenPrevistoPorcentaje: margenPrevistoPorcentaje,
+                margenFinalPorcentaje: margenFinalPorcentaje,
+                cobertura: cobertura,
+                desviacionCosteCentimos: desviacionCosteCentimos,
+                desviacionBeneficioCentimos: desviacionBeneficioCentimos,
+                conAdvertencias: conAdvertencias,
+                resumenPrecheck: resumenPrecheck,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$CierresEconomicosObraTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable:
+                                    $$CierresEconomicosObraTableReferences
+                                        ._tenantIdTable(db),
+                                referencedColumn:
+                                    $$CierresEconomicosObraTableReferences
+                                        ._tenantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$CierresEconomicosObraTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CierresEconomicosObraTable,
+      CierresEconomicosObraData,
+      $$CierresEconomicosObraTableFilterComposer,
+      $$CierresEconomicosObraTableOrderingComposer,
+      $$CierresEconomicosObraTableAnnotationComposer,
+      $$CierresEconomicosObraTableCreateCompanionBuilder,
+      $$CierresEconomicosObraTableUpdateCompanionBuilder,
+      (CierresEconomicosObraData, $$CierresEconomicosObraTableReferences),
+      CierresEconomicosObraData,
+      PrefetchHooks Function({bool tenantId})
+    >;
+typedef $$ReaperturasEconomicasObraTableCreateCompanionBuilder =
+    ReaperturasEconomicasObraCompanion Function({
+      required String tenantId,
+      required String id,
+      required String expedienteId,
+      required String cierreId,
+      required DateTime fechaReapertura,
+      required String motivo,
+      Value<int> rowid,
+    });
+typedef $$ReaperturasEconomicasObraTableUpdateCompanionBuilder =
+    ReaperturasEconomicasObraCompanion Function({
+      Value<String> tenantId,
+      Value<String> id,
+      Value<String> expedienteId,
+      Value<String> cierreId,
+      Value<DateTime> fechaReapertura,
+      Value<String> motivo,
+      Value<int> rowid,
+    });
+
+final class $$ReaperturasEconomicasObraTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $ReaperturasEconomicasObraTable,
+          ReaperturasEconomicasObraData
+        > {
+  $$ReaperturasEconomicasObraTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) => db.tenants
+      .createAlias('reaperturas_economicas_obra__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ReaperturasEconomicasObraTableFilterComposer
+    extends Composer<_$AppDatabase, $ReaperturasEconomicasObraTable> {
+  $$ReaperturasEconomicasObraTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cierreId => $composableBuilder(
+    column: $table.cierreId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaReapertura => $composableBuilder(
+    column: $table.fechaReapertura,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get motivo => $composableBuilder(
+    column: $table.motivo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ReaperturasEconomicasObraTableOrderingComposer
+    extends Composer<_$AppDatabase, $ReaperturasEconomicasObraTable> {
+  $$ReaperturasEconomicasObraTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cierreId => $composableBuilder(
+    column: $table.cierreId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaReapertura => $composableBuilder(
+    column: $table.fechaReapertura,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get motivo => $composableBuilder(
+    column: $table.motivo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ReaperturasEconomicasObraTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ReaperturasEconomicasObraTable> {
+  $$ReaperturasEconomicasObraTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get expedienteId => $composableBuilder(
+    column: $table.expedienteId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get cierreId =>
+      $composableBuilder(column: $table.cierreId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get fechaReapertura => $composableBuilder(
+    column: $table.fechaReapertura,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get motivo =>
+      $composableBuilder(column: $table.motivo, builder: (column) => column);
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ReaperturasEconomicasObraTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ReaperturasEconomicasObraTable,
+          ReaperturasEconomicasObraData,
+          $$ReaperturasEconomicasObraTableFilterComposer,
+          $$ReaperturasEconomicasObraTableOrderingComposer,
+          $$ReaperturasEconomicasObraTableAnnotationComposer,
+          $$ReaperturasEconomicasObraTableCreateCompanionBuilder,
+          $$ReaperturasEconomicasObraTableUpdateCompanionBuilder,
+          (
+            ReaperturasEconomicasObraData,
+            $$ReaperturasEconomicasObraTableReferences,
+          ),
+          ReaperturasEconomicasObraData,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$ReaperturasEconomicasObraTableTableManager(
+    _$AppDatabase db,
+    $ReaperturasEconomicasObraTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ReaperturasEconomicasObraTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$ReaperturasEconomicasObraTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$ReaperturasEconomicasObraTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> id = const Value.absent(),
+                Value<String> expedienteId = const Value.absent(),
+                Value<String> cierreId = const Value.absent(),
+                Value<DateTime> fechaReapertura = const Value.absent(),
+                Value<String> motivo = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ReaperturasEconomicasObraCompanion(
+                tenantId: tenantId,
+                id: id,
+                expedienteId: expedienteId,
+                cierreId: cierreId,
+                fechaReapertura: fechaReapertura,
+                motivo: motivo,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String id,
+                required String expedienteId,
+                required String cierreId,
+                required DateTime fechaReapertura,
+                required String motivo,
+                Value<int> rowid = const Value.absent(),
+              }) => ReaperturasEconomicasObraCompanion.insert(
+                tenantId: tenantId,
+                id: id,
+                expedienteId: expedienteId,
+                cierreId: cierreId,
+                fechaReapertura: fechaReapertura,
+                motivo: motivo,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ReaperturasEconomicasObraTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable:
+                                    $$ReaperturasEconomicasObraTableReferences
+                                        ._tenantIdTable(db),
+                                referencedColumn:
+                                    $$ReaperturasEconomicasObraTableReferences
+                                        ._tenantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ReaperturasEconomicasObraTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ReaperturasEconomicasObraTable,
+      ReaperturasEconomicasObraData,
+      $$ReaperturasEconomicasObraTableFilterComposer,
+      $$ReaperturasEconomicasObraTableOrderingComposer,
+      $$ReaperturasEconomicasObraTableAnnotationComposer,
+      $$ReaperturasEconomicasObraTableCreateCompanionBuilder,
+      $$ReaperturasEconomicasObraTableUpdateCompanionBuilder,
+      (
+        ReaperturasEconomicasObraData,
+        $$ReaperturasEconomicasObraTableReferences,
+      ),
+      ReaperturasEconomicasObraData,
+      PrefetchHooks Function({bool tenantId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -40331,5 +44178,14 @@ class $AppDatabaseManager {
       $$EstimacionesCosteRestanteTableTableManager(
         _db,
         _db.estimacionesCosteRestante,
+      );
+  $$EstadosEconomicosObraTableTableManager get estadosEconomicosObra =>
+      $$EstadosEconomicosObraTableTableManager(_db, _db.estadosEconomicosObra);
+  $$CierresEconomicosObraTableTableManager get cierresEconomicosObra =>
+      $$CierresEconomicosObraTableTableManager(_db, _db.cierresEconomicosObra);
+  $$ReaperturasEconomicasObraTableTableManager get reaperturasEconomicasObra =>
+      $$ReaperturasEconomicasObraTableTableManager(
+        _db,
+        _db.reaperturasEconomicasObra,
       );
 }

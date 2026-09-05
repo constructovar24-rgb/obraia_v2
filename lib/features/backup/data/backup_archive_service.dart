@@ -51,6 +51,9 @@ class BackupArchiveService {
     'compromisos_economicos',
     'aplicaciones_compromiso_coste',
     'estimaciones_coste_restante',
+    'estados_economicos_obra',
+    'cierres_economicos_obra',
+    'reaperturas_economicas_obra',
   };
 
   final DatabaseSnapshotService _snapshotService;
@@ -413,6 +416,11 @@ class BackupArchiveService {
           .whereType<String>()
           .toSet();
       final expectedTables = _expectedTables.difference({
+        if (schemaVersion < 28) ...{
+          'estados_economicos_obra',
+          'cierres_economicos_obra',
+          'reaperturas_economicas_obra',
+        },
         if (schemaVersion < 27) ...{
           'compromisos_economicos',
           'aplicaciones_compromiso_coste',

@@ -160,5 +160,11 @@ String timelineEventTypeLabel(TimelineEventType tipo) {
       return 'Compromiso económico consumido';
     case TimelineEventType.estimacionCosteRestanteActualizada:
       return 'Estimación de coste restante actualizada';
+    case TimelineEventType.economiaCerrada:
+      return 'Economía cerrada';
+    case TimelineEventType.economiaCerradaConAdvertencias:
+      return 'Economía cerrada con advertencias';
+    case TimelineEventType.economiaReabierta:
+      return 'Economía reabierta';
   }
 }

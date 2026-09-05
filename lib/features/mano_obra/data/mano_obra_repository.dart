@@ -160,6 +160,7 @@ class ManoObraRepository {
     String? planEconomicoId,
     String? planEconomicoPartidaId,
   }) => database.transaction(() async {
+    await database.cierreEconomicoDao.exigirEconomiaAbierta(expedienteId);
     if (horasDiezMilesimas <= 0) {
       throw ArgumentError.value(horasDiezMilesimas);
     }
@@ -230,6 +231,9 @@ class ManoObraRepository {
         if (parte == null) {
           throw StateError('El parte no está disponible.');
         }
+        await database.cierreEconomicoDao.exigirEconomiaAbierta(
+          parte.expedienteId,
+        );
         if (parte.estado != EstadoParteTrabajo.pendienteValoracion.name) {
           throw StateError('El parte ya fue valorado.');
         }
@@ -290,6 +294,9 @@ class ManoObraRepository {
             parte.hechoCosteId == null) {
           throw StateError('El parte no tiene un coste vigente.');
         }
+        await database.cierreEconomicoDao.exigirEconomiaAbierta(
+          parte.expedienteId,
+        );
         if (motivo.trim().isEmpty) {
           throw ArgumentError.value(motivo);
         }

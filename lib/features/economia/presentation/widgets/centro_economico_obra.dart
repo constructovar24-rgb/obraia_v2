@@ -8,6 +8,7 @@ import '../../../mano_obra/presentation/providers/mano_obra_providers.dart';
 import '../../domain/prevision_economica.dart';
 import '../providers/prevision_economica_providers.dart';
 import 'prevision_economica_panel.dart';
+import 'cierre_economico_panel.dart';
 
 class CentroEconomicoObra extends ConsumerWidget {
   const CentroEconomicoObra({super.key, required this.expedienteId});
@@ -33,6 +34,8 @@ class CentroEconomicoObra extends ConsumerWidget {
               const Text(
                 'Plan original, ejecución real y previsión final de la obra.',
               ),
+              const SizedBox(height: AppSpacing.md),
+              CierreEconomicoPanel(expedienteId: expedienteId),
               const SizedBox(height: AppSpacing.md),
               forecast.when(
                 loading: () => const LinearProgressIndicator(),

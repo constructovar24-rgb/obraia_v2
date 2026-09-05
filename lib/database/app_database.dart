@@ -35,6 +35,9 @@ import 'tables/partes_trabajo.dart';
 import 'tables/compromisos_economicos.dart';
 import 'tables/aplicaciones_compromiso_coste.dart';
 import 'tables/estimaciones_coste_restante.dart';
+import 'tables/estados_economicos_obra.dart';
+import 'tables/cierres_economicos_obra.dart';
+import 'tables/reaperturas_economicas_obra.dart';
 import 'dao/expedientes_dao.dart';
 import 'dao/clientes_dao.dart';
 import 'dao/presupuestos_dao.dart';
@@ -55,6 +58,7 @@ import 'dao/economia_prevista_dao.dart';
 import 'dao/hechos_coste_dao.dart';
 import 'dao/mano_obra_dao.dart';
 import 'dao/prevision_economica_dao.dart';
+import 'dao/cierre_economico_dao.dart';
 import 'pre_migration_recovery_service.dart';
 
 part 'app_database.g.dart';
@@ -90,6 +94,9 @@ part 'app_database.g.dart';
     CompromisosEconomicos,
     AplicacionesCompromisoCoste,
     EstimacionesCosteRestante,
+    EstadosEconomicosObra,
+    CierresEconomicosObra,
+    ReaperturasEconomicasObra,
   ],
   daos: [
     ExpedientesDao,
@@ -112,6 +119,7 @@ part 'app_database.g.dart';
     HechosCosteDao,
     ManoObraDao,
     PrevisionEconomicaDao,
+    CierreEconomicoDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -139,7 +147,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 27;
+  int get schemaVersion => 28;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -406,6 +414,12 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(estimacionesCosteRestante);
         await _crearIndicesPrevisionEconomica();
       }
+      if (from < 28) {
+        await m.createTable(estadosEconomicosObra);
+        await m.createTable(cierresEconomicosObra);
+        await m.createTable(reaperturasEconomicasObra);
+        await _crearIndicesCierreEconomico();
+      }
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
@@ -671,6 +685,21 @@ class AppDatabase extends _$AppDatabase {
     await _crearIndicesHechosCoste();
     await _crearIndicesManoObra();
     await _crearIndicesPrevisionEconomica();
+    await _crearIndicesCierreEconomico();
+  }
+
+  Future<void> _crearIndicesCierreEconomico() async {
+    if (!await _existeTabla('estados_economicos_obra')) return;
+    for (final statement in <String>[
+      'CREATE UNIQUE INDEX IF NOT EXISTS cierre_estado_tenant_obra_unica ON estados_economicos_obra(tenant_id,expediente_id)',
+      'CREATE UNIQUE INDEX IF NOT EXISTS cierres_tenant_id_unica ON cierres_economicos_obra(tenant_id,id)',
+      'CREATE UNIQUE INDEX IF NOT EXISTS cierres_tenant_obra_numero_unica ON cierres_economicos_obra(tenant_id,expediente_id,numero)',
+      'CREATE INDEX IF NOT EXISTS cierres_tenant_obra_fecha_idx ON cierres_economicos_obra(tenant_id,expediente_id,fecha_cierre)',
+      'CREATE UNIQUE INDEX IF NOT EXISTS reaperturas_tenant_id_unica ON reaperturas_economicas_obra(tenant_id,id)',
+      'CREATE INDEX IF NOT EXISTS reaperturas_tenant_obra_fecha_idx ON reaperturas_economicas_obra(tenant_id,expediente_id,fecha_reapertura)',
+    ]) {
+      await customStatement(statement);
+    }
   }
 
   Future<void> _crearIndicesPrevisionEconomica() async {
@@ -961,7 +990,7 @@ LazyDatabase _openConnection() {
     final file = await AppDatabase.defaultDatabaseFile();
     await const PreMigrationRecoveryService().protectBeforeUpgrade(
       file,
-      supportedVersions: {22, 23, 24, 25, 26},
+      supportedVersions: {22, 23, 24, 25, 26, 27},
     );
     return NativeDatabase(file);
   });

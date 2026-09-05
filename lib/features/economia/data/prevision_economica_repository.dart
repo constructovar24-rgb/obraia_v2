@@ -25,6 +25,7 @@ class PrevisionEconomicaRepository {
     String? planEconomicoPartidaId,
     String? origenId,
   }) => database.transaction(() async {
+    await database.cierreEconomicoDao.exigirEconomiaAbierta(expedienteId);
     _validarImporte(importeCentimos);
     _validarTexto(descripcion, 'descripcion');
     if (categoriaEconomicaId != null &&
@@ -72,6 +73,9 @@ class PrevisionEconomicaRepository {
     _validarImporte(nuevoImporteCentimos);
     _validarTexto(motivo, 'motivo');
     final actual = await _requerirCompromiso(id);
+    await database.cierreEconomicoDao.exigirEconomiaAbierta(
+      actual.expedienteId,
+    );
     if (actual.estado == EstadoCompromiso.cancelado.name) {
       throw StateError('Un compromiso cancelado no puede ajustarse.');
     }
@@ -104,6 +108,9 @@ class PrevisionEconomicaRepository {
       database.transaction(() async {
         _validarTexto(motivo, 'motivo');
         final actual = await _requerirCompromiso(id);
+        await database.cierreEconomicoDao.exigirEconomiaAbierta(
+          actual.expedienteId,
+        );
         if (await _consumidoEfectivo(actual) != 0) {
           throw StateError('No se puede cancelar un compromiso consumido.');
         }
@@ -131,6 +138,9 @@ class PrevisionEconomicaRepository {
   }) => database.transaction(() async {
     if (importeCentimos <= 0) throw ArgumentError.value(importeCentimos);
     final compromiso = await _requerirCompromiso(compromisoId);
+    await database.cierreEconomicoDao.exigirEconomiaAbierta(
+      compromiso.expedienteId,
+    );
     if (compromiso.estado == EstadoCompromiso.cancelado.name) {
       throw StateError('El compromiso está cancelado.');
     }
@@ -192,6 +202,7 @@ class PrevisionEconomicaRepository {
     String? planEconomicoId,
     String? planEconomicoPartidaId,
   }) => database.transaction(() async {
+    await database.cierreEconomicoDao.exigirEconomiaAbierta(expedienteId);
     _validarImporte(importeAdicionalCentimos);
     _validarTexto(justificacion, 'justificacion');
     final serie = serieId ?? _uuid.v4();

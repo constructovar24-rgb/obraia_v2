@@ -26,6 +26,9 @@ class HechoCosteRepository {
     if (compra == null || compra.eliminado) {
       throw StateError('La compra no está disponible.');
     }
+    await database.cierreEconomicoDao.exigirEconomiaAbierta(
+      compra.expedienteId,
+    );
     if (compra.clasificacionEconomica == 'incurrido') {
       return;
     }
@@ -118,6 +121,9 @@ class HechoCosteRepository {
         if (compra == null || compra.clasificacionEconomica != 'incurrido') {
           throw StateError('La compra no tiene un coste vigente.');
         }
+        await database.cierreEconomicoDao.exigirEconomiaAbierta(
+          compra.expedienteId,
+        );
         final original = await database.hechosCosteDao.obtenerAltaCompra(
           compraId,
         );
@@ -206,6 +212,7 @@ class HechoCosteRepository {
     String? categoriaEconomicaId,
     int ivaNoRecuperableCentimos = 0,
   }) => database.transaction(() async {
+    await database.cierreEconomicoDao.exigirEconomiaAbierta(expedienteId);
     if (descripcion.trim().isEmpty) {
       throw ArgumentError.value(descripcion, 'descripcion');
     }

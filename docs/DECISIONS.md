@@ -117,3 +117,9 @@ Este documento está preparado para registrar decisiones arquitectónicas, tecno
 - La cobertura es completa solo cuando todas las categorías relevantes del plan tienen una estimación vigente explícita, incluso cero; con información incompleta es parcial y sin ella no disponible. Un dato desconocido nunca se publica como cero.
 - Las obras sin plan admiten hechos, compromisos y estimaciones, pero no inventan venta, beneficio ni margen. No se crean datos históricos al migrar.
 - 3-E incluye una superficie mínima de validación dentro del Expediente. El centro económico completo, cierre y alertas quedan para incrementos posteriores; 3-F no está iniciado.
+# Cierre económico de obra
+
+- El estado económico es independiente del estado operativo del Expediente y una obra legacy se considera abierta mientras no exista un cierre explícito.
+- Cada cierre conserva un snapshot inmutable de la proyección 3-E y su precheck. Las advertencias requieren confirmación, pero pérdida o baja rentabilidad no bloquean; una incoherencia estructural sí.
+- Reabrir exige motivo, conserva el cierre anterior y habilita de nuevo las mutaciones económicas. Un cierre posterior crea un snapshot nuevo.
+- No se implementan permisos, autores ficticios ni notificaciones externas.

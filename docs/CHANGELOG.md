@@ -222,3 +222,10 @@
 - Añadidos bloques de previsto inicial, situación actual y previsión final, con desviaciones, cobertura y alertas visuales.
 - Añadido desglose real por categorías y «Sin asignar», integración del resumen de mano de obra y navegación a áreas relacionadas.
 - El Resumen del Expediente muestra una lectura económica compacta; no cambia el esquema 27 ni las superficies comerciales.
+# Fase 3-G
+
+- Añadidos estado económico abierto/cerrado, snapshots de cierre y reaperturas auditables por tenant.
+- Añadidos precheck, confirmación de advertencias y alertas deterministas de coste, margen, pérdida, cobertura, clasificación, mano de obra y compromisos.
+- Protegidas centralmente las mutaciones económicas sobre obras cerradas.
+- Integrados cierre, reapertura e historial en el centro económico.
+- Añadida migración segura v27→v28 sin fabricar cierres legacy.
