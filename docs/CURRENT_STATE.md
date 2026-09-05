@@ -1,5 +1,7 @@
 # Estado actual de OBRA IA
 
+Fase 4-C está implementada técnicamente sobre `schemaVersion` 31. Las fotografías y demás evidencias reutilizan exclusivamente `Documentos`; una incidencia profesional tenant-scoped puede vincular cero o varios documentos existentes y jornadas del Diario sin copiar archivos. Las incidencias mantienen fecha, título, descripción, prioridad, estado, resolución y timestamps; sus transiciones relevantes son atómicas con Timeline y no alteran economía ni estado operativo. La migración v30→v31 no inventa incidencias. Análisis, 305 pruebas y compilación Windows debug superan. El almacenamiento físico sigue dependiendo de rutas locales heredadas y el backup SQLite no incorpora todavía los archivos originales: esta deuda debe resolverse antes de una distribución o sincronización fiable. Fase 4-D no se ha iniciado.
+
 Fase 4-B está implementada técnicamente sobre `schemaVersion` 30. Cada Expediente incorpora un Diario de obra tenant-scoped con fecha de trabajo, texto libre de trabajos, observaciones, meteorología manual, incidencia textual y actuación opcional. Las entradas se ordenan cronológicamente, admiten edición controlada y anulación lógica; creación y anulación son atómicas con Timeline. Las horas mostradas proceden exclusivamente de los partes de 3-D y el Diario no genera costes ni cambia estados. La migración v29→v30 no inventa entradas legacy. Análisis, 299 pruebas y compilación Windows debug superan. Fase 4-C no se ha iniciado.
 
 Fase 4-A está implementada técnicamente sobre `schemaVersion` 29. El Expediente conserva su ciclo administrativo y añade un estado operativo independiente, calendario previsto/real opcional, próximo paso explícito y actuaciones ordenadas con estados pendiente/completada/cancelada. Toda persistencia nueva está aislada por tenant; los cambios operativos relevantes son atómicos con Timeline y no alteran el cierre económico. La migración v28→v29 deja el legacy en programación y no inventa fechas ni actuaciones.
@@ -13,7 +15,7 @@ Fotografía verificada el **3 de septiembre de 2026**. Debe actualizarse cuando 
 ## Base tecnológica
 
 - Flutter/Dart con Riverpod.
-- Drift sobre SQLite con `schemaVersion` 30. Las conexiones activan claves foráneas y todas las tablas empresariales, incluido el Diario de obra, exigen `tenantId`.
+- Drift sobre SQLite con `schemaVersion` 31. Las conexiones activan claves foráneas y todas las tablas empresariales y relaciones de incidencias exigen `tenantId`.
 - `pdf` y `printing` para generación documental.
 - Windows como plataforma prioritaria.
 - 171 archivos Dart en la auditoría de esta línea base.
@@ -95,4 +97,4 @@ Expediente/Obra es el octavo incremento y actúa como centro operativo. Su resum
 
 ## Próximo hito
 
-Tras revisar y publicar 4-B, el siguiente incremento previsto es **Fase 4-C — incidencias y gestión avanzada de fotos**, en una entrega independiente. No se ha iniciado todavía.
+Tras revisar y publicar 4-C, el siguiente incremento previsto es **Fase 4-D — materiales y albaranes**, en una entrega independiente. No se ha iniciado todavía.

@@ -19,6 +19,10 @@ DocumentoTipo _tipoFromDb(String tipo) {
       return DocumentoTipo.factura;
     case 'presupuesto':
       return DocumentoTipo.presupuesto;
+    case 'documentacionTecnica':
+      return DocumentoTipo.documentacionTecnica;
+    case 'certificado':
+      return DocumentoTipo.certificado;
     default:
       return DocumentoTipo.otro;
   }

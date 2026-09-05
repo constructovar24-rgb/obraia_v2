@@ -30,7 +30,7 @@ void main() {
     final migrated = AppDatabase.forTesting(NativeDatabase(file));
     addTearDown(migrated.close);
     await migrated.ensureReady();
-    expect(migrated.schemaVersion, 30);
+    expect(migrated.schemaVersion, 31);
     expect(
       (await migrated.expedientesDao.obtenerExpediente('obra'))!.nombre,
       'Legacy',

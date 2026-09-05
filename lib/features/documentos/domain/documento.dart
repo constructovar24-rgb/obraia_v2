@@ -5,6 +5,8 @@ enum DocumentoTipo {
   fotografia,
   factura,
   presupuesto,
+  documentacionTecnica,
+  certificado,
   otro,
 }
 

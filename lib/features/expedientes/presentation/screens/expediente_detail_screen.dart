@@ -31,6 +31,7 @@ import '../../../mano_obra/presentation/widgets/mano_obra_tab.dart';
 import '../../../economia/presentation/widgets/centro_economico_obra.dart';
 import '../../../planificacion/presentation/widgets/planificacion_obra_tab.dart';
 import '../../../diario_obra/presentation/widgets/diario_obra_tab.dart';
+import '../../../incidencias/presentation/widgets/incidencias_obra_tab.dart';
 import '../../../timeline/presentation/timeline_page.dart';
 import '../widgets/expediente_resumen_tab.dart';
 import 'cliente_tab.dart';
@@ -185,6 +186,7 @@ class ExpedienteDetailScreen extends ConsumerWidget {
                     CentroEconomicoObra(expedienteId: id),
                     PlanificacionObraTab(expedienteId: id),
                     DiarioObraTab(expedienteId: id),
+                    IncidenciasObraTab(expedienteId: id),
                     // const Center(child: Text('En desarrollo')), // Contenido de Notas (oculto temporalmente).
                   ],
                 ),
@@ -525,6 +527,10 @@ class _DocumentosTab extends ConsumerWidget {
         return 'Factura';
       case DocumentoTipo.presupuesto:
         return 'Presupuesto';
+      case DocumentoTipo.documentacionTecnica:
+        return 'Documentación técnica';
+      case DocumentoTipo.certificado:
+        return 'Certificado';
       case DocumentoTipo.otro:
         return 'Otro';
     }

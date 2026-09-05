@@ -2,6 +2,17 @@
 
 ## No publicado
 
+### Evidencias e incidencias de obra — Fase 4-C
+
+- Reutilizado Documentos como única fuente para fotografías, planos, PDFs y otras evidencias, sin copiar ni crear un almacenamiento paralelo.
+- Añadidas incidencias tenant-scoped con fecha de detección, título, descripción, prioridad, estado, resolución y timestamps.
+- Incorporados estados abierta, en seguimiento, resuelta y cancelada, con reapertura explícita y validación de fecha de resolución.
+- Añadidas relaciones muchos-a-muchos hacia documentos/fotos existentes y entradas del Diario, validadas dentro del mismo Expediente.
+- Registradas creación y transiciones relevantes de estado en Timeline mediante transacciones atómicas.
+- Integrada una pestaña profesional de Incidencias y un resumen compacto con abiertas y alerta de prioridad alta.
+- Elevado Drift a schema v31 con índices tenant-first, migración sin datos inventados y compatibilidad de backup de base de datos.
+- Documentada la deuda existente: las rutas locales no son identidad de la incidencia, pero los archivos originales aún no forman parte del backup SQLite.
+
 ### Diario de obra — Fase 4-B
 
 - Añadido un Diario tenant-scoped dentro de cada Expediente con fecha, trabajos libres, observaciones, meteorología manual, incidencia textual y actuación opcional.

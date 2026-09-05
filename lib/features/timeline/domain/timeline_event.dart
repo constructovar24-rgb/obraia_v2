@@ -46,6 +46,11 @@ enum TimelineEventType {
   actuacionObraCancelada,
   entradaDiarioObraCreada,
   entradaDiarioObraAnulada,
+  incidenciaObraCreada,
+  incidenciaObraEstadoCambiado,
+  incidenciaObraResuelta,
+  incidenciaObraReabierta,
+  incidenciaObraCancelada,
 }
 
 enum TimelineCreditoTipo {

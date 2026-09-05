@@ -40,6 +40,9 @@ import 'tables/cierres_economicos_obra.dart';
 import 'tables/reaperturas_economicas_obra.dart';
 import 'tables/actuaciones_obra.dart';
 import 'tables/diario_obra.dart';
+import 'tables/incidencias_obra.dart';
+import 'tables/incidencia_documentos.dart';
+import 'tables/incidencia_diario.dart';
 import 'dao/expedientes_dao.dart';
 import 'dao/clientes_dao.dart';
 import 'dao/presupuestos_dao.dart';
@@ -63,6 +66,7 @@ import 'dao/prevision_economica_dao.dart';
 import 'dao/cierre_economico_dao.dart';
 import 'dao/planificacion_obra_dao.dart';
 import 'dao/diario_obra_dao.dart';
+import 'dao/incidencias_obra_dao.dart';
 import 'pre_migration_recovery_service.dart';
 
 part 'app_database.g.dart';
@@ -103,6 +107,9 @@ part 'app_database.g.dart';
     ReaperturasEconomicasObra,
     ActuacionesObra,
     DiarioObra,
+    IncidenciasObra,
+    IncidenciaDocumentos,
+    IncidenciaDiario,
   ],
   daos: [
     ExpedientesDao,
@@ -128,6 +135,7 @@ part 'app_database.g.dart';
     CierreEconomicoDao,
     PlanificacionObraDao,
     DiarioObraDao,
+    IncidenciasObraDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -155,7 +163,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 30;
+  int get schemaVersion => 31;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -453,6 +461,12 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(diarioObra);
         await _crearIndicesDiarioObra();
       }
+      if (from < 31 && await _existeTabla('expedientes')) {
+        await m.createTable(incidenciasObra);
+        await m.createTable(incidenciaDocumentos);
+        await m.createTable(incidenciaDiario);
+        await _crearIndicesIncidencias();
+      }
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
@@ -721,6 +735,19 @@ class AppDatabase extends _$AppDatabase {
     await _crearIndicesCierreEconomico();
     await _crearIndicesPlanificacion();
     await _crearIndicesDiarioObra();
+    await _crearIndicesIncidencias();
+  }
+
+  Future<void> _crearIndicesIncidencias() async {
+    if (!await _existeTabla('incidencias_obra')) return;
+    for (final statement in <String>[
+      'CREATE UNIQUE INDEX IF NOT EXISTS incidencias_tenant_id_unica ON incidencias_obra(tenant_id,id)',
+      'CREATE INDEX IF NOT EXISTS incidencias_tenant_obra_estado_fecha_idx ON incidencias_obra(tenant_id,expediente_id,estado,fecha_deteccion)',
+      'CREATE INDEX IF NOT EXISTS incidencia_documentos_tenant_documento_idx ON incidencia_documentos(tenant_id,documento_id)',
+      'CREATE INDEX IF NOT EXISTS incidencia_diario_tenant_entrada_idx ON incidencia_diario(tenant_id,entrada_diario_id)',
+    ]) {
+      await customStatement(statement);
+    }
   }
 
   Future<void> _crearIndicesDiarioObra() async {
@@ -1047,7 +1074,7 @@ LazyDatabase _openConnection() {
     final file = await AppDatabase.defaultDatabaseFile();
     await const PreMigrationRecoveryService().protectBeforeUpgrade(
       file,
-      supportedVersions: {22, 23, 24, 25, 26, 27, 28, 29},
+      supportedVersions: {22, 23, 24, 25, 26, 27, 28, 29, 30},
     );
     return NativeDatabase(file);
   });

@@ -56,6 +56,9 @@ class BackupArchiveService {
     'reaperturas_economicas_obra',
     'actuaciones_obra',
     'diario_obra',
+    'incidencias_obra',
+    'incidencia_documentos',
+    'incidencia_diario',
   };
 
   final DatabaseSnapshotService _snapshotService;
@@ -418,6 +421,11 @@ class BackupArchiveService {
           .whereType<String>()
           .toSet();
       final expectedTables = _expectedTables.difference({
+        if (schemaVersion < 31) ...{
+          'incidencias_obra',
+          'incidencia_documentos',
+          'incidencia_diario',
+        },
         if (schemaVersion < 30) 'diario_obra',
         if (schemaVersion < 29) 'actuaciones_obra',
         if (schemaVersion < 28) ...{

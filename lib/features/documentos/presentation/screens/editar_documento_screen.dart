@@ -9,10 +9,7 @@ import '../../domain/documento.dart';
 import '../providers/documento_providers.dart';
 
 class EditarDocumentoScreen extends ConsumerStatefulWidget {
-  const EditarDocumentoScreen({
-    super.key,
-    required this.documento,
-  });
+  const EditarDocumentoScreen({super.key, required this.documento});
 
   final Documento documento;
 
@@ -81,6 +78,10 @@ class _EditarDocumentoScreenState extends ConsumerState<EditarDocumentoScreen> {
         return 'Factura';
       case DocumentoTipo.presupuesto:
         return 'Presupuesto';
+      case DocumentoTipo.documentacionTecnica:
+        return 'Documentación técnica';
+      case DocumentoTipo.certificado:
+        return 'Certificado';
       case DocumentoTipo.otro:
         return 'Otro';
     }
@@ -156,9 +157,7 @@ class _EditarDocumentoScreenState extends ConsumerState<EditarDocumentoScreen> {
     return AppShortcutScope(
       onBack: () => Navigator.maybePop(context),
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Editar documento'),
-        ),
+        appBar: AppBar(title: const Text('Editar documento')),
         body: Padding(
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Form(
@@ -174,9 +173,7 @@ class _EditarDocumentoScreenState extends ConsumerState<EditarDocumentoScreen> {
                     children: [
                       TextFormField(
                         controller: _tituloController,
-                        decoration: const InputDecoration(
-                          labelText: 'Título',
-                        ),
+                        decoration: const InputDecoration(labelText: 'Título'),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
                             return 'El título es obligatorio';
@@ -187,9 +184,7 @@ class _EditarDocumentoScreenState extends ConsumerState<EditarDocumentoScreen> {
                       const SizedBox(height: AppSpacing.lg),
                       DropdownButtonFormField<DocumentoTipo>(
                         initialValue: _tipoSeleccionado,
-                        decoration: const InputDecoration(
-                          labelText: 'Tipo',
-                        ),
+                        decoration: const InputDecoration(labelText: 'Tipo'),
                         items: DocumentoTipo.values
                             .map(
                               (tipo) => DropdownMenuItem<DocumentoTipo>(
@@ -270,7 +265,8 @@ class _EditarDocumentoScreenState extends ConsumerState<EditarDocumentoScreen> {
                           suffixIcon: Icon(Icons.calendar_today),
                         ),
                         onTap: _seleccionarFecha,
-                        validator: (value) => (value == null || value.trim().isEmpty)
+                        validator: (value) =>
+                            (value == null || value.trim().isEmpty)
                             ? 'La fecha es obligatoria'
                             : null,
                       ),

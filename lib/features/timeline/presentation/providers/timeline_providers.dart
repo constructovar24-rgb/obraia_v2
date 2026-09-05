@@ -182,5 +182,15 @@ String timelineEventTypeLabel(TimelineEventType tipo) {
       return 'Entrada de diario creada';
     case TimelineEventType.entradaDiarioObraAnulada:
       return 'Entrada de diario anulada';
+    case TimelineEventType.incidenciaObraCreada:
+      return 'Incidencia creada';
+    case TimelineEventType.incidenciaObraEstadoCambiado:
+      return 'Estado de incidencia actualizado';
+    case TimelineEventType.incidenciaObraResuelta:
+      return 'Incidencia resuelta';
+    case TimelineEventType.incidenciaObraReabierta:
+      return 'Incidencia reabierta';
+    case TimelineEventType.incidenciaObraCancelada:
+      return 'Incidencia cancelada';
   }
 }

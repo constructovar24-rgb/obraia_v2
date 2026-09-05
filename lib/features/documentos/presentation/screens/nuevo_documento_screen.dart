@@ -9,10 +9,7 @@ import '../../domain/documento.dart';
 import '../providers/documento_providers.dart';
 
 class NuevoDocumentoScreen extends ConsumerStatefulWidget {
-  const NuevoDocumentoScreen({
-    super.key,
-    required this.expedienteId,
-  });
+  const NuevoDocumentoScreen({super.key, required this.expedienteId});
 
   final String expedienteId;
 
@@ -74,6 +71,10 @@ class _NuevoDocumentoScreenState extends ConsumerState<NuevoDocumentoScreen> {
         return 'Factura';
       case DocumentoTipo.presupuesto:
         return 'Presupuesto';
+      case DocumentoTipo.documentacionTecnica:
+        return 'Documentación técnica';
+      case DocumentoTipo.certificado:
+        return 'Certificado';
       case DocumentoTipo.otro:
         return 'Otro';
     }
@@ -149,9 +150,7 @@ class _NuevoDocumentoScreenState extends ConsumerState<NuevoDocumentoScreen> {
     return AppShortcutScope(
       onBack: () => Navigator.maybePop(context),
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Nuevo documento'),
-        ),
+        appBar: AppBar(title: const Text('Nuevo documento')),
         body: Padding(
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Form(
@@ -167,9 +166,7 @@ class _NuevoDocumentoScreenState extends ConsumerState<NuevoDocumentoScreen> {
                     children: [
                       TextFormField(
                         controller: _tituloController,
-                        decoration: const InputDecoration(
-                          labelText: 'Título',
-                        ),
+                        decoration: const InputDecoration(labelText: 'Título'),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
                             return 'El título es obligatorio';
@@ -180,9 +177,7 @@ class _NuevoDocumentoScreenState extends ConsumerState<NuevoDocumentoScreen> {
                       const SizedBox(height: AppSpacing.lg),
                       DropdownButtonFormField<DocumentoTipo>(
                         initialValue: _tipoSeleccionado,
-                        decoration: const InputDecoration(
-                          labelText: 'Tipo',
-                        ),
+                        decoration: const InputDecoration(labelText: 'Tipo'),
                         items: DocumentoTipo.values
                             .map(
                               (tipo) => DropdownMenuItem<DocumentoTipo>(
@@ -263,7 +258,8 @@ class _NuevoDocumentoScreenState extends ConsumerState<NuevoDocumentoScreen> {
                           suffixIcon: Icon(Icons.calendar_today),
                         ),
                         onTap: _seleccionarFecha,
-                        validator: (value) => (value == null || value.trim().isEmpty)
+                        validator: (value) =>
+                            (value == null || value.trim().isEmpty)
                             ? 'La fecha es obligatoria'
                             : null,
                       ),

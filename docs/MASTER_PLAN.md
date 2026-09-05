@@ -1,5 +1,7 @@
 # Plan maestro de OBRA IA
 
+**Fase 4-C implementada técnicamente:** evidencias y fotografías continúan en el modelo Documentos y se relacionan sin duplicación con incidencias profesionales tenant-scoped. Las incidencias admiten ciclo abierta, seguimiento, resuelta, reapertura y cancelación; prioridades baja/media/alta; resolución trazable; vínculos con Diario y Timeline atómico. Esquema v31; Fase 4-D no iniciada. Persiste como deuda la protección de archivos originales, hoy referenciados por rutas locales fuera del backup SQLite.
+
 **Fase 4-B implementada técnicamente:** Diario de obra por Expediente con entradas cronológicas, trazables y tenant-scoped; texto libre de trabajos, observaciones, meteorología manual, incidencia textual y actuación opcional. Resume horas desde los partes de 3-D sin duplicarlas y no altera economía ni estado operativo. La migración v29 a v30 no fabrica entradas legacy. Fase 4-C no iniciada.
 
 **Fase 4-A implementada técnicamente:** planificación básica por obra con estado operativo separado del ciclo administrativo y económico, cuatro fechas opcionales, próximo paso explícito y actuaciones sencillas ordenadas. La nueva persistencia es tenant-scoped, migra de v28 a v29 sin fabricar datos legacy y registra en Timeline los cambios relevantes.
@@ -96,7 +98,7 @@ La auditoría completa, prioridades P0–P3 y roadmap revisado están en `MULTI_
 
 **Objetivo:** consolidar planificación, personal, subcontratas, materiales y documentos vinculados a la ejecución.
 
-**Estado:** 4-A y 4-B implementadas técnicamente. El Expediente dispone de planificación básica y Diario de obra sobre schema v30. El Diario conserva historia mediante anulación lógica, registra solo eventos relevantes en Timeline y reutiliza las horas de Mano de obra como fuente de verdad. Incidencias profesionales y fotos avanzadas permanecen reservadas para 4-C.
+**Estado:** 4-A, 4-B y 4-C implementadas técnicamente. El Expediente dispone de planificación, Diario e incidencias sobre schema v31. Documentos y fotografías conservan una única fuente documental y pueden vincularse a incidencias junto con jornadas del Diario, sin efectos económicos u operativos automáticos. Materiales y albaranes permanecen reservados para 4-D.
 
 **Criterio de salida:** cada capacidad priorizada dispone de flujo completo, reglas, trazabilidad, validaciones y pruebas; los documentos son recuperables y están correctamente vinculados.
 
