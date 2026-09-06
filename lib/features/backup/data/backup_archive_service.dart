@@ -36,6 +36,7 @@ class BackupArchiveService {
     'facturas',
     'lineas_presupuesto',
     'presupuestos',
+    'presupuesto_documentos_aceptados',
     'proveedores',
     'timeline_events',
     'movimientos_credito_cliente',
@@ -430,6 +431,7 @@ class BackupArchiveService {
           .whereType<String>()
           .toSet();
       final expectedTables = _expectedTables.difference({
+        if (schemaVersion < 33) 'presupuesto_documentos_aceptados',
         if (schemaVersion < 32) ...{
           'albaranes_proveedor',
           'lineas_albaran_proveedor',

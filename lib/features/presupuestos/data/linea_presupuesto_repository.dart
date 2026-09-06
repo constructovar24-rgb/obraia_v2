@@ -3,6 +3,7 @@ import 'package:obraia_v2/features/presupuestos/domain/linea_presupuesto.dart'
     as linea_domain;
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
+import '../../facturas/domain/redondeo_monetario.dart';
 
 class LineaPresupuestoRepository {
   final AppDatabase database;
@@ -26,10 +27,12 @@ class LineaPresupuestoRepository {
       presupuestoId,
     );
 
-    final importeTotal = lineas.fold<double>(
-      0,
-      (sum, linea) => sum + linea.importe,
-    );
+    final importeTotal =
+        lineas.fold<int>(
+          0,
+          (sum, linea) => sum + monedaACentimos(linea.importe),
+        ) /
+        100;
 
     await database.presupuestosDao.actualizarImporteTotal(
       presupuestoId,
@@ -70,6 +73,10 @@ class LineaPresupuestoRepository {
     required double precioUnitario,
   }) async {
     await database.transaction(() async {
+      final actual = await database.lineasPresupuestoDao.obtenerPorId(id);
+      if (actual == null || actual.presupuestoId != presupuestoId) {
+        throw StateError('La partida no pertenece al presupuesto.');
+      }
       await _validarLineaSinHistorialFacturado(id);
       await database.lineasPresupuestoDao.actualizarLinea(
         id,
@@ -87,6 +94,10 @@ class LineaPresupuestoRepository {
 
   Future<void> eliminarLinea(String id, String presupuestoId) async {
     await database.transaction(() async {
+      final actual = await database.lineasPresupuestoDao.obtenerPorId(id);
+      if (actual == null || actual.presupuestoId != presupuestoId) {
+        throw StateError("La partida no pertenece al presupuesto.");
+      }
       await _validarLineaSinHistorialFacturado(id);
       await database.lineasPresupuestoDao.eliminarLinea(id);
       await _recalcularImporteTotal(presupuestoId);

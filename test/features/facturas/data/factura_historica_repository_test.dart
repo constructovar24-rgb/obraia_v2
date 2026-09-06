@@ -279,14 +279,17 @@ Future<void> _prepararDatos(AppDatabase database) async {
       estado: const Value('Aceptado'),
     ),
   );
-  await database.lineasPresupuestoDao.insertarLinea(
-    LineasPresupuestoCompanion.insert(
-      id: 'linea',
-      presupuestoId: 'presupuesto',
-      concepto: 'Medición',
-      cantidad: 1,
-      unidad: const Value('m²'),
-      precioUnitario: 12.35,
-    ),
-  );
+  // Fixture histórico anterior a la protección documental.
+  await database
+      .into(database.lineasPresupuesto)
+      .insert(
+        LineasPresupuestoCompanion.insert(
+          id: 'linea',
+          presupuestoId: 'presupuesto',
+          concepto: 'Medición',
+          cantidad: 1,
+          unidad: const Value('m²'),
+          precioUnitario: 12.35,
+        ),
+      );
 }

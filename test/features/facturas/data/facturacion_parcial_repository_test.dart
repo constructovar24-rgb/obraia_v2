@@ -50,24 +50,30 @@ void main() {
         estado: const Value('Aceptado'),
       ),
     );
-    await database.lineasPresupuestoDao.insertarLinea(
-      LineasPresupuestoCompanion.insert(
-        id: 'l1',
-        presupuestoId: 'presupuesto',
-        concepto: 'Partida A',
-        cantidad: 3,
-        precioUnitario: 10,
-      ),
-    );
-    await database.lineasPresupuestoDao.insertarLinea(
-      LineasPresupuestoCompanion.insert(
-        id: 'l2',
-        presupuestoId: 'presupuesto',
-        concepto: 'Partida B',
-        cantidad: 7,
-        precioUnitario: 10,
-      ),
-    );
+    // Fixture histórico anterior a la protección documental.
+    await database
+        .into(database.lineasPresupuesto)
+        .insert(
+          LineasPresupuestoCompanion.insert(
+            id: 'l1',
+            presupuestoId: 'presupuesto',
+            concepto: 'Partida A',
+            cantidad: 3,
+            precioUnitario: 10,
+          ),
+        );
+    // Fixture histórico anterior a la protección documental.
+    await database
+        .into(database.lineasPresupuesto)
+        .insert(
+          LineasPresupuestoCompanion.insert(
+            id: 'l2',
+            presupuestoId: 'presupuesto',
+            concepto: 'Partida B',
+            cantidad: 7,
+            precioUnitario: 10,
+          ),
+        );
   });
 
   tearDown(() => database.close());

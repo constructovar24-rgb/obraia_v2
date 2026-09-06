@@ -41,15 +41,18 @@ void main() {
         estado: const Value('Aceptado'),
       ),
     );
-    await database.lineasPresupuestoDao.insertarLinea(
-      LineasPresupuestoCompanion.insert(
-        id: 'linea-$sufijo',
-        presupuestoId: id,
-        concepto: 'Trabajo',
-        cantidad: 1,
-        precioUnitario: 100,
-      ),
-    );
+    // Fixture histórico anterior a la protección documental.
+    await database
+        .into(database.lineasPresupuesto)
+        .insert(
+          LineasPresupuestoCompanion.insert(
+            id: 'linea-$sufijo',
+            presupuestoId: id,
+            concepto: 'Trabajo',
+            cantidad: 1,
+            precioUnitario: 100,
+          ),
+        );
     return id;
   }
 

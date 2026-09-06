@@ -1,3 +1,4 @@
+import '../../../facturas/domain/redondeo_monetario.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -228,11 +229,17 @@ class PresupuestoDetailScreen extends ConsumerWidget {
                     );
                   }
 
-                  final subtotal = lineas.fold<double>(
-                    0,
-                    (sum, linea) => sum + linea.importe,
-                  );
-                  final iva = subtotal * presupuesto.ivaPorcentaje / 100;
+                  final subtotal =
+                      lineas.fold<int>(
+                        0,
+                        (sum, linea) => sum + monedaACentimos(linea.importe),
+                      ) /
+                      100;
+                  final iva =
+                      monedaACentimos(
+                        subtotal * presupuesto.ivaPorcentaje / 100,
+                      ) /
+                      100;
                   final total = subtotal + iva;
 
                   return AppSection(
@@ -252,64 +259,77 @@ class PresupuestoDetailScreen extends ConsumerWidget {
                             final linea = lineas[index];
 
                             return AppCard(
-                              child: ListTile(
-                                contentPadding: const EdgeInsets.all(
-                                  AppSpacing.md,
-                                ),
-                                leading: CircleAvatar(
-                                  backgroundColor: colorScheme.primaryContainer,
-                                  foregroundColor:
-                                      colorScheme.onPrimaryContainer,
-                                  child: const Icon(Icons.format_list_bulleted),
-                                ),
-                                title: Text(
-                                  linea.concepto,
-                                  style: textTheme.titleMedium,
-                                ),
-                                subtitle: Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: AppSpacing.xs,
+                              child: Material(
+                                type: MaterialType.transparency,
+                                child: ListTile(
+                                  contentPadding: const EdgeInsets.all(
+                                    AppSpacing.md,
                                   ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '${_formatearCantidad(linea.cantidad)} ${linea.unidad} × ${_formatearMoneda(linea.precioUnitario)} = ${_formatearMoneda(linea.importe)}',
-                                        style: textTheme.bodyMedium,
-                                      ),
-                                      _CostePrevistoLineaResumen(
-                                        lineaId: linea.id,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                trailing:
-                                    puedeAceptarPresupuesto(presupuesto.estado)
-                                    ? IconButton(
-                                        tooltip: 'Coste interno previsto',
-                                        onPressed: () =>
-                                            _editarCostePrevistoLinea(
-                                              context,
-                                              ref,
-                                              linea.id,
-                                            ),
-                                        icon: const Icon(
-                                          Icons.price_change_outlined,
-                                        ),
-                                      )
-                                    : null,
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) =>
-                                          EditarLineaPresupuestoScreen(
-                                            linea: linea,
-                                          ),
+                                  leading: CircleAvatar(
+                                    backgroundColor:
+                                        colorScheme.primaryContainer,
+                                    foregroundColor:
+                                        colorScheme.onPrimaryContainer,
+                                    child: const Icon(
+                                      Icons.format_list_bulleted,
                                     ),
-                                  );
-                                },
+                                  ),
+                                  title: Text(
+                                    linea.concepto,
+                                    style: textTheme.titleMedium,
+                                  ),
+                                  subtitle: Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: AppSpacing.xs,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '${_formatearCantidad(linea.cantidad)} ${linea.unidad} × ${_formatearMoneda(linea.precioUnitario)} = ${_formatearMoneda(linea.importe)}',
+                                          style: textTheme.bodyMedium,
+                                        ),
+                                        _CostePrevistoLineaResumen(
+                                          lineaId: linea.id,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  trailing:
+                                      puedeAceptarPresupuesto(
+                                        presupuesto.estado,
+                                      )
+                                      ? IconButton(
+                                          tooltip: 'Coste interno previsto',
+                                          onPressed: () =>
+                                              _editarCostePrevistoLinea(
+                                                context,
+                                                ref,
+                                                linea.id,
+                                              ),
+                                          icon: const Icon(
+                                            Icons.price_change_outlined,
+                                          ),
+                                        )
+                                      : null,
+                                  onTap:
+                                      estadoPresupuestoEsAceptado(
+                                        presupuesto.estado,
+                                      )
+                                      ? null
+                                      : () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) =>
+                                                  EditarLineaPresupuestoScreen(
+                                                    linea: linea,
+                                                  ),
+                                            ),
+                                          );
+                                        },
+                                ),
                               ),
                             );
                           },
@@ -347,6 +367,27 @@ class PresupuestoDetailScreen extends ConsumerWidget {
             },
           ),
           const SizedBox(height: AppSpacing.md),
+          if (estadoPresupuestoEsAceptado(presupuesto.estado))
+            Consumer(
+              builder: (context, ref, _) {
+                final documento = ref.watch(
+                  presupuestoSnapshotProvider(presupuesto.id),
+                );
+                return documento.when(
+                  loading: () =>
+                      const Text('Comprobando documento aceptado...'),
+                  error: (_, _) =>
+                      const Text('No se pudo comprobar el documento aceptado.'),
+                  data: (snapshot) => AppCard(
+                    child: Text(
+                      snapshot == null
+                          ? 'Aceptado histórico sin PDF congelado. Está protegido frente a edición; no se inventa un documento original.'
+                          : 'Presupuesto aceptado protegido. El PDF definitivo conserva los datos aceptados. Para cambios, crea una nueva propuesta.',
+                    ),
+                  ),
+                );
+              },
+            ),
           _ResumenPlanEconomico(presupuestoId: presupuesto.id),
           const SizedBox(height: AppSpacing.md),
           _ResumenFacturacionParcial(presupuesto: presupuesto),
@@ -354,17 +395,31 @@ class PresupuestoDetailScreen extends ConsumerWidget {
           if (puedeAceptarPresupuesto(presupuesto.estado)) ...[
             Consumer(
               builder: (context, ref, _) => AppPrimaryButton(
+                enabled: !ref.watch(
+                  aceptandoPresupuestoProvider(presupuesto.id),
+                ),
                 onPressed: () async {
                   final confirmado = await ConfirmDialog.show(
                     context,
                     title: 'Aceptar presupuesto',
                     message:
-                        'Se congelará el plan económico interno. Los costes no informados quedarán marcados como incompletos. ¿Quieres aceptar el presupuesto?',
+                        'Se conservarán el PDF definitivo y el plan económico. El presupuesto dejará de ser editable. Los costes no informados quedarán incompletos. ¿Quieres aceptar?',
                     confirmLabel: 'Aceptar presupuesto',
                     cancelLabel: 'Cancelar',
                   );
                   if (!confirmado || !context.mounted) return;
 
+                  if (ref.read(aceptandoPresupuestoProvider(presupuesto.id))) {
+                    return;
+                  }
+                  ref
+                          .read(
+                            aceptandoPresupuestoProvider(
+                              presupuesto.id,
+                            ).notifier,
+                          )
+                          .state =
+                      true;
                   try {
                     await ref
                         .read(presupuestoRepositoryProvider)
@@ -378,6 +433,22 @@ class PresupuestoDetailScreen extends ConsumerWidget {
                     ScaffoldMessenger.of(
                       context,
                     ).showSnackBar(SnackBar(content: Text(error.mensaje)));
+                  } catch (_) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'No se pudo aceptar. No se han guardado cambios parciales.',
+                          ),
+                        ),
+                      );
+                    }
+                  } finally {
+                    if (context.mounted) {
+                      ref.invalidate(
+                        aceptandoPresupuestoProvider(presupuesto.id),
+                      );
+                    }
                   }
                 },
                 label: 'Aceptar presupuesto',
@@ -455,73 +526,78 @@ class PresupuestoDetailScreen extends ConsumerWidget {
                 ),
               );
             },
-            label: 'Ver PDF',
+            label: estadoPresupuestoEsAceptado(presupuesto.estado)
+                ? 'Ver PDF definitivo'
+                : 'Ver PDF borrador',
             icon: Icons.picture_as_pdf_outlined,
           ),
           const SizedBox(height: AppSpacing.sm),
-          AppPrimaryButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => NuevoLineaPresupuestoScreen(
-                    presupuestoId: presupuesto.id,
+          if (!estadoPresupuestoEsAceptado(presupuesto.estado))
+            AppPrimaryButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => NuevoLineaPresupuestoScreen(
+                      presupuestoId: presupuesto.id,
+                    ),
                   ),
-                ),
-              );
-            },
-            label: 'Añadir línea',
-            icon: Icons.add,
-          ),
+                );
+              },
+              label: 'Añadir línea',
+              icon: Icons.add,
+            ),
           const SizedBox(height: AppSpacing.sm),
-          Consumer(
-            builder: (context, ref, _) {
-              return SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: () async {
-                    final confirmarEliminacion = await ConfirmDialog.show(
-                      context,
-                      title: 'Eliminar presupuesto',
-                      message: '¿Seguro que quieres eliminar este presupuesto?',
-                      confirmLabel: 'Eliminar',
-                      cancelLabel: 'Cancelar',
-                    );
-
-                    if (!confirmarEliminacion || !context.mounted) {
-                      return;
-                    }
-
-                    final presupuestoRepository = ref.read(
-                      presupuestoRepositoryProvider,
-                    );
-
-                    final eliminado = await presupuestoRepository
-                        .eliminarSiNoFacturado(presupuesto.id);
-
-                    if (!context.mounted) {
-                      return;
-                    }
-
-                    if (!eliminado) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'No se puede eliminar: el presupuesto ya ha sido facturado.',
-                          ),
-                        ),
+          if (!estadoPresupuestoEsAceptado(presupuesto.estado))
+            Consumer(
+              builder: (context, ref, _) {
+                return SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () async {
+                      final confirmarEliminacion = await ConfirmDialog.show(
+                        context,
+                        title: 'Eliminar presupuesto',
+                        message:
+                            '¿Seguro que quieres eliminar este presupuesto?',
+                        confirmLabel: 'Eliminar',
+                        cancelLabel: 'Cancelar',
                       );
-                      return;
-                    }
 
-                    Navigator.of(context).pop();
-                  },
-                  icon: const Icon(Icons.delete_outline),
-                  label: const Text('Eliminar presupuesto'),
-                ),
-              );
-            },
-          ),
+                      if (!confirmarEliminacion || !context.mounted) {
+                        return;
+                      }
+
+                      final presupuestoRepository = ref.read(
+                        presupuestoRepositoryProvider,
+                      );
+
+                      final eliminado = await presupuestoRepository
+                          .eliminarSiNoFacturado(presupuesto.id);
+
+                      if (!context.mounted) {
+                        return;
+                      }
+
+                      if (!eliminado) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'No se puede eliminar: el presupuesto ya ha sido facturado.',
+                            ),
+                          ),
+                        );
+                        return;
+                      }
+
+                      Navigator.of(context).pop();
+                    },
+                    icon: const Icon(Icons.delete_outline),
+                    label: const Text('Eliminar presupuesto'),
+                  ),
+                );
+              },
+            ),
         ],
       ),
     );

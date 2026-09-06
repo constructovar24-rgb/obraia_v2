@@ -11,7 +11,19 @@ class PreMigrationRecoveryService {
 
   Future<File?> protectBeforeUpgrade(
     File source, {
-    Set<int> supportedVersions = const {22, 23, 24, 25, 26, 27, 28, 29, 30, 31},
+    Set<int> supportedVersions = const {
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+    },
   }) async {
     if (!await source.exists()) return null;
 

@@ -123,3 +123,10 @@ Este documento está preparado para registrar decisiones arquitectónicas, tecno
 - Cada cierre conserva un snapshot inmutable de la proyección 3-E y su precheck. Las advertencias requieren confirmación, pero pérdida o baja rentabilidad no bloquean; una incoherencia estructural sí.
 - Reabrir exige motivo, conserva el cierre anterior y habilita de nuevo las mutaciones económicas. Un cierre posterior crea un snapshot nuevo.
 - No se implementan permisos, autores ficticios ni notificaciones externas.
+
+
+## Presupuesto aceptado — PROD-2 (2026-09-06)
+
+- El original comercial aceptado se preserva como snapshot JSON versionado y PDF binario con SHA-256 dentro de SQLite, junto a la aceptación transaccional y el plan económico. Las consultas devuelven los bytes guardados, sin reconstruir desde maestros mutables.
+- Schema 33 no inventa documentos legacy. Índice y triggers impiden nuevas referencias duplicadas sin exigir una limpieza o renumeración de las antiguas. La aceptación rechaza referencias ambiguas.
+- Modificar una propuesta aceptada requiere otra propuesta; duplicación guiada y versionado formal quedan para una entrega posterior. [Detalle](PROD2_PRESUPUESTO_SEGURO.md).

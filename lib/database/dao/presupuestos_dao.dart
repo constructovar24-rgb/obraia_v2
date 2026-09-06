@@ -4,6 +4,7 @@ import '../../features/presupuestos/domain/presupuesto.dart'
     as presupuesto_domain;
 import '../app_database.dart';
 import '../tables/presupuestos.dart';
+import '../../features/presupuestos/domain/estado_presupuesto.dart';
 
 part 'presupuestos_dao.g.dart';
 
@@ -11,6 +12,28 @@ part 'presupuestos_dao.g.dart';
 class PresupuestosDao extends DatabaseAccessor<AppDatabase>
     with _$PresupuestosDaoMixin {
   PresupuestosDao(super.db);
+
+  Future<List<String>> obtenerCodigosPorTenant() async =>
+      (await (select(presupuestos)..where(
+                (t) => t.tenantId.equals(attachedDatabase.activeTenantId),
+              ))
+              .get())
+          .map((p) => p.codigo)
+          .toList();
+
+  Future<void> exigirEditable(String id) async {
+    final presupuesto = await obtenerPorId(id);
+    if (presupuesto == null || presupuesto.eliminado) {
+      throw const EstadoPresupuestoException(
+        'El presupuesto no está disponible.',
+      );
+    }
+    if (estadoPresupuestoEsAceptado(presupuesto.estado)) {
+      throw const EstadoPresupuestoException(
+        'El presupuesto aceptado está protegido. Crea una nueva propuesta para cambiarlo.',
+      );
+    }
+  }
 
   Future<List<String>> obtenerCodigosPorExpediente(String expedienteId) async {
     final table = attachedDatabase.presupuestos;
@@ -108,7 +131,13 @@ class PresupuestosDao extends DatabaseAccessor<AppDatabase>
         .getSingleOrNull();
   }
 
-  Future<int> aceptarBorrador(String id) {
+  Future<int> aceptarBorrador(String id) async {
+    if (await attachedDatabase.presupuestoDocumentosAceptadosDao.obtener(id) ==
+        null) {
+      throw const EstadoPresupuestoException(
+        'La aceptación requiere el documento congelado.',
+      );
+    }
     return (update(presupuestos)..where(
           (t) =>
               t.tenantId.equals(attachedDatabase.activeTenantId) &
@@ -127,6 +156,7 @@ class PresupuestosDao extends DatabaseAccessor<AppDatabase>
     String presupuestoId,
     double importeTotal,
   ) async {
+    await exigirEditable(presupuestoId);
     await (update(presupuestos)..where(
           (t) =>
               t.tenantId.equals(attachedDatabase.activeTenantId) &
@@ -144,6 +174,12 @@ class PresupuestosDao extends DatabaseAccessor<AppDatabase>
     String presupuestoId,
     double ivaPorcentaje,
   ) async {
+    await exigirEditable(presupuestoId);
+    if (!ivaPorcentaje.isFinite || ivaPorcentaje < 0 || ivaPorcentaje > 100) {
+      throw const EstadoPresupuestoException(
+        'El IVA debe estar entre 0 y 100.',
+      );
+    }
     await (update(presupuestos)..where(
           (t) =>
               t.tenantId.equals(attachedDatabase.activeTenantId) &
@@ -158,6 +194,7 @@ class PresupuestosDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<void> eliminarLogicamente(String id) async {
+    await exigirEditable(id);
     await (update(presupuestos)..where(
           (t) =>
               t.tenantId.equals(attachedDatabase.activeTenantId) &

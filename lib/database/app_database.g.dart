@@ -3209,6 +3209,454 @@ class PresupuestosCompanion extends UpdateCompanion<Presupuesto> {
   }
 }
 
+class $PresupuestoDocumentosAceptadosTable
+    extends PresupuestoDocumentosAceptados
+    with
+        TableInfo<
+          $PresupuestoDocumentosAceptadosTable,
+          PresupuestoDocumentosAceptado
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PresupuestoDocumentosAceptadosTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _presupuestoIdMeta = const VerificationMeta(
+    'presupuestoId',
+  );
+  @override
+  late final GeneratedColumn<String> presupuestoId = GeneratedColumn<String>(
+    'presupuesto_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _snapshotJsonMeta = const VerificationMeta(
+    'snapshotJson',
+  );
+  @override
+  late final GeneratedColumn<String> snapshotJson = GeneratedColumn<String>(
+    'snapshot_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _pdfMeta = const VerificationMeta('pdf');
+  @override
+  late final GeneratedColumn<Uint8List> pdf = GeneratedColumn<Uint8List>(
+    'pdf',
+    aliasedName,
+    false,
+    type: DriftSqlType.blob,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sha256Meta = const VerificationMeta('sha256');
+  @override
+  late final GeneratedColumn<String> sha256 = GeneratedColumn<String>(
+    'sha256',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fechaCongelacionMeta = const VerificationMeta(
+    'fechaCongelacion',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fechaCongelacion =
+      GeneratedColumn<DateTime>(
+        'fecha_congelacion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    presupuestoId,
+    snapshotJson,
+    pdf,
+    sha256,
+    fechaCongelacion,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'presupuesto_documentos_aceptados';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PresupuestoDocumentosAceptado> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('presupuesto_id')) {
+      context.handle(
+        _presupuestoIdMeta,
+        presupuestoId.isAcceptableOrUnknown(
+          data['presupuesto_id']!,
+          _presupuestoIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_presupuestoIdMeta);
+    }
+    if (data.containsKey('snapshot_json')) {
+      context.handle(
+        _snapshotJsonMeta,
+        snapshotJson.isAcceptableOrUnknown(
+          data['snapshot_json']!,
+          _snapshotJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_snapshotJsonMeta);
+    }
+    if (data.containsKey('pdf')) {
+      context.handle(
+        _pdfMeta,
+        pdf.isAcceptableOrUnknown(data['pdf']!, _pdfMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_pdfMeta);
+    }
+    if (data.containsKey('sha256')) {
+      context.handle(
+        _sha256Meta,
+        sha256.isAcceptableOrUnknown(data['sha256']!, _sha256Meta),
+      );
+    } else if (isInserting) {
+      context.missing(_sha256Meta);
+    }
+    if (data.containsKey('fecha_congelacion')) {
+      context.handle(
+        _fechaCongelacionMeta,
+        fechaCongelacion.isAcceptableOrUnknown(
+          data['fecha_congelacion']!,
+          _fechaCongelacionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaCongelacionMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {tenantId, presupuestoId};
+  @override
+  PresupuestoDocumentosAceptado map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PresupuestoDocumentosAceptado(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      presupuestoId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}presupuesto_id'],
+      )!,
+      snapshotJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}snapshot_json'],
+      )!,
+      pdf: attachedDatabase.typeMapping.read(
+        DriftSqlType.blob,
+        data['${effectivePrefix}pdf'],
+      )!,
+      sha256: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sha256'],
+      )!,
+      fechaCongelacion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_congelacion'],
+      )!,
+    );
+  }
+
+  @override
+  $PresupuestoDocumentosAceptadosTable createAlias(String alias) {
+    return $PresupuestoDocumentosAceptadosTable(attachedDatabase, alias);
+  }
+}
+
+class PresupuestoDocumentosAceptado extends DataClass
+    implements Insertable<PresupuestoDocumentosAceptado> {
+  final String tenantId;
+  final String presupuestoId;
+  final String snapshotJson;
+  final Uint8List pdf;
+  final String sha256;
+  final DateTime fechaCongelacion;
+  const PresupuestoDocumentosAceptado({
+    required this.tenantId,
+    required this.presupuestoId,
+    required this.snapshotJson,
+    required this.pdf,
+    required this.sha256,
+    required this.fechaCongelacion,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['presupuesto_id'] = Variable<String>(presupuestoId);
+    map['snapshot_json'] = Variable<String>(snapshotJson);
+    map['pdf'] = Variable<Uint8List>(pdf);
+    map['sha256'] = Variable<String>(sha256);
+    map['fecha_congelacion'] = Variable<DateTime>(fechaCongelacion);
+    return map;
+  }
+
+  PresupuestoDocumentosAceptadosCompanion toCompanion(bool nullToAbsent) {
+    return PresupuestoDocumentosAceptadosCompanion(
+      tenantId: Value(tenantId),
+      presupuestoId: Value(presupuestoId),
+      snapshotJson: Value(snapshotJson),
+      pdf: Value(pdf),
+      sha256: Value(sha256),
+      fechaCongelacion: Value(fechaCongelacion),
+    );
+  }
+
+  factory PresupuestoDocumentosAceptado.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PresupuestoDocumentosAceptado(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      presupuestoId: serializer.fromJson<String>(json['presupuestoId']),
+      snapshotJson: serializer.fromJson<String>(json['snapshotJson']),
+      pdf: serializer.fromJson<Uint8List>(json['pdf']),
+      sha256: serializer.fromJson<String>(json['sha256']),
+      fechaCongelacion: serializer.fromJson<DateTime>(json['fechaCongelacion']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'presupuestoId': serializer.toJson<String>(presupuestoId),
+      'snapshotJson': serializer.toJson<String>(snapshotJson),
+      'pdf': serializer.toJson<Uint8List>(pdf),
+      'sha256': serializer.toJson<String>(sha256),
+      'fechaCongelacion': serializer.toJson<DateTime>(fechaCongelacion),
+    };
+  }
+
+  PresupuestoDocumentosAceptado copyWith({
+    String? tenantId,
+    String? presupuestoId,
+    String? snapshotJson,
+    Uint8List? pdf,
+    String? sha256,
+    DateTime? fechaCongelacion,
+  }) => PresupuestoDocumentosAceptado(
+    tenantId: tenantId ?? this.tenantId,
+    presupuestoId: presupuestoId ?? this.presupuestoId,
+    snapshotJson: snapshotJson ?? this.snapshotJson,
+    pdf: pdf ?? this.pdf,
+    sha256: sha256 ?? this.sha256,
+    fechaCongelacion: fechaCongelacion ?? this.fechaCongelacion,
+  );
+  PresupuestoDocumentosAceptado copyWithCompanion(
+    PresupuestoDocumentosAceptadosCompanion data,
+  ) {
+    return PresupuestoDocumentosAceptado(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      presupuestoId: data.presupuestoId.present
+          ? data.presupuestoId.value
+          : this.presupuestoId,
+      snapshotJson: data.snapshotJson.present
+          ? data.snapshotJson.value
+          : this.snapshotJson,
+      pdf: data.pdf.present ? data.pdf.value : this.pdf,
+      sha256: data.sha256.present ? data.sha256.value : this.sha256,
+      fechaCongelacion: data.fechaCongelacion.present
+          ? data.fechaCongelacion.value
+          : this.fechaCongelacion,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PresupuestoDocumentosAceptado(')
+          ..write('tenantId: $tenantId, ')
+          ..write('presupuestoId: $presupuestoId, ')
+          ..write('snapshotJson: $snapshotJson, ')
+          ..write('pdf: $pdf, ')
+          ..write('sha256: $sha256, ')
+          ..write('fechaCongelacion: $fechaCongelacion')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    tenantId,
+    presupuestoId,
+    snapshotJson,
+    $driftBlobEquality.hash(pdf),
+    sha256,
+    fechaCongelacion,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PresupuestoDocumentosAceptado &&
+          other.tenantId == this.tenantId &&
+          other.presupuestoId == this.presupuestoId &&
+          other.snapshotJson == this.snapshotJson &&
+          $driftBlobEquality.equals(other.pdf, this.pdf) &&
+          other.sha256 == this.sha256 &&
+          other.fechaCongelacion == this.fechaCongelacion);
+}
+
+class PresupuestoDocumentosAceptadosCompanion
+    extends UpdateCompanion<PresupuestoDocumentosAceptado> {
+  final Value<String> tenantId;
+  final Value<String> presupuestoId;
+  final Value<String> snapshotJson;
+  final Value<Uint8List> pdf;
+  final Value<String> sha256;
+  final Value<DateTime> fechaCongelacion;
+  final Value<int> rowid;
+  const PresupuestoDocumentosAceptadosCompanion({
+    this.tenantId = const Value.absent(),
+    this.presupuestoId = const Value.absent(),
+    this.snapshotJson = const Value.absent(),
+    this.pdf = const Value.absent(),
+    this.sha256 = const Value.absent(),
+    this.fechaCongelacion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PresupuestoDocumentosAceptadosCompanion.insert({
+    required String tenantId,
+    required String presupuestoId,
+    required String snapshotJson,
+    required Uint8List pdf,
+    required String sha256,
+    required DateTime fechaCongelacion,
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       presupuestoId = Value(presupuestoId),
+       snapshotJson = Value(snapshotJson),
+       pdf = Value(pdf),
+       sha256 = Value(sha256),
+       fechaCongelacion = Value(fechaCongelacion);
+  static Insertable<PresupuestoDocumentosAceptado> custom({
+    Expression<String>? tenantId,
+    Expression<String>? presupuestoId,
+    Expression<String>? snapshotJson,
+    Expression<Uint8List>? pdf,
+    Expression<String>? sha256,
+    Expression<DateTime>? fechaCongelacion,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (presupuestoId != null) 'presupuesto_id': presupuestoId,
+      if (snapshotJson != null) 'snapshot_json': snapshotJson,
+      if (pdf != null) 'pdf': pdf,
+      if (sha256 != null) 'sha256': sha256,
+      if (fechaCongelacion != null) 'fecha_congelacion': fechaCongelacion,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PresupuestoDocumentosAceptadosCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? presupuestoId,
+    Value<String>? snapshotJson,
+    Value<Uint8List>? pdf,
+    Value<String>? sha256,
+    Value<DateTime>? fechaCongelacion,
+    Value<int>? rowid,
+  }) {
+    return PresupuestoDocumentosAceptadosCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      presupuestoId: presupuestoId ?? this.presupuestoId,
+      snapshotJson: snapshotJson ?? this.snapshotJson,
+      pdf: pdf ?? this.pdf,
+      sha256: sha256 ?? this.sha256,
+      fechaCongelacion: fechaCongelacion ?? this.fechaCongelacion,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (presupuestoId.present) {
+      map['presupuesto_id'] = Variable<String>(presupuestoId.value);
+    }
+    if (snapshotJson.present) {
+      map['snapshot_json'] = Variable<String>(snapshotJson.value);
+    }
+    if (pdf.present) {
+      map['pdf'] = Variable<Uint8List>(pdf.value);
+    }
+    if (sha256.present) {
+      map['sha256'] = Variable<String>(sha256.value);
+    }
+    if (fechaCongelacion.present) {
+      map['fecha_congelacion'] = Variable<DateTime>(fechaCongelacion.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PresupuestoDocumentosAceptadosCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('presupuestoId: $presupuestoId, ')
+          ..write('snapshotJson: $snapshotJson, ')
+          ..write('pdf: $pdf, ')
+          ..write('sha256: $sha256, ')
+          ..write('fechaCongelacion: $fechaCongelacion, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $LineasPresupuestoTable extends LineasPresupuesto
     with TableInfo<$LineasPresupuestoTable, LineasPresupuestoData> {
   @override
@@ -32663,6 +33111,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ClientesTable clientes = $ClientesTable(this);
   late final $ExpedientesTable expedientes = $ExpedientesTable(this);
   late final $PresupuestosTable presupuestos = $PresupuestosTable(this);
+  late final $PresupuestoDocumentosAceptadosTable
+  presupuestoDocumentosAceptados = $PresupuestoDocumentosAceptadosTable(this);
   late final $LineasPresupuestoTable lineasPresupuesto =
       $LineasPresupuestoTable(this);
   late final $EmpresaConfiguracionTable empresaConfiguracion =
@@ -32745,6 +33195,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final PresupuestosDao presupuestosDao = PresupuestosDao(
     this as AppDatabase,
   );
+  late final PresupuestoDocumentosAceptadosDao
+  presupuestoDocumentosAceptadosDao = PresupuestoDocumentosAceptadosDao(
+    this as AppDatabase,
+  );
   late final LineasPresupuestoDao lineasPresupuestoDao = LineasPresupuestoDao(
     this as AppDatabase,
   );
@@ -32805,6 +33259,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     clientes,
     expedientes,
     presupuestos,
+    presupuestoDocumentosAceptados,
     lineasPresupuesto,
     empresaConfiguracion,
     facturas,
@@ -32920,6 +33375,31 @@ final class $$TenantsTableReferences
     ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_presupuestosRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $PresupuestoDocumentosAceptadosTable,
+    List<PresupuestoDocumentosAceptado>
+  >
+  _presupuestoDocumentosAceptadosRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.presupuestoDocumentosAceptados,
+        aliasName: 'tenants__id__presupuesto_documentos_aceptados__tenant_id',
+      );
+
+  $$PresupuestoDocumentosAceptadosTableProcessedTableManager
+  get presupuestoDocumentosAceptadosRefs {
+    final manager = $$PresupuestoDocumentosAceptadosTableTableManager(
+      $_db,
+      $_db.presupuestoDocumentosAceptados,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _presupuestoDocumentosAceptadosRefsTable($_db),
+    );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -33936,6 +34416,35 @@ class $$TenantsTableFilterComposer
                 $removeJoinBuilderFromRootComposer,
           ),
     );
+    return f(composer);
+  }
+
+  Expression<bool> presupuestoDocumentosAceptadosRefs(
+    Expression<bool> Function(
+      $$PresupuestoDocumentosAceptadosTableFilterComposer f,
+    )
+    f,
+  ) {
+    final $$PresupuestoDocumentosAceptadosTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.presupuestoDocumentosAceptados,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$PresupuestoDocumentosAceptadosTableFilterComposer(
+                $db: $db,
+                $table: $db.presupuestoDocumentosAceptados,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
     return f(composer);
   }
 
@@ -35129,6 +35638,35 @@ class $$TenantsTableAnnotationComposer
     return f(composer);
   }
 
+  Expression<T> presupuestoDocumentosAceptadosRefs<T extends Object>(
+    Expression<T> Function(
+      $$PresupuestoDocumentosAceptadosTableAnnotationComposer a,
+    )
+    f,
+  ) {
+    final $$PresupuestoDocumentosAceptadosTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.presupuestoDocumentosAceptados,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$PresupuestoDocumentosAceptadosTableAnnotationComposer(
+                $db: $db,
+                $table: $db.presupuestoDocumentosAceptados,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
   Expression<T> lineasPresupuestoRefs<T extends Object>(
     Expression<T> Function($$LineasPresupuestoTableAnnotationComposer a) f,
   ) {
@@ -36214,6 +36752,7 @@ class $$TenantsTableTableManager
             bool clientesRefs,
             bool expedientesRefs,
             bool presupuestosRefs,
+            bool presupuestoDocumentosAceptadosRefs,
             bool lineasPresupuestoRefs,
             bool empresaConfiguracionRefs,
             bool facturasRefs,
@@ -36309,6 +36848,7 @@ class $$TenantsTableTableManager
                 clientesRefs = false,
                 expedientesRefs = false,
                 presupuestosRefs = false,
+                presupuestoDocumentosAceptadosRefs = false,
                 lineasPresupuestoRefs = false,
                 empresaConfiguracionRefs = false,
                 facturasRefs = false,
@@ -36357,6 +36897,8 @@ class $$TenantsTableTableManager
                     if (clientesRefs) db.clientes,
                     if (expedientesRefs) db.expedientes,
                     if (presupuestosRefs) db.presupuestos,
+                    if (presupuestoDocumentosAceptadosRefs)
+                      db.presupuestoDocumentosAceptados,
                     if (lineasPresupuestoRefs) db.lineasPresupuesto,
                     if (empresaConfiguracionRefs) db.empresaConfiguracion,
                     if (facturasRefs) db.facturas,
@@ -36468,6 +37010,27 @@ class $$TenantsTableTableManager
                                 table,
                                 p0,
                               ).presupuestosRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (presupuestoDocumentosAceptadosRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          PresupuestoDocumentosAceptado
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._presupuestoDocumentosAceptadosRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).presupuestoDocumentosAceptadosRefs,
                           referencedItemsForCurrentItem:
                               (item, referencedItems) => referencedItems.where(
                                 (e) => e.tenantId == item.id,
@@ -37355,6 +37918,7 @@ typedef $$TenantsTableProcessedTableManager =
         bool clientesRefs,
         bool expedientesRefs,
         bool presupuestosRefs,
+        bool presupuestoDocumentosAceptadosRefs,
         bool lineasPresupuestoRefs,
         bool empresaConfiguracionRefs,
         bool facturasRefs,
@@ -39067,6 +39631,376 @@ typedef $$PresupuestosTableProcessedTableManager =
       $$PresupuestosTableUpdateCompanionBuilder,
       (Presupuesto, $$PresupuestosTableReferences),
       Presupuesto,
+      PrefetchHooks Function({bool tenantId})
+    >;
+typedef $$PresupuestoDocumentosAceptadosTableCreateCompanionBuilder =
+    PresupuestoDocumentosAceptadosCompanion Function({
+      required String tenantId,
+      required String presupuestoId,
+      required String snapshotJson,
+      required Uint8List pdf,
+      required String sha256,
+      required DateTime fechaCongelacion,
+      Value<int> rowid,
+    });
+typedef $$PresupuestoDocumentosAceptadosTableUpdateCompanionBuilder =
+    PresupuestoDocumentosAceptadosCompanion Function({
+      Value<String> tenantId,
+      Value<String> presupuestoId,
+      Value<String> snapshotJson,
+      Value<Uint8List> pdf,
+      Value<String> sha256,
+      Value<DateTime> fechaCongelacion,
+      Value<int> rowid,
+    });
+
+final class $$PresupuestoDocumentosAceptadosTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $PresupuestoDocumentosAceptadosTable,
+          PresupuestoDocumentosAceptado
+        > {
+  $$PresupuestoDocumentosAceptadosTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) => db.tenants
+      .createAlias('presupuesto_documentos_aceptados__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$PresupuestoDocumentosAceptadosTableFilterComposer
+    extends Composer<_$AppDatabase, $PresupuestoDocumentosAceptadosTable> {
+  $$PresupuestoDocumentosAceptadosTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get presupuestoId => $composableBuilder(
+    column: $table.presupuestoId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get snapshotJson => $composableBuilder(
+    column: $table.snapshotJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<Uint8List> get pdf => $composableBuilder(
+    column: $table.pdf,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sha256 => $composableBuilder(
+    column: $table.sha256,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaCongelacion => $composableBuilder(
+    column: $table.fechaCongelacion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PresupuestoDocumentosAceptadosTableOrderingComposer
+    extends Composer<_$AppDatabase, $PresupuestoDocumentosAceptadosTable> {
+  $$PresupuestoDocumentosAceptadosTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get presupuestoId => $composableBuilder(
+    column: $table.presupuestoId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get snapshotJson => $composableBuilder(
+    column: $table.snapshotJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<Uint8List> get pdf => $composableBuilder(
+    column: $table.pdf,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sha256 => $composableBuilder(
+    column: $table.sha256,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaCongelacion => $composableBuilder(
+    column: $table.fechaCongelacion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PresupuestoDocumentosAceptadosTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PresupuestoDocumentosAceptadosTable> {
+  $$PresupuestoDocumentosAceptadosTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get presupuestoId => $composableBuilder(
+    column: $table.presupuestoId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get snapshotJson => $composableBuilder(
+    column: $table.snapshotJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<Uint8List> get pdf =>
+      $composableBuilder(column: $table.pdf, builder: (column) => column);
+
+  GeneratedColumn<String> get sha256 =>
+      $composableBuilder(column: $table.sha256, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get fechaCongelacion => $composableBuilder(
+    column: $table.fechaCongelacion,
+    builder: (column) => column,
+  );
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PresupuestoDocumentosAceptadosTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PresupuestoDocumentosAceptadosTable,
+          PresupuestoDocumentosAceptado,
+          $$PresupuestoDocumentosAceptadosTableFilterComposer,
+          $$PresupuestoDocumentosAceptadosTableOrderingComposer,
+          $$PresupuestoDocumentosAceptadosTableAnnotationComposer,
+          $$PresupuestoDocumentosAceptadosTableCreateCompanionBuilder,
+          $$PresupuestoDocumentosAceptadosTableUpdateCompanionBuilder,
+          (
+            PresupuestoDocumentosAceptado,
+            $$PresupuestoDocumentosAceptadosTableReferences,
+          ),
+          PresupuestoDocumentosAceptado,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$PresupuestoDocumentosAceptadosTableTableManager(
+    _$AppDatabase db,
+    $PresupuestoDocumentosAceptadosTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PresupuestoDocumentosAceptadosTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$PresupuestoDocumentosAceptadosTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$PresupuestoDocumentosAceptadosTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> presupuestoId = const Value.absent(),
+                Value<String> snapshotJson = const Value.absent(),
+                Value<Uint8List> pdf = const Value.absent(),
+                Value<String> sha256 = const Value.absent(),
+                Value<DateTime> fechaCongelacion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PresupuestoDocumentosAceptadosCompanion(
+                tenantId: tenantId,
+                presupuestoId: presupuestoId,
+                snapshotJson: snapshotJson,
+                pdf: pdf,
+                sha256: sha256,
+                fechaCongelacion: fechaCongelacion,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String presupuestoId,
+                required String snapshotJson,
+                required Uint8List pdf,
+                required String sha256,
+                required DateTime fechaCongelacion,
+                Value<int> rowid = const Value.absent(),
+              }) => PresupuestoDocumentosAceptadosCompanion.insert(
+                tenantId: tenantId,
+                presupuestoId: presupuestoId,
+                snapshotJson: snapshotJson,
+                pdf: pdf,
+                sha256: sha256,
+                fechaCongelacion: fechaCongelacion,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$PresupuestoDocumentosAceptadosTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable:
+                                    $$PresupuestoDocumentosAceptadosTableReferences
+                                        ._tenantIdTable(db),
+                                referencedColumn:
+                                    $$PresupuestoDocumentosAceptadosTableReferences
+                                        ._tenantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$PresupuestoDocumentosAceptadosTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PresupuestoDocumentosAceptadosTable,
+      PresupuestoDocumentosAceptado,
+      $$PresupuestoDocumentosAceptadosTableFilterComposer,
+      $$PresupuestoDocumentosAceptadosTableOrderingComposer,
+      $$PresupuestoDocumentosAceptadosTableAnnotationComposer,
+      $$PresupuestoDocumentosAceptadosTableCreateCompanionBuilder,
+      $$PresupuestoDocumentosAceptadosTableUpdateCompanionBuilder,
+      (
+        PresupuestoDocumentosAceptado,
+        $$PresupuestoDocumentosAceptadosTableReferences,
+      ),
+      PresupuestoDocumentosAceptado,
       PrefetchHooks Function({bool tenantId})
     >;
 typedef $$LineasPresupuestoTableCreateCompanionBuilder =
@@ -58052,6 +58986,12 @@ class $AppDatabaseManager {
       $$ExpedientesTableTableManager(_db, _db.expedientes);
   $$PresupuestosTableTableManager get presupuestos =>
       $$PresupuestosTableTableManager(_db, _db.presupuestos);
+  $$PresupuestoDocumentosAceptadosTableTableManager
+  get presupuestoDocumentosAceptados =>
+      $$PresupuestoDocumentosAceptadosTableTableManager(
+        _db,
+        _db.presupuestoDocumentosAceptados,
+      );
   $$LineasPresupuestoTableTableManager get lineasPresupuesto =>
       $$LineasPresupuestoTableTableManager(_db, _db.lineasPresupuesto);
   $$EmpresaConfiguracionTableTableManager get empresaConfiguracion =>

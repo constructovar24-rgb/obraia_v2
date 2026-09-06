@@ -60,15 +60,18 @@ void main() {
         estado: const Value('Aceptado'),
       ),
     );
-    await database.lineasPresupuestoDao.insertarLinea(
-      LineasPresupuestoCompanion.insert(
-        id: 'partida',
-        presupuestoId: 'presupuesto',
-        concepto: 'Partida',
-        cantidad: 10,
-        precioUnitario: 10,
-      ),
-    );
+    // Fixture histórico anterior a la protección documental.
+    await database
+        .into(database.lineasPresupuesto)
+        .insert(
+          LineasPresupuestoCompanion.insert(
+            id: 'partida',
+            presupuestoId: 'presupuesto',
+            concepto: 'Partida',
+            cantidad: 10,
+            precioUnitario: 10,
+          ),
+        );
   });
 
   tearDown(() => database.close());

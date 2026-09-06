@@ -10,6 +10,9 @@ import 'tables/tenants.dart';
 import 'tables/expedientes.dart';
 import 'tables/clientes.dart';
 import 'tables/presupuestos.dart';
+import 'tables/presupuesto_documentos_aceptados.dart';
+import 'dao/presupuesto_documentos_aceptados_dao.dart';
+import 'presupuesto_documental_schema.dart';
 import 'tables/lineas_presupuesto.dart';
 import 'tables/empresa_configuracion.dart';
 import 'tables/facturas.dart';
@@ -79,6 +82,7 @@ part 'app_database.g.dart';
     Expedientes,
     Clientes,
     Presupuestos,
+    PresupuestoDocumentosAceptados,
     LineasPresupuesto,
     EmpresaConfiguracion,
     Facturas,
@@ -125,6 +129,7 @@ part 'app_database.g.dart';
     ExpedientesDao,
     ClientesDao,
     PresupuestosDao,
+    PresupuestoDocumentosAceptadosDao,
     LineasPresupuestoDao,
     EmpresaConfiguracionDao,
     FacturasDao,
@@ -177,7 +182,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 32;
+  int get schemaVersion => 33;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -194,6 +199,7 @@ class AppDatabase extends _$AppDatabase {
       );
       await _crearIndicesMultiTenant();
       await _inicializarEconomiaPorTenant(tenantId);
+      await crearProteccionesPresupuesto(this);
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
@@ -491,6 +497,12 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(facturaRecibidaCompras);
         await m.createTable(pagosProveedor);
         await _crearIndicesCircuitoProveedor();
+      }
+      if (from < 33 && await _existeTabla('presupuestos')) {
+        if (!await _existeTabla('presupuesto_documentos_aceptados')) {
+          await m.createTable(presupuestoDocumentosAceptados);
+        }
+        await crearProteccionesPresupuesto(this);
       }
     },
     beforeOpen: (details) async {
@@ -1117,7 +1129,7 @@ LazyDatabase _openConnection(File? requestedFile, AppEnvironment environment) {
     await file.parent.create(recursive: true);
     await const PreMigrationRecoveryService().protectBeforeUpgrade(
       file,
-      supportedVersions: {22, 23, 24, 25, 26, 27, 28, 29, 30, 31},
+      supportedVersions: {22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32},
     );
     return NativeDatabase(file);
   });

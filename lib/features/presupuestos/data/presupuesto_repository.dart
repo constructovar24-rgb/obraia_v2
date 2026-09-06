@@ -12,6 +12,8 @@ import 'package:obraia_v2/features/presupuestos/domain/estado_presupuesto.dart';
 import 'package:obraia_v2/features/timeline/data/timeline_repository.dart';
 import 'package:obraia_v2/features/economia/data/plan_economico_repository.dart';
 import 'package:uuid/uuid.dart';
+import 'presupuesto_documental_repository.dart';
+import '../services/presupuesto_pdf_service.dart';
 
 class PresupuestoRepository {
   static const int _backlogComercialAntiguedadDias = 60;
@@ -20,8 +22,14 @@ class PresupuestoRepository {
   final TimelineRepository _timelineRepository;
   final PlanEconomicoRepository _planEconomicoRepository;
 
-  PresupuestoRepository(this.database)
-    : _timelineRepository = TimelineRepository(database.timelineEventsDao),
+  final PresupuestoDocumentalRepository _documental;
+
+  PresupuestoRepository(this.database, {PresupuestoPdfService? pdfService})
+    : _documental = PresupuestoDocumentalRepository(
+        database,
+        pdfService: pdfService,
+      ),
+      _timelineRepository = TimelineRepository(database.timelineEventsDao),
       _planEconomicoRepository = PlanEconomicoRepository(database);
 
   Stream<List<presupuesto_domain.Presupuesto>> observarPorExpediente(
@@ -189,8 +197,13 @@ class PresupuestoRepository {
     }
 
     final codigoExpediente = expediente.codigo.trim();
+    if (codigoExpediente.isEmpty) {
+      throw const EstadoPresupuestoException(
+        'El expediente necesita una referencia.',
+      );
+    }
     final codigosExistentes = await database.presupuestosDao
-        .obtenerCodigosPorExpediente(expedienteId);
+        .obtenerCodigosPorTenant();
 
     final prefijo = '$codigoExpediente-P';
     var maxCorrelativo = 0;
@@ -219,40 +232,35 @@ class PresupuestoRepository {
     double importeTotal = 0,
     String estado = 'Borrador',
   }) async {
-    final codigo = await _generarCodigoPresupuesto(expedienteId);
-    final presupuestoId = const Uuid().v4();
+    if (estadoPresupuestoEsAceptado(estado)) {
+      throw const EstadoPresupuestoException(
+        'Crea un borrador y acéptalo desde su detalle.',
+      );
+    }
+    await database.transaction(() async {
+      final codigo = await _generarCodigoPresupuesto(expedienteId);
+      final presupuestoId = const Uuid().v4();
 
-    await database.presupuestosDao.insertarPresupuesto(
-      PresupuestosCompanion.insert(
-        tenantId: Value(database.activeTenantId),
-        id: presupuestoId,
-        expedienteId: expedienteId,
-        titulo: Value(codigo),
-        codigo: Value(codigo),
-        fecha: Value(fecha),
-        descripcion: Value(descripcion),
-        importeTotal: Value(importeTotal),
-        estado: Value(estado),
-      ),
-    );
+      await database.presupuestosDao.insertarPresupuesto(
+        PresupuestosCompanion.insert(
+          tenantId: Value(database.activeTenantId),
+          id: presupuestoId,
+          expedienteId: expedienteId,
+          titulo: Value(codigo),
+          codigo: Value(codigo),
+          fecha: Value(fecha),
+          descripcion: Value(descripcion),
+          importeTotal: Value(importeTotal),
+          estado: Value(estado),
+        ),
+      );
 
-    await _timelineRepository.registrarPresupuestoCreado(
-      expedienteId: expedienteId,
-      presupuestoId: presupuestoId,
-      titulo: codigo,
-    );
-
-    if (_esEstadoAceptado(estado)) {
-      await _timelineRepository.registrarPresupuestoAceptado(
+      await _timelineRepository.registrarPresupuestoCreado(
         expedienteId: expedienteId,
         presupuestoId: presupuestoId,
         titulo: codigo,
       );
-    }
-  }
-
-  bool _esEstadoAceptado(String estado) {
-    return estado.trim().toLowerCase() == 'aceptado';
+    });
   }
 
   bool _esEstadoPresentado(String estado) {
@@ -282,6 +290,13 @@ class PresupuestoRepository {
         );
       }
 
+      final codigos = await database.presupuestosDao.obtenerCodigosPorTenant();
+      if (codigos.where((c) => c == presupuesto.codigo).length != 1) {
+        throw const EstadoPresupuestoException(
+          'La referencia histórica está duplicada. Crea una propuesta nueva con referencia única.',
+        );
+      }
+      await _documental.congelar(presupuestoId);
       await _planEconomicoRepository.crearSnapshotParaAceptacion(presupuestoId);
 
       final actualizados = await database.presupuestosDao.aceptarBorrador(
@@ -322,6 +337,10 @@ class PresupuestoRepository {
   }
 
   Future<bool> eliminarSiNoFacturado(String presupuestoId) async {
+    final actual = await database.presupuestosDao.obtenerPorId(presupuestoId);
+    if (actual == null || estadoPresupuestoEsAceptado(actual.estado)) {
+      return false;
+    }
     final tieneFacturaAsociada = await database.presupuestosDao
         .tieneFacturaAsociada(presupuestoId);
 

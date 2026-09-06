@@ -2,6 +2,15 @@
 
 ## No publicado
 
+### PROD-2 — Presupuestos aceptados protegidos
+
+- Schema 33: snapshot comercial, PDF definitivo, hash y fecha dentro de SQLite, con migración sin backfill legacy y backup compatible.
+- Cliente canónico y emisor configurable; PDF borrador diferenciado del original aceptado, multipágina y sin logo genérico.
+- Aceptación transaccional con plan económico/Timeline; edición y borrado bloqueados, referencias comerciales protegidas por tenant.
+- Conservada facturación existente; pruebas de rollback, integridad, migración, tenants y UI. Aceptación manual solo en DEV pendiente.
+- Análisis limpio, suite de 366 pruebas y Windows debug en copia aislada superados; PDF ficticio revisado visualmente en una y cuatro páginas.
+- Sin datos reales, sin push, PROD-3 y Fase 5 no iniciados. [Procedimiento y límites](PROD2_PRESUPUESTO_SEGURO.md).
+
 ### PROD-1 — Separación de entornos
 
 - Conservada la SQLite actual como Desarrollo, sin moverla, limpiarla, renumerarla ni copiar sus datos.

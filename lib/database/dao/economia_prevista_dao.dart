@@ -92,17 +92,24 @@ class EconomiaPrevistaDao extends DatabaseAccessor<AppDatabase>
 
   Future<void> guardarCosteLinea(
     LineaPresupuestoCostesPrevistosCompanion value,
-  ) => into(
-    lineaPresupuestoCostesPrevistos,
-  ).insertOnConflictUpdate(value.copyWith(tenantId: Value(_tenantId)));
+  ) async {
+    await attachedDatabase.lineasPresupuestoDao.exigirEditable(
+      value.lineaPresupuestoId.value,
+    );
+    await into(
+      lineaPresupuestoCostesPrevistos,
+    ).insertOnConflictUpdate(value.copyWith(tenantId: Value(_tenantId)));
+  }
 
-  Future<int> eliminarCosteLinea(String lineaId) =>
-      (delete(lineaPresupuestoCostesPrevistos)..where(
-            (t) =>
-                t.tenantId.equals(_tenantId) &
-                t.lineaPresupuestoId.equals(lineaId),
-          ))
-          .go();
+  Future<int> eliminarCosteLinea(String lineaId) async {
+    await attachedDatabase.lineasPresupuestoDao.exigirEditable(lineaId);
+    return (delete(lineaPresupuestoCostesPrevistos)..where(
+          (t) =>
+              t.tenantId.equals(_tenantId) &
+              t.lineaPresupuestoId.equals(lineaId),
+        ))
+        .go();
+  }
 
   Future<PlanesEconomico?> obtenerPlanPorPresupuesto(String presupuestoId) =>
       (select(planesEconomicos)..where(

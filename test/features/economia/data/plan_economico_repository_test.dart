@@ -1,3 +1,5 @@
+import '../../presupuestos/data/prod2_test_support.dart';
+import 'package:obraia_v2/features/presupuestos/domain/estado_presupuesto.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -81,12 +83,15 @@ void main() {
     expect(partidas.first.costePrevistoCentimos, 5000);
 
     await economia.guardarPorcentajeIndirectos(25);
-    await lineas.actualizarLinea(
-      id: creadas.first.id,
-      presupuestoId: presupuestoId,
-      concepto: 'Modificada después',
-      cantidad: 1,
-      precioUnitario: 999,
+    await expectLater(
+      lineas.actualizarLinea(
+        id: creadas.first.id,
+        presupuestoId: presupuestoId,
+        concepto: 'Modificada después',
+        cantidad: 1,
+        precioUnitario: 999,
+      ),
+      throwsA(isA<EstadoPresupuestoException>()),
     );
     final congelado = await economia.obtenerPlanPorPresupuesto(presupuestoId);
     final partidasCongeladas = await database.economiaPrevistaDao
@@ -192,6 +197,7 @@ Future<String> _crearPresupuesto(
   AppDatabase database,
   PresupuestoRepository presupuestos,
 ) async {
+  await configurarEmpresaPrueba(database);
   await database.clientesDao.insertarCliente(
     ClientesCompanion.insert(id: 'cliente', nombre: 'Cliente'),
   );

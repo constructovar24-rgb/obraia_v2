@@ -1,3 +1,4 @@
+import 'prod2_test_support.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -146,7 +147,10 @@ void main() {
   });
 
   test('acepta un borrador y registra la transición trazable', () async {
-    final presupuestoId = await _crearPresupuestoBase(database);
+    final presupuestoId = await _crearPresupuestoBase(
+      database,
+      listoParaAceptar: true,
+    );
 
     await presupuestos.aceptarPresupuesto(presupuestoId);
 
@@ -168,7 +172,10 @@ void main() {
   });
 
   test('rechaza aceptar un presupuesto que ya no es borrador', () async {
-    final presupuestoId = await _crearPresupuestoBase(database);
+    final presupuestoId = await _crearPresupuestoBase(
+      database,
+      listoParaAceptar: true,
+    );
     await presupuestos.aceptarPresupuesto(presupuestoId);
 
     await expectLater(
@@ -187,7 +194,10 @@ void main() {
   });
 
   test('revierte la aceptación si falla su evento de trazabilidad', () async {
-    final presupuestoId = await _crearPresupuestoBase(database);
+    final presupuestoId = await _crearPresupuestoBase(
+      database,
+      listoParaAceptar: true,
+    );
     await database.customStatement('''
       CREATE TRIGGER impedir_evento_aceptacion
       BEFORE INSERT ON timeline_events
@@ -212,7 +222,10 @@ void main() {
   });
 }
 
-Future<String> _crearPresupuestoBase(AppDatabase database) async {
+Future<String> _crearPresupuestoBase(
+  AppDatabase database, {
+  bool listoParaAceptar = false,
+}) async {
   await database.clientesDao.insertarCliente(
     ClientesCompanion.insert(id: 'cliente-test', nombre: 'Cliente'),
   );
@@ -228,9 +241,20 @@ Future<String> _crearPresupuestoBase(AppDatabase database) async {
   await database.presupuestosDao.insertarPresupuesto(
     PresupuestosCompanion.insert(
       id: 'presupuesto-test',
+      codigo: const Value('EXP-TEST-P01'),
       expedienteId: 'expediente-test',
     ),
   );
+  if (listoParaAceptar) {
+    await configurarEmpresaPrueba(database);
+    await LineaPresupuestoRepository(database).crearLinea(
+      presupuestoId: 'presupuesto-test',
+      concepto: 'Partida',
+      cantidad: 1,
+      precioUnitario: 100,
+    );
+    await database.customStatement('DELETE FROM timeline_events');
+  }
   return 'presupuesto-test';
 }
 

@@ -19,12 +19,7 @@ class NuevoPresupuestoScreen extends ConsumerStatefulWidget {
 
 class _NuevoPresupuestoScreenState
     extends ConsumerState<NuevoPresupuestoScreen> {
-  static const List<String> _estados = [
-    'Borrador',
-    'Presentado',
-    'Aceptado',
-    'Rechazado',
-  ];
+  static const List<String> _estados = ['Borrador', 'Presentado', 'Rechazado'];
 
   final _formKey = GlobalKey<FormState>();
   final _fechaController = TextEditingController();
