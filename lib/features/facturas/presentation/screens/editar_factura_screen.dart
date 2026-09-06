@@ -1,3 +1,6 @@
+import '../../../fiscal/domain/configuracion_fiscal.dart';
+import '../../../fiscal/presentation/providers/configuracion_fiscal_providers.dart';
+import '../../../environment/presentation/providers/environment_controller.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -634,6 +637,38 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
   }
 
   Future<void> _emitirFactura() async {
+    final tipo = _facturaActual.esRectificativa ? 'rectificativa' : 'ordinaria';
+    List<ConfiguracionSerieFiscal> configs;
+    try {
+      configs = await ref
+          .read(configuracionFiscalRepositoryProvider)
+          .obtener(_facturaActual.fecha.year);
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'No se pudo comprobar la configuración fiscal. No se ha emitido la factura.',
+            ),
+          ),
+        );
+      }
+      return;
+    }
+    if (!mounted) return;
+    final config = configs.where((c) => c.tipo == tipo).firstOrNull;
+    if (config == null || !config.preparada) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Prepara la numeración $tipo del ejercicio ${_facturaActual.fecha.year} en Configuración → Numeración fiscal antes de emitir.',
+          ),
+        ),
+      );
+      return;
+    }
+    final entorno = ref.read(environmentControllerProvider).environment.label;
+
     final confirmado = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -642,7 +677,8 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
               ? 'Emitir factura rectificativa'
               : 'Emitir factura',
         ),
-        content: const Text(
+        content: Text(
+          'Entorno: $entorno. Ejercicio: ${config.ejercicio}. Serie: ${config.serie}. Próximo número: ${config.siguienteNumero}.\n\n'
           'Al emitir se asignará la numeración legal y el documento quedará '
           'congelado. Las correcciones posteriores se realizarán mediante '
           'factura rectificativa.',
@@ -679,6 +715,11 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Factura emitida.')));
+    } on ConfiguracionFiscalException catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error.mensaje)));
     } on FacturaEmisionException catch (error) {
       if (!mounted) return;
       ScaffoldMessenger.of(
@@ -689,6 +730,16 @@ class _EditarFacturaScreenState extends ConsumerState<EditarFacturaScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(error.mensaje)));
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'No se pudo completar la emisión. Comprueba el estado de la factura antes de reintentar.',
+            ),
+          ),
+        );
+      }
     }
   }
 

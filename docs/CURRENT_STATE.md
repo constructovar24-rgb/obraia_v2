@@ -1,6 +1,8 @@
 # Estado actual de OBRA IA
 
-**PROD-2 — técnicamente preparado y verificado:** presupuesto aceptado con snapshot comercial, PDF original y SHA-256 dentro de SQLite; aceptación atómica con plan económico y Timeline, bloqueo de edición, referencias protegidas por tenant y tratamiento explícito de legacy. Schema 33. Análisis sin incidencias, 33 pruebas nuevas (29 documentales, 3 UI y 1 migración), suite completa de 366 pruebas y Windows debug en copia aislada superados; diff sin errores. PROD-1 publicado y validado manualmente según confirmación del usuario. Aceptación manual de PROD-2 pendiente solo en DEV; PROD-3 y Fase 5 no iniciados. Detalle y procedimiento en [PROD2_PRESUPUESTO_SEGURO.md](PROD2_PRESUPUESTO_SEGURO.md).
+**PROD-3 — técnicamente preparado y verificado:** configuración fiscal explícita por tenant, ejercicio y circuito; series personalizadas, secuencias transaccionales, bloqueo tras primer uso y auditoría local. Schema 34. Análisis sin incidencias, 22 pruebas nuevas y suite completa de 388 pruebas superadas; compilación Windows debug en copia aislada idéntica y revisión de diff sin errores. PROD-1 y PROD-2 publicados y cerrados; aceptación manual de PROD-2 superada según confirmación del usuario. PROD-3 pendiente de aceptación manual solo en DEV; sin datos reales, sin push, PROD-4 y Fase 5 no iniciados. Modelo, límites y procedimiento en [PROD3_ARRANQUE_FISCAL.md](PROD3_ARRANQUE_FISCAL.md).
+
+**PROD-2 — técnicamente preparado y verificado:** presupuesto aceptado con snapshot comercial, PDF original y SHA-256 dentro de SQLite; aceptación atómica con plan económico y Timeline, bloqueo de edición, referencias protegidas por tenant y tratamiento explícito de legacy. Schema 33. Análisis sin incidencias, 33 pruebas nuevas (29 documentales, 3 UI y 1 migración), suite completa de 366 pruebas y Windows debug en copia aislada superados; diff sin errores. PROD-1 publicado y validado manualmente según confirmación del usuario. PROD-2 publicado, validado manualmente en DEV y cerrado; Fase 5 no iniciada. Detalle y procedimiento en [PROD2_PRESUPUESTO_SEGURO.md](PROD2_PRESUPUESTO_SEGURO.md).
 
 **PROD-1 — implementado y verificado técnicamente:** entornos Desarrollo y Producción con SQLite físicamente distintas; la base actual conserva su ruta como Desarrollo. Producción nueva utiliza solo inicialización técnica neutral, con schema 32 y sin copia de datos funcionales. Backups separados y restauración cruzada bloqueada; selector confirmado e indicador visible. No se han introducido datos reales. Estado histórico al cierre técnico de PROD-1: piloto real y Fase 5 no iniciados. Análisis limpio, 17 pruebas específicas y 333 totales superadas; Windows debug compilado en copia aislada idéntica porque la sesión abierta bloqueaba la carpeta habitual. Procedimiento de PROD-1 en [PROD1_ENVIRONMENTS.md](PROD1_ENVIRONMENTS.md).
 
@@ -25,7 +27,7 @@ Fotografía verificada el **3 de septiembre de 2026**. Debe actualizarse cuando 
 ## Base tecnológica
 
 - Flutter/Dart con Riverpod.
-- Drift sobre SQLite con `schemaVersion` 33. Las conexiones activan claves foráneas y todas las tablas empresariales exigen `tenantId`.
+- Drift sobre SQLite con `schemaVersion` 34. Las conexiones activan claves foráneas y todas las tablas empresariales exigen `tenantId`.
 - `pdf` y `printing` para generación documental.
 - Windows como plataforma prioritaria.
 - 171 archivos Dart en la auditoría de esta línea base.

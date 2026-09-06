@@ -89,6 +89,7 @@ class FacturasDao extends DatabaseAccessor<AppDatabase>
     return rows.map((row) => row.codigo).toList();
   }
 
+  /// Consulta histórica; no reserva ni asigna numeración fiscal.
   Future<int> obtenerMayorNumeroLegal(int anio, {String serie = 'FAC'}) async {
     final result = await customSelect(
       'SELECT MAX(numero_legal) AS maximo FROM facturas '

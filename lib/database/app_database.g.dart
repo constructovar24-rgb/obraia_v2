@@ -330,6 +330,1151 @@ class TenantsCompanion extends UpdateCompanion<Tenant> {
   }
 }
 
+class $SeriesFiscalesTable extends SeriesFiscales
+    with TableInfo<$SeriesFiscalesTable, SerieFiscalRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SeriesFiscalesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _ejercicioMeta = const VerificationMeta(
+    'ejercicio',
+  );
+  @override
+  late final GeneratedColumn<int> ejercicio = GeneratedColumn<int>(
+    'ejercicio',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _tipoMeta = const VerificationMeta('tipo');
+  @override
+  late final GeneratedColumn<String> tipo = GeneratedColumn<String>(
+    'tipo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _serieMeta = const VerificationMeta('serie');
+  @override
+  late final GeneratedColumn<String> serie = GeneratedColumn<String>(
+    'serie',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _numeroInicialMeta = const VerificationMeta(
+    'numeroInicial',
+  );
+  @override
+  late final GeneratedColumn<int> numeroInicial = GeneratedColumn<int>(
+    'numero_inicial',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _siguienteNumeroMeta = const VerificationMeta(
+    'siguienteNumero',
+  );
+  @override
+  late final GeneratedColumn<int> siguienteNumero = GeneratedColumn<int>(
+    'siguiente_numero',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _preparadaMeta = const VerificationMeta(
+    'preparada',
+  );
+  @override
+  late final GeneratedColumn<bool> preparada = GeneratedColumn<bool>(
+    'preparada',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("preparada" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _documentosPreviosMeta = const VerificationMeta(
+    'documentosPrevios',
+  );
+  @override
+  late final GeneratedColumn<int> documentosPrevios = GeneratedColumn<int>(
+    'documentos_previos',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _emisionesMeta = const VerificationMeta(
+    'emisiones',
+  );
+  @override
+  late final GeneratedColumn<int> emisiones = GeneratedColumn<int>(
+    'emisiones',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _fechaConfiguracionMeta =
+      const VerificationMeta('fechaConfiguracion');
+  @override
+  late final GeneratedColumn<DateTime> fechaConfiguracion =
+      GeneratedColumn<DateTime>(
+        'fecha_configuracion',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _primerUsoMeta = const VerificationMeta(
+    'primerUso',
+  );
+  @override
+  late final GeneratedColumn<DateTime> primerUso = GeneratedColumn<DateTime>(
+    'primer_uso',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    ejercicio,
+    tipo,
+    serie,
+    numeroInicial,
+    siguienteNumero,
+    preparada,
+    documentosPrevios,
+    emisiones,
+    fechaConfiguracion,
+    primerUso,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'series_fiscales';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SerieFiscalRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('ejercicio')) {
+      context.handle(
+        _ejercicioMeta,
+        ejercicio.isAcceptableOrUnknown(data['ejercicio']!, _ejercicioMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_ejercicioMeta);
+    }
+    if (data.containsKey('tipo')) {
+      context.handle(
+        _tipoMeta,
+        tipo.isAcceptableOrUnknown(data['tipo']!, _tipoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tipoMeta);
+    }
+    if (data.containsKey('serie')) {
+      context.handle(
+        _serieMeta,
+        serie.isAcceptableOrUnknown(data['serie']!, _serieMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_serieMeta);
+    }
+    if (data.containsKey('numero_inicial')) {
+      context.handle(
+        _numeroInicialMeta,
+        numeroInicial.isAcceptableOrUnknown(
+          data['numero_inicial']!,
+          _numeroInicialMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_numeroInicialMeta);
+    }
+    if (data.containsKey('siguiente_numero')) {
+      context.handle(
+        _siguienteNumeroMeta,
+        siguienteNumero.isAcceptableOrUnknown(
+          data['siguiente_numero']!,
+          _siguienteNumeroMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_siguienteNumeroMeta);
+    }
+    if (data.containsKey('preparada')) {
+      context.handle(
+        _preparadaMeta,
+        preparada.isAcceptableOrUnknown(data['preparada']!, _preparadaMeta),
+      );
+    }
+    if (data.containsKey('documentos_previos')) {
+      context.handle(
+        _documentosPreviosMeta,
+        documentosPrevios.isAcceptableOrUnknown(
+          data['documentos_previos']!,
+          _documentosPreviosMeta,
+        ),
+      );
+    }
+    if (data.containsKey('emisiones')) {
+      context.handle(
+        _emisionesMeta,
+        emisiones.isAcceptableOrUnknown(data['emisiones']!, _emisionesMeta),
+      );
+    }
+    if (data.containsKey('fecha_configuracion')) {
+      context.handle(
+        _fechaConfiguracionMeta,
+        fechaConfiguracion.isAcceptableOrUnknown(
+          data['fecha_configuracion']!,
+          _fechaConfiguracionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaConfiguracionMeta);
+    }
+    if (data.containsKey('primer_uso')) {
+      context.handle(
+        _primerUsoMeta,
+        primerUso.isAcceptableOrUnknown(data['primer_uso']!, _primerUsoMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {tenantId, ejercicio, tipo};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {tenantId, ejercicio, serie},
+  ];
+  @override
+  SerieFiscalRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SerieFiscalRow(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      ejercicio: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}ejercicio'],
+      )!,
+      tipo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tipo'],
+      )!,
+      serie: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}serie'],
+      )!,
+      numeroInicial: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}numero_inicial'],
+      )!,
+      siguienteNumero: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}siguiente_numero'],
+      )!,
+      preparada: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}preparada'],
+      )!,
+      documentosPrevios: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}documentos_previos'],
+      )!,
+      emisiones: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}emisiones'],
+      )!,
+      fechaConfiguracion: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha_configuracion'],
+      )!,
+      primerUso: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}primer_uso'],
+      ),
+    );
+  }
+
+  @override
+  $SeriesFiscalesTable createAlias(String alias) {
+    return $SeriesFiscalesTable(attachedDatabase, alias);
+  }
+}
+
+class SerieFiscalRow extends DataClass implements Insertable<SerieFiscalRow> {
+  final String tenantId;
+  final int ejercicio;
+  final String tipo;
+  final String serie;
+  final int numeroInicial;
+  final int siguienteNumero;
+  final bool preparada;
+  final int documentosPrevios;
+  final int emisiones;
+  final DateTime fechaConfiguracion;
+  final DateTime? primerUso;
+  const SerieFiscalRow({
+    required this.tenantId,
+    required this.ejercicio,
+    required this.tipo,
+    required this.serie,
+    required this.numeroInicial,
+    required this.siguienteNumero,
+    required this.preparada,
+    required this.documentosPrevios,
+    required this.emisiones,
+    required this.fechaConfiguracion,
+    this.primerUso,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['ejercicio'] = Variable<int>(ejercicio);
+    map['tipo'] = Variable<String>(tipo);
+    map['serie'] = Variable<String>(serie);
+    map['numero_inicial'] = Variable<int>(numeroInicial);
+    map['siguiente_numero'] = Variable<int>(siguienteNumero);
+    map['preparada'] = Variable<bool>(preparada);
+    map['documentos_previos'] = Variable<int>(documentosPrevios);
+    map['emisiones'] = Variable<int>(emisiones);
+    map['fecha_configuracion'] = Variable<DateTime>(fechaConfiguracion);
+    if (!nullToAbsent || primerUso != null) {
+      map['primer_uso'] = Variable<DateTime>(primerUso);
+    }
+    return map;
+  }
+
+  SeriesFiscalesCompanion toCompanion(bool nullToAbsent) {
+    return SeriesFiscalesCompanion(
+      tenantId: Value(tenantId),
+      ejercicio: Value(ejercicio),
+      tipo: Value(tipo),
+      serie: Value(serie),
+      numeroInicial: Value(numeroInicial),
+      siguienteNumero: Value(siguienteNumero),
+      preparada: Value(preparada),
+      documentosPrevios: Value(documentosPrevios),
+      emisiones: Value(emisiones),
+      fechaConfiguracion: Value(fechaConfiguracion),
+      primerUso: primerUso == null && nullToAbsent
+          ? const Value.absent()
+          : Value(primerUso),
+    );
+  }
+
+  factory SerieFiscalRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SerieFiscalRow(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      ejercicio: serializer.fromJson<int>(json['ejercicio']),
+      tipo: serializer.fromJson<String>(json['tipo']),
+      serie: serializer.fromJson<String>(json['serie']),
+      numeroInicial: serializer.fromJson<int>(json['numeroInicial']),
+      siguienteNumero: serializer.fromJson<int>(json['siguienteNumero']),
+      preparada: serializer.fromJson<bool>(json['preparada']),
+      documentosPrevios: serializer.fromJson<int>(json['documentosPrevios']),
+      emisiones: serializer.fromJson<int>(json['emisiones']),
+      fechaConfiguracion: serializer.fromJson<DateTime>(
+        json['fechaConfiguracion'],
+      ),
+      primerUso: serializer.fromJson<DateTime?>(json['primerUso']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'ejercicio': serializer.toJson<int>(ejercicio),
+      'tipo': serializer.toJson<String>(tipo),
+      'serie': serializer.toJson<String>(serie),
+      'numeroInicial': serializer.toJson<int>(numeroInicial),
+      'siguienteNumero': serializer.toJson<int>(siguienteNumero),
+      'preparada': serializer.toJson<bool>(preparada),
+      'documentosPrevios': serializer.toJson<int>(documentosPrevios),
+      'emisiones': serializer.toJson<int>(emisiones),
+      'fechaConfiguracion': serializer.toJson<DateTime>(fechaConfiguracion),
+      'primerUso': serializer.toJson<DateTime?>(primerUso),
+    };
+  }
+
+  SerieFiscalRow copyWith({
+    String? tenantId,
+    int? ejercicio,
+    String? tipo,
+    String? serie,
+    int? numeroInicial,
+    int? siguienteNumero,
+    bool? preparada,
+    int? documentosPrevios,
+    int? emisiones,
+    DateTime? fechaConfiguracion,
+    Value<DateTime?> primerUso = const Value.absent(),
+  }) => SerieFiscalRow(
+    tenantId: tenantId ?? this.tenantId,
+    ejercicio: ejercicio ?? this.ejercicio,
+    tipo: tipo ?? this.tipo,
+    serie: serie ?? this.serie,
+    numeroInicial: numeroInicial ?? this.numeroInicial,
+    siguienteNumero: siguienteNumero ?? this.siguienteNumero,
+    preparada: preparada ?? this.preparada,
+    documentosPrevios: documentosPrevios ?? this.documentosPrevios,
+    emisiones: emisiones ?? this.emisiones,
+    fechaConfiguracion: fechaConfiguracion ?? this.fechaConfiguracion,
+    primerUso: primerUso.present ? primerUso.value : this.primerUso,
+  );
+  SerieFiscalRow copyWithCompanion(SeriesFiscalesCompanion data) {
+    return SerieFiscalRow(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      ejercicio: data.ejercicio.present ? data.ejercicio.value : this.ejercicio,
+      tipo: data.tipo.present ? data.tipo.value : this.tipo,
+      serie: data.serie.present ? data.serie.value : this.serie,
+      numeroInicial: data.numeroInicial.present
+          ? data.numeroInicial.value
+          : this.numeroInicial,
+      siguienteNumero: data.siguienteNumero.present
+          ? data.siguienteNumero.value
+          : this.siguienteNumero,
+      preparada: data.preparada.present ? data.preparada.value : this.preparada,
+      documentosPrevios: data.documentosPrevios.present
+          ? data.documentosPrevios.value
+          : this.documentosPrevios,
+      emisiones: data.emisiones.present ? data.emisiones.value : this.emisiones,
+      fechaConfiguracion: data.fechaConfiguracion.present
+          ? data.fechaConfiguracion.value
+          : this.fechaConfiguracion,
+      primerUso: data.primerUso.present ? data.primerUso.value : this.primerUso,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SerieFiscalRow(')
+          ..write('tenantId: $tenantId, ')
+          ..write('ejercicio: $ejercicio, ')
+          ..write('tipo: $tipo, ')
+          ..write('serie: $serie, ')
+          ..write('numeroInicial: $numeroInicial, ')
+          ..write('siguienteNumero: $siguienteNumero, ')
+          ..write('preparada: $preparada, ')
+          ..write('documentosPrevios: $documentosPrevios, ')
+          ..write('emisiones: $emisiones, ')
+          ..write('fechaConfiguracion: $fechaConfiguracion, ')
+          ..write('primerUso: $primerUso')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    tenantId,
+    ejercicio,
+    tipo,
+    serie,
+    numeroInicial,
+    siguienteNumero,
+    preparada,
+    documentosPrevios,
+    emisiones,
+    fechaConfiguracion,
+    primerUso,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SerieFiscalRow &&
+          other.tenantId == this.tenantId &&
+          other.ejercicio == this.ejercicio &&
+          other.tipo == this.tipo &&
+          other.serie == this.serie &&
+          other.numeroInicial == this.numeroInicial &&
+          other.siguienteNumero == this.siguienteNumero &&
+          other.preparada == this.preparada &&
+          other.documentosPrevios == this.documentosPrevios &&
+          other.emisiones == this.emisiones &&
+          other.fechaConfiguracion == this.fechaConfiguracion &&
+          other.primerUso == this.primerUso);
+}
+
+class SeriesFiscalesCompanion extends UpdateCompanion<SerieFiscalRow> {
+  final Value<String> tenantId;
+  final Value<int> ejercicio;
+  final Value<String> tipo;
+  final Value<String> serie;
+  final Value<int> numeroInicial;
+  final Value<int> siguienteNumero;
+  final Value<bool> preparada;
+  final Value<int> documentosPrevios;
+  final Value<int> emisiones;
+  final Value<DateTime> fechaConfiguracion;
+  final Value<DateTime?> primerUso;
+  final Value<int> rowid;
+  const SeriesFiscalesCompanion({
+    this.tenantId = const Value.absent(),
+    this.ejercicio = const Value.absent(),
+    this.tipo = const Value.absent(),
+    this.serie = const Value.absent(),
+    this.numeroInicial = const Value.absent(),
+    this.siguienteNumero = const Value.absent(),
+    this.preparada = const Value.absent(),
+    this.documentosPrevios = const Value.absent(),
+    this.emisiones = const Value.absent(),
+    this.fechaConfiguracion = const Value.absent(),
+    this.primerUso = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SeriesFiscalesCompanion.insert({
+    required String tenantId,
+    required int ejercicio,
+    required String tipo,
+    required String serie,
+    required int numeroInicial,
+    required int siguienteNumero,
+    this.preparada = const Value.absent(),
+    this.documentosPrevios = const Value.absent(),
+    this.emisiones = const Value.absent(),
+    required DateTime fechaConfiguracion,
+    this.primerUso = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       ejercicio = Value(ejercicio),
+       tipo = Value(tipo),
+       serie = Value(serie),
+       numeroInicial = Value(numeroInicial),
+       siguienteNumero = Value(siguienteNumero),
+       fechaConfiguracion = Value(fechaConfiguracion);
+  static Insertable<SerieFiscalRow> custom({
+    Expression<String>? tenantId,
+    Expression<int>? ejercicio,
+    Expression<String>? tipo,
+    Expression<String>? serie,
+    Expression<int>? numeroInicial,
+    Expression<int>? siguienteNumero,
+    Expression<bool>? preparada,
+    Expression<int>? documentosPrevios,
+    Expression<int>? emisiones,
+    Expression<DateTime>? fechaConfiguracion,
+    Expression<DateTime>? primerUso,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (ejercicio != null) 'ejercicio': ejercicio,
+      if (tipo != null) 'tipo': tipo,
+      if (serie != null) 'serie': serie,
+      if (numeroInicial != null) 'numero_inicial': numeroInicial,
+      if (siguienteNumero != null) 'siguiente_numero': siguienteNumero,
+      if (preparada != null) 'preparada': preparada,
+      if (documentosPrevios != null) 'documentos_previos': documentosPrevios,
+      if (emisiones != null) 'emisiones': emisiones,
+      if (fechaConfiguracion != null) 'fecha_configuracion': fechaConfiguracion,
+      if (primerUso != null) 'primer_uso': primerUso,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SeriesFiscalesCompanion copyWith({
+    Value<String>? tenantId,
+    Value<int>? ejercicio,
+    Value<String>? tipo,
+    Value<String>? serie,
+    Value<int>? numeroInicial,
+    Value<int>? siguienteNumero,
+    Value<bool>? preparada,
+    Value<int>? documentosPrevios,
+    Value<int>? emisiones,
+    Value<DateTime>? fechaConfiguracion,
+    Value<DateTime?>? primerUso,
+    Value<int>? rowid,
+  }) {
+    return SeriesFiscalesCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      ejercicio: ejercicio ?? this.ejercicio,
+      tipo: tipo ?? this.tipo,
+      serie: serie ?? this.serie,
+      numeroInicial: numeroInicial ?? this.numeroInicial,
+      siguienteNumero: siguienteNumero ?? this.siguienteNumero,
+      preparada: preparada ?? this.preparada,
+      documentosPrevios: documentosPrevios ?? this.documentosPrevios,
+      emisiones: emisiones ?? this.emisiones,
+      fechaConfiguracion: fechaConfiguracion ?? this.fechaConfiguracion,
+      primerUso: primerUso ?? this.primerUso,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (ejercicio.present) {
+      map['ejercicio'] = Variable<int>(ejercicio.value);
+    }
+    if (tipo.present) {
+      map['tipo'] = Variable<String>(tipo.value);
+    }
+    if (serie.present) {
+      map['serie'] = Variable<String>(serie.value);
+    }
+    if (numeroInicial.present) {
+      map['numero_inicial'] = Variable<int>(numeroInicial.value);
+    }
+    if (siguienteNumero.present) {
+      map['siguiente_numero'] = Variable<int>(siguienteNumero.value);
+    }
+    if (preparada.present) {
+      map['preparada'] = Variable<bool>(preparada.value);
+    }
+    if (documentosPrevios.present) {
+      map['documentos_previos'] = Variable<int>(documentosPrevios.value);
+    }
+    if (emisiones.present) {
+      map['emisiones'] = Variable<int>(emisiones.value);
+    }
+    if (fechaConfiguracion.present) {
+      map['fecha_configuracion'] = Variable<DateTime>(fechaConfiguracion.value);
+    }
+    if (primerUso.present) {
+      map['primer_uso'] = Variable<DateTime>(primerUso.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SeriesFiscalesCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('ejercicio: $ejercicio, ')
+          ..write('tipo: $tipo, ')
+          ..write('serie: $serie, ')
+          ..write('numeroInicial: $numeroInicial, ')
+          ..write('siguienteNumero: $siguienteNumero, ')
+          ..write('preparada: $preparada, ')
+          ..write('documentosPrevios: $documentosPrevios, ')
+          ..write('emisiones: $emisiones, ')
+          ..write('fechaConfiguracion: $fechaConfiguracion, ')
+          ..write('primerUso: $primerUso, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $EventosSerieFiscalTable extends EventosSerieFiscal
+    with TableInfo<$EventosSerieFiscalTable, EventoSerieFiscalRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EventosSerieFiscalTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ejercicioMeta = const VerificationMeta(
+    'ejercicio',
+  );
+  @override
+  late final GeneratedColumn<int> ejercicio = GeneratedColumn<int>(
+    'ejercicio',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _tipoMeta = const VerificationMeta('tipo');
+  @override
+  late final GeneratedColumn<String> tipo = GeneratedColumn<String>(
+    'tipo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _accionMeta = const VerificationMeta('accion');
+  @override
+  late final GeneratedColumn<String> accion = GeneratedColumn<String>(
+    'accion',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _detalleJsonMeta = const VerificationMeta(
+    'detalleJson',
+  );
+  @override
+  late final GeneratedColumn<String> detalleJson = GeneratedColumn<String>(
+    'detalle_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fechaMeta = const VerificationMeta('fecha');
+  @override
+  late final GeneratedColumn<DateTime> fecha = GeneratedColumn<DateTime>(
+    'fecha',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    id,
+    ejercicio,
+    tipo,
+    accion,
+    detalleJson,
+    fecha,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'eventos_serie_fiscal';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<EventoSerieFiscalRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('ejercicio')) {
+      context.handle(
+        _ejercicioMeta,
+        ejercicio.isAcceptableOrUnknown(data['ejercicio']!, _ejercicioMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_ejercicioMeta);
+    }
+    if (data.containsKey('tipo')) {
+      context.handle(
+        _tipoMeta,
+        tipo.isAcceptableOrUnknown(data['tipo']!, _tipoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tipoMeta);
+    }
+    if (data.containsKey('accion')) {
+      context.handle(
+        _accionMeta,
+        accion.isAcceptableOrUnknown(data['accion']!, _accionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_accionMeta);
+    }
+    if (data.containsKey('detalle_json')) {
+      context.handle(
+        _detalleJsonMeta,
+        detalleJson.isAcceptableOrUnknown(
+          data['detalle_json']!,
+          _detalleJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_detalleJsonMeta);
+    }
+    if (data.containsKey('fecha')) {
+      context.handle(
+        _fechaMeta,
+        fecha.isAcceptableOrUnknown(data['fecha']!, _fechaMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {tenantId, id};
+  @override
+  EventoSerieFiscalRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EventoSerieFiscalRow(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      ejercicio: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}ejercicio'],
+      )!,
+      tipo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tipo'],
+      )!,
+      accion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}accion'],
+      )!,
+      detalleJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}detalle_json'],
+      )!,
+      fecha: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha'],
+      )!,
+    );
+  }
+
+  @override
+  $EventosSerieFiscalTable createAlias(String alias) {
+    return $EventosSerieFiscalTable(attachedDatabase, alias);
+  }
+}
+
+class EventoSerieFiscalRow extends DataClass
+    implements Insertable<EventoSerieFiscalRow> {
+  final String tenantId;
+  final String id;
+  final int ejercicio;
+  final String tipo;
+  final String accion;
+  final String detalleJson;
+  final DateTime fecha;
+  const EventoSerieFiscalRow({
+    required this.tenantId,
+    required this.id,
+    required this.ejercicio,
+    required this.tipo,
+    required this.accion,
+    required this.detalleJson,
+    required this.fecha,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['id'] = Variable<String>(id);
+    map['ejercicio'] = Variable<int>(ejercicio);
+    map['tipo'] = Variable<String>(tipo);
+    map['accion'] = Variable<String>(accion);
+    map['detalle_json'] = Variable<String>(detalleJson);
+    map['fecha'] = Variable<DateTime>(fecha);
+    return map;
+  }
+
+  EventosSerieFiscalCompanion toCompanion(bool nullToAbsent) {
+    return EventosSerieFiscalCompanion(
+      tenantId: Value(tenantId),
+      id: Value(id),
+      ejercicio: Value(ejercicio),
+      tipo: Value(tipo),
+      accion: Value(accion),
+      detalleJson: Value(detalleJson),
+      fecha: Value(fecha),
+    );
+  }
+
+  factory EventoSerieFiscalRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EventoSerieFiscalRow(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      id: serializer.fromJson<String>(json['id']),
+      ejercicio: serializer.fromJson<int>(json['ejercicio']),
+      tipo: serializer.fromJson<String>(json['tipo']),
+      accion: serializer.fromJson<String>(json['accion']),
+      detalleJson: serializer.fromJson<String>(json['detalleJson']),
+      fecha: serializer.fromJson<DateTime>(json['fecha']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'id': serializer.toJson<String>(id),
+      'ejercicio': serializer.toJson<int>(ejercicio),
+      'tipo': serializer.toJson<String>(tipo),
+      'accion': serializer.toJson<String>(accion),
+      'detalleJson': serializer.toJson<String>(detalleJson),
+      'fecha': serializer.toJson<DateTime>(fecha),
+    };
+  }
+
+  EventoSerieFiscalRow copyWith({
+    String? tenantId,
+    String? id,
+    int? ejercicio,
+    String? tipo,
+    String? accion,
+    String? detalleJson,
+    DateTime? fecha,
+  }) => EventoSerieFiscalRow(
+    tenantId: tenantId ?? this.tenantId,
+    id: id ?? this.id,
+    ejercicio: ejercicio ?? this.ejercicio,
+    tipo: tipo ?? this.tipo,
+    accion: accion ?? this.accion,
+    detalleJson: detalleJson ?? this.detalleJson,
+    fecha: fecha ?? this.fecha,
+  );
+  EventoSerieFiscalRow copyWithCompanion(EventosSerieFiscalCompanion data) {
+    return EventoSerieFiscalRow(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      id: data.id.present ? data.id.value : this.id,
+      ejercicio: data.ejercicio.present ? data.ejercicio.value : this.ejercicio,
+      tipo: data.tipo.present ? data.tipo.value : this.tipo,
+      accion: data.accion.present ? data.accion.value : this.accion,
+      detalleJson: data.detalleJson.present
+          ? data.detalleJson.value
+          : this.detalleJson,
+      fecha: data.fecha.present ? data.fecha.value : this.fecha,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EventoSerieFiscalRow(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('ejercicio: $ejercicio, ')
+          ..write('tipo: $tipo, ')
+          ..write('accion: $accion, ')
+          ..write('detalleJson: $detalleJson, ')
+          ..write('fecha: $fecha')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(tenantId, id, ejercicio, tipo, accion, detalleJson, fecha);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EventoSerieFiscalRow &&
+          other.tenantId == this.tenantId &&
+          other.id == this.id &&
+          other.ejercicio == this.ejercicio &&
+          other.tipo == this.tipo &&
+          other.accion == this.accion &&
+          other.detalleJson == this.detalleJson &&
+          other.fecha == this.fecha);
+}
+
+class EventosSerieFiscalCompanion
+    extends UpdateCompanion<EventoSerieFiscalRow> {
+  final Value<String> tenantId;
+  final Value<String> id;
+  final Value<int> ejercicio;
+  final Value<String> tipo;
+  final Value<String> accion;
+  final Value<String> detalleJson;
+  final Value<DateTime> fecha;
+  final Value<int> rowid;
+  const EventosSerieFiscalCompanion({
+    this.tenantId = const Value.absent(),
+    this.id = const Value.absent(),
+    this.ejercicio = const Value.absent(),
+    this.tipo = const Value.absent(),
+    this.accion = const Value.absent(),
+    this.detalleJson = const Value.absent(),
+    this.fecha = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EventosSerieFiscalCompanion.insert({
+    required String tenantId,
+    required String id,
+    required int ejercicio,
+    required String tipo,
+    required String accion,
+    required String detalleJson,
+    required DateTime fecha,
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       id = Value(id),
+       ejercicio = Value(ejercicio),
+       tipo = Value(tipo),
+       accion = Value(accion),
+       detalleJson = Value(detalleJson),
+       fecha = Value(fecha);
+  static Insertable<EventoSerieFiscalRow> custom({
+    Expression<String>? tenantId,
+    Expression<String>? id,
+    Expression<int>? ejercicio,
+    Expression<String>? tipo,
+    Expression<String>? accion,
+    Expression<String>? detalleJson,
+    Expression<DateTime>? fecha,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (id != null) 'id': id,
+      if (ejercicio != null) 'ejercicio': ejercicio,
+      if (tipo != null) 'tipo': tipo,
+      if (accion != null) 'accion': accion,
+      if (detalleJson != null) 'detalle_json': detalleJson,
+      if (fecha != null) 'fecha': fecha,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EventosSerieFiscalCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? id,
+    Value<int>? ejercicio,
+    Value<String>? tipo,
+    Value<String>? accion,
+    Value<String>? detalleJson,
+    Value<DateTime>? fecha,
+    Value<int>? rowid,
+  }) {
+    return EventosSerieFiscalCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      id: id ?? this.id,
+      ejercicio: ejercicio ?? this.ejercicio,
+      tipo: tipo ?? this.tipo,
+      accion: accion ?? this.accion,
+      detalleJson: detalleJson ?? this.detalleJson,
+      fecha: fecha ?? this.fecha,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (ejercicio.present) {
+      map['ejercicio'] = Variable<int>(ejercicio.value);
+    }
+    if (tipo.present) {
+      map['tipo'] = Variable<String>(tipo.value);
+    }
+    if (accion.present) {
+      map['accion'] = Variable<String>(accion.value);
+    }
+    if (detalleJson.present) {
+      map['detalle_json'] = Variable<String>(detalleJson.value);
+    }
+    if (fecha.present) {
+      map['fecha'] = Variable<DateTime>(fecha.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EventosSerieFiscalCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('ejercicio: $ejercicio, ')
+          ..write('tipo: $tipo, ')
+          ..write('accion: $accion, ')
+          ..write('detalleJson: $detalleJson, ')
+          ..write('fecha: $fecha, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $ClientesTable extends Clientes with TableInfo<$ClientesTable, Cliente> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -33108,6 +34253,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $TenantsTable tenants = $TenantsTable(this);
+  late final $SeriesFiscalesTable seriesFiscales = $SeriesFiscalesTable(this);
+  late final $EventosSerieFiscalTable eventosSerieFiscal =
+      $EventosSerieFiscalTable(this);
   late final $ClientesTable clientes = $ClientesTable(this);
   late final $ExpedientesTable expedientes = $ExpedientesTable(this);
   late final $PresupuestosTable presupuestos = $PresupuestosTable(this);
@@ -33188,6 +34336,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $FacturaRecibidaComprasTable facturaRecibidaCompras =
       $FacturaRecibidaComprasTable(this);
   late final $PagosProveedorTable pagosProveedor = $PagosProveedorTable(this);
+  late final SeriesFiscalesDao seriesFiscalesDao = SeriesFiscalesDao(
+    this as AppDatabase,
+  );
   late final ExpedientesDao expedientesDao = ExpedientesDao(
     this as AppDatabase,
   );
@@ -33256,6 +34407,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     tenants,
+    seriesFiscales,
+    eventosSerieFiscal,
     clientes,
     expedientes,
     presupuestos,
@@ -33324,6 +34477,48 @@ typedef $$TenantsTableUpdateCompanionBuilder =
 final class $$TenantsTableReferences
     extends BaseReferences<_$AppDatabase, $TenantsTable, Tenant> {
   $$TenantsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$SeriesFiscalesTable, List<SerieFiscalRow>>
+  _seriesFiscalesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.seriesFiscales,
+    aliasName: 'tenants__id__series_fiscales__tenant_id',
+  );
+
+  $$SeriesFiscalesTableProcessedTableManager get seriesFiscalesRefs {
+    final manager = $$SeriesFiscalesTableTableManager(
+      $_db,
+      $_db.seriesFiscales,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_seriesFiscalesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $EventosSerieFiscalTable,
+    List<EventoSerieFiscalRow>
+  >
+  _eventosSerieFiscalRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.eventosSerieFiscal,
+        aliasName: 'tenants__id__eventos_serie_fiscal__tenant_id',
+      );
+
+  $$EventosSerieFiscalTableProcessedTableManager get eventosSerieFiscalRefs {
+    final manager = $$EventosSerieFiscalTableTableManager(
+      $_db,
+      $_db.eventosSerieFiscal,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _eventosSerieFiscalRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 
   static MultiTypedResultKey<$ClientesTable, List<Cliente>> _clientesRefsTable(
     _$AppDatabase db,
@@ -34343,6 +35538,56 @@ class $$TenantsTableFilterComposer
     column: $table.fechaModificacion,
     builder: (column) => ColumnFilters(column),
   );
+
+  Expression<bool> seriesFiscalesRefs(
+    Expression<bool> Function($$SeriesFiscalesTableFilterComposer f) f,
+  ) {
+    final $$SeriesFiscalesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.seriesFiscales,
+      getReferencedColumn: (t) => t.tenantId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SeriesFiscalesTableFilterComposer(
+            $db: $db,
+            $table: $db.seriesFiscales,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> eventosSerieFiscalRefs(
+    Expression<bool> Function($$EventosSerieFiscalTableFilterComposer f) f,
+  ) {
+    final $$EventosSerieFiscalTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.eventosSerieFiscal,
+      getReferencedColumn: (t) => t.tenantId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$EventosSerieFiscalTableFilterComposer(
+            $db: $db,
+            $table: $db.eventosSerieFiscal,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 
   Expression<bool> clientesRefs(
     Expression<bool> Function($$ClientesTableFilterComposer f) f,
@@ -35563,6 +36808,57 @@ class $$TenantsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  Expression<T> seriesFiscalesRefs<T extends Object>(
+    Expression<T> Function($$SeriesFiscalesTableAnnotationComposer a) f,
+  ) {
+    final $$SeriesFiscalesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.seriesFiscales,
+      getReferencedColumn: (t) => t.tenantId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SeriesFiscalesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.seriesFiscales,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> eventosSerieFiscalRefs<T extends Object>(
+    Expression<T> Function($$EventosSerieFiscalTableAnnotationComposer a) f,
+  ) {
+    final $$EventosSerieFiscalTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.eventosSerieFiscal,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$EventosSerieFiscalTableAnnotationComposer(
+                $db: $db,
+                $table: $db.eventosSerieFiscal,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
   Expression<T> clientesRefs<T extends Object>(
     Expression<T> Function($$ClientesTableAnnotationComposer a) f,
   ) {
@@ -36749,6 +38045,8 @@ class $$TenantsTableTableManager
           (Tenant, $$TenantsTableReferences),
           Tenant,
           PrefetchHooks Function({
+            bool seriesFiscalesRefs,
+            bool eventosSerieFiscalRefs,
             bool clientesRefs,
             bool expedientesRefs,
             bool presupuestosRefs,
@@ -36845,6 +38143,8 @@ class $$TenantsTableTableManager
               .toList(),
           prefetchHooksCallback:
               ({
+                seriesFiscalesRefs = false,
+                eventosSerieFiscalRefs = false,
                 clientesRefs = false,
                 expedientesRefs = false,
                 presupuestosRefs = false,
@@ -36894,6 +38194,8 @@ class $$TenantsTableTableManager
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
+                    if (seriesFiscalesRefs) db.seriesFiscales,
+                    if (eventosSerieFiscalRefs) db.eventosSerieFiscal,
                     if (clientesRefs) db.clientes,
                     if (expedientesRefs) db.expedientes,
                     if (presupuestosRefs) db.presupuestos,
@@ -36953,6 +38255,48 @@ class $$TenantsTableTableManager
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
                     return [
+                      if (seriesFiscalesRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          SerieFiscalRow
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._seriesFiscalesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).seriesFiscalesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (eventosSerieFiscalRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          EventoSerieFiscalRow
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._eventosSerieFiscalRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).eventosSerieFiscalRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                       if (clientesRefs)
                         await $_getPrefetchedData<
                           Tenant,
@@ -37915,6 +39259,8 @@ typedef $$TenantsTableProcessedTableManager =
       (Tenant, $$TenantsTableReferences),
       Tenant,
       PrefetchHooks Function({
+        bool seriesFiscalesRefs,
+        bool eventosSerieFiscalRefs,
         bool clientesRefs,
         bool expedientesRefs,
         bool presupuestosRefs,
@@ -37961,6 +39307,826 @@ typedef $$TenantsTableProcessedTableManager =
         bool facturaRecibidaComprasRefs,
         bool pagosProveedorRefs,
       })
+    >;
+typedef $$SeriesFiscalesTableCreateCompanionBuilder =
+    SeriesFiscalesCompanion Function({
+      required String tenantId,
+      required int ejercicio,
+      required String tipo,
+      required String serie,
+      required int numeroInicial,
+      required int siguienteNumero,
+      Value<bool> preparada,
+      Value<int> documentosPrevios,
+      Value<int> emisiones,
+      required DateTime fechaConfiguracion,
+      Value<DateTime?> primerUso,
+      Value<int> rowid,
+    });
+typedef $$SeriesFiscalesTableUpdateCompanionBuilder =
+    SeriesFiscalesCompanion Function({
+      Value<String> tenantId,
+      Value<int> ejercicio,
+      Value<String> tipo,
+      Value<String> serie,
+      Value<int> numeroInicial,
+      Value<int> siguienteNumero,
+      Value<bool> preparada,
+      Value<int> documentosPrevios,
+      Value<int> emisiones,
+      Value<DateTime> fechaConfiguracion,
+      Value<DateTime?> primerUso,
+      Value<int> rowid,
+    });
+
+final class $$SeriesFiscalesTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $SeriesFiscalesTable, SerieFiscalRow> {
+  $$SeriesFiscalesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) =>
+      db.tenants.createAlias('series_fiscales__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$SeriesFiscalesTableFilterComposer
+    extends Composer<_$AppDatabase, $SeriesFiscalesTable> {
+  $$SeriesFiscalesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get ejercicio => $composableBuilder(
+    column: $table.ejercicio,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tipo => $composableBuilder(
+    column: $table.tipo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get serie => $composableBuilder(
+    column: $table.serie,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get numeroInicial => $composableBuilder(
+    column: $table.numeroInicial,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get siguienteNumero => $composableBuilder(
+    column: $table.siguienteNumero,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get preparada => $composableBuilder(
+    column: $table.preparada,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get documentosPrevios => $composableBuilder(
+    column: $table.documentosPrevios,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get emisiones => $composableBuilder(
+    column: $table.emisiones,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fechaConfiguracion => $composableBuilder(
+    column: $table.fechaConfiguracion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get primerUso => $composableBuilder(
+    column: $table.primerUso,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SeriesFiscalesTableOrderingComposer
+    extends Composer<_$AppDatabase, $SeriesFiscalesTable> {
+  $$SeriesFiscalesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get ejercicio => $composableBuilder(
+    column: $table.ejercicio,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tipo => $composableBuilder(
+    column: $table.tipo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get serie => $composableBuilder(
+    column: $table.serie,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get numeroInicial => $composableBuilder(
+    column: $table.numeroInicial,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get siguienteNumero => $composableBuilder(
+    column: $table.siguienteNumero,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get preparada => $composableBuilder(
+    column: $table.preparada,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get documentosPrevios => $composableBuilder(
+    column: $table.documentosPrevios,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get emisiones => $composableBuilder(
+    column: $table.emisiones,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fechaConfiguracion => $composableBuilder(
+    column: $table.fechaConfiguracion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get primerUso => $composableBuilder(
+    column: $table.primerUso,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SeriesFiscalesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SeriesFiscalesTable> {
+  $$SeriesFiscalesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get ejercicio =>
+      $composableBuilder(column: $table.ejercicio, builder: (column) => column);
+
+  GeneratedColumn<String> get tipo =>
+      $composableBuilder(column: $table.tipo, builder: (column) => column);
+
+  GeneratedColumn<String> get serie =>
+      $composableBuilder(column: $table.serie, builder: (column) => column);
+
+  GeneratedColumn<int> get numeroInicial => $composableBuilder(
+    column: $table.numeroInicial,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get siguienteNumero => $composableBuilder(
+    column: $table.siguienteNumero,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get preparada =>
+      $composableBuilder(column: $table.preparada, builder: (column) => column);
+
+  GeneratedColumn<int> get documentosPrevios => $composableBuilder(
+    column: $table.documentosPrevios,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get emisiones =>
+      $composableBuilder(column: $table.emisiones, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get fechaConfiguracion => $composableBuilder(
+    column: $table.fechaConfiguracion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get primerUso =>
+      $composableBuilder(column: $table.primerUso, builder: (column) => column);
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SeriesFiscalesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SeriesFiscalesTable,
+          SerieFiscalRow,
+          $$SeriesFiscalesTableFilterComposer,
+          $$SeriesFiscalesTableOrderingComposer,
+          $$SeriesFiscalesTableAnnotationComposer,
+          $$SeriesFiscalesTableCreateCompanionBuilder,
+          $$SeriesFiscalesTableUpdateCompanionBuilder,
+          (SerieFiscalRow, $$SeriesFiscalesTableReferences),
+          SerieFiscalRow,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$SeriesFiscalesTableTableManager(
+    _$AppDatabase db,
+    $SeriesFiscalesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SeriesFiscalesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SeriesFiscalesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SeriesFiscalesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<int> ejercicio = const Value.absent(),
+                Value<String> tipo = const Value.absent(),
+                Value<String> serie = const Value.absent(),
+                Value<int> numeroInicial = const Value.absent(),
+                Value<int> siguienteNumero = const Value.absent(),
+                Value<bool> preparada = const Value.absent(),
+                Value<int> documentosPrevios = const Value.absent(),
+                Value<int> emisiones = const Value.absent(),
+                Value<DateTime> fechaConfiguracion = const Value.absent(),
+                Value<DateTime?> primerUso = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SeriesFiscalesCompanion(
+                tenantId: tenantId,
+                ejercicio: ejercicio,
+                tipo: tipo,
+                serie: serie,
+                numeroInicial: numeroInicial,
+                siguienteNumero: siguienteNumero,
+                preparada: preparada,
+                documentosPrevios: documentosPrevios,
+                emisiones: emisiones,
+                fechaConfiguracion: fechaConfiguracion,
+                primerUso: primerUso,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required int ejercicio,
+                required String tipo,
+                required String serie,
+                required int numeroInicial,
+                required int siguienteNumero,
+                Value<bool> preparada = const Value.absent(),
+                Value<int> documentosPrevios = const Value.absent(),
+                Value<int> emisiones = const Value.absent(),
+                required DateTime fechaConfiguracion,
+                Value<DateTime?> primerUso = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SeriesFiscalesCompanion.insert(
+                tenantId: tenantId,
+                ejercicio: ejercicio,
+                tipo: tipo,
+                serie: serie,
+                numeroInicial: numeroInicial,
+                siguienteNumero: siguienteNumero,
+                preparada: preparada,
+                documentosPrevios: documentosPrevios,
+                emisiones: emisiones,
+                fechaConfiguracion: fechaConfiguracion,
+                primerUso: primerUso,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$SeriesFiscalesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable: $$SeriesFiscalesTableReferences
+                                    ._tenantIdTable(db),
+                                referencedColumn:
+                                    $$SeriesFiscalesTableReferences
+                                        ._tenantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$SeriesFiscalesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SeriesFiscalesTable,
+      SerieFiscalRow,
+      $$SeriesFiscalesTableFilterComposer,
+      $$SeriesFiscalesTableOrderingComposer,
+      $$SeriesFiscalesTableAnnotationComposer,
+      $$SeriesFiscalesTableCreateCompanionBuilder,
+      $$SeriesFiscalesTableUpdateCompanionBuilder,
+      (SerieFiscalRow, $$SeriesFiscalesTableReferences),
+      SerieFiscalRow,
+      PrefetchHooks Function({bool tenantId})
+    >;
+typedef $$EventosSerieFiscalTableCreateCompanionBuilder =
+    EventosSerieFiscalCompanion Function({
+      required String tenantId,
+      required String id,
+      required int ejercicio,
+      required String tipo,
+      required String accion,
+      required String detalleJson,
+      required DateTime fecha,
+      Value<int> rowid,
+    });
+typedef $$EventosSerieFiscalTableUpdateCompanionBuilder =
+    EventosSerieFiscalCompanion Function({
+      Value<String> tenantId,
+      Value<String> id,
+      Value<int> ejercicio,
+      Value<String> tipo,
+      Value<String> accion,
+      Value<String> detalleJson,
+      Value<DateTime> fecha,
+      Value<int> rowid,
+    });
+
+final class $$EventosSerieFiscalTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $EventosSerieFiscalTable,
+          EventoSerieFiscalRow
+        > {
+  $$EventosSerieFiscalTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) =>
+      db.tenants.createAlias('eventos_serie_fiscal__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$EventosSerieFiscalTableFilterComposer
+    extends Composer<_$AppDatabase, $EventosSerieFiscalTable> {
+  $$EventosSerieFiscalTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get ejercicio => $composableBuilder(
+    column: $table.ejercicio,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tipo => $composableBuilder(
+    column: $table.tipo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get accion => $composableBuilder(
+    column: $table.accion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get detalleJson => $composableBuilder(
+    column: $table.detalleJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fecha => $composableBuilder(
+    column: $table.fecha,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$EventosSerieFiscalTableOrderingComposer
+    extends Composer<_$AppDatabase, $EventosSerieFiscalTable> {
+  $$EventosSerieFiscalTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get ejercicio => $composableBuilder(
+    column: $table.ejercicio,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tipo => $composableBuilder(
+    column: $table.tipo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get accion => $composableBuilder(
+    column: $table.accion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get detalleJson => $composableBuilder(
+    column: $table.detalleJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fecha => $composableBuilder(
+    column: $table.fecha,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$EventosSerieFiscalTableAnnotationComposer
+    extends Composer<_$AppDatabase, $EventosSerieFiscalTable> {
+  $$EventosSerieFiscalTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get ejercicio =>
+      $composableBuilder(column: $table.ejercicio, builder: (column) => column);
+
+  GeneratedColumn<String> get tipo =>
+      $composableBuilder(column: $table.tipo, builder: (column) => column);
+
+  GeneratedColumn<String> get accion =>
+      $composableBuilder(column: $table.accion, builder: (column) => column);
+
+  GeneratedColumn<String> get detalleJson => $composableBuilder(
+    column: $table.detalleJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fecha =>
+      $composableBuilder(column: $table.fecha, builder: (column) => column);
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$EventosSerieFiscalTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $EventosSerieFiscalTable,
+          EventoSerieFiscalRow,
+          $$EventosSerieFiscalTableFilterComposer,
+          $$EventosSerieFiscalTableOrderingComposer,
+          $$EventosSerieFiscalTableAnnotationComposer,
+          $$EventosSerieFiscalTableCreateCompanionBuilder,
+          $$EventosSerieFiscalTableUpdateCompanionBuilder,
+          (EventoSerieFiscalRow, $$EventosSerieFiscalTableReferences),
+          EventoSerieFiscalRow,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$EventosSerieFiscalTableTableManager(
+    _$AppDatabase db,
+    $EventosSerieFiscalTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EventosSerieFiscalTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$EventosSerieFiscalTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$EventosSerieFiscalTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> id = const Value.absent(),
+                Value<int> ejercicio = const Value.absent(),
+                Value<String> tipo = const Value.absent(),
+                Value<String> accion = const Value.absent(),
+                Value<String> detalleJson = const Value.absent(),
+                Value<DateTime> fecha = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EventosSerieFiscalCompanion(
+                tenantId: tenantId,
+                id: id,
+                ejercicio: ejercicio,
+                tipo: tipo,
+                accion: accion,
+                detalleJson: detalleJson,
+                fecha: fecha,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String id,
+                required int ejercicio,
+                required String tipo,
+                required String accion,
+                required String detalleJson,
+                required DateTime fecha,
+                Value<int> rowid = const Value.absent(),
+              }) => EventosSerieFiscalCompanion.insert(
+                tenantId: tenantId,
+                id: id,
+                ejercicio: ejercicio,
+                tipo: tipo,
+                accion: accion,
+                detalleJson: detalleJson,
+                fecha: fecha,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$EventosSerieFiscalTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable:
+                                    $$EventosSerieFiscalTableReferences
+                                        ._tenantIdTable(db),
+                                referencedColumn:
+                                    $$EventosSerieFiscalTableReferences
+                                        ._tenantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$EventosSerieFiscalTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $EventosSerieFiscalTable,
+      EventoSerieFiscalRow,
+      $$EventosSerieFiscalTableFilterComposer,
+      $$EventosSerieFiscalTableOrderingComposer,
+      $$EventosSerieFiscalTableAnnotationComposer,
+      $$EventosSerieFiscalTableCreateCompanionBuilder,
+      $$EventosSerieFiscalTableUpdateCompanionBuilder,
+      (EventoSerieFiscalRow, $$EventosSerieFiscalTableReferences),
+      EventoSerieFiscalRow,
+      PrefetchHooks Function({bool tenantId})
     >;
 typedef $$ClientesTableCreateCompanionBuilder =
     ClientesCompanion Function({
@@ -58980,6 +61146,10 @@ class $AppDatabaseManager {
   $AppDatabaseManager(this._db);
   $$TenantsTableTableManager get tenants =>
       $$TenantsTableTableManager(_db, _db.tenants);
+  $$SeriesFiscalesTableTableManager get seriesFiscales =>
+      $$SeriesFiscalesTableTableManager(_db, _db.seriesFiscales);
+  $$EventosSerieFiscalTableTableManager get eventosSerieFiscal =>
+      $$EventosSerieFiscalTableTableManager(_db, _db.eventosSerieFiscal);
   $$ClientesTableTableManager get clientes =>
       $$ClientesTableTableManager(_db, _db.clientes);
   $$ExpedientesTableTableManager get expedientes =>

@@ -2,6 +2,16 @@
 
 ## No publicado
 
+### PROD-3 — Arranque fiscal seguro
+
+- Schema 34: series y secuencias explícitas por tenant, ejercicio y tipo; auditoría local de configuración y emisión, con migración sin renumeración ni configuración automática.
+- Series ordinaria/rectificativa personalizables, inicio elegido y estado de preparación; interfaz con entorno, ejercicio, próximos números y confirmación.
+- Numeración asignada transaccionalmente con documento, PDF y auditoría; prevención de duplicados, doble emisión y consumo parcial.
+- Bloqueados cambios tras primer uso; continuidad histórica validada, años independientes y backup compatible.
+- PROD-2 publicado y aceptado manualmente; PROD-3 pendiente de aceptación manual en DEV. Sin datos/facturas reales, sin push, PROD-4 y Fase 5 no iniciados.
+- Análisis sin incidencias, 22 pruebas nuevas y suite completa de 388 pruebas superadas; compilación Windows debug en copia aislada idéntica y revisión de diff sin errores.
+- [Modelo, verificaciones y aceptación manual](PROD3_ARRANQUE_FISCAL.md).
+
 ### PROD-2 — Presupuestos aceptados protegidos
 
 - Schema 33: snapshot comercial, PDF definitivo, hash y fecha dentro de SQLite, con migración sin backfill legacy y backup compatible.

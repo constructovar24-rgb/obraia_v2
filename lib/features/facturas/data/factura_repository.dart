@@ -1,3 +1,4 @@
+import '../../fiscal/data/configuracion_fiscal_repository.dart';
 import 'dart:async';
 
 import 'package:crypto/crypto.dart';
@@ -295,18 +296,6 @@ class FacturaRepository {
       throw const FacturaPdfIntegridadException();
     }
     return documento.pdf;
-  }
-
-  Future<(int, int, String)> generarCodigoFactura(
-    int year, {
-    String serie = 'FAC',
-  }) async {
-    final prefijo = '$serie-$year-';
-    final siguiente =
-        await database.facturasDao.obtenerMayorNumeroLegal(year, serie: serie) +
-        1;
-    final correlativo = siguiente.toString().padLeft(4, '0');
-    return (year, siguiente, '$prefijo$correlativo');
   }
 
   Future<String> crearFactura({
@@ -635,7 +624,9 @@ class FacturaRepository {
   }
 
   Future<void> emitirFactura(String facturaId) async {
-    await database.transaction(() async {
+    await ConfiguracionFiscalRepository(
+      database,
+    ).ejecutarEmision(facturaId, 'ordinaria', (numeracion) async {
       final factura = await database.facturasDao.obtenerPorId(facturaId);
       if (factura == null) {
         throw const FacturaEmisionException('La factura no existe.');
@@ -672,9 +663,9 @@ class FacturaRepository {
         totalCobrado: cobrado,
         fechaVencimiento: factura.fechaVencimiento,
       );
-      final (anio, numero, codigo) = await generarCodigoFactura(
-        factura.fecha.year,
-      );
+      final anio = numeracion.ejercicio;
+      final numero = numeracion.numero;
+      final codigo = numeracion.codigo;
       final empresa = await database.empresaConfiguracionDao
           .obtenerConfiguracion();
       if (empresa == null ||
@@ -708,6 +699,7 @@ class FacturaRepository {
           codigo: Value(codigo),
           anioNumeracion: Value(anio),
           numeroLegal: Value(numero),
+          serie: Value(numeracion.serie),
           estado: Value(estadoFacturaToString(estado)),
           fechaEmision: Value(fechaEmision),
           clienteNombreHistorico: Value(

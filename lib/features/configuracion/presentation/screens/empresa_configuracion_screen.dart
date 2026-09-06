@@ -1,3 +1,4 @@
+import '../../../fiscal/presentation/screens/configuracion_fiscal_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -96,6 +97,19 @@ class _EmpresaConfiguracionScreenState
                   child: Column(
                     children: [
                       const EnvironmentSelector(),
+                      ListTile(
+                        title: const Text('Numeración fiscal'),
+                        subtitle: const Text(
+                          'Preparar ejercicio, series y números antes de emitir.',
+                        ),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const ConfiguracionFiscalScreen(),
+                          ),
+                        ),
+                      ),
                       const SizedBox(height: 20),
                       Align(
                         alignment: Alignment.centerLeft,

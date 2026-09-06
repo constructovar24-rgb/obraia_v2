@@ -1,3 +1,4 @@
+import '../../fiscal/data/configuracion_fiscal_repository.dart';
 import 'package:crypto/crypto.dart';
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
@@ -13,7 +14,6 @@ import '../domain/rectificativa.dart';
 import '../domain/redondeo_monetario.dart';
 import '../domain/tipo_documento_factura.dart';
 import '../services/factura_pdf_service.dart';
-import 'factura_repository.dart';
 
 class RectificativaRepository {
   RectificativaRepository(this.database)
@@ -365,109 +365,120 @@ class RectificativaRepository {
     );
   });
 
-  Future<void> emitir(String facturaId) => database.transaction(() async {
-    final factura = await database.facturasDao.obtenerPorId(facturaId);
-    if (factura == null || !factura.esRectificativa) {
-      throw const RectificativaException('La rectificativa no existe.');
-    }
-    if (factura.estado != EstadoFactura.borrador) {
-      throw const RectificativaException(
-        'Solo puede emitirse una rectificativa en borrador.',
-      );
-    }
-    final original = await database.facturasDao.obtenerPorId(
-      factura.facturaRectificadaId!,
-    );
-    final raiz = await database.facturasDao.obtenerPorId(
-      factura.facturaRaizId!,
-    );
-    if (original == null || raiz == null) {
-      throw const RectificativaException(
-        'La cadena de rectificación está rota.',
-      );
-    }
-    _validarDocumentoOriginalSeguro(raiz);
-    if (monedaACentimos(factura.efectoTotal) > 0) {
-      final resumen = await _credito.obtenerResumen(raiz.id);
-      await _credito.validarCreditoTrasCambio(
-        facturaRaizId: raiz.id,
-        nuevoNetoDocumental: redondearMoneda(
-          resumen.netoDocumental + factura.efectoTotal,
-        ),
-      );
-    }
-    await _validarLimitesAlEmitir(factura: factura, raiz: raiz);
-    final (anio, numero, codigo) = await FacturaRepository(
-      database,
-    ).generarCodigoFactura(factura.fecha.year, serie: 'RECT');
-    await database.facturasDao.actualizarEmision(
-      facturaId,
-      FacturasCompanion(
-        codigo: Value(codigo),
-        anioNumeracion: Value(anio),
-        numeroLegal: Value(numero),
-        estado: const Value('emitida'),
-        fechaEmision: Value(DateTime.now()),
-        clienteNombreHistorico: Value(raiz.clienteNombreHistorico),
-        clienteNifHistorico: Value(raiz.clienteNifHistorico),
-        clienteDireccionHistorica: Value(raiz.clienteDireccionHistorica),
-        clienteTelefonoHistorico: Value(raiz.clienteTelefonoHistorico),
-        clienteEmailHistorico: Value(raiz.clienteEmailHistorico),
-        empresaNombreHistorico: Value(raiz.empresaNombreHistorico),
-        empresaCifHistorico: Value(raiz.empresaCifHistorico),
-        empresaDireccionHistorica: Value(raiz.empresaDireccionHistorica),
-        empresaCodigoPostalHistorico: Value(raiz.empresaCodigoPostalHistorico),
-        empresaPoblacionHistorica: Value(raiz.empresaPoblacionHistorica),
-        empresaProvinciaHistorica: Value(raiz.empresaProvinciaHistorica),
-        empresaTelefonoHistorico: Value(raiz.empresaTelefonoHistorico),
-        empresaEmailHistorico: Value(raiz.empresaEmailHistorico),
-        empresaWebHistorica: Value(raiz.empresaWebHistorica),
-        expedienteOrigenIdHistorico: Value(raiz.expedienteOrigenIdHistorico),
-        expedienteCodigoHistorico: Value(raiz.expedienteCodigoHistorico),
-        expedienteNombreHistorico: Value(raiz.expedienteNombreHistorico),
-        presupuestoCodigoHistorico: Value(raiz.presupuestoCodigoHistorico),
-        fechaModificacion: Value(DateTime.now()),
-      ),
-    );
-    final emitida = (await database.facturasDao.obtenerPorId(facturaId))!;
-    final lineas = await database.facturaLineasDao.obtenerPorFactura(facturaId);
-    final empresa = await database.empresaConfiguracionDao
-        .obtenerConfiguracion();
-    if (empresa == null) {
-      throw const RectificativaException(
-        'Falta la configuración de empresa para generar el PDF.',
-      );
-    }
-    final pdf = await FacturaPdfService().generarPdf(
-      factura: emitida,
-      facturaOriginal: original,
-      lineas: lineas,
-      empresaConfiguracion: empresa,
-    );
-    await database.facturaDocumentosEmitidosDao.insertar(
-      facturaId: facturaId,
-      pdf: pdf,
-      sha256: sha256.convert(pdf).toString(),
-    );
-    final saldo = await calcularSaldo(emitida);
-    final expedienteId = await _expedienteId(raiz.presupuestoOrigenId);
-    if (expedienteId != null) {
-      await _timeline.registrarRectificativaEmitida(
-        expedienteId: expedienteId,
-        facturaId: facturaId,
-        titulo: 'Rectificativa emitida',
-        descripcion: '$codigo rectifica ${original.codigo}',
-      );
-      if (saldo.saldoAFavor > 0) {
-        await _timeline.registrarSaldoFavorGenerado(
-          expedienteId: expedienteId,
-          facturaId: facturaId,
-          titulo: 'Saldo a favor generado',
-          descripcion: '${saldo.saldoAFavor.toStringAsFixed(2)} € pendientes',
+  Future<void> emitir(
+    String facturaId,
+  ) => ConfiguracionFiscalRepository(database).ejecutarEmision(
+    facturaId,
+    'rectificativa',
+    (numeracion) async {
+      final factura = await database.facturasDao.obtenerPorId(facturaId);
+      if (factura == null || !factura.esRectificativa) {
+        throw const RectificativaException('La rectificativa no existe.');
+      }
+      if (factura.estado != EstadoFactura.borrador) {
+        throw const RectificativaException(
+          'Solo puede emitirse una rectificativa en borrador.',
         );
       }
-    }
-  });
+      final original = await database.facturasDao.obtenerPorId(
+        factura.facturaRectificadaId!,
+      );
+      final raiz = await database.facturasDao.obtenerPorId(
+        factura.facturaRaizId!,
+      );
+      if (original == null || raiz == null) {
+        throw const RectificativaException(
+          'La cadena de rectificación está rota.',
+        );
+      }
+      _validarDocumentoOriginalSeguro(raiz);
+      if (monedaACentimos(factura.efectoTotal) > 0) {
+        final resumen = await _credito.obtenerResumen(raiz.id);
+        await _credito.validarCreditoTrasCambio(
+          facturaRaizId: raiz.id,
+          nuevoNetoDocumental: redondearMoneda(
+            resumen.netoDocumental + factura.efectoTotal,
+          ),
+        );
+      }
+      await _validarLimitesAlEmitir(factura: factura, raiz: raiz);
+      final anio = numeracion.ejercicio;
+      final numero = numeracion.numero;
+      final codigo = numeracion.codigo;
+      await database.facturasDao.actualizarEmision(
+        facturaId,
+        FacturasCompanion(
+          codigo: Value(codigo),
+          anioNumeracion: Value(anio),
+          numeroLegal: Value(numero),
+          serie: Value(numeracion.serie),
+          estado: const Value('emitida'),
+          fechaEmision: Value(DateTime.now()),
+          clienteNombreHistorico: Value(raiz.clienteNombreHistorico),
+          clienteNifHistorico: Value(raiz.clienteNifHistorico),
+          clienteDireccionHistorica: Value(raiz.clienteDireccionHistorica),
+          clienteTelefonoHistorico: Value(raiz.clienteTelefonoHistorico),
+          clienteEmailHistorico: Value(raiz.clienteEmailHistorico),
+          empresaNombreHistorico: Value(raiz.empresaNombreHistorico),
+          empresaCifHistorico: Value(raiz.empresaCifHistorico),
+          empresaDireccionHistorica: Value(raiz.empresaDireccionHistorica),
+          empresaCodigoPostalHistorico: Value(
+            raiz.empresaCodigoPostalHistorico,
+          ),
+          empresaPoblacionHistorica: Value(raiz.empresaPoblacionHistorica),
+          empresaProvinciaHistorica: Value(raiz.empresaProvinciaHistorica),
+          empresaTelefonoHistorico: Value(raiz.empresaTelefonoHistorico),
+          empresaEmailHistorico: Value(raiz.empresaEmailHistorico),
+          empresaWebHistorica: Value(raiz.empresaWebHistorica),
+          expedienteOrigenIdHistorico: Value(raiz.expedienteOrigenIdHistorico),
+          expedienteCodigoHistorico: Value(raiz.expedienteCodigoHistorico),
+          expedienteNombreHistorico: Value(raiz.expedienteNombreHistorico),
+          presupuestoCodigoHistorico: Value(raiz.presupuestoCodigoHistorico),
+          fechaModificacion: Value(DateTime.now()),
+        ),
+      );
+      final emitida = (await database.facturasDao.obtenerPorId(facturaId))!;
+      final lineas = await database.facturaLineasDao.obtenerPorFactura(
+        facturaId,
+      );
+      final empresa = await database.empresaConfiguracionDao
+          .obtenerConfiguracion();
+      if (empresa == null) {
+        throw const RectificativaException(
+          'Falta la configuración de empresa para generar el PDF.',
+        );
+      }
+      final pdf = await FacturaPdfService().generarPdf(
+        factura: emitida,
+        facturaOriginal: original,
+        lineas: lineas,
+        empresaConfiguracion: empresa,
+      );
+      await database.facturaDocumentosEmitidosDao.insertar(
+        facturaId: facturaId,
+        pdf: pdf,
+        sha256: sha256.convert(pdf).toString(),
+      );
+      final saldo = await calcularSaldo(emitida);
+      final expedienteId = await _expedienteId(raiz.presupuestoOrigenId);
+      if (expedienteId != null) {
+        await _timeline.registrarRectificativaEmitida(
+          expedienteId: expedienteId,
+          facturaId: facturaId,
+          titulo: 'Rectificativa emitida',
+          descripcion: '$codigo rectifica ${original.codigo}',
+        );
+        if (saldo.saldoAFavor > 0) {
+          await _timeline.registrarSaldoFavorGenerado(
+            expedienteId: expedienteId,
+            facturaId: facturaId,
+            titulo: 'Saldo a favor generado',
+            descripcion: '${saldo.saldoAFavor.toStringAsFixed(2)} € pendientes',
+          );
+        }
+      }
+    },
+  );
 
   Future<SaldoRectificacion> calcularSaldo(Factura factura) async {
     final raizId = factura.facturaRaizId ?? factura.id;

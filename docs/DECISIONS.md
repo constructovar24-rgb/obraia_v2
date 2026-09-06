@@ -130,3 +130,11 @@ Este documento está preparado para registrar decisiones arquitectónicas, tecno
 - El original comercial aceptado se preserva como snapshot JSON versionado y PDF binario con SHA-256 dentro de SQLite, junto a la aceptación transaccional y el plan económico. Las consultas devuelven los bytes guardados, sin reconstruir desde maestros mutables.
 - Schema 33 no inventa documentos legacy. Índice y triggers impiden nuevas referencias duplicadas sin exigir una limpieza o renumeración de las antiguas. La aceptación rechaza referencias ambiguas.
 - Modificar una propuesta aceptada requiere otra propuesta; duplicación guiada y versionado formal quedan para una entrega posterior. [Detalle](PROD2_PRESUPUESTO_SEGURO.md).
+
+
+## Arranque fiscal — PROD-3 (2026-09-06)
+
+- Una configuración por tenant/ejercicio/tipo con serie propia y contador persistido; no se asigna numeración mediante MAX + 1. La referencia legal es única por tenant/serie/ejercicio/número.
+- Preparación explícita en DEV y PROD sin valores fiscales reales por defecto. Emisión, contador, snapshot/PDF y auditoría comparten transacción; los cambios manuales quedan bloqueados tras uso.
+- Schema 34 conserva el histórico y deja nuevas configuraciones vacías. Continuidad histórica exige validación explícita y no renumera documentos.
+- No se implementa autoridad central entre copias de base de datos: tras restauraciones antiguas se debe revisar la continuidad externa antes de reemitir. [Modelo y límites](PROD3_ARRANQUE_FISCAL.md).

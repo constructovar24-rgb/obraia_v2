@@ -1,3 +1,6 @@
+import 'tables/series_fiscales.dart';
+import 'dao/series_fiscales_dao.dart';
+import 'serie_fiscal_schema.dart';
 import 'dart:io';
 
 import 'package:drift/drift.dart';
@@ -78,6 +81,8 @@ part 'app_database.g.dart';
 
 @DriftDatabase(
   tables: [
+    SeriesFiscales,
+    EventosSerieFiscal,
     Tenants,
     Expedientes,
     Clientes,
@@ -126,6 +131,7 @@ part 'app_database.g.dart';
     PagosProveedor,
   ],
   daos: [
+    SeriesFiscalesDao,
     ExpedientesDao,
     ClientesDao,
     PresupuestosDao,
@@ -182,7 +188,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 33;
+  int get schemaVersion => 34;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -200,6 +206,7 @@ class AppDatabase extends _$AppDatabase {
       await _crearIndicesMultiTenant();
       await _inicializarEconomiaPorTenant(tenantId);
       await crearProteccionesPresupuesto(this);
+      await crearProteccionesSeriesFiscales(this);
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
@@ -503,6 +510,15 @@ class AppDatabase extends _$AppDatabase {
           await m.createTable(presupuestoDocumentosAceptados);
         }
         await crearProteccionesPresupuesto(this);
+      }
+      if (from < 34 && await _existeTabla('facturas')) {
+        if (!await _existeTabla('series_fiscales')) {
+          await m.createTable(seriesFiscales);
+        }
+        if (!await _existeTabla('eventos_serie_fiscal')) {
+          await m.createTable(eventosSerieFiscal);
+        }
+        await crearProteccionesSeriesFiscales(this);
       }
     },
     beforeOpen: (details) async {
@@ -1129,7 +1145,7 @@ LazyDatabase _openConnection(File? requestedFile, AppEnvironment environment) {
     await file.parent.create(recursive: true);
     await const PreMigrationRecoveryService().protectBeforeUpgrade(
       file,
-      supportedVersions: {22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32},
+      supportedVersions: {22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33},
     );
     return NativeDatabase(file);
   });

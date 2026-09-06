@@ -1,3 +1,4 @@
+import '../../../support/fiscal_test_support.dart';
 import 'package:drift/drift.dart' hide isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -24,6 +25,10 @@ void main() {
 
   setUp(() async {
     database = AppDatabase.forTesting(NativeDatabase.memory());
+    await prepararFiscalPrueba(database);
+    if (DateTime.now().year != 2026) {
+      await prepararFiscalPrueba(database, ejercicio: 2026);
+    }
     parciales = FacturacionParcialRepository(database);
     facturas = FacturaRepository(database);
     rectificativas = RectificativaRepository(database);

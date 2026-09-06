@@ -59,12 +59,12 @@ void main() {
       db = AppDatabase.forTesting(NativeDatabase(file));
       try {
         await db.ensureReady();
-        expect(db.schemaVersion, 33);
+        expect(db.schemaVersion, 34);
         expect(
           (await db.customSelect('PRAGMA user_version').getSingle()).read<int>(
             'user_version',
           ),
-          33,
+          34,
         );
         for (final table in tables) {
           expect(
