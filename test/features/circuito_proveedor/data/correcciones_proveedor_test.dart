@@ -511,4 +511,32 @@ void main() {
       'a',
     );
   });
+
+  test(
+    'documento anulado conserva importe histórico pero no deuda pendiente',
+    () async {
+      final id = await registrada();
+      await r.verificarPago(id, motivo: 'Justificantes ficticios');
+      await r.anularFactura(id, motivo: 'Error de registro');
+      final f = (await r.listarFichas()).single;
+      expect(f['total'], 12100);
+      expect(f['estado'], 'anulada');
+      expect(f['pendiente'], 0);
+    },
+  );
+
+  test('control de factura histórica conserva la obra ya asignada', () async {
+    final id = await registrada();
+    await db.customStatement(
+      'DROP TRIGGER prod4_control_facturas_proveedor_no_delete',
+    );
+    await db.customStatement('DELETE FROM control_facturas_proveedor');
+    expect((await r.listarFichas()).single['destino'], 'obra');
+    await r.verificarPago(id, motivo: 'Revisión histórica ficticia');
+    expect((await r.listarFichas()).single['destino'], 'obra');
+    expect(
+      (await db.circuitoProveedorDao.asignaciones(id)).single.expedienteId,
+      'a',
+    );
+  });
 }

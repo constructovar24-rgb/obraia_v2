@@ -6,6 +6,7 @@ extension CorreccionesProveedor on CircuitoProveedorRepository {
     if (actual != null) return actual;
     final f = await database.circuitoProveedorDao.factura(id);
     if (f == null) throw StateError('Factura no disponible.');
+    final asignaciones = await database.circuitoProveedorDao.asignaciones(id);
     await database.circuitoProveedorDao.guardarControl(
       ControlFacturasProveedorCompanion.insert(
         tenantId: database.activeTenantId,
@@ -14,6 +15,11 @@ extension CorreccionesProveedor on CircuitoProveedorRepository {
           f.estado == 'cancelada' ? 'anulada' : 'registrada',
         ),
         pagoVerificado: const Value(true),
+        destino: Value(
+          asignaciones.any((a) => a.expedienteId != null)
+              ? 'obra'
+              : 'sinAsignar',
+        ),
       ),
     );
     return (await database.circuitoProveedorDao.control(id))!;
@@ -508,7 +514,9 @@ extension CorreccionesProveedor on CircuitoProveedorRepository {
             : f.estado,
         'pagado': pagado,
         'abonos': abonos,
-        'pendiente': c?.pagoVerificado == false
+        'pendiente': c?.estadoDocumento == 'anulada' || f.estado == 'cancelada'
+            ? 0
+            : c?.pagoVerificado == false
             ? null
             : f.totalCentimos - abonos - pagado,
         'destino':

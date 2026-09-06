@@ -1,7 +1,7 @@
 # PROD-4 — Correcciones de proveedores
 
 ## Estado
-Implementación técnicamente preparada y verificada. Inicio en main y origin/main `02f55f2507456f067ea4292a36d5fd8571945291`, schema 34; única modificación previa `analysis_options.yaml`, preservada. PROD-3 publicado y cerrado. PROD-4 pendiente de aceptación manual en Desarrollo. No push, PROD-5, PROD-6 ni Fase 5.
+Implementación técnicamente preparada y verificada. Inicio en main y origin/main `02f55f2507456f067ea4292a36d5fd8571945291`, schema 34; única modificación previa `analysis_options.yaml`, preservada. PROD-3 publicado y cerrado. Aceptación manual de PROD-4 superada en Desarrollo según confirmación del usuario; cierre técnico completado; publicación pendiente de autorización. No push, PROD-5, PROD-6 ni Fase 5.
 
 ## Modelo y conservación
 Schema 35 añade tres tablas tenant-scoped, sin reescribir filas anteriores:
@@ -60,7 +60,7 @@ No se implementa importador ni se lee Año 2026.xlsx. Se admiten ejercicios ante
 La auditoría es local; no protege frente a manipulación externa del SQLite ni coordina copias independientes. No se altera la facturación emitida. PROD-5 (originales externos), PROD-6 y Fase 5 no iniciados.
 
 ## Verificación
-Verificación técnica superada: 23 pruebas nuevas (20 de repositorio, 2 de interfaz y 1 de migración/backup), 27 pruebas específicas del circuito y suite completa de 411 pruebas. Análisis sin incidencias; Windows debug compilado en copia aislada con 359 archivos relevantes idénticos. Formato propio y diff sin errores. Pruebas únicamente en memoria/temporales, sin limpiar los datos ficticios actuales.
+Verificación técnica superada: 25 pruebas nuevas (22 de repositorio, 2 de interfaz y 1 de migración/backup); 28 pruebas del circuito, 28 de base de datos/migraciones y 41 de compras/proveedores/economía superadas. Suite completa: 413 pruebas. Análisis sin incidencias; Windows debug compilado en copia aislada con 359 archivos relevantes idénticos. Formato propio y diff sin errores. Pruebas únicamente en memoria/temporales, sin limpiar los datos ficticios actuales.
 
 ## Aceptación manual propuesta — solo Desarrollo
 1. Confirmar Desarrollo y utilizar un proveedor ficticio; conservar los datos existentes.
@@ -81,4 +81,8 @@ Verificación técnica superada: 23 pruebas nuevas (20 de repositorio, 2 de inte
 16. Revisar referencias, importes, pagos y Timeline. Si se valida restore, usar únicamente una copia de prueba aislada, nunca las bases actuales.
 17. Registrar resultados y conservar los documentos ficticios. No utilizar Producción, no introducir datos reales ni iniciar otro bloque.
 
-Esta aceptación manual está pendiente; no se presenta como realizada.
+Aceptación manual superada según confirmación del usuario, exclusivamente en Desarrollo con datos ficticios. PROD4-001 se corrigió de 121,00 € a 133,10 € antes de consolidar; el pago de 50,00 € dejó 83,10 € y su reversión restauró 133,10 €. La sustitución conservó el original anulado y consolidó 145,20 €. ABONO-TEST-001 redujo el saldo a 121,00 €; al anularlo, el abono dejó de computar y el saldo volvió a 145,20 €, manteniendo todo el histórico.
+
+El procedimiento ampliado anterior se conserva como referencia. No se atribuyen al usuario comprobaciones manuales adicionales a las comunicadas; la revisión técnica utiliza exclusivamente bases aisladas.
+
+En la revisión se reprodujeron y corrigieron dos defectos: el saldo mostrado de una factura anulada ahora es cero, conservando el importe histórico; y el control creado para una factura histórica conserva la identificación de su obra existente. No cambia schema 35 ni se reescriben históricos.
