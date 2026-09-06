@@ -30,3 +30,7 @@ final senalesSuministrosObraProvider =
           .watch(circuitoProveedorRepositoryProvider)
           .obtenerSenalesObra(expedienteId, DateTime.now()),
     );
+
+final fichasProveedorProvider = FutureProvider<List<Map<String, dynamic>>>(
+  (ref) => ref.watch(circuitoProveedorRepositoryProvider).listarFichas(),
+);

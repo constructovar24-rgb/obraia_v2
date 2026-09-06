@@ -1,14 +1,19 @@
+import 'dart:convert';
+import '../../timeline/data/timeline_repository.dart';
+import '../../timeline/domain/timeline_event.dart';
 // ignore_for_file: curly_braces_in_flow_control_structures
 
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../database/app_database.dart';
+import '../../../database/app_database.dart' hide TimelineEvent;
 import '../../compras/data/compra_repository.dart';
 import '../../compras/domain/compra.dart' as domain;
 import '../../economia/data/hecho_coste_repository.dart';
 import '../../facturas/domain/redondeo_monetario.dart';
 import '../domain/circuito_proveedor.dart';
+
+part 'correcciones_proveedor.dart';
 
 class CircuitoProveedorRepository {
   CircuitoProveedorRepository(this.database)
@@ -86,6 +91,18 @@ class CircuitoProveedorRepository {
       throw StateError(
         'La base debe quedar totalmente asignada, incluida la parte general.',
       );
+    if (input.asignaciones.any(
+          (a) => a.importeCentimos < 0 || a.ivaNoRecuperableCentimos < 0,
+        ) ||
+        input.asignaciones.fold<int>(
+              0,
+              (s, a) => s + a.ivaNoRecuperableCentimos,
+            ) >
+            input.ivaCentimos)
+      throw ArgumentError(
+        'Revisa el IVA no recuperable y los importes del reparto.',
+      );
+    await _duplicado(input);
     final id = _uuid.v4();
     final now = DateTime.now().toUtc();
     await database.circuitoProveedorDao.insertarFactura(
@@ -93,7 +110,8 @@ class CircuitoProveedorRepository {
         tenantId: database.activeTenantId,
         id: id,
         proveedorId: input.proveedorId,
-        numeroNormalizado: _normalizar(input.numero),
+        numeroNormalizado:
+            '${input.fecha.year}|${_normalizar(input.numero)}${input.tipo == 'factura' && input.originalId != null ? '|correccion:${input.originalId!}' : ''}',
         numeroProveedor: input.numero.trim(),
         fechaFactura: input.fecha,
         fechaVencimiento: Value(input.vencimiento),
@@ -132,6 +150,21 @@ class CircuitoProveedorRepository {
         ),
       );
     }
+    await database.circuitoProveedorDao.guardarControl(
+      ControlFacturasProveedorCompanion.insert(
+        tenantId: database.activeTenantId,
+        facturaId: id,
+        tipo: Value(input.tipo),
+        originalId: Value(input.originalId),
+        pagoVerificado: Value(input.pagoVerificado),
+        destino: Value(
+          input.asignaciones.any((a) => a.expedienteId != null)
+              ? 'obra'
+              : input.destino,
+        ),
+      ),
+    );
+    await _auditar(id, 'Factura creada', 'Documento recibido en borrador');
     return id;
   });
 
@@ -150,6 +183,15 @@ class CircuitoProveedorRepository {
     final factura = await database.circuitoProveedorDao.factura(a.facturaId);
     if (factura == null || factura.estado == 'cancelada')
       throw StateError('Factura no disponible.');
+    final control = await _control(factura.id);
+    if (control.estadoDocumento != 'registrada' || control.tipo != 'factura')
+      throw StateError('Consolida primero la factura ordinaria.');
+    if ((await database.circuitoProveedorDao.eventos(
+      factura.id,
+    )).any((e) => e.accion == 'Cambio de imputación'))
+      throw StateError(
+        'La imputación ya está gestionada por su historial de correcciones.',
+      );
     var compraId = compraExistenteId;
     if (compraId == null) {
       compraId = _uuid.v4();
@@ -165,7 +207,9 @@ class CircuitoProveedorRepository {
           baseImponible: a.baseCentimos / 100,
           ivaPorcentaje: 0,
           importeTotal: (a.baseCentimos + a.ivaNoRecuperableCentimos) / 100,
-          estado: domain.CompraEstado.pendiente,
+          estado: control.pagoVerificado
+              ? domain.CompraEstado.pendiente
+              : domain.CompraEstado.noVerificado,
         ),
       );
     } else {
@@ -204,9 +248,17 @@ class CircuitoProveedorRepository {
     final factura = await database.circuitoProveedorDao.factura(facturaId);
     if (factura == null || factura.estado == 'cancelada')
       throw StateError('Factura no disponible.');
+    final control = await _control(facturaId);
+    if (control.estadoDocumento != 'registrada' ||
+        !control.pagoVerificado ||
+        control.tipo != 'factura')
+      throw StateError(
+        'Consolida y verifica el estado de pago antes de registrar un pago.',
+      );
     if (importeCentimos <= 0) throw ArgumentError.value(importeCentimos);
     final pagado = await database.circuitoProveedorDao.totalPagado(facturaId);
-    if (pagado + importeCentimos > factura.totalCentimos)
+    if (pagado + importeCentimos >
+        factura.totalCentimos - await _abonos(facturaId))
       throw StateError('El pago supera el saldo pendiente.');
     final id = _uuid.v4();
     await database.circuitoProveedorDao.insertarPago(
@@ -227,6 +279,13 @@ class CircuitoProveedorRepository {
       pagado + importeCentimos == factura.totalCentimos
           ? 'pagada'
           : 'parcialmentePagada',
+    );
+    await _recalcularPago(facturaId);
+    await _auditar(
+      facturaId,
+      'Pago registrado',
+      'Registro de pago',
+      detalle: {'pagoId': id, 'importeCentimos': importeCentimos},
     );
     return id;
   });
@@ -258,7 +317,8 @@ class CircuitoProveedorRepository {
       facturaVencidaPendiente: rows.any((r) {
         final due = r.readNullable<DateTime>('fecha_vencimiento');
         final state = r.read<String>('estado');
-        return due != null &&
+        return r.read<int>('pago_verificado') == 1 &&
+            due != null &&
             due.isBefore(day) &&
             state != 'pagada' &&
             state != 'cancelada';

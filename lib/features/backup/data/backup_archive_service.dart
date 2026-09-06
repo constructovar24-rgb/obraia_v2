@@ -37,6 +37,9 @@ class BackupArchiveService {
     'lineas_presupuesto',
     'presupuestos',
     'presupuesto_documentos_aceptados',
+    'control_facturas_proveedor',
+    'eventos_proveedor',
+    'reversiones_pagos_proveedor',
     'series_fiscales',
     'eventos_serie_fiscal',
     'proveedores',
@@ -433,6 +436,11 @@ class BackupArchiveService {
           .whereType<String>()
           .toSet();
       final expectedTables = _expectedTables.difference({
+        if (schemaVersion < 35) ...{
+          'control_facturas_proveedor',
+          'eventos_proveedor',
+          'reversiones_pagos_proveedor',
+        },
         if (schemaVersion < 34) ...{'series_fiscales', 'eventos_serie_fiscal'},
         if (schemaVersion < 33) 'presupuesto_documentos_aceptados',
         if (schemaVersion < 32) ...{

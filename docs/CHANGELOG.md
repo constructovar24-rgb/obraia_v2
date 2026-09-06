@@ -2,6 +2,17 @@
 
 ## No publicado
 
+### PROD-4 — Correcciones de proveedores
+
+- Schema 35 añade control documental, auditoría y reversiones de pagos, sin reescribir históricos.
+- Borrador editable, consolidación protegida, sustitución relacionada con motivo, abonos recibidos y anulación conservando documentos.
+- Pagos parciales/múltiples y reversiones; estado desconocido explícito y verificación manual antes de pagar.
+- Imputación posterior o corregida con costes canónicos compensados, sin duplicación; obra/general/sin asignar.
+- Ficha de facturas recibidas e historial, y corrección auditada de la marca de pago de compras independientes.
+- PROD-3 publicado. Aceptación manual de PROD-4 pendiente; sin push, PROD-5, PROD-6 ni Fase 5.
+- Verificación técnica superada: 23 pruebas nuevas (20 de repositorio, 2 de interfaz y 1 de migración/backup), 27 pruebas específicas del circuito y suite completa de 411 pruebas. Análisis sin incidencias; Windows debug compilado en copia aislada con 359 archivos relevantes idénticos. Formato propio y diff sin errores.
+- [Detalle y aceptación manual](PROD4_CORRECCIONES_PROVEEDORES.md).
+
 ### PROD-3 — Arranque fiscal seguro
 
 - Schema 34: series y secuencias explícitas por tenant, ejercicio y tipo; auditoría local de configuración y emisión, con migración sin renumeración ni configuración automática.

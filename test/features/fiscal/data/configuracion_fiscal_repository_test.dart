@@ -386,7 +386,7 @@ void main() {
       );
       final prepared = await BackupRestoreStagingService().prepare(
         backupPath: backup.path,
-        currentSchemaVersion: 34,
+        currentSchemaVersion: 35,
       );
       try {
         final restored = AppDatabase.forTesting(

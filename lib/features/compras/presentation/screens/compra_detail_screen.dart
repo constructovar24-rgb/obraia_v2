@@ -36,6 +36,11 @@ class CompraDetailScreen extends ConsumerWidget {
           subtitle: 'Apunte de gasto registrado',
           showBackButton: true,
           actions: [
+            AppPageHeaderAction(
+              icon: Icons.payments_outlined,
+              tooltip: 'Corregir estado de pago',
+              onPressed: () => _corregirPago(context, ref),
+            ),
             if (compra.clasificacionEconomica ==
                 CompraClasificacionEconomica.provisional)
               AppPageHeaderAction(
@@ -376,21 +381,121 @@ class CompraDetailScreen extends ConsumerWidget {
   }
 
   Future<void> _revertirCoste(BuildContext context, WidgetRef ref) async {
-    final confirmed = await ConfirmDialog.show(
-      context,
-      title: 'Revertir coste real',
-      message:
-          'Se añadirá un movimiento contrario y quedará trazabilidad. El hecho original no se borrará.',
-      confirmLabel: 'Revertir coste',
+    final motivo = TextEditingController();
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Revertir coste real'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Se conserva la compra y se registra el efecto económico contrario.',
+            ),
+            TextField(
+              controller: motivo,
+              decoration: const InputDecoration(
+                labelText: 'Motivo de la reversión',
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Revertir coste'),
+          ),
+        ],
+      ),
     );
-    if (!confirmed || !context.mounted) return;
-    await ref
-        .read(compraRepositoryProvider)
-        .revertirCoste(
-          compra.id,
-          motivo: 'Reversión confirmada desde la compra.',
-        );
-    if (context.mounted) Navigator.pop(context);
+    if (ok == true) {
+      try {
+        await ref
+            .read(compraRepositoryProvider)
+            .revertirCoste(compra.id, motivo: motivo.text);
+        if (context.mounted) Navigator.pop(context);
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('$e')));
+        }
+      }
+    }
+    await Future<void>.delayed(const Duration(milliseconds: 250));
+    motivo.dispose();
+  }
+
+  Future<void> _corregirPago(BuildContext context, WidgetRef ref) async {
+    final motivo = TextEditingController();
+    var estado = CompraEstado.noVerificado;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Corregir estado de pago'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Para compras sin factura recibida vinculada. Revisa los justificantes; esta acción no altera el coste.',
+            ),
+            DropdownButtonFormField<CompraEstado>(
+              initialValue: estado,
+              items:
+                  [
+                        CompraEstado.noVerificado,
+                        CompraEstado.pendiente,
+                        CompraEstado.pagada,
+                      ]
+                      .map(
+                        (e) => DropdownMenuItem(
+                          value: e,
+                          child: Text(compraEstadoLabel(e)),
+                        ),
+                      )
+                      .toList(),
+              onChanged: (v) => estado = v!,
+            ),
+            TextField(
+              controller: motivo,
+              decoration: const InputDecoration(
+                labelText: 'Motivo de la corrección',
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Confirmar'),
+          ),
+        ],
+      ),
+    );
+    if (ok == true) {
+      try {
+        await ref
+            .read(compraRepositoryProvider)
+            .corregirEstadoPago(compra.id, estado, motivo: motivo.text);
+        if (context.mounted) Navigator.pop(context);
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('$e')));
+        }
+      }
+    }
+    await Future<void>.delayed(const Duration(milliseconds: 250));
+    motivo.dispose();
   }
 }
 

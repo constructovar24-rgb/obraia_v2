@@ -330,6 +330,1381 @@ class TenantsCompanion extends UpdateCompanion<Tenant> {
   }
 }
 
+class $ControlFacturasProveedorTable extends ControlFacturasProveedor
+    with
+        TableInfo<
+          $ControlFacturasProveedorTable,
+          ControlFacturasProveedorData
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ControlFacturasProveedorTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _facturaIdMeta = const VerificationMeta(
+    'facturaId',
+  );
+  @override
+  late final GeneratedColumn<String> facturaId = GeneratedColumn<String>(
+    'factura_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _estadoDocumentoMeta = const VerificationMeta(
+    'estadoDocumento',
+  );
+  @override
+  late final GeneratedColumn<String> estadoDocumento = GeneratedColumn<String>(
+    'estado_documento',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('borrador'),
+  );
+  static const VerificationMeta _pagoVerificadoMeta = const VerificationMeta(
+    'pagoVerificado',
+  );
+  @override
+  late final GeneratedColumn<bool> pagoVerificado = GeneratedColumn<bool>(
+    'pago_verificado',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("pago_verificado" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _tipoMeta = const VerificationMeta('tipo');
+  @override
+  late final GeneratedColumn<String> tipo = GeneratedColumn<String>(
+    'tipo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('factura'),
+  );
+  static const VerificationMeta _originalIdMeta = const VerificationMeta(
+    'originalId',
+  );
+  @override
+  late final GeneratedColumn<String> originalId = GeneratedColumn<String>(
+    'original_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _destinoMeta = const VerificationMeta(
+    'destino',
+  );
+  @override
+  late final GeneratedColumn<String> destino = GeneratedColumn<String>(
+    'destino',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('sinAsignar'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    facturaId,
+    estadoDocumento,
+    pagoVerificado,
+    tipo,
+    originalId,
+    destino,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'control_facturas_proveedor';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ControlFacturasProveedorData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('factura_id')) {
+      context.handle(
+        _facturaIdMeta,
+        facturaId.isAcceptableOrUnknown(data['factura_id']!, _facturaIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_facturaIdMeta);
+    }
+    if (data.containsKey('estado_documento')) {
+      context.handle(
+        _estadoDocumentoMeta,
+        estadoDocumento.isAcceptableOrUnknown(
+          data['estado_documento']!,
+          _estadoDocumentoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('pago_verificado')) {
+      context.handle(
+        _pagoVerificadoMeta,
+        pagoVerificado.isAcceptableOrUnknown(
+          data['pago_verificado']!,
+          _pagoVerificadoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('tipo')) {
+      context.handle(
+        _tipoMeta,
+        tipo.isAcceptableOrUnknown(data['tipo']!, _tipoMeta),
+      );
+    }
+    if (data.containsKey('original_id')) {
+      context.handle(
+        _originalIdMeta,
+        originalId.isAcceptableOrUnknown(data['original_id']!, _originalIdMeta),
+      );
+    }
+    if (data.containsKey('destino')) {
+      context.handle(
+        _destinoMeta,
+        destino.isAcceptableOrUnknown(data['destino']!, _destinoMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {tenantId, facturaId};
+  @override
+  ControlFacturasProveedorData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ControlFacturasProveedorData(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      facturaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}factura_id'],
+      )!,
+      estadoDocumento: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}estado_documento'],
+      )!,
+      pagoVerificado: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}pago_verificado'],
+      )!,
+      tipo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tipo'],
+      )!,
+      originalId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}original_id'],
+      ),
+      destino: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}destino'],
+      )!,
+    );
+  }
+
+  @override
+  $ControlFacturasProveedorTable createAlias(String alias) {
+    return $ControlFacturasProveedorTable(attachedDatabase, alias);
+  }
+}
+
+class ControlFacturasProveedorData extends DataClass
+    implements Insertable<ControlFacturasProveedorData> {
+  final String tenantId;
+  final String facturaId;
+  final String estadoDocumento;
+  final bool pagoVerificado;
+  final String tipo;
+  final String? originalId;
+  final String destino;
+  const ControlFacturasProveedorData({
+    required this.tenantId,
+    required this.facturaId,
+    required this.estadoDocumento,
+    required this.pagoVerificado,
+    required this.tipo,
+    this.originalId,
+    required this.destino,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['factura_id'] = Variable<String>(facturaId);
+    map['estado_documento'] = Variable<String>(estadoDocumento);
+    map['pago_verificado'] = Variable<bool>(pagoVerificado);
+    map['tipo'] = Variable<String>(tipo);
+    if (!nullToAbsent || originalId != null) {
+      map['original_id'] = Variable<String>(originalId);
+    }
+    map['destino'] = Variable<String>(destino);
+    return map;
+  }
+
+  ControlFacturasProveedorCompanion toCompanion(bool nullToAbsent) {
+    return ControlFacturasProveedorCompanion(
+      tenantId: Value(tenantId),
+      facturaId: Value(facturaId),
+      estadoDocumento: Value(estadoDocumento),
+      pagoVerificado: Value(pagoVerificado),
+      tipo: Value(tipo),
+      originalId: originalId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(originalId),
+      destino: Value(destino),
+    );
+  }
+
+  factory ControlFacturasProveedorData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ControlFacturasProveedorData(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      facturaId: serializer.fromJson<String>(json['facturaId']),
+      estadoDocumento: serializer.fromJson<String>(json['estadoDocumento']),
+      pagoVerificado: serializer.fromJson<bool>(json['pagoVerificado']),
+      tipo: serializer.fromJson<String>(json['tipo']),
+      originalId: serializer.fromJson<String?>(json['originalId']),
+      destino: serializer.fromJson<String>(json['destino']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'facturaId': serializer.toJson<String>(facturaId),
+      'estadoDocumento': serializer.toJson<String>(estadoDocumento),
+      'pagoVerificado': serializer.toJson<bool>(pagoVerificado),
+      'tipo': serializer.toJson<String>(tipo),
+      'originalId': serializer.toJson<String?>(originalId),
+      'destino': serializer.toJson<String>(destino),
+    };
+  }
+
+  ControlFacturasProveedorData copyWith({
+    String? tenantId,
+    String? facturaId,
+    String? estadoDocumento,
+    bool? pagoVerificado,
+    String? tipo,
+    Value<String?> originalId = const Value.absent(),
+    String? destino,
+  }) => ControlFacturasProveedorData(
+    tenantId: tenantId ?? this.tenantId,
+    facturaId: facturaId ?? this.facturaId,
+    estadoDocumento: estadoDocumento ?? this.estadoDocumento,
+    pagoVerificado: pagoVerificado ?? this.pagoVerificado,
+    tipo: tipo ?? this.tipo,
+    originalId: originalId.present ? originalId.value : this.originalId,
+    destino: destino ?? this.destino,
+  );
+  ControlFacturasProveedorData copyWithCompanion(
+    ControlFacturasProveedorCompanion data,
+  ) {
+    return ControlFacturasProveedorData(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      facturaId: data.facturaId.present ? data.facturaId.value : this.facturaId,
+      estadoDocumento: data.estadoDocumento.present
+          ? data.estadoDocumento.value
+          : this.estadoDocumento,
+      pagoVerificado: data.pagoVerificado.present
+          ? data.pagoVerificado.value
+          : this.pagoVerificado,
+      tipo: data.tipo.present ? data.tipo.value : this.tipo,
+      originalId: data.originalId.present
+          ? data.originalId.value
+          : this.originalId,
+      destino: data.destino.present ? data.destino.value : this.destino,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ControlFacturasProveedorData(')
+          ..write('tenantId: $tenantId, ')
+          ..write('facturaId: $facturaId, ')
+          ..write('estadoDocumento: $estadoDocumento, ')
+          ..write('pagoVerificado: $pagoVerificado, ')
+          ..write('tipo: $tipo, ')
+          ..write('originalId: $originalId, ')
+          ..write('destino: $destino')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    tenantId,
+    facturaId,
+    estadoDocumento,
+    pagoVerificado,
+    tipo,
+    originalId,
+    destino,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ControlFacturasProveedorData &&
+          other.tenantId == this.tenantId &&
+          other.facturaId == this.facturaId &&
+          other.estadoDocumento == this.estadoDocumento &&
+          other.pagoVerificado == this.pagoVerificado &&
+          other.tipo == this.tipo &&
+          other.originalId == this.originalId &&
+          other.destino == this.destino);
+}
+
+class ControlFacturasProveedorCompanion
+    extends UpdateCompanion<ControlFacturasProveedorData> {
+  final Value<String> tenantId;
+  final Value<String> facturaId;
+  final Value<String> estadoDocumento;
+  final Value<bool> pagoVerificado;
+  final Value<String> tipo;
+  final Value<String?> originalId;
+  final Value<String> destino;
+  final Value<int> rowid;
+  const ControlFacturasProveedorCompanion({
+    this.tenantId = const Value.absent(),
+    this.facturaId = const Value.absent(),
+    this.estadoDocumento = const Value.absent(),
+    this.pagoVerificado = const Value.absent(),
+    this.tipo = const Value.absent(),
+    this.originalId = const Value.absent(),
+    this.destino = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ControlFacturasProveedorCompanion.insert({
+    required String tenantId,
+    required String facturaId,
+    this.estadoDocumento = const Value.absent(),
+    this.pagoVerificado = const Value.absent(),
+    this.tipo = const Value.absent(),
+    this.originalId = const Value.absent(),
+    this.destino = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       facturaId = Value(facturaId);
+  static Insertable<ControlFacturasProveedorData> custom({
+    Expression<String>? tenantId,
+    Expression<String>? facturaId,
+    Expression<String>? estadoDocumento,
+    Expression<bool>? pagoVerificado,
+    Expression<String>? tipo,
+    Expression<String>? originalId,
+    Expression<String>? destino,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (facturaId != null) 'factura_id': facturaId,
+      if (estadoDocumento != null) 'estado_documento': estadoDocumento,
+      if (pagoVerificado != null) 'pago_verificado': pagoVerificado,
+      if (tipo != null) 'tipo': tipo,
+      if (originalId != null) 'original_id': originalId,
+      if (destino != null) 'destino': destino,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ControlFacturasProveedorCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? facturaId,
+    Value<String>? estadoDocumento,
+    Value<bool>? pagoVerificado,
+    Value<String>? tipo,
+    Value<String?>? originalId,
+    Value<String>? destino,
+    Value<int>? rowid,
+  }) {
+    return ControlFacturasProveedorCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      facturaId: facturaId ?? this.facturaId,
+      estadoDocumento: estadoDocumento ?? this.estadoDocumento,
+      pagoVerificado: pagoVerificado ?? this.pagoVerificado,
+      tipo: tipo ?? this.tipo,
+      originalId: originalId ?? this.originalId,
+      destino: destino ?? this.destino,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (facturaId.present) {
+      map['factura_id'] = Variable<String>(facturaId.value);
+    }
+    if (estadoDocumento.present) {
+      map['estado_documento'] = Variable<String>(estadoDocumento.value);
+    }
+    if (pagoVerificado.present) {
+      map['pago_verificado'] = Variable<bool>(pagoVerificado.value);
+    }
+    if (tipo.present) {
+      map['tipo'] = Variable<String>(tipo.value);
+    }
+    if (originalId.present) {
+      map['original_id'] = Variable<String>(originalId.value);
+    }
+    if (destino.present) {
+      map['destino'] = Variable<String>(destino.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ControlFacturasProveedorCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('facturaId: $facturaId, ')
+          ..write('estadoDocumento: $estadoDocumento, ')
+          ..write('pagoVerificado: $pagoVerificado, ')
+          ..write('tipo: $tipo, ')
+          ..write('originalId: $originalId, ')
+          ..write('destino: $destino, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $EventosProveedorTable extends EventosProveedor
+    with TableInfo<$EventosProveedorTable, EventosProveedorData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EventosProveedorTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _facturaIdMeta = const VerificationMeta(
+    'facturaId',
+  );
+  @override
+  late final GeneratedColumn<String> facturaId = GeneratedColumn<String>(
+    'factura_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _accionMeta = const VerificationMeta('accion');
+  @override
+  late final GeneratedColumn<String> accion = GeneratedColumn<String>(
+    'accion',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _motivoMeta = const VerificationMeta('motivo');
+  @override
+  late final GeneratedColumn<String> motivo = GeneratedColumn<String>(
+    'motivo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _actorMeta = const VerificationMeta('actor');
+  @override
+  late final GeneratedColumn<String> actor = GeneratedColumn<String>(
+    'actor',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _detalleJsonMeta = const VerificationMeta(
+    'detalleJson',
+  );
+  @override
+  late final GeneratedColumn<String> detalleJson = GeneratedColumn<String>(
+    'detalle_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fechaMeta = const VerificationMeta('fecha');
+  @override
+  late final GeneratedColumn<DateTime> fecha = GeneratedColumn<DateTime>(
+    'fecha',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    id,
+    facturaId,
+    accion,
+    motivo,
+    actor,
+    detalleJson,
+    fecha,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'eventos_proveedor';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<EventosProveedorData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('factura_id')) {
+      context.handle(
+        _facturaIdMeta,
+        facturaId.isAcceptableOrUnknown(data['factura_id']!, _facturaIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_facturaIdMeta);
+    }
+    if (data.containsKey('accion')) {
+      context.handle(
+        _accionMeta,
+        accion.isAcceptableOrUnknown(data['accion']!, _accionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_accionMeta);
+    }
+    if (data.containsKey('motivo')) {
+      context.handle(
+        _motivoMeta,
+        motivo.isAcceptableOrUnknown(data['motivo']!, _motivoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_motivoMeta);
+    }
+    if (data.containsKey('actor')) {
+      context.handle(
+        _actorMeta,
+        actor.isAcceptableOrUnknown(data['actor']!, _actorMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_actorMeta);
+    }
+    if (data.containsKey('detalle_json')) {
+      context.handle(
+        _detalleJsonMeta,
+        detalleJson.isAcceptableOrUnknown(
+          data['detalle_json']!,
+          _detalleJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_detalleJsonMeta);
+    }
+    if (data.containsKey('fecha')) {
+      context.handle(
+        _fechaMeta,
+        fecha.isAcceptableOrUnknown(data['fecha']!, _fechaMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {tenantId, id};
+  @override
+  EventosProveedorData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EventosProveedorData(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      facturaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}factura_id'],
+      )!,
+      accion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}accion'],
+      )!,
+      motivo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}motivo'],
+      )!,
+      actor: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}actor'],
+      )!,
+      detalleJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}detalle_json'],
+      )!,
+      fecha: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha'],
+      )!,
+    );
+  }
+
+  @override
+  $EventosProveedorTable createAlias(String alias) {
+    return $EventosProveedorTable(attachedDatabase, alias);
+  }
+}
+
+class EventosProveedorData extends DataClass
+    implements Insertable<EventosProveedorData> {
+  final String tenantId;
+  final String id;
+  final String facturaId;
+  final String accion;
+  final String motivo;
+  final String actor;
+  final String detalleJson;
+  final DateTime fecha;
+  const EventosProveedorData({
+    required this.tenantId,
+    required this.id,
+    required this.facturaId,
+    required this.accion,
+    required this.motivo,
+    required this.actor,
+    required this.detalleJson,
+    required this.fecha,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['id'] = Variable<String>(id);
+    map['factura_id'] = Variable<String>(facturaId);
+    map['accion'] = Variable<String>(accion);
+    map['motivo'] = Variable<String>(motivo);
+    map['actor'] = Variable<String>(actor);
+    map['detalle_json'] = Variable<String>(detalleJson);
+    map['fecha'] = Variable<DateTime>(fecha);
+    return map;
+  }
+
+  EventosProveedorCompanion toCompanion(bool nullToAbsent) {
+    return EventosProveedorCompanion(
+      tenantId: Value(tenantId),
+      id: Value(id),
+      facturaId: Value(facturaId),
+      accion: Value(accion),
+      motivo: Value(motivo),
+      actor: Value(actor),
+      detalleJson: Value(detalleJson),
+      fecha: Value(fecha),
+    );
+  }
+
+  factory EventosProveedorData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EventosProveedorData(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      id: serializer.fromJson<String>(json['id']),
+      facturaId: serializer.fromJson<String>(json['facturaId']),
+      accion: serializer.fromJson<String>(json['accion']),
+      motivo: serializer.fromJson<String>(json['motivo']),
+      actor: serializer.fromJson<String>(json['actor']),
+      detalleJson: serializer.fromJson<String>(json['detalleJson']),
+      fecha: serializer.fromJson<DateTime>(json['fecha']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'id': serializer.toJson<String>(id),
+      'facturaId': serializer.toJson<String>(facturaId),
+      'accion': serializer.toJson<String>(accion),
+      'motivo': serializer.toJson<String>(motivo),
+      'actor': serializer.toJson<String>(actor),
+      'detalleJson': serializer.toJson<String>(detalleJson),
+      'fecha': serializer.toJson<DateTime>(fecha),
+    };
+  }
+
+  EventosProveedorData copyWith({
+    String? tenantId,
+    String? id,
+    String? facturaId,
+    String? accion,
+    String? motivo,
+    String? actor,
+    String? detalleJson,
+    DateTime? fecha,
+  }) => EventosProveedorData(
+    tenantId: tenantId ?? this.tenantId,
+    id: id ?? this.id,
+    facturaId: facturaId ?? this.facturaId,
+    accion: accion ?? this.accion,
+    motivo: motivo ?? this.motivo,
+    actor: actor ?? this.actor,
+    detalleJson: detalleJson ?? this.detalleJson,
+    fecha: fecha ?? this.fecha,
+  );
+  EventosProveedorData copyWithCompanion(EventosProveedorCompanion data) {
+    return EventosProveedorData(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      id: data.id.present ? data.id.value : this.id,
+      facturaId: data.facturaId.present ? data.facturaId.value : this.facturaId,
+      accion: data.accion.present ? data.accion.value : this.accion,
+      motivo: data.motivo.present ? data.motivo.value : this.motivo,
+      actor: data.actor.present ? data.actor.value : this.actor,
+      detalleJson: data.detalleJson.present
+          ? data.detalleJson.value
+          : this.detalleJson,
+      fecha: data.fecha.present ? data.fecha.value : this.fecha,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EventosProveedorData(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('facturaId: $facturaId, ')
+          ..write('accion: $accion, ')
+          ..write('motivo: $motivo, ')
+          ..write('actor: $actor, ')
+          ..write('detalleJson: $detalleJson, ')
+          ..write('fecha: $fecha')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    tenantId,
+    id,
+    facturaId,
+    accion,
+    motivo,
+    actor,
+    detalleJson,
+    fecha,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EventosProveedorData &&
+          other.tenantId == this.tenantId &&
+          other.id == this.id &&
+          other.facturaId == this.facturaId &&
+          other.accion == this.accion &&
+          other.motivo == this.motivo &&
+          other.actor == this.actor &&
+          other.detalleJson == this.detalleJson &&
+          other.fecha == this.fecha);
+}
+
+class EventosProveedorCompanion extends UpdateCompanion<EventosProveedorData> {
+  final Value<String> tenantId;
+  final Value<String> id;
+  final Value<String> facturaId;
+  final Value<String> accion;
+  final Value<String> motivo;
+  final Value<String> actor;
+  final Value<String> detalleJson;
+  final Value<DateTime> fecha;
+  final Value<int> rowid;
+  const EventosProveedorCompanion({
+    this.tenantId = const Value.absent(),
+    this.id = const Value.absent(),
+    this.facturaId = const Value.absent(),
+    this.accion = const Value.absent(),
+    this.motivo = const Value.absent(),
+    this.actor = const Value.absent(),
+    this.detalleJson = const Value.absent(),
+    this.fecha = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EventosProveedorCompanion.insert({
+    required String tenantId,
+    required String id,
+    required String facturaId,
+    required String accion,
+    required String motivo,
+    required String actor,
+    required String detalleJson,
+    required DateTime fecha,
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       id = Value(id),
+       facturaId = Value(facturaId),
+       accion = Value(accion),
+       motivo = Value(motivo),
+       actor = Value(actor),
+       detalleJson = Value(detalleJson),
+       fecha = Value(fecha);
+  static Insertable<EventosProveedorData> custom({
+    Expression<String>? tenantId,
+    Expression<String>? id,
+    Expression<String>? facturaId,
+    Expression<String>? accion,
+    Expression<String>? motivo,
+    Expression<String>? actor,
+    Expression<String>? detalleJson,
+    Expression<DateTime>? fecha,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (id != null) 'id': id,
+      if (facturaId != null) 'factura_id': facturaId,
+      if (accion != null) 'accion': accion,
+      if (motivo != null) 'motivo': motivo,
+      if (actor != null) 'actor': actor,
+      if (detalleJson != null) 'detalle_json': detalleJson,
+      if (fecha != null) 'fecha': fecha,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EventosProveedorCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? id,
+    Value<String>? facturaId,
+    Value<String>? accion,
+    Value<String>? motivo,
+    Value<String>? actor,
+    Value<String>? detalleJson,
+    Value<DateTime>? fecha,
+    Value<int>? rowid,
+  }) {
+    return EventosProveedorCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      id: id ?? this.id,
+      facturaId: facturaId ?? this.facturaId,
+      accion: accion ?? this.accion,
+      motivo: motivo ?? this.motivo,
+      actor: actor ?? this.actor,
+      detalleJson: detalleJson ?? this.detalleJson,
+      fecha: fecha ?? this.fecha,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (facturaId.present) {
+      map['factura_id'] = Variable<String>(facturaId.value);
+    }
+    if (accion.present) {
+      map['accion'] = Variable<String>(accion.value);
+    }
+    if (motivo.present) {
+      map['motivo'] = Variable<String>(motivo.value);
+    }
+    if (actor.present) {
+      map['actor'] = Variable<String>(actor.value);
+    }
+    if (detalleJson.present) {
+      map['detalle_json'] = Variable<String>(detalleJson.value);
+    }
+    if (fecha.present) {
+      map['fecha'] = Variable<DateTime>(fecha.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EventosProveedorCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('id: $id, ')
+          ..write('facturaId: $facturaId, ')
+          ..write('accion: $accion, ')
+          ..write('motivo: $motivo, ')
+          ..write('actor: $actor, ')
+          ..write('detalleJson: $detalleJson, ')
+          ..write('fecha: $fecha, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ReversionesPagosProveedorTable extends ReversionesPagosProveedor
+    with
+        TableInfo<
+          $ReversionesPagosProveedorTable,
+          ReversionesPagosProveedorData
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ReversionesPagosProveedorTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tenantIdMeta = const VerificationMeta(
+    'tenantId',
+  );
+  @override
+  late final GeneratedColumn<String> tenantId = GeneratedColumn<String>(
+    'tenant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tenants (id)',
+    ),
+  );
+  static const VerificationMeta _pagoIdMeta = const VerificationMeta('pagoId');
+  @override
+  late final GeneratedColumn<String> pagoId = GeneratedColumn<String>(
+    'pago_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _motivoMeta = const VerificationMeta('motivo');
+  @override
+  late final GeneratedColumn<String> motivo = GeneratedColumn<String>(
+    'motivo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _actorMeta = const VerificationMeta('actor');
+  @override
+  late final GeneratedColumn<String> actor = GeneratedColumn<String>(
+    'actor',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fechaMeta = const VerificationMeta('fecha');
+  @override
+  late final GeneratedColumn<DateTime> fecha = GeneratedColumn<DateTime>(
+    'fecha',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    tenantId,
+    pagoId,
+    motivo,
+    actor,
+    fecha,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'reversiones_pagos_proveedor';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ReversionesPagosProveedorData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('tenant_id')) {
+      context.handle(
+        _tenantIdMeta,
+        tenantId.isAcceptableOrUnknown(data['tenant_id']!, _tenantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tenantIdMeta);
+    }
+    if (data.containsKey('pago_id')) {
+      context.handle(
+        _pagoIdMeta,
+        pagoId.isAcceptableOrUnknown(data['pago_id']!, _pagoIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_pagoIdMeta);
+    }
+    if (data.containsKey('motivo')) {
+      context.handle(
+        _motivoMeta,
+        motivo.isAcceptableOrUnknown(data['motivo']!, _motivoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_motivoMeta);
+    }
+    if (data.containsKey('actor')) {
+      context.handle(
+        _actorMeta,
+        actor.isAcceptableOrUnknown(data['actor']!, _actorMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_actorMeta);
+    }
+    if (data.containsKey('fecha')) {
+      context.handle(
+        _fechaMeta,
+        fecha.isAcceptableOrUnknown(data['fecha']!, _fechaMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fechaMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {tenantId, pagoId};
+  @override
+  ReversionesPagosProveedorData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ReversionesPagosProveedorData(
+      tenantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tenant_id'],
+      )!,
+      pagoId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}pago_id'],
+      )!,
+      motivo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}motivo'],
+      )!,
+      actor: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}actor'],
+      )!,
+      fecha: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fecha'],
+      )!,
+    );
+  }
+
+  @override
+  $ReversionesPagosProveedorTable createAlias(String alias) {
+    return $ReversionesPagosProveedorTable(attachedDatabase, alias);
+  }
+}
+
+class ReversionesPagosProveedorData extends DataClass
+    implements Insertable<ReversionesPagosProveedorData> {
+  final String tenantId;
+  final String pagoId;
+  final String motivo;
+  final String actor;
+  final DateTime fecha;
+  const ReversionesPagosProveedorData({
+    required this.tenantId,
+    required this.pagoId,
+    required this.motivo,
+    required this.actor,
+    required this.fecha,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['tenant_id'] = Variable<String>(tenantId);
+    map['pago_id'] = Variable<String>(pagoId);
+    map['motivo'] = Variable<String>(motivo);
+    map['actor'] = Variable<String>(actor);
+    map['fecha'] = Variable<DateTime>(fecha);
+    return map;
+  }
+
+  ReversionesPagosProveedorCompanion toCompanion(bool nullToAbsent) {
+    return ReversionesPagosProveedorCompanion(
+      tenantId: Value(tenantId),
+      pagoId: Value(pagoId),
+      motivo: Value(motivo),
+      actor: Value(actor),
+      fecha: Value(fecha),
+    );
+  }
+
+  factory ReversionesPagosProveedorData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ReversionesPagosProveedorData(
+      tenantId: serializer.fromJson<String>(json['tenantId']),
+      pagoId: serializer.fromJson<String>(json['pagoId']),
+      motivo: serializer.fromJson<String>(json['motivo']),
+      actor: serializer.fromJson<String>(json['actor']),
+      fecha: serializer.fromJson<DateTime>(json['fecha']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tenantId': serializer.toJson<String>(tenantId),
+      'pagoId': serializer.toJson<String>(pagoId),
+      'motivo': serializer.toJson<String>(motivo),
+      'actor': serializer.toJson<String>(actor),
+      'fecha': serializer.toJson<DateTime>(fecha),
+    };
+  }
+
+  ReversionesPagosProveedorData copyWith({
+    String? tenantId,
+    String? pagoId,
+    String? motivo,
+    String? actor,
+    DateTime? fecha,
+  }) => ReversionesPagosProveedorData(
+    tenantId: tenantId ?? this.tenantId,
+    pagoId: pagoId ?? this.pagoId,
+    motivo: motivo ?? this.motivo,
+    actor: actor ?? this.actor,
+    fecha: fecha ?? this.fecha,
+  );
+  ReversionesPagosProveedorData copyWithCompanion(
+    ReversionesPagosProveedorCompanion data,
+  ) {
+    return ReversionesPagosProveedorData(
+      tenantId: data.tenantId.present ? data.tenantId.value : this.tenantId,
+      pagoId: data.pagoId.present ? data.pagoId.value : this.pagoId,
+      motivo: data.motivo.present ? data.motivo.value : this.motivo,
+      actor: data.actor.present ? data.actor.value : this.actor,
+      fecha: data.fecha.present ? data.fecha.value : this.fecha,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReversionesPagosProveedorData(')
+          ..write('tenantId: $tenantId, ')
+          ..write('pagoId: $pagoId, ')
+          ..write('motivo: $motivo, ')
+          ..write('actor: $actor, ')
+          ..write('fecha: $fecha')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(tenantId, pagoId, motivo, actor, fecha);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ReversionesPagosProveedorData &&
+          other.tenantId == this.tenantId &&
+          other.pagoId == this.pagoId &&
+          other.motivo == this.motivo &&
+          other.actor == this.actor &&
+          other.fecha == this.fecha);
+}
+
+class ReversionesPagosProveedorCompanion
+    extends UpdateCompanion<ReversionesPagosProveedorData> {
+  final Value<String> tenantId;
+  final Value<String> pagoId;
+  final Value<String> motivo;
+  final Value<String> actor;
+  final Value<DateTime> fecha;
+  final Value<int> rowid;
+  const ReversionesPagosProveedorCompanion({
+    this.tenantId = const Value.absent(),
+    this.pagoId = const Value.absent(),
+    this.motivo = const Value.absent(),
+    this.actor = const Value.absent(),
+    this.fecha = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ReversionesPagosProveedorCompanion.insert({
+    required String tenantId,
+    required String pagoId,
+    required String motivo,
+    required String actor,
+    required DateTime fecha,
+    this.rowid = const Value.absent(),
+  }) : tenantId = Value(tenantId),
+       pagoId = Value(pagoId),
+       motivo = Value(motivo),
+       actor = Value(actor),
+       fecha = Value(fecha);
+  static Insertable<ReversionesPagosProveedorData> custom({
+    Expression<String>? tenantId,
+    Expression<String>? pagoId,
+    Expression<String>? motivo,
+    Expression<String>? actor,
+    Expression<DateTime>? fecha,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tenantId != null) 'tenant_id': tenantId,
+      if (pagoId != null) 'pago_id': pagoId,
+      if (motivo != null) 'motivo': motivo,
+      if (actor != null) 'actor': actor,
+      if (fecha != null) 'fecha': fecha,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ReversionesPagosProveedorCompanion copyWith({
+    Value<String>? tenantId,
+    Value<String>? pagoId,
+    Value<String>? motivo,
+    Value<String>? actor,
+    Value<DateTime>? fecha,
+    Value<int>? rowid,
+  }) {
+    return ReversionesPagosProveedorCompanion(
+      tenantId: tenantId ?? this.tenantId,
+      pagoId: pagoId ?? this.pagoId,
+      motivo: motivo ?? this.motivo,
+      actor: actor ?? this.actor,
+      fecha: fecha ?? this.fecha,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tenantId.present) {
+      map['tenant_id'] = Variable<String>(tenantId.value);
+    }
+    if (pagoId.present) {
+      map['pago_id'] = Variable<String>(pagoId.value);
+    }
+    if (motivo.present) {
+      map['motivo'] = Variable<String>(motivo.value);
+    }
+    if (actor.present) {
+      map['actor'] = Variable<String>(actor.value);
+    }
+    if (fecha.present) {
+      map['fecha'] = Variable<DateTime>(fecha.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReversionesPagosProveedorCompanion(')
+          ..write('tenantId: $tenantId, ')
+          ..write('pagoId: $pagoId, ')
+          ..write('motivo: $motivo, ')
+          ..write('actor: $actor, ')
+          ..write('fecha: $fecha, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $SeriesFiscalesTable extends SeriesFiscales
     with TableInfo<$SeriesFiscalesTable, SerieFiscalRow> {
   @override
@@ -34253,6 +35628,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $TenantsTable tenants = $TenantsTable(this);
+  late final $ControlFacturasProveedorTable controlFacturasProveedor =
+      $ControlFacturasProveedorTable(this);
+  late final $EventosProveedorTable eventosProveedor = $EventosProveedorTable(
+    this,
+  );
+  late final $ReversionesPagosProveedorTable reversionesPagosProveedor =
+      $ReversionesPagosProveedorTable(this);
   late final $SeriesFiscalesTable seriesFiscales = $SeriesFiscalesTable(this);
   late final $EventosSerieFiscalTable eventosSerieFiscal =
       $EventosSerieFiscalTable(this);
@@ -34407,6 +35789,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     tenants,
+    controlFacturasProveedor,
+    eventosProveedor,
+    reversionesPagosProveedor,
     seriesFiscales,
     eventosSerieFiscal,
     clientes,
@@ -34477,6 +35862,76 @@ typedef $$TenantsTableUpdateCompanionBuilder =
 final class $$TenantsTableReferences
     extends BaseReferences<_$AppDatabase, $TenantsTable, Tenant> {
   $$TenantsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<
+    $ControlFacturasProveedorTable,
+    List<ControlFacturasProveedorData>
+  >
+  _controlFacturasProveedorRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.controlFacturasProveedor,
+        aliasName: 'tenants__id__control_facturas_proveedor__tenant_id',
+      );
+
+  $$ControlFacturasProveedorTableProcessedTableManager
+  get controlFacturasProveedorRefs {
+    final manager = $$ControlFacturasProveedorTableTableManager(
+      $_db,
+      $_db.controlFacturasProveedor,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _controlFacturasProveedorRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$EventosProveedorTable, List<EventosProveedorData>>
+  _eventosProveedorRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.eventosProveedor,
+    aliasName: 'tenants__id__eventos_proveedor__tenant_id',
+  );
+
+  $$EventosProveedorTableProcessedTableManager get eventosProveedorRefs {
+    final manager = $$EventosProveedorTableTableManager(
+      $_db,
+      $_db.eventosProveedor,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _eventosProveedorRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $ReversionesPagosProveedorTable,
+    List<ReversionesPagosProveedorData>
+  >
+  _reversionesPagosProveedorRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.reversionesPagosProveedor,
+        aliasName: 'tenants__id__reversiones_pagos_proveedor__tenant_id',
+      );
+
+  $$ReversionesPagosProveedorTableProcessedTableManager
+  get reversionesPagosProveedorRefs {
+    final manager = $$ReversionesPagosProveedorTableTableManager(
+      $_db,
+      $_db.reversionesPagosProveedor,
+    ).filter((f) => f.tenantId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _reversionesPagosProveedorRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 
   static MultiTypedResultKey<$SeriesFiscalesTable, List<SerieFiscalRow>>
   _seriesFiscalesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
@@ -35538,6 +36993,85 @@ class $$TenantsTableFilterComposer
     column: $table.fechaModificacion,
     builder: (column) => ColumnFilters(column),
   );
+
+  Expression<bool> controlFacturasProveedorRefs(
+    Expression<bool> Function($$ControlFacturasProveedorTableFilterComposer f)
+    f,
+  ) {
+    final $$ControlFacturasProveedorTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.controlFacturasProveedor,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ControlFacturasProveedorTableFilterComposer(
+                $db: $db,
+                $table: $db.controlFacturasProveedor,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<bool> eventosProveedorRefs(
+    Expression<bool> Function($$EventosProveedorTableFilterComposer f) f,
+  ) {
+    final $$EventosProveedorTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.eventosProveedor,
+      getReferencedColumn: (t) => t.tenantId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$EventosProveedorTableFilterComposer(
+            $db: $db,
+            $table: $db.eventosProveedor,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> reversionesPagosProveedorRefs(
+    Expression<bool> Function($$ReversionesPagosProveedorTableFilterComposer f)
+    f,
+  ) {
+    final $$ReversionesPagosProveedorTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.reversionesPagosProveedor,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ReversionesPagosProveedorTableFilterComposer(
+                $db: $db,
+                $table: $db.reversionesPagosProveedor,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 
   Expression<bool> seriesFiscalesRefs(
     Expression<bool> Function($$SeriesFiscalesTableFilterComposer f) f,
@@ -36808,6 +38342,85 @@ class $$TenantsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  Expression<T> controlFacturasProveedorRefs<T extends Object>(
+    Expression<T> Function($$ControlFacturasProveedorTableAnnotationComposer a)
+    f,
+  ) {
+    final $$ControlFacturasProveedorTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.controlFacturasProveedor,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ControlFacturasProveedorTableAnnotationComposer(
+                $db: $db,
+                $table: $db.controlFacturasProveedor,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> eventosProveedorRefs<T extends Object>(
+    Expression<T> Function($$EventosProveedorTableAnnotationComposer a) f,
+  ) {
+    final $$EventosProveedorTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.eventosProveedor,
+      getReferencedColumn: (t) => t.tenantId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$EventosProveedorTableAnnotationComposer(
+            $db: $db,
+            $table: $db.eventosProveedor,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> reversionesPagosProveedorRefs<T extends Object>(
+    Expression<T> Function($$ReversionesPagosProveedorTableAnnotationComposer a)
+    f,
+  ) {
+    final $$ReversionesPagosProveedorTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.reversionesPagosProveedor,
+          getReferencedColumn: (t) => t.tenantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ReversionesPagosProveedorTableAnnotationComposer(
+                $db: $db,
+                $table: $db.reversionesPagosProveedor,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
   Expression<T> seriesFiscalesRefs<T extends Object>(
     Expression<T> Function($$SeriesFiscalesTableAnnotationComposer a) f,
   ) {
@@ -38045,6 +39658,9 @@ class $$TenantsTableTableManager
           (Tenant, $$TenantsTableReferences),
           Tenant,
           PrefetchHooks Function({
+            bool controlFacturasProveedorRefs,
+            bool eventosProveedorRefs,
+            bool reversionesPagosProveedorRefs,
             bool seriesFiscalesRefs,
             bool eventosSerieFiscalRefs,
             bool clientesRefs,
@@ -38143,6 +39759,9 @@ class $$TenantsTableTableManager
               .toList(),
           prefetchHooksCallback:
               ({
+                controlFacturasProveedorRefs = false,
+                eventosProveedorRefs = false,
+                reversionesPagosProveedorRefs = false,
                 seriesFiscalesRefs = false,
                 eventosSerieFiscalRefs = false,
                 clientesRefs = false,
@@ -38194,6 +39813,11 @@ class $$TenantsTableTableManager
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
+                    if (controlFacturasProveedorRefs)
+                      db.controlFacturasProveedor,
+                    if (eventosProveedorRefs) db.eventosProveedor,
+                    if (reversionesPagosProveedorRefs)
+                      db.reversionesPagosProveedor,
                     if (seriesFiscalesRefs) db.seriesFiscales,
                     if (eventosSerieFiscalRefs) db.eventosSerieFiscal,
                     if (clientesRefs) db.clientes,
@@ -38255,6 +39879,69 @@ class $$TenantsTableTableManager
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
                     return [
+                      if (controlFacturasProveedorRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          ControlFacturasProveedorData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._controlFacturasProveedorRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).controlFacturasProveedorRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (eventosProveedorRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          EventosProveedorData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._eventosProveedorRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).eventosProveedorRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (reversionesPagosProveedorRefs)
+                        await $_getPrefetchedData<
+                          Tenant,
+                          $TenantsTable,
+                          ReversionesPagosProveedorData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TenantsTableReferences
+                              ._reversionesPagosProveedorRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TenantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).reversionesPagosProveedorRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tenantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                       if (seriesFiscalesRefs)
                         await $_getPrefetchedData<
                           Tenant,
@@ -39259,6 +40946,9 @@ typedef $$TenantsTableProcessedTableManager =
       (Tenant, $$TenantsTableReferences),
       Tenant,
       PrefetchHooks Function({
+        bool controlFacturasProveedorRefs,
+        bool eventosProveedorRefs,
+        bool reversionesPagosProveedorRefs,
         bool seriesFiscalesRefs,
         bool eventosSerieFiscalRefs,
         bool clientesRefs,
@@ -39307,6 +40997,1126 @@ typedef $$TenantsTableProcessedTableManager =
         bool facturaRecibidaComprasRefs,
         bool pagosProveedorRefs,
       })
+    >;
+typedef $$ControlFacturasProveedorTableCreateCompanionBuilder =
+    ControlFacturasProveedorCompanion Function({
+      required String tenantId,
+      required String facturaId,
+      Value<String> estadoDocumento,
+      Value<bool> pagoVerificado,
+      Value<String> tipo,
+      Value<String?> originalId,
+      Value<String> destino,
+      Value<int> rowid,
+    });
+typedef $$ControlFacturasProveedorTableUpdateCompanionBuilder =
+    ControlFacturasProveedorCompanion Function({
+      Value<String> tenantId,
+      Value<String> facturaId,
+      Value<String> estadoDocumento,
+      Value<bool> pagoVerificado,
+      Value<String> tipo,
+      Value<String?> originalId,
+      Value<String> destino,
+      Value<int> rowid,
+    });
+
+final class $$ControlFacturasProveedorTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $ControlFacturasProveedorTable,
+          ControlFacturasProveedorData
+        > {
+  $$ControlFacturasProveedorTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) => db.tenants
+      .createAlias('control_facturas_proveedor__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ControlFacturasProveedorTableFilterComposer
+    extends Composer<_$AppDatabase, $ControlFacturasProveedorTable> {
+  $$ControlFacturasProveedorTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get facturaId => $composableBuilder(
+    column: $table.facturaId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get estadoDocumento => $composableBuilder(
+    column: $table.estadoDocumento,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get pagoVerificado => $composableBuilder(
+    column: $table.pagoVerificado,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tipo => $composableBuilder(
+    column: $table.tipo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get originalId => $composableBuilder(
+    column: $table.originalId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get destino => $composableBuilder(
+    column: $table.destino,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ControlFacturasProveedorTableOrderingComposer
+    extends Composer<_$AppDatabase, $ControlFacturasProveedorTable> {
+  $$ControlFacturasProveedorTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get facturaId => $composableBuilder(
+    column: $table.facturaId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get estadoDocumento => $composableBuilder(
+    column: $table.estadoDocumento,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get pagoVerificado => $composableBuilder(
+    column: $table.pagoVerificado,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tipo => $composableBuilder(
+    column: $table.tipo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get originalId => $composableBuilder(
+    column: $table.originalId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get destino => $composableBuilder(
+    column: $table.destino,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ControlFacturasProveedorTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ControlFacturasProveedorTable> {
+  $$ControlFacturasProveedorTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get facturaId =>
+      $composableBuilder(column: $table.facturaId, builder: (column) => column);
+
+  GeneratedColumn<String> get estadoDocumento => $composableBuilder(
+    column: $table.estadoDocumento,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get pagoVerificado => $composableBuilder(
+    column: $table.pagoVerificado,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get tipo =>
+      $composableBuilder(column: $table.tipo, builder: (column) => column);
+
+  GeneratedColumn<String> get originalId => $composableBuilder(
+    column: $table.originalId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get destino =>
+      $composableBuilder(column: $table.destino, builder: (column) => column);
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ControlFacturasProveedorTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ControlFacturasProveedorTable,
+          ControlFacturasProveedorData,
+          $$ControlFacturasProveedorTableFilterComposer,
+          $$ControlFacturasProveedorTableOrderingComposer,
+          $$ControlFacturasProveedorTableAnnotationComposer,
+          $$ControlFacturasProveedorTableCreateCompanionBuilder,
+          $$ControlFacturasProveedorTableUpdateCompanionBuilder,
+          (
+            ControlFacturasProveedorData,
+            $$ControlFacturasProveedorTableReferences,
+          ),
+          ControlFacturasProveedorData,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$ControlFacturasProveedorTableTableManager(
+    _$AppDatabase db,
+    $ControlFacturasProveedorTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ControlFacturasProveedorTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$ControlFacturasProveedorTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$ControlFacturasProveedorTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> facturaId = const Value.absent(),
+                Value<String> estadoDocumento = const Value.absent(),
+                Value<bool> pagoVerificado = const Value.absent(),
+                Value<String> tipo = const Value.absent(),
+                Value<String?> originalId = const Value.absent(),
+                Value<String> destino = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ControlFacturasProveedorCompanion(
+                tenantId: tenantId,
+                facturaId: facturaId,
+                estadoDocumento: estadoDocumento,
+                pagoVerificado: pagoVerificado,
+                tipo: tipo,
+                originalId: originalId,
+                destino: destino,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String facturaId,
+                Value<String> estadoDocumento = const Value.absent(),
+                Value<bool> pagoVerificado = const Value.absent(),
+                Value<String> tipo = const Value.absent(),
+                Value<String?> originalId = const Value.absent(),
+                Value<String> destino = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ControlFacturasProveedorCompanion.insert(
+                tenantId: tenantId,
+                facturaId: facturaId,
+                estadoDocumento: estadoDocumento,
+                pagoVerificado: pagoVerificado,
+                tipo: tipo,
+                originalId: originalId,
+                destino: destino,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ControlFacturasProveedorTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable:
+                                    $$ControlFacturasProveedorTableReferences
+                                        ._tenantIdTable(db),
+                                referencedColumn:
+                                    $$ControlFacturasProveedorTableReferences
+                                        ._tenantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ControlFacturasProveedorTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ControlFacturasProveedorTable,
+      ControlFacturasProveedorData,
+      $$ControlFacturasProveedorTableFilterComposer,
+      $$ControlFacturasProveedorTableOrderingComposer,
+      $$ControlFacturasProveedorTableAnnotationComposer,
+      $$ControlFacturasProveedorTableCreateCompanionBuilder,
+      $$ControlFacturasProveedorTableUpdateCompanionBuilder,
+      (ControlFacturasProveedorData, $$ControlFacturasProveedorTableReferences),
+      ControlFacturasProveedorData,
+      PrefetchHooks Function({bool tenantId})
+    >;
+typedef $$EventosProveedorTableCreateCompanionBuilder =
+    EventosProveedorCompanion Function({
+      required String tenantId,
+      required String id,
+      required String facturaId,
+      required String accion,
+      required String motivo,
+      required String actor,
+      required String detalleJson,
+      required DateTime fecha,
+      Value<int> rowid,
+    });
+typedef $$EventosProveedorTableUpdateCompanionBuilder =
+    EventosProveedorCompanion Function({
+      Value<String> tenantId,
+      Value<String> id,
+      Value<String> facturaId,
+      Value<String> accion,
+      Value<String> motivo,
+      Value<String> actor,
+      Value<String> detalleJson,
+      Value<DateTime> fecha,
+      Value<int> rowid,
+    });
+
+final class $$EventosProveedorTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $EventosProveedorTable,
+          EventosProveedorData
+        > {
+  $$EventosProveedorTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) =>
+      db.tenants.createAlias('eventos_proveedor__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$EventosProveedorTableFilterComposer
+    extends Composer<_$AppDatabase, $EventosProveedorTable> {
+  $$EventosProveedorTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get facturaId => $composableBuilder(
+    column: $table.facturaId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get accion => $composableBuilder(
+    column: $table.accion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get motivo => $composableBuilder(
+    column: $table.motivo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get actor => $composableBuilder(
+    column: $table.actor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get detalleJson => $composableBuilder(
+    column: $table.detalleJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fecha => $composableBuilder(
+    column: $table.fecha,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$EventosProveedorTableOrderingComposer
+    extends Composer<_$AppDatabase, $EventosProveedorTable> {
+  $$EventosProveedorTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get facturaId => $composableBuilder(
+    column: $table.facturaId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get accion => $composableBuilder(
+    column: $table.accion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get motivo => $composableBuilder(
+    column: $table.motivo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get actor => $composableBuilder(
+    column: $table.actor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get detalleJson => $composableBuilder(
+    column: $table.detalleJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fecha => $composableBuilder(
+    column: $table.fecha,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$EventosProveedorTableAnnotationComposer
+    extends Composer<_$AppDatabase, $EventosProveedorTable> {
+  $$EventosProveedorTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get facturaId =>
+      $composableBuilder(column: $table.facturaId, builder: (column) => column);
+
+  GeneratedColumn<String> get accion =>
+      $composableBuilder(column: $table.accion, builder: (column) => column);
+
+  GeneratedColumn<String> get motivo =>
+      $composableBuilder(column: $table.motivo, builder: (column) => column);
+
+  GeneratedColumn<String> get actor =>
+      $composableBuilder(column: $table.actor, builder: (column) => column);
+
+  GeneratedColumn<String> get detalleJson => $composableBuilder(
+    column: $table.detalleJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get fecha =>
+      $composableBuilder(column: $table.fecha, builder: (column) => column);
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$EventosProveedorTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $EventosProveedorTable,
+          EventosProveedorData,
+          $$EventosProveedorTableFilterComposer,
+          $$EventosProveedorTableOrderingComposer,
+          $$EventosProveedorTableAnnotationComposer,
+          $$EventosProveedorTableCreateCompanionBuilder,
+          $$EventosProveedorTableUpdateCompanionBuilder,
+          (EventosProveedorData, $$EventosProveedorTableReferences),
+          EventosProveedorData,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$EventosProveedorTableTableManager(
+    _$AppDatabase db,
+    $EventosProveedorTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EventosProveedorTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$EventosProveedorTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$EventosProveedorTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> id = const Value.absent(),
+                Value<String> facturaId = const Value.absent(),
+                Value<String> accion = const Value.absent(),
+                Value<String> motivo = const Value.absent(),
+                Value<String> actor = const Value.absent(),
+                Value<String> detalleJson = const Value.absent(),
+                Value<DateTime> fecha = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EventosProveedorCompanion(
+                tenantId: tenantId,
+                id: id,
+                facturaId: facturaId,
+                accion: accion,
+                motivo: motivo,
+                actor: actor,
+                detalleJson: detalleJson,
+                fecha: fecha,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String id,
+                required String facturaId,
+                required String accion,
+                required String motivo,
+                required String actor,
+                required String detalleJson,
+                required DateTime fecha,
+                Value<int> rowid = const Value.absent(),
+              }) => EventosProveedorCompanion.insert(
+                tenantId: tenantId,
+                id: id,
+                facturaId: facturaId,
+                accion: accion,
+                motivo: motivo,
+                actor: actor,
+                detalleJson: detalleJson,
+                fecha: fecha,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$EventosProveedorTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable:
+                                    $$EventosProveedorTableReferences
+                                        ._tenantIdTable(db),
+                                referencedColumn:
+                                    $$EventosProveedorTableReferences
+                                        ._tenantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$EventosProveedorTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $EventosProveedorTable,
+      EventosProveedorData,
+      $$EventosProveedorTableFilterComposer,
+      $$EventosProveedorTableOrderingComposer,
+      $$EventosProveedorTableAnnotationComposer,
+      $$EventosProveedorTableCreateCompanionBuilder,
+      $$EventosProveedorTableUpdateCompanionBuilder,
+      (EventosProveedorData, $$EventosProveedorTableReferences),
+      EventosProveedorData,
+      PrefetchHooks Function({bool tenantId})
+    >;
+typedef $$ReversionesPagosProveedorTableCreateCompanionBuilder =
+    ReversionesPagosProveedorCompanion Function({
+      required String tenantId,
+      required String pagoId,
+      required String motivo,
+      required String actor,
+      required DateTime fecha,
+      Value<int> rowid,
+    });
+typedef $$ReversionesPagosProveedorTableUpdateCompanionBuilder =
+    ReversionesPagosProveedorCompanion Function({
+      Value<String> tenantId,
+      Value<String> pagoId,
+      Value<String> motivo,
+      Value<String> actor,
+      Value<DateTime> fecha,
+      Value<int> rowid,
+    });
+
+final class $$ReversionesPagosProveedorTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $ReversionesPagosProveedorTable,
+          ReversionesPagosProveedorData
+        > {
+  $$ReversionesPagosProveedorTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TenantsTable _tenantIdTable(_$AppDatabase db) => db.tenants
+      .createAlias('reversiones_pagos_proveedor__tenant_id__tenants__id');
+
+  $$TenantsTableProcessedTableManager get tenantId {
+    final $_column = $_itemColumn<String>('tenant_id')!;
+
+    final manager = $$TenantsTableTableManager(
+      $_db,
+      $_db.tenants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tenantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ReversionesPagosProveedorTableFilterComposer
+    extends Composer<_$AppDatabase, $ReversionesPagosProveedorTable> {
+  $$ReversionesPagosProveedorTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get pagoId => $composableBuilder(
+    column: $table.pagoId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get motivo => $composableBuilder(
+    column: $table.motivo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get actor => $composableBuilder(
+    column: $table.actor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fecha => $composableBuilder(
+    column: $table.fecha,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TenantsTableFilterComposer get tenantId {
+    final $$TenantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableFilterComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ReversionesPagosProveedorTableOrderingComposer
+    extends Composer<_$AppDatabase, $ReversionesPagosProveedorTable> {
+  $$ReversionesPagosProveedorTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get pagoId => $composableBuilder(
+    column: $table.pagoId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get motivo => $composableBuilder(
+    column: $table.motivo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get actor => $composableBuilder(
+    column: $table.actor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fecha => $composableBuilder(
+    column: $table.fecha,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TenantsTableOrderingComposer get tenantId {
+    final $$TenantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ReversionesPagosProveedorTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ReversionesPagosProveedorTable> {
+  $$ReversionesPagosProveedorTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get pagoId =>
+      $composableBuilder(column: $table.pagoId, builder: (column) => column);
+
+  GeneratedColumn<String> get motivo =>
+      $composableBuilder(column: $table.motivo, builder: (column) => column);
+
+  GeneratedColumn<String> get actor =>
+      $composableBuilder(column: $table.actor, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get fecha =>
+      $composableBuilder(column: $table.fecha, builder: (column) => column);
+
+  $$TenantsTableAnnotationComposer get tenantId {
+    final $$TenantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tenantId,
+      referencedTable: $db.tenants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TenantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tenants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ReversionesPagosProveedorTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ReversionesPagosProveedorTable,
+          ReversionesPagosProveedorData,
+          $$ReversionesPagosProveedorTableFilterComposer,
+          $$ReversionesPagosProveedorTableOrderingComposer,
+          $$ReversionesPagosProveedorTableAnnotationComposer,
+          $$ReversionesPagosProveedorTableCreateCompanionBuilder,
+          $$ReversionesPagosProveedorTableUpdateCompanionBuilder,
+          (
+            ReversionesPagosProveedorData,
+            $$ReversionesPagosProveedorTableReferences,
+          ),
+          ReversionesPagosProveedorData,
+          PrefetchHooks Function({bool tenantId})
+        > {
+  $$ReversionesPagosProveedorTableTableManager(
+    _$AppDatabase db,
+    $ReversionesPagosProveedorTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ReversionesPagosProveedorTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$ReversionesPagosProveedorTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$ReversionesPagosProveedorTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> tenantId = const Value.absent(),
+                Value<String> pagoId = const Value.absent(),
+                Value<String> motivo = const Value.absent(),
+                Value<String> actor = const Value.absent(),
+                Value<DateTime> fecha = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ReversionesPagosProveedorCompanion(
+                tenantId: tenantId,
+                pagoId: pagoId,
+                motivo: motivo,
+                actor: actor,
+                fecha: fecha,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tenantId,
+                required String pagoId,
+                required String motivo,
+                required String actor,
+                required DateTime fecha,
+                Value<int> rowid = const Value.absent(),
+              }) => ReversionesPagosProveedorCompanion.insert(
+                tenantId: tenantId,
+                pagoId: pagoId,
+                motivo: motivo,
+                actor: actor,
+                fecha: fecha,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ReversionesPagosProveedorTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tenantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tenantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.tenantId,
+                                referencedTable:
+                                    $$ReversionesPagosProveedorTableReferences
+                                        ._tenantIdTable(db),
+                                referencedColumn:
+                                    $$ReversionesPagosProveedorTableReferences
+                                        ._tenantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ReversionesPagosProveedorTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ReversionesPagosProveedorTable,
+      ReversionesPagosProveedorData,
+      $$ReversionesPagosProveedorTableFilterComposer,
+      $$ReversionesPagosProveedorTableOrderingComposer,
+      $$ReversionesPagosProveedorTableAnnotationComposer,
+      $$ReversionesPagosProveedorTableCreateCompanionBuilder,
+      $$ReversionesPagosProveedorTableUpdateCompanionBuilder,
+      (
+        ReversionesPagosProveedorData,
+        $$ReversionesPagosProveedorTableReferences,
+      ),
+      ReversionesPagosProveedorData,
+      PrefetchHooks Function({bool tenantId})
     >;
 typedef $$SeriesFiscalesTableCreateCompanionBuilder =
     SeriesFiscalesCompanion Function({
@@ -61146,6 +63956,18 @@ class $AppDatabaseManager {
   $AppDatabaseManager(this._db);
   $$TenantsTableTableManager get tenants =>
       $$TenantsTableTableManager(_db, _db.tenants);
+  $$ControlFacturasProveedorTableTableManager get controlFacturasProveedor =>
+      $$ControlFacturasProveedorTableTableManager(
+        _db,
+        _db.controlFacturasProveedor,
+      );
+  $$EventosProveedorTableTableManager get eventosProveedor =>
+      $$EventosProveedorTableTableManager(_db, _db.eventosProveedor);
+  $$ReversionesPagosProveedorTableTableManager get reversionesPagosProveedor =>
+      $$ReversionesPagosProveedorTableTableManager(
+        _db,
+        _db.reversionesPagosProveedor,
+      );
   $$SeriesFiscalesTableTableManager get seriesFiscales =>
       $$SeriesFiscalesTableTableManager(_db, _db.seriesFiscales);
   $$EventosSerieFiscalTableTableManager get eventosSerieFiscal =>

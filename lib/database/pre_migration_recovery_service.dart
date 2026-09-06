@@ -24,6 +24,7 @@ class PreMigrationRecoveryService {
       31,
       32,
       33,
+      34,
     },
   }) async {
     if (!await source.exists()) return null;

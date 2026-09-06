@@ -140,3 +140,13 @@ Este documento está preparado para registrar decisiones arquitectónicas, tecno
 - No se implementa autoridad central entre copias de base de datos: tras restauraciones antiguas se debe revisar la continuidad externa antes de reemitir. [Modelo y límites](PROD3_ARRANQUE_FISCAL.md).
 
 - Cierre de PROD-3: aceptación manual superada en Desarrollo según confirmación del usuario, con ordinarias DEMO3-2026-0025/0026 y rectificativa DEMO3R-2026-0007; próximos 27 y 8, ambos circuitos protegidos. No se utilizó Producción ni se emitieron facturas reales. Pendiente únicamente validación con gestoría antes de configurar numeración real en Producción; publicación pendiente de autorización. PROD-4 y Fase 5 no iniciados.
+
+## Correcciones de proveedores — PROD-4
+
+- Se separa el control documental y de pago mediante tablas complementarias para no reescribir datos históricos al migrar 34→35.
+- Los importes de abonos se guardan como magnitudes, con tipo explícito y efecto negativo en coste y saldo. No se emite documentación fiscal del proveedor.
+- Corrección de transcripción mediante original anulado y sustituto relacionado; motivo y enlaces bidireccionales en auditoría. Las operaciones son transaccionales.
+- Los pagos originales son inmutables; una reversión única los excluye de los agregados. Pago desconocido no implica deuda pendiente.
+- Las reimputaciones compensan hechos previos y registran nuevos. Gastos generales/sin asignar no inventan obra ni se cargan automáticamente a su rentabilidad.
+- Actor local explícito, sin identidad autenticada inventada. Las compras vinculadas se corrigen desde la factura; las independientes conservan la corrección de pago en Timeline.
+- Se mantiene el número de tramos de repartos existentes; no hay importador Excel, sincronización entre copias ni solución de almacenamiento externo PROD-5. [Procedimiento y límites](PROD4_CORRECCIONES_PROVEEDORES.md).

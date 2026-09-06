@@ -68,7 +68,7 @@ void main() {
     final migrated = AppDatabase.forTesting(NativeDatabase(file));
     addTearDown(migrated.close);
     await migrated.ensureReady();
-    expect(migrated.schemaVersion, 34);
+    expect(migrated.schemaVersion, 35);
     expect(
       (await migrated.comprasDao.obtenerPorId(
         'legacy',

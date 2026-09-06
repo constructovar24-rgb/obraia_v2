@@ -53,10 +53,18 @@ class FacturaRecibidaInput {
     required this.baseCentimos,
     required this.ivaCentimos,
     required this.asignaciones,
+    this.tipo = 'factura',
+    this.originalId,
+    this.pagoVerificado = false,
+    this.destino = 'sinAsignar',
     this.vencimiento,
     this.documentoId,
     this.albaranIds = const [],
   });
+  final String tipo;
+  final String? originalId;
+  final bool pagoVerificado;
+  final String destino;
   final String proveedorId;
   final String numero;
   final DateTime fecha;

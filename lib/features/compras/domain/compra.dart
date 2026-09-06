@@ -1,4 +1,10 @@
-enum CompraEstado { pendiente, pagada, anulada }
+enum CompraEstado {
+  pendiente,
+  pagada,
+  anulada,
+  noVerificado,
+  parcialmentePagada,
+}
 
 enum CompraClasificacionEconomica { provisional, incurrido, anulada }
 

@@ -70,7 +70,18 @@ class CircuitoProveedorDao extends DatabaseAccessor<AppDatabase>
   Future<int> totalPagado(String facturaId) async =>
       (await (select(pagosProveedor)..where(
                 (t) =>
-                    t.tenantId.equals(_tenant) & t.facturaId.equals(facturaId),
+                    t.tenantId.equals(_tenant) &
+                    t.facturaId.equals(facturaId) &
+                    t.id.isNotInQuery(
+                      selectOnly(attachedDatabase.reversionesPagosProveedor)
+                        ..addColumns([
+                          attachedDatabase.reversionesPagosProveedor.pagoId,
+                        ])
+                        ..where(
+                          attachedDatabase.reversionesPagosProveedor.tenantId
+                              .equals(_tenant),
+                        ),
+                    ),
               ))
               .get())
           .fold<int>(0, (a, b) => a + b.importeCentimos);
@@ -131,7 +142,7 @@ class CircuitoProveedorDao extends DatabaseAccessor<AppDatabase>
           .watch();
 
   Future<List<QueryRow>> senalesObra(String expedienteId) => customSelect(
-    '''SELECT fr.fecha_vencimiento, fr.estado,
+    '''SELECT fr.fecha_vencimiento, fr.estado, COALESCE((SELECT pago_verificado FROM control_facturas_proveedor c WHERE c.tenant_id=fr.tenant_id AND c.factura_id=fr.id),1) AS pago_verificado,
               CASE WHEN frc.compra_id IS NULL THEN 0 ELSE 1 END AS reconciliada
        FROM asignaciones_factura_recibida afr
        JOIN facturas_recibidas fr ON fr.tenant_id = afr.tenant_id AND fr.id = afr.factura_id
@@ -141,6 +152,7 @@ class CircuitoProveedorDao extends DatabaseAccessor<AppDatabase>
     readsFrom: {
       asignacionesFacturaRecibida,
       facturasRecibidas,
+      attachedDatabase.controlFacturasProveedor,
       facturaRecibidaCompras,
     },
   ).get();
@@ -163,4 +175,65 @@ class CircuitoProveedorDao extends DatabaseAccessor<AppDatabase>
     ).getSingle();
     return row.read<int>('total');
   }
+
+  Future<ControlFacturasProveedorData?> control(String id) =>
+      (select(attachedDatabase.controlFacturasProveedor)
+            ..where((t) => t.tenantId.equals(_tenant) & t.facturaId.equals(id)))
+          .getSingleOrNull();
+  Future<void> guardarControl(ControlFacturasProveedorCompanion c) => into(
+    attachedDatabase.controlFacturasProveedor,
+  ).insertOnConflictUpdate(c.copyWith(tenantId: Value(_tenant)));
+  Future<void> evento(EventosProveedorCompanion e) => into(
+    attachedDatabase.eventosProveedor,
+  ).insert(e.copyWith(tenantId: Value(_tenant)));
+  Future<List<EventosProveedorData>> eventos(String id) =>
+      (select(attachedDatabase.eventosProveedor)
+            ..where((t) => t.tenantId.equals(_tenant) & t.facturaId.equals(id))
+            ..orderBy([(t) => OrderingTerm.asc(t.fecha)]))
+          .get();
+  Future<List<FacturasRecibida>> todasFacturas() =>
+      (select(facturasRecibidas)
+            ..where((t) => t.tenantId.equals(_tenant))
+            ..orderBy([(t) => OrderingTerm.desc(t.fechaFactura)]))
+          .get();
+  Future<List<AsignacionesFacturaRecibidaData>> asignaciones(String id) =>
+      (select(asignacionesFacturaRecibida)
+            ..where((t) => t.tenantId.equals(_tenant) & t.facturaId.equals(id)))
+          .get();
+  Future<List<PagosProveedorData>> pagos(String id) => (select(
+    pagosProveedor,
+  )..where((t) => t.tenantId.equals(_tenant) & t.facturaId.equals(id))).get();
+  Future<PagosProveedorData?> pago(String id) =>
+      (select(pagosProveedor)
+            ..where((t) => t.tenantId.equals(_tenant) & t.id.equals(id)))
+          .getSingleOrNull();
+  Future<List<ReversionesPagosProveedorData>> reversionesPago() => (select(
+    attachedDatabase.reversionesPagosProveedor,
+  )..where((t) => t.tenantId.equals(_tenant))).get();
+  Future<void> revertirPago(ReversionesPagosProveedorCompanion v) => into(
+    attachedDatabase.reversionesPagosProveedor,
+  ).insert(v.copyWith(tenantId: Value(_tenant)));
+  Future<void> editarFactura(String id, FacturasRecibidasCompanion c) =>
+      (update(
+        facturasRecibidas,
+      )..where((t) => t.tenantId.equals(_tenant) & t.id.equals(id))).write(c);
+  Future<void> editarAsignacion(
+    String id,
+    AsignacionesFacturaRecibidaCompanion c,
+  ) => (update(
+    asignacionesFacturaRecibida,
+  )..where((t) => t.tenantId.equals(_tenant) & t.id.equals(id))).write(c);
+  Future<void> cambiarCompra(String asignacionId, String compraId) =>
+      (update(facturaRecibidaCompras)..where(
+            (t) =>
+                t.tenantId.equals(_tenant) &
+                t.asignacionId.equals(asignacionId),
+          ))
+          .write(FacturaRecibidaComprasCompanion(compraId: Value(compraId)));
+  Future<bool> compraVinculada(String id) async =>
+      (await (select(facturaRecibidaCompras)..where(
+                (t) => t.tenantId.equals(_tenant) & t.compraId.equals(id),
+              ))
+              .get())
+          .isNotEmpty;
 }

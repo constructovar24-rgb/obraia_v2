@@ -83,7 +83,7 @@ class _CompraFormState extends State<CompraForm> {
     );
     _observaciones = TextEditingController(text: c?.observaciones ?? '');
     _fecha = c?.fecha ?? DateTime.now();
-    _estado = c?.estado ?? CompraEstado.pendiente;
+    _estado = c?.estado ?? CompraEstado.noVerificado;
     _expedienteId = c?.expedienteId ?? widget.expedienteId;
     _proveedorId = c?.proveedorId;
   }
@@ -238,6 +238,7 @@ class _CompraFormState extends State<CompraForm> {
                         ),
                       ),
                       DropdownButtonFormField<CompraEstado>(
+                        isExpanded: true,
                         initialValue: _estado,
                         decoration: const InputDecoration(
                           labelText: 'Estado registrado',
@@ -246,7 +247,15 @@ class _CompraFormState extends State<CompraForm> {
                             .map(
                               (e) => DropdownMenuItem(
                                 value: e,
-                                child: Text(e.name),
+                                child: Text(switch (e) {
+                                  CompraEstado.noVerificado =>
+                                    'Pago no verificado',
+                                  CompraEstado.parcialmentePagada =>
+                                    'Parcialmente pagada',
+                                  CompraEstado.pendiente => 'Pendiente',
+                                  CompraEstado.pagada => 'Pagada',
+                                  CompraEstado.anulada => 'Anulada',
+                                }, overflow: TextOverflow.ellipsis),
                               ),
                             )
                             .toList(),

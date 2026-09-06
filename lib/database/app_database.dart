@@ -1,3 +1,5 @@
+import 'tables/correcciones_proveedor.dart';
+import 'correcciones_proveedor_schema.dart';
 import 'tables/series_fiscales.dart';
 import 'dao/series_fiscales_dao.dart';
 import 'serie_fiscal_schema.dart';
@@ -81,6 +83,9 @@ part 'app_database.g.dart';
 
 @DriftDatabase(
   tables: [
+    ControlFacturasProveedor,
+    EventosProveedor,
+    ReversionesPagosProveedor,
     SeriesFiscales,
     EventosSerieFiscal,
     Tenants,
@@ -188,7 +193,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 34;
+  int get schemaVersion => 35;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -207,6 +212,7 @@ class AppDatabase extends _$AppDatabase {
       await _inicializarEconomiaPorTenant(tenantId);
       await crearProteccionesPresupuesto(this);
       await crearProteccionesSeriesFiscales(this);
+      await crearProteccionesProveedor(this);
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
@@ -519,6 +525,18 @@ class AppDatabase extends _$AppDatabase {
           await m.createTable(eventosSerieFiscal);
         }
         await crearProteccionesSeriesFiscales(this);
+      }
+      if (from < 35 && await _existeTabla('facturas_recibidas')) {
+        if (!await _existeTabla('control_facturas_proveedor')) {
+          await m.createTable(controlFacturasProveedor);
+        }
+        if (!await _existeTabla('eventos_proveedor')) {
+          await m.createTable(eventosProveedor);
+        }
+        if (!await _existeTabla('reversiones_pagos_proveedor')) {
+          await m.createTable(reversionesPagosProveedor);
+        }
+        await crearProteccionesProveedor(this);
       }
     },
     beforeOpen: (details) async {
@@ -1145,7 +1163,7 @@ LazyDatabase _openConnection(File? requestedFile, AppEnvironment environment) {
     await file.parent.create(recursive: true);
     await const PreMigrationRecoveryService().protectBeforeUpgrade(
       file,
-      supportedVersions: {22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33},
+      supportedVersions: {22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34},
     );
     return NativeDatabase(file);
   });

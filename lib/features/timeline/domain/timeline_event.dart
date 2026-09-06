@@ -1,4 +1,5 @@
 enum TimelineEventType {
+  proveedorOperacion,
   expedienteCreado,
   expedienteActualizado,
   presupuestoCreado,

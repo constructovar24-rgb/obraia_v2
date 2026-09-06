@@ -88,6 +88,8 @@ List<TimelineEvent> _filtrarEventos({
 
 String timelineEventTypeLabel(TimelineEventType tipo) {
   switch (tipo) {
+    case TimelineEventType.proveedorOperacion:
+      return 'Operación de proveedor';
     case TimelineEventType.expedienteCreado:
       return 'Expediente creado';
     case TimelineEventType.expedienteActualizado:

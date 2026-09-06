@@ -1,3 +1,4 @@
+import '../../../circuito_proveedor/presentation/screens/facturas_proveedor_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/shortcuts/app_shortcuts.dart';
@@ -46,6 +47,16 @@ class _ComprasScreenState extends ConsumerState<ComprasScreen> {
           title: 'Compras',
           subtitle: 'Apuntes de gasto vinculados a obras',
           actions: [
+            AppPageHeaderAction(
+              icon: Icons.receipt_long_outlined,
+              tooltip: 'Facturas recibidas',
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const FacturasProveedorScreen(),
+                ),
+              ),
+            ),
             AppPageHeaderAction(
               icon: Icons.add,
               tooltip: 'Nueva compra',
@@ -113,6 +124,7 @@ class _ComprasScreenState extends ConsumerState<ComprasScreen> {
                   ),
                 );
                 final filter = DropdownButtonFormField<CompraEstado?>(
+                  isExpanded: true,
                   key: const Key('compras-filter'),
                   initialValue: _estado,
                   decoration: const InputDecoration(
@@ -123,7 +135,10 @@ class _ComprasScreenState extends ConsumerState<ComprasScreen> {
                     ...CompraEstado.values.map(
                       (e) => DropdownMenuItem(
                         value: e,
-                        child: Text(compraEstadoLabel(e)),
+                        child: Text(
+                          compraEstadoLabel(e),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ),
                   ],
@@ -269,11 +284,15 @@ class _ComprasScreenState extends ConsumerState<ComprasScreen> {
 }
 
 String compraEstadoLabel(CompraEstado e) => switch (e) {
+  CompraEstado.noVerificado => 'Pago no verificado',
+  CompraEstado.parcialmentePagada => 'Parcialmente pagada',
   CompraEstado.pendiente => 'Pendiente',
   CompraEstado.pagada => 'Pagada',
   CompraEstado.anulada => 'Anulada',
 };
 StatusType compraEstadoType(CompraEstado e) => switch (e) {
+  CompraEstado.noVerificado => StatusType.warning,
+  CompraEstado.parcialmentePagada => StatusType.warning,
   CompraEstado.pendiente => StatusType.warning,
   CompraEstado.pagada => StatusType.success,
   CompraEstado.anulada => StatusType.neutral,

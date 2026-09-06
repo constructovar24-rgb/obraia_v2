@@ -117,6 +117,9 @@ class HechoCosteRepository {
 
   Future<void> revertirCompra(String compraId, {required String motivo}) =>
       database.transaction(() async {
+        if (motivo.trim().isEmpty) {
+          throw ArgumentError('Indica el motivo de la reversión.');
+        }
         final compra = await database.comprasDao.obtenerPorId(compraId);
         if (compra == null || compra.clasificacionEconomica != 'incurrido') {
           throw StateError('La compra no tiene un coste vigente.');

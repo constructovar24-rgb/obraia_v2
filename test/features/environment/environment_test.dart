@@ -52,14 +52,14 @@ void main() {
   });
 
   test(
-    'PROD nueva: schema 34, tenant neutral y todas las tablas funcionales vacías',
+    'PROD nueva: schema 35, tenant neutral y todas las tablas funcionales vacías',
     () async {
       await controller.changeEnvironment(AppEnvironment.production);
       expect(controller.error, isNull);
       final db = controller.lifecycle.activeDatabase;
       final version = await db.customSelect('PRAGMA user_version').getSingle();
-      expect(version.read<int>('user_version'), 34);
-      expect(db.schemaVersion, 34);
+      expect(version.read<int>('user_version'), 35);
+      expect(db.schemaVersion, 35);
       final tenant = await db.select(db.tenants).getSingle();
       expect(tenant.nombre, 'Empresa inicial');
       for (final table in db.allTables) {
@@ -252,7 +252,7 @@ void main() {
         expect(
           (await BackupArchiveService().validateBackup(
             backup,
-            maximumSchemaVersion: 34,
+            maximumSchemaVersion: 35,
           )).environment,
           source,
         );
@@ -333,7 +333,7 @@ void main() {
         expect(
           (await BackupArchiveService().validateBackup(
             file.path,
-            maximumSchemaVersion: 34,
+            maximumSchemaVersion: 35,
           )).environment,
           environment,
         );
