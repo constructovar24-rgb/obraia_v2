@@ -138,3 +138,5 @@ Este documento está preparado para registrar decisiones arquitectónicas, tecno
 - Preparación explícita en DEV y PROD sin valores fiscales reales por defecto. Emisión, contador, snapshot/PDF y auditoría comparten transacción; los cambios manuales quedan bloqueados tras uso.
 - Schema 34 conserva el histórico y deja nuevas configuraciones vacías. Continuidad histórica exige validación explícita y no renumera documentos.
 - No se implementa autoridad central entre copias de base de datos: tras restauraciones antiguas se debe revisar la continuidad externa antes de reemitir. [Modelo y límites](PROD3_ARRANQUE_FISCAL.md).
+
+- Cierre de PROD-3: aceptación manual superada en Desarrollo según confirmación del usuario, con ordinarias DEMO3-2026-0025/0026 y rectificativa DEMO3R-2026-0007; próximos 27 y 8, ambos circuitos protegidos. No se utilizó Producción ni se emitieron facturas reales. Pendiente únicamente validación con gestoría antes de configurar numeración real en Producción; publicación pendiente de autorización. PROD-4 y Fase 5 no iniciados.

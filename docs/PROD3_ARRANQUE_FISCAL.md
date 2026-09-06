@@ -4,7 +4,7 @@
 
 Inicio: main y origin/main en `60ea9ac3f17e28072deab402eaeee3551b9a1e38`, schema 33, única modificación previa `analysis_options.yaml`. PROD-1 y PROD-2 publicados y cerrados; aceptación manual de PROD-2 superada según el usuario.
 
-PROD-3 implementa preparación explícita de numeración fiscal. No configura series reales ni emite documentos reales. Aceptación manual de PROD-3 pendiente exclusivamente con datos ficticios en DEV. Sin push, PROD-4 ni Fase 5.
+PROD-3 implementa preparación explícita de numeración fiscal. No configura series reales ni emite documentos reales. PROD-3 cerrado técnicamente; aceptación manual superada en DEV con datos ficticios según confirmación del usuario. Pendiente únicamente validación con gestoría antes de configurar numeración real en Producción. Publicación pendiente de autorización; sin push, PROD-4 ni Fase 5.
 
 ## Modelo fiscal y ámbito de unicidad
 
@@ -69,7 +69,7 @@ Prueba de migración reconstruye schema 33 en temporal con presupuesto aceptado,
 
 Análisis sin incidencias, 22 pruebas nuevas y suite completa de 388 pruebas superadas; compilación Windows debug en copia aislada idéntica y revisión de diff sin errores. Pruebas nuevas: 19 de repositorio, 2 de UI y 1 de migración. No se han abierto ni modificado las bases actuales para verificar.
 
-## Propuesta exacta de aceptación manual — solo DEV
+## Procedimiento de aceptación manual — solo DEV
 
 1. Confirmar indicador **Desarrollo**. No usar Producción para estas pruebas y no limpiar datos existentes.
 2. Usar exclusivamente empresa/cliente/obra ficticios de prueba. No introducir series ni números definitivos de la empresa real.
@@ -88,4 +88,6 @@ Análisis sin incidencias, 22 pruebas nuevas y suite completa de 388 pruebas sup
 15. Registrar resultado, incidencias y referencias ficticias creadas. No borrar las facturas emitidas para limpiar pruebas. No publicar ni iniciar PROD-4/Fase 5.
 16. La preparación real de PROD queda para una actuación humana posterior, validada con gestoría antes de la primera factura real.
 
-Estas instrucciones son una propuesta pendiente: no se ha realizado aceptación manual de PROD-3 en esta entrega.
+La aceptación manual comunicada por el usuario está superada. Se comprobó la preparación explícita del ejercicio 2026, el bloqueo sin preparar y sin consumo tras fallo, ordinarias DEMO3-2026-0025 y DEMO3-2026-0026, y rectificativa trazable DEMO3R-2026-0007. Estado final: ordinarias próximo 27 y 2 emisiones; rectificativas próximo 8 y 1 emisión, con ambos circuitos protegidos. También se verificaron los bloqueos de rectificación sin expediente y por superar el disponible del presupuesto. Todo se realizó en Desarrollo con datos ficticios, sin tocar Producción ni emitir facturas reales.
+
+Este resultado es el comunicado por el usuario; la revisión de cierre no abre sus bases. Los pasos del procedimiento sobre otro ejercicio, reapertura de PDFs y restauración aislada no se presentan como comprobaciones manuales comunicadas; mantienen cobertura automatizada. No se requiere repetir la aceptación descrita para cerrar técnicamente PROD-3.

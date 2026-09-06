@@ -8,7 +8,7 @@
 - Series ordinaria/rectificativa personalizables, inicio elegido y estado de preparación; interfaz con entorno, ejercicio, próximos números y confirmación.
 - Numeración asignada transaccionalmente con documento, PDF y auditoría; prevención de duplicados, doble emisión y consumo parcial.
 - Bloqueados cambios tras primer uso; continuidad histórica validada, años independientes y backup compatible.
-- PROD-2 publicado y aceptado manualmente; PROD-3 pendiente de aceptación manual en DEV. Sin datos/facturas reales, sin push, PROD-4 y Fase 5 no iniciados.
+- PROD-2 publicado y aceptado manualmente; PROD-3 cerrado técnicamente y aceptado manualmente en DEV con datos ficticios según confirmación del usuario. Pendiente únicamente validación con gestoría antes de configurar numeración real en Producción; publicación pendiente de autorización. Sin datos/facturas reales, sin push, PROD-4 y Fase 5 no iniciados.
 - Análisis sin incidencias, 22 pruebas nuevas y suite completa de 388 pruebas superadas; compilación Windows debug en copia aislada idéntica y revisión de diff sin errores.
 - [Modelo, verificaciones y aceptación manual](PROD3_ARRANQUE_FISCAL.md).
 
