@@ -1,3 +1,5 @@
+import '../../../core/environment/environment_paths.dart';
+import 'document_backup_inventory.dart';
 import 'dart:convert';
 import 'dart:io';
 
@@ -12,13 +14,15 @@ import '../domain/backup_manifest.dart';
 import 'database_snapshot_service.dart';
 
 class BackupArchiveService {
-  BackupArchiveService({DatabaseSnapshotService? snapshotService})
-    : _snapshotService = snapshotService ?? const DatabaseSnapshotService();
+  BackupArchiveService({
+    DatabaseSnapshotService? snapshotService,
+    this.documentPaths,
+  }) : _snapshotService = snapshotService ?? const DatabaseSnapshotService();
 
   static const maxArchiveBytes = 512 * 1024 * 1024;
   static const maxUncompressedBytes = 512 * 1024 * 1024;
   static const maxManifestBytes = 1024 * 1024;
-  static const maxEntries = 10;
+  static const maxEntries = 1000;
   static const maxCompressionRatio = 500;
 
   static const _expectedTables = <String>{
@@ -75,6 +79,7 @@ class BackupArchiveService {
     'pagos_proveedor',
   };
 
+  final EnvironmentPaths? documentPaths;
   final DatabaseSnapshotService _snapshotService;
   bool _operationInProgress = false;
 
@@ -84,6 +89,7 @@ class BackupArchiveService {
     required String appVersion,
     required String appBuildNumber,
     DateTime? createdAtUtc,
+    bool allowIncompleteRecovery = false,
   }) async {
     if (_operationInProgress) {
       throw const BackupOperationInProgressException();
@@ -123,21 +129,58 @@ class BackupArchiveService {
         sizeBytes: databaseBytes.length,
         sha256: sha256.convert(databaseBytes).toString(),
       );
+      final paths =
+          documentPaths ??
+          (DocumentBackupInventory.rows(snapshot.path).isEmpty
+              ? null
+              : await EnvironmentPaths.resolve(database.environment));
+      if (paths != null && paths.environment != database.environment) {
+        throw const BackupValidationException();
+      }
+      var documents = <ArchiveFile>[];
+      var documentPackageComplete = true;
+      try {
+        if (paths != null) {
+          documents = await DocumentBackupInventory.collect(
+            snapshot.path,
+            paths,
+          );
+        }
+      } catch (_) {
+        if (!allowIncompleteRecovery) rethrow;
+        documentPackageComplete = false;
+      }
+      final documentEntries = documents
+          .map(
+            (file) => BackupManifestEntry(
+              path: file.name,
+              type: 'managed-document',
+              sizeBytes: file.size,
+              sha256: sha256.convert(file.readBytes()!).toString(),
+            ),
+          )
+          .toList();
       final manifest = BackupManifest(
+        documentPackageComplete: documentPackageComplete,
         environment: database.environment,
         createdAtUtc: (createdAtUtc ?? DateTime.now()).toUtc(),
         appVersion: _requiredMetadata(appVersion, 'appVersion'),
         appBuildNumber: _requiredMetadata(appBuildNumber, 'appBuildNumber'),
         schemaVersion: database.schemaVersion,
         databasePath: databaseEntry.path,
-        totalUncompressedBytes: databaseEntry.sizeBytes,
-        entries: <BackupManifestEntry>[databaseEntry],
+        totalUncompressedBytes:
+            databaseEntry.sizeBytes +
+            documentEntries.fold<int>(0, (sum, e) => sum + e.sizeBytes),
+        entries: <BackupManifestEntry>[databaseEntry, ...documentEntries],
       );
       final manifestBytes = utf8.encode(jsonEncode(manifest.toJson()));
 
       final archive = Archive()
         ..addFile(ArchiveFile.bytes(BackupManifest.manifestPath, manifestBytes))
         ..addFile(ArchiveFile.bytes(databaseEntry.path, databaseBytes));
+      for (final document in documents) {
+        archive.addFile(document);
+      }
       final archiveBytes = ZipEncoder().encodeBytes(archive);
       if (archiveBytes.length > maxArchiveBytes) {
         throw const BackupSizeLimitException();
@@ -245,10 +288,10 @@ class BackupArchiveService {
         throw const BackupSchemaNotSupportedException();
       }
       if (manifest.databasePath != BackupManifest.defaultDatabasePath ||
-          manifest.entries.length != 1) {
+          manifest.entries.isEmpty) {
         throw const BackupValidationException();
       }
-      final inventoryEntry = manifest.entries.single;
+      final inventoryEntry = manifest.entries.first;
       if (inventoryEntry.path != manifest.databasePath ||
           inventoryEntry.type != BackupManifestEntry.sqliteDatabaseType) {
         throw const BackupValidationException();
@@ -265,6 +308,14 @@ class BackupArchiveService {
         throw const BackupValidationException();
       }
 
+      for (final entry in manifest.entries) {
+        final bytes = archive.findFile(entry.path)?.readBytes();
+        if (bytes == null ||
+            bytes.length != entry.sizeBytes ||
+            sha256.convert(bytes).toString() != entry.sha256) {
+          throw const BackupValidationException();
+        }
+      }
       final databaseFile = archive.findFile(inventoryEntry.path);
       final databaseBytes = databaseFile?.readBytes();
       if (databaseFile == null ||
@@ -281,6 +332,7 @@ class BackupArchiveService {
       try {
         final databasePath = p.join(validationDirectory.path, 'obraia.sqlite');
         await File(databasePath).writeAsBytes(databaseBytes, flush: true);
+        DocumentBackupInventory.validate(databasePath, manifest);
         validateDatabaseFile(
           databasePath,
           maximumSchemaVersion: maximumSchemaVersion,
@@ -298,6 +350,7 @@ class BackupArchiveService {
   }
 
   Future<BackupManifest> extractValidatedDatabase({
+    Directory? documentDestination,
     required String backupPath,
     required String destinationPath,
     required int maximumSchemaVersion,
@@ -360,6 +413,25 @@ class BackupArchiveService {
         maximumSchemaVersion: maximumSchemaVersion,
         expectedSchemaVersion: manifest.schemaVersion,
       );
+      if (documentDestination != null) {
+        if (await documentDestination.exists()) {
+          throw const BackupDestinationExistsException();
+        }
+        await documentDestination.create(recursive: true);
+        for (final entry in manifest.entries.where(
+          (e) => e.type == 'managed-document',
+        )) {
+          final relative = entry.path.substring('documents/'.length);
+          final target = File(
+            p.joinAll([documentDestination.path, ...relative.split('/')]),
+          );
+          await target.parent.create(recursive: true);
+          await target.writeAsBytes(
+            archive.findFile(entry.path)!.readBytes()!,
+            flush: true,
+          );
+        }
+      }
       return manifest;
     } catch (_) {
       if (destinationCreatedByOperation && await destination.exists()) {

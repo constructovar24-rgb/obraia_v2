@@ -30,6 +30,8 @@ class DatabaseFileSwapService {
     required DatabaseLifecycleAction closeActiveDatabase,
     required DatabaseLifecycleAction openAndValidateActiveDatabase,
     DatabaseSwapFailureHook? failureHook,
+    DatabaseLifecycleAction? activateRelatedFiles,
+    DatabaseLifecycleAction? rollbackRelatedFiles,
   }) async {
     if (_operationInProgress) {
       throw const BackupOperationInProgressException();
@@ -93,6 +95,7 @@ class DatabaseFileSwapService {
       }
       await failureHook?.call(DatabaseSwapStage.activeFilesMoved);
 
+      await activateRelatedFiles?.call();
       await incoming.rename(activeDatabase.path);
       incomingActivated = true;
       await failureHook?.call(DatabaseSwapStage.incomingActivated);
@@ -110,6 +113,12 @@ class DatabaseFileSwapService {
     } catch (_) {
       if (activeDatabaseClosed) {
         try {
+          var relatedRollbackFailed = false;
+          try {
+            await rollbackRelatedFiles?.call();
+          } catch (_) {
+            relatedRollbackFailed = true;
+          }
           await _rollback(
             activeDatabasePath: activeDatabasePath,
             incomingActivated: incomingActivated,
@@ -118,6 +127,9 @@ class DatabaseFileSwapService {
             openAndValidateActiveDatabase: openAndValidateActiveDatabase,
             exchangeDirectory: exchangeDirectory,
           );
+          if (relatedRollbackFailed) {
+            throw const DatabaseRollbackFailedException();
+          }
         } catch (_) {
           rollbackFailed = true;
           throw const DatabaseRollbackFailedException();

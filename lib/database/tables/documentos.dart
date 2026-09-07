@@ -20,6 +20,10 @@ class Documentos extends Table {
 
   TextColumn get rutaArchivo => text()();
 
+  TextColumn get rutaGestionada => text().nullable()();
+  TextColumn get sha256Original => text().nullable()();
+  DateTimeColumn get incorporadoUtc => dateTime().nullable()();
+
   TextColumn get mimeType => text().nullable()();
 
   IntColumn get tamanoBytes => integer()();

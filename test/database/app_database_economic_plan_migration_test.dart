@@ -22,7 +22,7 @@ void main() {
     addTearDown(database.close);
     await database.ensureReady();
 
-    expect(database.schemaVersion, 35);
+    expect(database.schemaVersion, 36);
     expect(
       await database.select(database.categoriasEconomicas).get(),
       hasLength(9),

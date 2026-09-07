@@ -2,6 +2,17 @@
 
 ## No publicado
 
+### PROD-5 — Documentos originales y copias
+
+- Schema 36: metadatos gestionados nullable, migración compatible desde 35 y Drift regenerado; no modifica históricos ni archivos reales.
+- Copia del original por entorno/tenant con SHA-256, tamaño real, nombre/procedencia, fecha UTC y ruta relativa; control de integridad y exportación.
+- Backup v2: SQLite, manifest e inventario exacto de originales; cobertura explícita de formatos antiguos y recuperación incompleta identificada.
+- Restore validado, aislamiento de entorno/empresas, instalación documental y rollback junto a SQLite; conservación de archivos previos.
+- UI distingue documentos protegidos y externos, bloquea sustitución del original y explica cobertura/errores de las copias.
+- [Alcance, límites y aceptación manual](PROD5_DOCUMENTOS_BACKUP.md). Verificación final: 439 pruebas superadas (26 nuevas de PROD-5: 9 de originales/repositorio, 13 de backup documental, 2 de UI, 1 de migración y 1 adicional de rollback); analyze sin incidencias; Windows debug compilado en copia aislada con 361 archivos relevantes idénticos; formato propio y git diff --check sin errores. Pendiente aceptación manual; sin push.
+
+## Publicado — PROD-4 y anteriores
+
 ### PROD-4 — Correcciones de proveedores
 
 - Revisión de cierre: corregidos el saldo pendiente mostrado en documentos anulados y la identificación de obra al crear el control de una factura histórica. Dos regresiones reproducidas y cubiertas, sin nueva migración ni cambios de importes históricos.
@@ -11,7 +22,7 @@
 - Pagos parciales/múltiples y reversiones; estado desconocido explícito y verificación manual antes de pagar.
 - Imputación posterior o corregida con costes canónicos compensados, sin duplicación; obra/general/sin asignar.
 - Ficha de facturas recibidas e historial, y corrección auditada de la marca de pago de compras independientes.
-- PROD-3 publicado. Aceptación manual de PROD-4 superada en Desarrollo según confirmación del usuario; cierre técnico completado; publicación pendiente de autorización; sin push, PROD-5, PROD-6 ni Fase 5.
+- PROD-3 publicado. Aceptación manual de PROD-4 superada en Desarrollo según confirmación del usuario; publicado y cerrado en 882c1599703c01916321041cfe0759cd2cf0c51f; estado histórico anterior a PROD-5.
 - Verificación técnica superada: 25 pruebas nuevas (22 de repositorio, 2 de interfaz y 1 de migración/backup); 28 pruebas del circuito, 28 de base de datos/migraciones y 41 de compras/proveedores/economía superadas. Suite completa: 413 pruebas. Análisis sin incidencias; Windows debug compilado en copia aislada con 359 archivos relevantes idénticos. Formato propio y diff sin errores.
 - [Detalle y aceptación manual](PROD4_CORRECCIONES_PROVEEDORES.md).
 

@@ -193,7 +193,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 35;
+  int get schemaVersion => 36;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -537,6 +537,17 @@ class AppDatabase extends _$AppDatabase {
           await m.createTable(reversionesPagosProveedor);
         }
         await crearProteccionesProveedor(this);
+      }
+      if (from < 36 && await _existeTabla('documentos')) {
+        if (!await _existeColumna('documentos', 'ruta_gestionada')) {
+          await m.addColumn(documentos, documentos.rutaGestionada);
+        }
+        if (!await _existeColumna('documentos', 'sha256_original')) {
+          await m.addColumn(documentos, documentos.sha256Original);
+        }
+        if (!await _existeColumna('documentos', 'incorporado_utc')) {
+          await m.addColumn(documentos, documentos.incorporadoUtc);
+        }
       }
     },
     beforeOpen: (details) async {

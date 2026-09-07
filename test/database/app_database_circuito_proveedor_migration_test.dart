@@ -33,7 +33,7 @@ void main() {
     await legacy.close();
     db = AppDatabase.forTesting(NativeDatabase(file));
     await db.ensureReady();
-    expect(db.schemaVersion, 35);
+    expect(db.schemaVersion, 36);
     expect(await db.select(db.albaranesProveedor).get(), isEmpty);
     expect(await db.select(db.facturasRecibidas).get(), isEmpty);
     expect(await db.select(db.pagosProveedor).get(), isEmpty);

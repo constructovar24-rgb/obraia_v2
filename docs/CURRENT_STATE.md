@@ -1,6 +1,8 @@
 # Estado actual de OBRA IA
 
-**PROD-4 — cerrado técnicamente y validado manualmente:** correcciones trazables de facturas recibidas, abonos, reversiones, pagos no verificados e imputación de obra; schema 35. Conserva históricos y separa coste de pago. Verificación técnica superada: 25 pruebas nuevas (22 de repositorio, 2 de interfaz y 1 de migración/backup); 28 pruebas del circuito, 28 de base de datos/migraciones y 41 de compras/proveedores/economía superadas. Suite completa: 413 pruebas. Análisis sin incidencias; Windows debug compilado en copia aislada con 359 archivos relevantes idénticos. Formato propio y diff sin errores. PROD-3 publicado y cerrado. Aceptación manual de PROD-4 superada en Desarrollo según confirmación del usuario; cierre técnico completado; publicación pendiente de autorización; sin push, PROD-5, PROD-6 ni Fase 5. [Modelo y procedimiento](PROD4_CORRECCIONES_PROVEEDORES.md).
+**PROD-5 — cerrado técnicamente, pendiente de aceptación manual:** originales gestionados por entorno y tenant, integridad SHA-256, backup v2 con inventario de SQLite y documentos, staging y rollback documental. Schema 36 con migración aditiva desde 35. Históricos externos identificados sin copia automática; PDFs congelados conservados en SQLite. Verificación final: 439 pruebas superadas (26 nuevas de PROD-5: 9 de originales/repositorio, 13 de backup documental, 2 de UI, 1 de migración y 1 adicional de rollback); analyze sin incidencias; Windows debug compilado en copia aislada con 361 archivos relevantes idénticos; formato propio y git diff --check sin errores. Pendiente aceptación manual. Sin push, datos reales, cambios en Producción, PROD-6 ni Fase 5. [Alcance, límites, restauración y aceptación](PROD5_DOCUMENTOS_BACKUP.md).
+
+**PROD-4 — cerrado técnicamente y validado manualmente:** correcciones trazables de facturas recibidas, abonos, reversiones, pagos no verificados e imputación de obra; schema 35. Conserva históricos y separa coste de pago. Verificación técnica superada: 25 pruebas nuevas (22 de repositorio, 2 de interfaz y 1 de migración/backup); 28 pruebas del circuito, 28 de base de datos/migraciones y 41 de compras/proveedores/economía superadas. Suite completa: 413 pruebas. Análisis sin incidencias; Windows debug compilado en copia aislada con 359 archivos relevantes idénticos. Formato propio y diff sin errores. PROD-3 publicado y cerrado. Aceptación manual de PROD-4 superada en Desarrollo según confirmación del usuario; publicado y cerrado en 882c1599703c01916321041cfe0759cd2cf0c51f. Estado histórico anterior al inicio de PROD-5. [Modelo y procedimiento](PROD4_CORRECCIONES_PROVEEDORES.md).
 
 **PROD-3 — cerrado técnicamente y validado manualmente:** configuración fiscal explícita por tenant, ejercicio y circuito; series personalizadas, secuencias transaccionales, bloqueo tras primer uso y auditoría local. Schema 34. Análisis sin incidencias, 22 pruebas nuevas y suite completa de 388 pruebas superadas; compilación Windows debug en copia aislada idéntica y revisión de diff sin errores. PROD-1 y PROD-2 publicados y cerrados; aceptación manual de PROD-2 superada según confirmación del usuario. Aceptación manual de PROD-3 superada en DEV con datos ficticios según confirmación del usuario: DEMO3-2026-0025, DEMO3-2026-0026 y DEMO3R-2026-0007; próximos números 27 y 8. Pendiente únicamente validación con gestoría antes de configurar numeración real en Producción. PROD-3 publicado y cerrado; sin datos reales. PROD-4 se aborda como siguiente bloque independiente; Fase 5 no iniciada. Modelo, límites y procedimiento en [PROD3_ARRANQUE_FISCAL.md](PROD3_ARRANQUE_FISCAL.md).
 
@@ -29,7 +31,7 @@ Fotografía verificada el **3 de septiembre de 2026**. Debe actualizarse cuando 
 ## Base tecnológica
 
 - Flutter/Dart con Riverpod.
-- Drift sobre SQLite con `schemaVersion` 35. Las conexiones activan claves foráneas y todas las tablas empresariales exigen `tenantId`.
+- Drift sobre SQLite con `schemaVersion` 36. Las conexiones activan claves foráneas y todas las tablas empresariales exigen `tenantId`.
 - `pdf` y `printing` para generación documental.
 - Windows como plataforma prioritaria.
 - 171 archivos Dart en la auditoría de esta línea base.
@@ -105,10 +107,10 @@ Expediente/Obra es el octavo incremento y actúa como centro operativo. Su resum
 1. La cobertura continúa siendo desigual y aún se concentra principalmente en Facturas; el primer tramo de Presupuestos ya cuenta con pruebas de persistencia y atomicidad.
 2. Persisten providers en `data/`, métodos heredados en `AppDatabase` y archivos grandes; los accesos directos de Presentation revisados quedan encapsulados en providers o coordinadores de infraestructura.
 3. Las rectificativas sustitutivas y la integración de Certificaciones con las asignaciones parciales quedan aplazadas y no forman parte del alcance cerrado de Fase 2.
-4. El futuro circuito administrativo de Compras sigue pendiente: albaranes, facturas recibidas con original documental, pagos, vencimientos, reparto multiobra, discrepancias, almacén, histórico de materiales/precios y automatización asistida. El registro actual no acredita por sí solo un pago ni sustituye el documento original.
+4. El circuito de albaranes, facturas recibidas, pagos y reparto multiobra está implementado y protegido por PROD-4. PROD-5 conserva nuevos originales y los incorpora al backup; permanecen referencias históricas externas, copias fuera del equipo y recuperación asistida en equipo nuevo. Almacén, histórico de materiales/precios y automatización siguen fuera del alcance.
 5. El alta de Compra y su evento de Timeline aún no forman una única transacción atómica; esta deuda no se corrige en el incremento visual de Expediente.
 6. Aún no se han verificado un instalador, firma, actualización ni reversión para una distribución publicable en Windows.
 
 ## Próximo hito
 
-Realizar la aceptación manual posterior de PROD-1 según su procedimiento. PROD-2 permanece pendiente y no iniciado; no comenzar Fase 5 ni introducir datos reales.
+Realizar la aceptación manual de PROD-5 en Desarrollo con datos ficticios según docs/PROD5_DOCUMENTOS_BACKUP.md. PROD-1 a PROD-4 están publicados y cerrados; PROD-5 no está publicado. No iniciar PROD-6 ni Fase 5 ni introducir datos reales.

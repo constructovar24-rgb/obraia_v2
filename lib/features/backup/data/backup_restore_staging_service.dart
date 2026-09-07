@@ -38,6 +38,9 @@ class BackupRestoreStagingService {
       stagingDirectory = await _temporaryDirectoryFactory();
       final sourceFile = File(p.join(stagingDirectory.path, 'source.sqlite'));
       final manifest = await _archiveService.extractValidatedDatabase(
+        documentDestination: Directory(
+          p.join(stagingDirectory.path, 'documents'),
+        ),
         backupPath: backupPath,
         destinationPath: sourceFile.path,
         maximumSchemaVersion: currentSchemaVersion,
@@ -101,6 +104,8 @@ class PreparedRestoreBackup {
     required this.preparedSchemaVersion,
   });
 
+  Directory get documentsDirectory =>
+      Directory(p.join(directory.path, 'documents'));
   final Directory directory;
   final File sourceDatabaseFile;
   final File preparedDatabaseFile;

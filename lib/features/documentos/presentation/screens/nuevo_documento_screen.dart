@@ -1,3 +1,5 @@
+import 'package:file_selector/file_selector.dart';
+import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -98,6 +100,23 @@ class _NuevoDocumentoScreenState extends ConsumerState<NuevoDocumentoScreen> {
     });
   }
 
+  bool _guardando = false;
+  Future<void> _guardarDocumento() async {
+    if (_guardando) return;
+    setState(() => _guardando = true);
+    try {
+      await _persistirDocumento();
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('No se pudo guardar: $error')));
+      }
+    } finally {
+      if (mounted) setState(() => _guardando = false);
+    }
+  }
+
   int _parseTamanoOrZero(String value) {
     final raw = value.trim();
     if (raw.isEmpty) {
@@ -107,7 +126,7 @@ class _NuevoDocumentoScreenState extends ConsumerState<NuevoDocumentoScreen> {
     return int.tryParse(raw) ?? 0;
   }
 
-  Future<void> _guardarDocumento() async {
+  Future<void> _persistirDocumento() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -160,7 +179,7 @@ class _NuevoDocumentoScreenState extends ConsumerState<NuevoDocumentoScreen> {
                 AppSection(
                   title: 'Datos del documento',
                   subtitle:
-                      'Completa la información y guarda el documento en el expediente.',
+                      'Se conservará una copia del original. Los datos del expediente permanecen vinculados al archivo.',
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -211,8 +230,22 @@ class _NuevoDocumentoScreenState extends ConsumerState<NuevoDocumentoScreen> {
                       const SizedBox(height: AppSpacing.lg),
                       TextFormField(
                         controller: _rutaArchivoController,
-                        decoration: const InputDecoration(
-                          labelText: 'Ruta del archivo',
+                        decoration: InputDecoration(
+                          labelText:
+                              'Archivo original que se copiará a OBRA IA',
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.folder_open),
+                            onPressed: () async {
+                              final file = await openFile();
+                              if (file == null || !mounted) return;
+                              setState(() {
+                                _rutaArchivoController.text = file.path;
+                                _nombreArchivoController.text = p.basename(
+                                  file.path,
+                                );
+                              });
+                            },
+                          ),
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
@@ -274,7 +307,7 @@ class _NuevoDocumentoScreenState extends ConsumerState<NuevoDocumentoScreen> {
                       ),
                       const SizedBox(height: AppSpacing.xl),
                       AppPrimaryButton(
-                        onPressed: _guardarDocumento,
+                        onPressed: _guardando ? null : _guardarDocumento,
                         icon: Icons.save,
                         label: 'Guardar',
                       ),

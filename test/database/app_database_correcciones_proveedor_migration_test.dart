@@ -76,7 +76,7 @@ void main() {
           NativeDatabase(File('${dir.path}/test.sqlite')),
         );
         await db.ensureReady();
-        expect(db.schemaVersion, 35);
+        expect(db.schemaVersion, 36);
         for (final t in tables) {
           expect(
             (await db.customSelect('SELECT * FROM "$t" ORDER BY rowid').get())
@@ -106,7 +106,7 @@ void main() {
         );
         final prepared = await BackupRestoreStagingService().prepare(
           backupPath: backup.path,
-          currentSchemaVersion: 35,
+          currentSchemaVersion: 36,
         );
         try {
           final restored = AppDatabase.forTesting(

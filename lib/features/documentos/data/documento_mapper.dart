@@ -31,6 +31,9 @@ DocumentoTipo _tipoFromDb(String tipo) {
 extension DocumentoDataMapper on DocumentoData {
   Documento toDomain() {
     return Documento(
+      rutaGestionada: rutaGestionada,
+      sha256Original: sha256Original,
+      incorporadoUtc: incorporadoUtc,
       id: id,
       expedienteId: expedienteId,
       titulo: titulo,
@@ -48,6 +51,9 @@ extension DocumentoDataMapper on DocumentoData {
 extension DocumentoMapper on Documento {
   db.DocumentosCompanion toCompanion() {
     return db.DocumentosCompanion(
+      rutaGestionada: Value(rutaGestionada),
+      sha256Original: Value(sha256Original),
+      incorporadoUtc: Value(incorporadoUtc),
       id: Value(id),
       expedienteId: Value(expedienteId),
       titulo: Value(titulo),

@@ -14261,6 +14261,40 @@ class $DocumentosTable extends Documentos
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _rutaGestionadaMeta = const VerificationMeta(
+    'rutaGestionada',
+  );
+  @override
+  late final GeneratedColumn<String> rutaGestionada = GeneratedColumn<String>(
+    'ruta_gestionada',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sha256OriginalMeta = const VerificationMeta(
+    'sha256Original',
+  );
+  @override
+  late final GeneratedColumn<String> sha256Original = GeneratedColumn<String>(
+    'sha256_original',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _incorporadoUtcMeta = const VerificationMeta(
+    'incorporadoUtc',
+  );
+  @override
+  late final GeneratedColumn<DateTime> incorporadoUtc =
+      GeneratedColumn<DateTime>(
+        'incorporado_utc',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _mimeTypeMeta = const VerificationMeta(
     'mimeType',
   );
@@ -14363,6 +14397,9 @@ class $DocumentosTable extends Documentos
     titulo,
     nombreArchivo,
     rutaArchivo,
+    rutaGestionada,
+    sha256Original,
+    incorporadoUtc,
     mimeType,
     tamanoBytes,
     fecha,
@@ -14435,6 +14472,33 @@ class $DocumentosTable extends Documentos
       );
     } else if (isInserting) {
       context.missing(_rutaArchivoMeta);
+    }
+    if (data.containsKey('ruta_gestionada')) {
+      context.handle(
+        _rutaGestionadaMeta,
+        rutaGestionada.isAcceptableOrUnknown(
+          data['ruta_gestionada']!,
+          _rutaGestionadaMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sha256_original')) {
+      context.handle(
+        _sha256OriginalMeta,
+        sha256Original.isAcceptableOrUnknown(
+          data['sha256_original']!,
+          _sha256OriginalMeta,
+        ),
+      );
+    }
+    if (data.containsKey('incorporado_utc')) {
+      context.handle(
+        _incorporadoUtcMeta,
+        incorporadoUtc.isAcceptableOrUnknown(
+          data['incorporado_utc']!,
+          _incorporadoUtcMeta,
+        ),
+      );
     }
     if (data.containsKey('mime_type')) {
       context.handle(
@@ -14535,6 +14599,18 @@ class $DocumentosTable extends Documentos
         DriftSqlType.string,
         data['${effectivePrefix}ruta_archivo'],
       )!,
+      rutaGestionada: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}ruta_gestionada'],
+      ),
+      sha256Original: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sha256_original'],
+      ),
+      incorporadoUtc: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}incorporado_utc'],
+      ),
       mimeType: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}mime_type'],
@@ -14583,6 +14659,9 @@ class Documento extends DataClass implements Insertable<Documento> {
   final String titulo;
   final String nombreArchivo;
   final String rutaArchivo;
+  final String? rutaGestionada;
+  final String? sha256Original;
+  final DateTime? incorporadoUtc;
   final String? mimeType;
   final int tamanoBytes;
   final DateTime fecha;
@@ -14598,6 +14677,9 @@ class Documento extends DataClass implements Insertable<Documento> {
     required this.titulo,
     required this.nombreArchivo,
     required this.rutaArchivo,
+    this.rutaGestionada,
+    this.sha256Original,
+    this.incorporadoUtc,
     this.mimeType,
     required this.tamanoBytes,
     required this.fecha,
@@ -14616,6 +14698,15 @@ class Documento extends DataClass implements Insertable<Documento> {
     map['titulo'] = Variable<String>(titulo);
     map['nombre_archivo'] = Variable<String>(nombreArchivo);
     map['ruta_archivo'] = Variable<String>(rutaArchivo);
+    if (!nullToAbsent || rutaGestionada != null) {
+      map['ruta_gestionada'] = Variable<String>(rutaGestionada);
+    }
+    if (!nullToAbsent || sha256Original != null) {
+      map['sha256_original'] = Variable<String>(sha256Original);
+    }
+    if (!nullToAbsent || incorporadoUtc != null) {
+      map['incorporado_utc'] = Variable<DateTime>(incorporadoUtc);
+    }
     if (!nullToAbsent || mimeType != null) {
       map['mime_type'] = Variable<String>(mimeType);
     }
@@ -14639,6 +14730,15 @@ class Documento extends DataClass implements Insertable<Documento> {
       titulo: Value(titulo),
       nombreArchivo: Value(nombreArchivo),
       rutaArchivo: Value(rutaArchivo),
+      rutaGestionada: rutaGestionada == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rutaGestionada),
+      sha256Original: sha256Original == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sha256Original),
+      incorporadoUtc: incorporadoUtc == null && nullToAbsent
+          ? const Value.absent()
+          : Value(incorporadoUtc),
       mimeType: mimeType == null && nullToAbsent
           ? const Value.absent()
           : Value(mimeType),
@@ -14666,6 +14766,9 @@ class Documento extends DataClass implements Insertable<Documento> {
       titulo: serializer.fromJson<String>(json['titulo']),
       nombreArchivo: serializer.fromJson<String>(json['nombreArchivo']),
       rutaArchivo: serializer.fromJson<String>(json['rutaArchivo']),
+      rutaGestionada: serializer.fromJson<String?>(json['rutaGestionada']),
+      sha256Original: serializer.fromJson<String?>(json['sha256Original']),
+      incorporadoUtc: serializer.fromJson<DateTime?>(json['incorporadoUtc']),
       mimeType: serializer.fromJson<String?>(json['mimeType']),
       tamanoBytes: serializer.fromJson<int>(json['tamanoBytes']),
       fecha: serializer.fromJson<DateTime>(json['fecha']),
@@ -14688,6 +14791,9 @@ class Documento extends DataClass implements Insertable<Documento> {
       'titulo': serializer.toJson<String>(titulo),
       'nombreArchivo': serializer.toJson<String>(nombreArchivo),
       'rutaArchivo': serializer.toJson<String>(rutaArchivo),
+      'rutaGestionada': serializer.toJson<String?>(rutaGestionada),
+      'sha256Original': serializer.toJson<String?>(sha256Original),
+      'incorporadoUtc': serializer.toJson<DateTime?>(incorporadoUtc),
       'mimeType': serializer.toJson<String?>(mimeType),
       'tamanoBytes': serializer.toJson<int>(tamanoBytes),
       'fecha': serializer.toJson<DateTime>(fecha),
@@ -14706,6 +14812,9 @@ class Documento extends DataClass implements Insertable<Documento> {
     String? titulo,
     String? nombreArchivo,
     String? rutaArchivo,
+    Value<String?> rutaGestionada = const Value.absent(),
+    Value<String?> sha256Original = const Value.absent(),
+    Value<DateTime?> incorporadoUtc = const Value.absent(),
     Value<String?> mimeType = const Value.absent(),
     int? tamanoBytes,
     DateTime? fecha,
@@ -14721,6 +14830,15 @@ class Documento extends DataClass implements Insertable<Documento> {
     titulo: titulo ?? this.titulo,
     nombreArchivo: nombreArchivo ?? this.nombreArchivo,
     rutaArchivo: rutaArchivo ?? this.rutaArchivo,
+    rutaGestionada: rutaGestionada.present
+        ? rutaGestionada.value
+        : this.rutaGestionada,
+    sha256Original: sha256Original.present
+        ? sha256Original.value
+        : this.sha256Original,
+    incorporadoUtc: incorporadoUtc.present
+        ? incorporadoUtc.value
+        : this.incorporadoUtc,
     mimeType: mimeType.present ? mimeType.value : this.mimeType,
     tamanoBytes: tamanoBytes ?? this.tamanoBytes,
     fecha: fecha ?? this.fecha,
@@ -14746,6 +14864,15 @@ class Documento extends DataClass implements Insertable<Documento> {
       rutaArchivo: data.rutaArchivo.present
           ? data.rutaArchivo.value
           : this.rutaArchivo,
+      rutaGestionada: data.rutaGestionada.present
+          ? data.rutaGestionada.value
+          : this.rutaGestionada,
+      sha256Original: data.sha256Original.present
+          ? data.sha256Original.value
+          : this.sha256Original,
+      incorporadoUtc: data.incorporadoUtc.present
+          ? data.incorporadoUtc.value
+          : this.incorporadoUtc,
       mimeType: data.mimeType.present ? data.mimeType.value : this.mimeType,
       tamanoBytes: data.tamanoBytes.present
           ? data.tamanoBytes.value
@@ -14774,6 +14901,9 @@ class Documento extends DataClass implements Insertable<Documento> {
           ..write('titulo: $titulo, ')
           ..write('nombreArchivo: $nombreArchivo, ')
           ..write('rutaArchivo: $rutaArchivo, ')
+          ..write('rutaGestionada: $rutaGestionada, ')
+          ..write('sha256Original: $sha256Original, ')
+          ..write('incorporadoUtc: $incorporadoUtc, ')
           ..write('mimeType: $mimeType, ')
           ..write('tamanoBytes: $tamanoBytes, ')
           ..write('fecha: $fecha, ')
@@ -14794,6 +14924,9 @@ class Documento extends DataClass implements Insertable<Documento> {
     titulo,
     nombreArchivo,
     rutaArchivo,
+    rutaGestionada,
+    sha256Original,
+    incorporadoUtc,
     mimeType,
     tamanoBytes,
     fecha,
@@ -14813,6 +14946,9 @@ class Documento extends DataClass implements Insertable<Documento> {
           other.titulo == this.titulo &&
           other.nombreArchivo == this.nombreArchivo &&
           other.rutaArchivo == this.rutaArchivo &&
+          other.rutaGestionada == this.rutaGestionada &&
+          other.sha256Original == this.sha256Original &&
+          other.incorporadoUtc == this.incorporadoUtc &&
           other.mimeType == this.mimeType &&
           other.tamanoBytes == this.tamanoBytes &&
           other.fecha == this.fecha &&
@@ -14830,6 +14966,9 @@ class DocumentosCompanion extends UpdateCompanion<Documento> {
   final Value<String> titulo;
   final Value<String> nombreArchivo;
   final Value<String> rutaArchivo;
+  final Value<String?> rutaGestionada;
+  final Value<String?> sha256Original;
+  final Value<DateTime?> incorporadoUtc;
   final Value<String?> mimeType;
   final Value<int> tamanoBytes;
   final Value<DateTime> fecha;
@@ -14846,6 +14985,9 @@ class DocumentosCompanion extends UpdateCompanion<Documento> {
     this.titulo = const Value.absent(),
     this.nombreArchivo = const Value.absent(),
     this.rutaArchivo = const Value.absent(),
+    this.rutaGestionada = const Value.absent(),
+    this.sha256Original = const Value.absent(),
+    this.incorporadoUtc = const Value.absent(),
     this.mimeType = const Value.absent(),
     this.tamanoBytes = const Value.absent(),
     this.fecha = const Value.absent(),
@@ -14863,6 +15005,9 @@ class DocumentosCompanion extends UpdateCompanion<Documento> {
     required String titulo,
     required String nombreArchivo,
     required String rutaArchivo,
+    this.rutaGestionada = const Value.absent(),
+    this.sha256Original = const Value.absent(),
+    this.incorporadoUtc = const Value.absent(),
     this.mimeType = const Value.absent(),
     required int tamanoBytes,
     this.fecha = const Value.absent(),
@@ -14885,6 +15030,9 @@ class DocumentosCompanion extends UpdateCompanion<Documento> {
     Expression<String>? titulo,
     Expression<String>? nombreArchivo,
     Expression<String>? rutaArchivo,
+    Expression<String>? rutaGestionada,
+    Expression<String>? sha256Original,
+    Expression<DateTime>? incorporadoUtc,
     Expression<String>? mimeType,
     Expression<int>? tamanoBytes,
     Expression<DateTime>? fecha,
@@ -14902,6 +15050,9 @@ class DocumentosCompanion extends UpdateCompanion<Documento> {
       if (titulo != null) 'titulo': titulo,
       if (nombreArchivo != null) 'nombre_archivo': nombreArchivo,
       if (rutaArchivo != null) 'ruta_archivo': rutaArchivo,
+      if (rutaGestionada != null) 'ruta_gestionada': rutaGestionada,
+      if (sha256Original != null) 'sha256_original': sha256Original,
+      if (incorporadoUtc != null) 'incorporado_utc': incorporadoUtc,
       if (mimeType != null) 'mime_type': mimeType,
       if (tamanoBytes != null) 'tamano_bytes': tamanoBytes,
       if (fecha != null) 'fecha': fecha,
@@ -14921,6 +15072,9 @@ class DocumentosCompanion extends UpdateCompanion<Documento> {
     Value<String>? titulo,
     Value<String>? nombreArchivo,
     Value<String>? rutaArchivo,
+    Value<String?>? rutaGestionada,
+    Value<String?>? sha256Original,
+    Value<DateTime?>? incorporadoUtc,
     Value<String?>? mimeType,
     Value<int>? tamanoBytes,
     Value<DateTime>? fecha,
@@ -14938,6 +15092,9 @@ class DocumentosCompanion extends UpdateCompanion<Documento> {
       titulo: titulo ?? this.titulo,
       nombreArchivo: nombreArchivo ?? this.nombreArchivo,
       rutaArchivo: rutaArchivo ?? this.rutaArchivo,
+      rutaGestionada: rutaGestionada ?? this.rutaGestionada,
+      sha256Original: sha256Original ?? this.sha256Original,
+      incorporadoUtc: incorporadoUtc ?? this.incorporadoUtc,
       mimeType: mimeType ?? this.mimeType,
       tamanoBytes: tamanoBytes ?? this.tamanoBytes,
       fecha: fecha ?? this.fecha,
@@ -14970,6 +15127,15 @@ class DocumentosCompanion extends UpdateCompanion<Documento> {
     }
     if (rutaArchivo.present) {
       map['ruta_archivo'] = Variable<String>(rutaArchivo.value);
+    }
+    if (rutaGestionada.present) {
+      map['ruta_gestionada'] = Variable<String>(rutaGestionada.value);
+    }
+    if (sha256Original.present) {
+      map['sha256_original'] = Variable<String>(sha256Original.value);
+    }
+    if (incorporadoUtc.present) {
+      map['incorporado_utc'] = Variable<DateTime>(incorporadoUtc.value);
     }
     if (mimeType.present) {
       map['mime_type'] = Variable<String>(mimeType.value);
@@ -15010,6 +15176,9 @@ class DocumentosCompanion extends UpdateCompanion<Documento> {
           ..write('titulo: $titulo, ')
           ..write('nombreArchivo: $nombreArchivo, ')
           ..write('rutaArchivo: $rutaArchivo, ')
+          ..write('rutaGestionada: $rutaGestionada, ')
+          ..write('sha256Original: $sha256Original, ')
+          ..write('incorporadoUtc: $incorporadoUtc, ')
           ..write('mimeType: $mimeType, ')
           ..write('tamanoBytes: $tamanoBytes, ')
           ..write('fecha: $fecha, ')
@@ -49547,6 +49716,9 @@ typedef $$DocumentosTableCreateCompanionBuilder =
       required String titulo,
       required String nombreArchivo,
       required String rutaArchivo,
+      Value<String?> rutaGestionada,
+      Value<String?> sha256Original,
+      Value<DateTime?> incorporadoUtc,
       Value<String?> mimeType,
       required int tamanoBytes,
       Value<DateTime> fecha,
@@ -49565,6 +49737,9 @@ typedef $$DocumentosTableUpdateCompanionBuilder =
       Value<String> titulo,
       Value<String> nombreArchivo,
       Value<String> rutaArchivo,
+      Value<String?> rutaGestionada,
+      Value<String?> sha256Original,
+      Value<DateTime?> incorporadoUtc,
       Value<String?> mimeType,
       Value<int> tamanoBytes,
       Value<DateTime> fecha,
@@ -49629,6 +49804,21 @@ class $$DocumentosTableFilterComposer
 
   ColumnFilters<String> get rutaArchivo => $composableBuilder(
     column: $table.rutaArchivo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get rutaGestionada => $composableBuilder(
+    column: $table.rutaGestionada,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sha256Original => $composableBuilder(
+    column: $table.sha256Original,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get incorporadoUtc => $composableBuilder(
+    column: $table.incorporadoUtc,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -49730,6 +49920,21 @@ class $$DocumentosTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get rutaGestionada => $composableBuilder(
+    column: $table.rutaGestionada,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sha256Original => $composableBuilder(
+    column: $table.sha256Original,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get incorporadoUtc => $composableBuilder(
+    column: $table.incorporadoUtc,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get mimeType => $composableBuilder(
     column: $table.mimeType,
     builder: (column) => ColumnOrderings(column),
@@ -49824,6 +50029,21 @@ class $$DocumentosTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get rutaGestionada => $composableBuilder(
+    column: $table.rutaGestionada,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get sha256Original => $composableBuilder(
+    column: $table.sha256Original,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get incorporadoUtc => $composableBuilder(
+    column: $table.incorporadoUtc,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get mimeType =>
       $composableBuilder(column: $table.mimeType, builder: (column) => column);
 
@@ -49914,6 +50134,9 @@ class $$DocumentosTableTableManager
                 Value<String> titulo = const Value.absent(),
                 Value<String> nombreArchivo = const Value.absent(),
                 Value<String> rutaArchivo = const Value.absent(),
+                Value<String?> rutaGestionada = const Value.absent(),
+                Value<String?> sha256Original = const Value.absent(),
+                Value<DateTime?> incorporadoUtc = const Value.absent(),
                 Value<String?> mimeType = const Value.absent(),
                 Value<int> tamanoBytes = const Value.absent(),
                 Value<DateTime> fecha = const Value.absent(),
@@ -49930,6 +50153,9 @@ class $$DocumentosTableTableManager
                 titulo: titulo,
                 nombreArchivo: nombreArchivo,
                 rutaArchivo: rutaArchivo,
+                rutaGestionada: rutaGestionada,
+                sha256Original: sha256Original,
+                incorporadoUtc: incorporadoUtc,
                 mimeType: mimeType,
                 tamanoBytes: tamanoBytes,
                 fecha: fecha,
@@ -49948,6 +50174,9 @@ class $$DocumentosTableTableManager
                 required String titulo,
                 required String nombreArchivo,
                 required String rutaArchivo,
+                Value<String?> rutaGestionada = const Value.absent(),
+                Value<String?> sha256Original = const Value.absent(),
+                Value<DateTime?> incorporadoUtc = const Value.absent(),
                 Value<String?> mimeType = const Value.absent(),
                 required int tamanoBytes,
                 Value<DateTime> fecha = const Value.absent(),
@@ -49964,6 +50193,9 @@ class $$DocumentosTableTableManager
                 titulo: titulo,
                 nombreArchivo: nombreArchivo,
                 rutaArchivo: rutaArchivo,
+                rutaGestionada: rutaGestionada,
+                sha256Original: sha256Original,
+                incorporadoUtc: incorporadoUtc,
                 mimeType: mimeType,
                 tamanoBytes: tamanoBytes,
                 fecha: fecha,

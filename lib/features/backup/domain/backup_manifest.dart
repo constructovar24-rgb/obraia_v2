@@ -2,6 +2,8 @@ import '../../../core/environment/app_environment.dart';
 
 class BackupManifest {
   const BackupManifest({
+    this.formatVersion = 2,
+    this.documentPackageComplete = true,
     this.environment = AppEnvironment.development,
     required this.createdAtUtc,
     required this.appVersion,
@@ -13,10 +15,13 @@ class BackupManifest {
   });
 
   static const format = 'obraia-backup';
-  static const currentFormatVersion = 1;
+  static const currentFormatVersion = 2;
   static const manifestPath = 'manifest.json';
   static const defaultDatabasePath = 'database/obraia.sqlite';
 
+  final bool documentPackageComplete;
+  final int formatVersion;
+  bool get includesManagedDocuments => formatVersion >= 2;
   final AppEnvironment environment;
   final DateTime createdAtUtc;
   final String appVersion;
@@ -27,9 +32,10 @@ class BackupManifest {
   final List<BackupManifestEntry> entries;
 
   Map<String, Object> toJson() => <String, Object>{
+    'documentPackageComplete': documentPackageComplete,
     'environment': environment.name,
     'format': format,
-    'formatVersion': currentFormatVersion,
+    'formatVersion': formatVersion,
     'createdAtUtc': createdAtUtc.toUtc().toIso8601String(),
     'appVersion': appVersion,
     'appBuildNumber': appBuildNumber,
@@ -47,10 +53,23 @@ class BackupManifest {
     }
 
     final formatVersion = _requiredInt(map, 'formatVersion');
-    if (formatVersion != currentFormatVersion) {
+    if (formatVersion < 1 || formatVersion > currentFormatVersion) {
       throw const FormatException('Versión de formato no compatible.');
     }
 
+    if (map.containsKey('documentPackageComplete') &&
+        map['documentPackageComplete'] is! bool) {
+      throw const FormatException(
+        'El estado del paquete documental no es válido.',
+      );
+    }
+    if (formatVersion >= 2 &&
+        (!map.containsKey('environment') ||
+            !map.containsKey('documentPackageComplete'))) {
+      throw const FormatException(
+        'Falta la cobertura o el entorno del backup.',
+      );
+    }
     final createdAtText = _requiredString(map, 'createdAtUtc');
     if (!createdAtText.endsWith('Z')) {
       throw const FormatException('La fecha del backup debe estar en UTC.');
@@ -72,6 +91,8 @@ class BackupManifest {
     }
 
     final manifest = BackupManifest(
+      formatVersion: formatVersion,
+      documentPackageComplete: map['documentPackageComplete'] != false,
       environment: map.containsKey('environment')
           ? AppEnvironment.parse(map['environment'])
           : AppEnvironment.development,

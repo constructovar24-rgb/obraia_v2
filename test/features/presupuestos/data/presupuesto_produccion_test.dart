@@ -414,7 +414,7 @@ void main() {
       );
       final prepared = await BackupRestoreStagingService().prepare(
         backupPath: path,
-        currentSchemaVersion: 35,
+        currentSchemaVersion: 36,
       );
       try {
         final copy = AppDatabase.forTesting(

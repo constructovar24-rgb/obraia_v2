@@ -58,6 +58,7 @@ class RecoveryBackupService {
         ),
       );
       final manifest = await _archiveService.createBackup(
+        allowIncompleteRecovery: true,
         database: database,
         destinationPath: destination.path,
         appVersion: appVersion,
@@ -68,7 +69,9 @@ class RecoveryBackupService {
         destination.path,
         maximumSchemaVersion: database.schemaVersion,
       );
-      final removedBackups = await _enforceRetention(recoveryDirectory);
+      final removedBackups = manifest.documentPackageComplete
+          ? await _enforceRetention(recoveryDirectory)
+          : 0;
       return RecoveryBackupResult(
         file: destination,
         manifest: manifest,

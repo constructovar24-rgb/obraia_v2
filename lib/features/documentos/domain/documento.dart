@@ -11,6 +11,10 @@ enum DocumentoTipo {
 }
 
 class Documento {
+  final String? rutaGestionada;
+  final String? sha256Original;
+  final DateTime? incorporadoUtc;
+  bool get protegido => rutaGestionada != null && sha256Original != null;
   final String id;
   final String expedienteId;
   final String titulo;
@@ -23,6 +27,9 @@ class Documento {
   final DocumentoTipo tipo;
 
   const Documento({
+    this.rutaGestionada,
+    this.sha256Original,
+    this.incorporadoUtc,
     required this.id,
     required this.expedienteId,
     required this.titulo,

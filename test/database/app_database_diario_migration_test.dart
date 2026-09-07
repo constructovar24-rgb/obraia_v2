@@ -24,7 +24,7 @@ void main() {
 
     db = AppDatabase.forTesting(NativeDatabase(file));
     await db.ensureReady();
-    expect(db.schemaVersion, 35);
+    expect(db.schemaVersion, 36);
     expect(await db.diarioObraDao.observarPorObra('obra').first, isEmpty);
     expect((await db.customSelect('PRAGMA foreign_key_check').get()), isEmpty);
     await db.close();

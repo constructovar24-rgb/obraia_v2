@@ -53,7 +53,7 @@ void main() {
       final result = await service.replace(
         activeDatabasePath: activeDatabase.path,
         preparedDatabasePath: preparedDatabase.path,
-        currentSchemaVersion: 35,
+        currentSchemaVersion: 36,
         closeActiveDatabase: lifecycle.close,
         openAndValidateActiveDatabase: lifecycle.openAndValidate,
       );
@@ -86,6 +86,32 @@ void main() {
     },
   );
 
+  test(
+    'recupera SQLite aunque falle el rollback documental y conserva evidencia',
+    () async {
+      await expectLater(
+        service.replace(
+          activeDatabasePath: activeDatabase.path,
+          preparedDatabasePath: preparedDatabase.path,
+          currentSchemaVersion: 36,
+          closeActiveDatabase: lifecycle.close,
+          openAndValidateActiveDatabase: lifecycle.openAndValidate,
+          rollbackRelatedFiles: () async {
+            throw const _InjectedFailure();
+          },
+          failureHook: (stage) async {
+            if (stage == DatabaseSwapStage.incomingActivated) {
+              throw const _InjectedFailure();
+            }
+          },
+        ),
+        throwsA(isA<DatabaseRollbackFailedException>()),
+      );
+      expect(lifecycle.currentClientName, 'Datos anteriores');
+      expect(_swapDirectories(temporaryDirectory), hasLength(1));
+    },
+  );
+
   for (final failureStage in DatabaseSwapStage.values) {
     test(
       'recupera la base anterior tras fallar en ${failureStage.name}',
@@ -99,7 +125,7 @@ void main() {
           service.replace(
             activeDatabasePath: activeDatabase.path,
             preparedDatabasePath: preparedDatabase.path,
-            currentSchemaVersion: 35,
+            currentSchemaVersion: 36,
             closeActiveDatabase: lifecycle.close,
             openAndValidateActiveDatabase: lifecycle.openAndValidate,
             failureHook: (stage) async {
@@ -128,7 +154,7 @@ void main() {
         service.replace(
           activeDatabasePath: activeDatabase.path,
           preparedDatabasePath: preparedDatabase.path,
-          currentSchemaVersion: 35,
+          currentSchemaVersion: 36,
           closeActiveDatabase: lifecycle.close,
           openAndValidateActiveDatabase: lifecycle.openAndValidate,
         ),
@@ -151,7 +177,7 @@ void main() {
       service.replace(
         activeDatabasePath: activeDatabase.path,
         preparedDatabasePath: invalidPrepared.path,
-        currentSchemaVersion: 35,
+        currentSchemaVersion: 36,
         closeActiveDatabase: lifecycle.close,
         openAndValidateActiveDatabase: lifecycle.openAndValidate,
       ),
@@ -172,7 +198,7 @@ void main() {
         service.replace(
           activeDatabasePath: activeDatabase.path,
           preparedDatabasePath: preparedDatabase.path,
-          currentSchemaVersion: 35,
+          currentSchemaVersion: 36,
           closeActiveDatabase: lifecycle.close,
           openAndValidateActiveDatabase: lifecycle.openAndValidate,
           failureHook: (stage) async {

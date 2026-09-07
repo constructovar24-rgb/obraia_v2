@@ -16,6 +16,7 @@ class BackupController extends ChangeNotifier {
   final BackupRestoreCoordinator _restore;
   bool busy = false;
   String? lastBackupPath;
+  String? automaticBackupError;
   bool _disposed = false;
 
   void _requireCurrentDatabase() {
@@ -56,7 +57,7 @@ class BackupController extends ChangeNotifier {
           'obraia-${DateTime.now().toUtc().millisecondsSinceEpoch}.obraia-backup',
         ),
       );
-      await BackupArchiveService().createBackup(
+      await BackupArchiveService(documentPaths: paths).createBackup(
         database: _database,
         destinationPath: file.path,
         appVersion: '1.0.0',
@@ -69,6 +70,19 @@ class BackupController extends ChangeNotifier {
       notifyListeners();
     }
   });
+
+  Future<String> describeBackup(String path) async {
+    final manifest = await BackupArchiveService().validateBackup(
+      path,
+      maximumSchemaVersion: _database.schemaVersion,
+    );
+    if (!manifest.documentPackageComplete) {
+      throw const BackupValidationException();
+    }
+    return manifest.includesManagedDocuments
+        ? 'Incluye la base de datos, los PDF congelados y ${manifest.entries.where((e) => e.type == "managed-document").length} archivos gestionados. No incluye archivos externos.'
+        : 'Copia antigua: incluye solo la base de datos y los PDF conservados dentro de ella. No contiene un paquete de archivos externos.';
+  }
 
   Future<void> restore(String path) async {
     _requireCurrentDatabase();
@@ -92,13 +106,19 @@ class BackupController extends ChangeNotifier {
     try {
       await _restore.databaseLifecycle.runExclusiveMaintenance(() async {
         _requireCurrentDatabase();
-        await AutomaticBackupService().createIfNeeded(
+        await AutomaticBackupService(
+          archiveService: BackupArchiveService(documentPaths: paths),
+        ).createIfNeeded(
           database: _database,
           directory: await _root('automaticas'),
           appVersion: '1.0.0',
           appBuildNumber: '1',
         );
       });
-    } catch (_) {}
+    } catch (_) {
+      automaticBackupError =
+          'La copia automática no se pudo completar. Crea una copia manual y revisa los archivos si vuelve a fallar.';
+      notifyListeners();
+    }
   }
 }

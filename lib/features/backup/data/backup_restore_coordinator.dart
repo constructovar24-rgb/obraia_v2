@@ -1,3 +1,7 @@
+import 'package:sqlite3/sqlite3.dart';
+import '../../../core/environment/environment_paths.dart';
+import 'backup_archive_service.dart';
+import 'document_restore_swap.dart';
 import 'dart:io';
 
 import '../../../database/database_lifecycle_controller.dart';
@@ -16,11 +20,16 @@ class BackupRestoreCoordinator {
     RecoveryBackupService? recoveryBackupService,
     DatabaseFileSwapService? fileSwapService,
     this.swapFailureHook,
+    this.documentPaths,
   }) : _stagingService = stagingService ?? BackupRestoreStagingService(),
        _recoveryBackupService =
-           recoveryBackupService ?? RecoveryBackupService(),
+           recoveryBackupService ??
+           RecoveryBackupService(
+             archiveService: BackupArchiveService(documentPaths: documentPaths),
+           ),
        _fileSwapService = fileSwapService ?? DatabaseFileSwapService();
 
+  final EnvironmentPaths? documentPaths;
   final DatabaseLifecycleController databaseLifecycle;
   final BackupRestoreStagingService _stagingService;
   final RecoveryBackupService _recoveryBackupService;
@@ -48,8 +57,51 @@ class BackupRestoreCoordinator {
           backupPath: backupPath,
           currentSchemaVersion: activeDatabase.schemaVersion,
         );
+        if (!prepared.manifest.documentPackageComplete) {
+          throw const BackupValidationException();
+        }
         if (prepared.manifest.environment != activeDatabase.environment) {
           throw const BackupEnvironmentMismatchException();
+        }
+        final incomingDb = sqlite3.open(
+          prepared.preparedDatabaseFile.path,
+          mode: OpenMode.readOnly,
+        );
+        try {
+          final incomingTenants = incomingDb
+              .select('SELECT id FROM tenants')
+              .map((r) => r['id'])
+              .toSet();
+          final activeTenants =
+              (await activeDatabase
+                      .customSelect('SELECT id FROM tenants')
+                      .get())
+                  .map((r) => r.read<String>('id'))
+                  .toSet();
+          if (incomingTenants.length != activeTenants.length ||
+              !incomingTenants.containsAll(activeTenants)) {
+            throw StateError(
+              'La copia pertenece a otra empresa. Restauración bloqueada.',
+            );
+          }
+        } finally {
+          incomingDb.close();
+        }
+        DocumentRestoreSwap? documents;
+        if (prepared.manifest.entries.any(
+          (e) => e.type == 'managed-document',
+        )) {
+          final paths =
+              documentPaths ??
+              await EnvironmentPaths.resolve(activeDatabase.environment);
+          if (paths.environment != activeDatabase.environment) {
+            throw const BackupEnvironmentMismatchException();
+          }
+          documents = DocumentRestoreSwap(
+            paths,
+            prepared.documentsDirectory,
+            prepared.manifest,
+          );
         }
         final recoveryBackup = await _recoveryBackupService.create(
           database: activeDatabase,
@@ -66,6 +118,8 @@ class BackupRestoreCoordinator {
           openAndValidateActiveDatabase:
               databaseLifecycle.openAndPublishActiveDatabase,
           failureHook: swapFailureHook,
+          activateRelatedFiles: documents?.activate,
+          rollbackRelatedFiles: documents?.rollback,
         );
         return BackupRestoreResult(
           incomingManifest: prepared.manifest,

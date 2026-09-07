@@ -40,12 +40,28 @@ class BackupScreen extends ConsumerWidget {
       if (file == null || !context.mounted) {
         return;
       }
+      String coverage;
+      try {
+        coverage = await controller.describeBackup(file.path);
+      } catch (_) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Copia inválida o incompleta. No se han sustituido datos.',
+              ),
+            ),
+          );
+        }
+        return;
+      }
+      if (!context.mounted) return;
       final ok = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('Restaurar copia de seguridad'),
-          content: const Text(
-            'Los datos actuales serán sustituidos por los de la copia. Antes, OBRA IA creará una copia de recuperación automática.',
+          content: Text(
+            '$coverage\n\nLos datos actuales serán sustituidos por los de la copia. Antes, OBRA IA creará una copia de recuperación automática.',
           ),
           actions: [
             TextButton(
@@ -100,7 +116,7 @@ class BackupScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Protege la información de OBRA IA creando copias que podrás recuperar cuando las necesites.',
+              'Las nuevas copias incluyen la base de datos, los PDF congelados y los originales gestionados. Los archivos externos no están incluidos. La copia abarca todas las empresas del entorno. Conserva además una copia verificada fuera de este equipo.',
             ),
             const SizedBox(height: 24),
             Text(
@@ -120,6 +136,11 @@ class BackupScreen extends ConsumerWidget {
               icon: const Icon(Icons.restore),
               label: const Text('Restaurar copia de seguridad'),
             ),
+            if (controller.automaticBackupError != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Text(controller.automaticBackupError!),
+              ),
             if (controller.busy)
               const Padding(
                 padding: EdgeInsets.only(top: 24),

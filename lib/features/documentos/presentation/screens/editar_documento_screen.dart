@@ -1,3 +1,4 @@
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -105,6 +106,23 @@ class _EditarDocumentoScreenState extends ConsumerState<EditarDocumentoScreen> {
     });
   }
 
+  bool _guardando = false;
+  Future<void> _guardarDocumento() async {
+    if (_guardando) return;
+    setState(() => _guardando = true);
+    try {
+      await _persistirDocumento();
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('No se pudo guardar: $error')));
+      }
+    } finally {
+      if (mounted) setState(() => _guardando = false);
+    }
+  }
+
   int _parseTamanoOrZero(String value) {
     final raw = value.trim();
     if (raw.isEmpty) {
@@ -114,7 +132,7 @@ class _EditarDocumentoScreenState extends ConsumerState<EditarDocumentoScreen> {
     return int.tryParse(raw) ?? 0;
   }
 
-  Future<void> _guardarDocumento() async {
+  Future<void> _persistirDocumento() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -165,7 +183,9 @@ class _EditarDocumentoScreenState extends ConsumerState<EditarDocumentoScreen> {
             child: ListView(
               children: [
                 AppSection(
-                  title: 'Datos del documento',
+                  title: widget.documento.protegido
+                      ? 'Protegido por OBRA IA'
+                      : 'Archivo externo',
                   subtitle:
                       'Modifica la información del documento y guarda los cambios.',
                   child: Column(
@@ -204,6 +224,7 @@ class _EditarDocumentoScreenState extends ConsumerState<EditarDocumentoScreen> {
                       ),
                       const SizedBox(height: AppSpacing.lg),
                       TextFormField(
+                        readOnly: widget.documento.protegido,
                         controller: _nombreArchivoController,
                         decoration: const InputDecoration(
                           labelText: 'Nombre del archivo',
@@ -217,6 +238,7 @@ class _EditarDocumentoScreenState extends ConsumerState<EditarDocumentoScreen> {
                       ),
                       const SizedBox(height: AppSpacing.lg),
                       TextFormField(
+                        readOnly: widget.documento.protegido,
                         controller: _rutaArchivoController,
                         decoration: const InputDecoration(
                           labelText: 'Ruta del archivo',
@@ -230,6 +252,7 @@ class _EditarDocumentoScreenState extends ConsumerState<EditarDocumentoScreen> {
                       ),
                       const SizedBox(height: AppSpacing.lg),
                       TextFormField(
+                        readOnly: widget.documento.protegido,
                         controller: _mimeTypeController,
                         decoration: const InputDecoration(
                           labelText: 'MIME Type',
@@ -237,6 +260,7 @@ class _EditarDocumentoScreenState extends ConsumerState<EditarDocumentoScreen> {
                       ),
                       const SizedBox(height: AppSpacing.lg),
                       TextFormField(
+                        readOnly: widget.documento.protegido,
                         controller: _tamanoBytesController,
                         keyboardType: TextInputType.number,
                         decoration: const InputDecoration(
@@ -280,8 +304,55 @@ class _EditarDocumentoScreenState extends ConsumerState<EditarDocumentoScreen> {
                         maxLines: 5,
                       ),
                       const SizedBox(height: AppSpacing.xl),
+                      OutlinedButton.icon(
+                        icon: const Icon(Icons.verified_user_outlined),
+                        label: const Text('Comprobar archivo'),
+                        onPressed: () async {
+                          final result = await ref
+                              .read(documentoRepositoryProvider)
+                              .verificarDocumento(widget.documento.id);
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(
+                              context,
+                            ).showSnackBar(SnackBar(content: Text(result)));
+                          }
+                        },
+                      ),
+                      OutlinedButton.icon(
+                        icon: const Icon(Icons.download_outlined),
+                        label: const Text('Guardar copia del original'),
+                        onPressed: () async {
+                          final destination = await getSaveLocation(
+                            suggestedName: widget.documento.nombreArchivo,
+                          );
+                          if (destination == null || !mounted) return;
+                          try {
+                            await ref
+                                .read(documentoRepositoryProvider)
+                                .exportarOriginal(
+                                  widget.documento.id,
+                                  destination.path,
+                                );
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Original exportado.'),
+                                ),
+                              );
+                            }
+                          } catch (error) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('No se pudo exportar: $error'),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                      ),
                       AppPrimaryButton(
-                        onPressed: _guardarDocumento,
+                        onPressed: _guardando ? null : _guardarDocumento,
                         icon: Icons.save,
                         label: 'Guardar',
                       ),

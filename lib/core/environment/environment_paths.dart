@@ -26,4 +26,6 @@ class EnvironmentPaths {
       Directory(p.join(dataDirectory.path, 'backups'));
   Directory get generatedDirectory =>
       Directory(p.join(dataDirectory.path, 'generated'));
+  Directory get managedDocumentsDirectory =>
+      Directory(p.join(dataDirectory.path, 'documents'));
 }
