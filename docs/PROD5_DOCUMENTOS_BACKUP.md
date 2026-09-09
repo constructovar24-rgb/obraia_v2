@@ -85,7 +85,7 @@ Las copias abarcan todas las empresas del entorno. No existe restore de un solo 
 
 No hay copia off-device automática, cifrado, firma, autenticación, sincronización multi-PC, gestión de permisos ni protección contra manipulación deliberada de la DB y los archivos conjuntamente. OneDrive por sí solo no acredita una copia validada. Debe conservarse otro backup verificado fuera del equipo y ensayar recuperación. Los históricos externos, logos, PDFs no congelados exportados y archivos ajenos al modelo Documentos siguen fuera de cobertura. Una referencia «Protegido» indica incorporación, no una verificación continua: usar «Comprobar archivo». El backup comprueba todos los originales incluidos.
 
-Faltan aceptación manual de este bloque, política operativa de copias externas y procedimiento asistido de recuperación en equipo nuevo antes de tratar OBRA IA como archivo único. No se inicia PROD-6 ni Fase 5.
+Siguen pendientes la política operativa de copias externas y el procedimiento asistido de recuperación en equipo nuevo antes de tratar OBRA IA como archivo único. No se inicia PROD-6 ni Fase 5.
 
 ## Aceptación manual — solo Desarrollo y datos ficticios
 
@@ -103,7 +103,7 @@ Faltan aceptación manual de este bloque, política operativa de copias externas
 
 La alteración/pérdida de archivos gestionados, la reparación y el fallo a mitad de restore se verifican automáticamente en temporales; no manipular el almacén de Desarrollo para reproducirlas manualmente.
 
-## Verificación técnica
+## Verificación técnica inicial (histórico)
 
 Verificación final: 439 pruebas superadas (26 nuevas de PROD-5: 9 de originales/repositorio, 13 de backup documental, 2 de UI, 1 de migración y 1 adicional de rollback); analyze sin incidencias; Windows debug compilado en copia aislada con 361 archivos relevantes idénticos; formato propio y git diff --check sin errores.
 
@@ -121,7 +121,7 @@ Los registros anteriores de tamaño cero se conservan sin modificar. Listado/fic
 
 Schema 36 sin cambios; sin migración ni regeneración. Verificación de la corrección: 10 pruebas nuevas (9 de incorporación/regresión y 1 de interfaz); 71 pruebas de documentos/backup/restore y 449 en la suite completa superadas. Analyze sin incidencias; formato propio verificado; git diff --check sin errores. Windows debug compilado en copia aislada con 362 archivos relevantes idénticos. No se han ejecutado migraciones sobre datos manuales. No se publica PROD-5.
 
-### Repetir únicamente esta parte de la aceptación
+### Procedimiento de repetición de la corrección (superado según confirmación del usuario)
 
 1. Abrir la versión corregida y confirmar Desarrollo. No borrar ni editar los documentos de la prueba anterior.
 2. En una carpeta temporal nueva, guardar y cerrar `original.txt` con «Documento ficticio PROD-5». Incorporarlo con un título nuevo, comprobar tamaño positivo e integridad y exportarlo con otro nombre: debe conservar A.
@@ -129,4 +129,18 @@ Schema 36 sin cambios; sin migración ni regeneración. Verificación de la corr
 4. Exportar de nuevo el primer documento: debe seguir devolviendo A. No sobrescribir las exportaciones anteriores; elegir nombres nuevos.
 5. Intentar incorporar un archivo ficticio vacío: debe aparecer un aviso y no crearse el documento. El registro vacío de la aceptación anterior debe mostrar «Archivo vacío / revisar», sin alterarlo ni eliminarlo.
 
-No hace falta repetir restauraciones ni emitir facturas para validar esta corrección. La aceptación global de PROD-5 continúa pendiente; sin push, PROD-6 ni Fase 5.
+No hace falta repetir restauraciones ni emitir facturas para validar esta corrección. La repetición de la corrección queda validada según el registro de cierre siguiente; sin push, PROD-6 ni Fase 5.
+
+## Cierre técnico final — 2026-09-10
+
+Aceptación manual comunicada por el usuario, realizada exclusivamente en Desarrollo: el registro antiguo muestra «Archivo vacío / revisar»; una fuente de 0 bytes se rechaza; un nuevo original de 62 bytes se incorpora, verifica con «Integridad correcta» y se exporta conservando su contenido. Al reutilizar la misma ruta original.txt con A y B, cada incorporación conserva y recupera su propio contenido sin sustituir a la otra. El usuario confirma que no utilizó ni modificó Producción. Este registro acredita esos escenarios comunicados; no atribuye una nueva ejecución manual de backup/restore a esta confirmación.
+
+Revisión de los dos commits funcionales completos contra origin/main: bae55474bc4546be64d02c27e6df224e4b96bbd1 y 7234644c8fa4ffda268f70c201ef406161ce03bd. Fetch correcto y remoto sin avance, en 882c1599703c01916321041cfe0759cd2cf0c51f. Sin bloqueos detectados en arquitectura, migración/persistencia, conservación documental, backup/restore, separación DEV/PROD y aislamiento por tenant dentro del diseño de una instancia local.
+
+Confirmado por código y pruebas: originales gestionados por contenido y tenant, independientes de la ruta fuente; rechazo de vacíos y lecturas inestables; limpieza de temporales y ausencia de fila si falla la incorporación; integridad y exportación contra la copia gestionada correcta; vacíos gestionados históricos conservados, advertidos y no exportables como válidos. El backup inventaría los originales referenciados, incluidos los borrados lógicamente, y restore valida entorno/empresas, prepara y recupera archivos junto a SQLite con rollback. Las referencias externas históricas permanecen fuera del paquete; los PDF congelados siguen en SQLite.
+
+Verificación final repetida: dart format en 46 archivos Dart afectados, 0 cambios; flutter analyze --no-pub sin incidencias; 71 pruebas específicas de documentos/backup/restore y 449 en la suite completa superadas. Windows debug --no-pub compilado en copia aislada con 362 archivos de código, assets y configuración relevantes idénticos. git diff --check sin errores. SchemaVersion 36. No se abrieron datos reales ni se ejecutó la aplicación en Producción.
+
+Límites conservados: un fallo de SQLite posterior a la publicación del original puede dejar una copia completa no referenciada, nunca una fila válida respaldada por copia parcial en ese flujo. No hay garantía transaccional frente a cortes eléctricos ni coordinación entre procesos independientes. Copias sin cifrado, con límites de tamaño y de todas las empresas del entorno; restaurar identidades de empresa distintas requiere procedimiento asistido. La recuperación incompleta es evidencia de emergencia y se rechaza como restore ordinario. Antes de usar OBRA IA como archivo único sigue siendo necesaria una política de copias externas y recuperación en equipo nuevo.
+
+Veredicto: GO técnico para publicar PROD-5 dentro de este alcance. Cierre exclusivamente documental en commit separado, sin amend de los dos commits funcionales y con analysis_options.yaml intacto y excluido. Publicación pendiente: no se ha hecho push. Siguiente paso seguro: únicamente publicar PROD-5 tras autorización expresa. PROD-6 y Fase 5 no iniciados.

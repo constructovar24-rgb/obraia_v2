@@ -2,12 +2,18 @@
 
 ## No publicado
 
+### Cierre técnico final de PROD-5 — 2026-09-10
+
+- Aceptación manual de la corrección confirmada por el usuario en Desarrollo: 0 bytes rechazados, histórico advertido, original válido de 62 bytes e integridad/exportación correctas; A/B independientes reutilizando la ruta.
+- Revisión final sin bloqueos: 71 pruebas específicas y 449 totales, analyze limpio, 46 Dart formateados sin cambios y Windows debug aislado correcto (362 archivos idénticos). Schema 36.
+- Cierre exclusivamente documental en commit separado; sin push, cambios de datos, Producción, PROD-6 ni Fase 5. Límites operativos conservados en PROD5_DOCUMENTOS_BACKUP.md.
+
 ### Corrección PROD-5 — Originales vacíos
 
 - Reproducción: la misma ruta A/B funciona; una lectura vacía se aceptaba con tamaño/hash vacíos y se verificaba contra sí misma. No hay evidencia de una causa específica de OneDrive o Windows.
 - Bloqueo de 0 bytes, lectura completa con comprobaciones de estabilidad, relectura de la ruta y publicación desde temporal validado; limpieza de temporales y sin registro si la incorporación falla.
 - Vacíos históricos conservados con advertencia y exportación bloqueada; schema 36 sin migración ni reparación de las pruebas manuales.
-- 10 regresiones nuevas; 71 pruebas de documentos/backup/restore y 449 totales superadas; analyze, formato, diff y Windows debug aislado verificados. Pendiente repetición manual A/B/vacío; sin push.
+- 10 regresiones nuevas; 71 pruebas de documentos/backup/restore y 449 totales superadas; analyze, formato, diff y Windows debug aislado verificados. Repetición manual A/B/vacío superada según confirmación del usuario del 2026-09-10; sin push.
 
 ### PROD-5 — Documentos originales y copias
 
