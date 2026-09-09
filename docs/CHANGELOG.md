@@ -2,6 +2,13 @@
 
 ## No publicado
 
+### Corrección PROD-5 — Originales vacíos
+
+- Reproducción: la misma ruta A/B funciona; una lectura vacía se aceptaba con tamaño/hash vacíos y se verificaba contra sí misma. No hay evidencia de una causa específica de OneDrive o Windows.
+- Bloqueo de 0 bytes, lectura completa con comprobaciones de estabilidad, relectura de la ruta y publicación desde temporal validado; limpieza de temporales y sin registro si la incorporación falla.
+- Vacíos históricos conservados con advertencia y exportación bloqueada; schema 36 sin migración ni reparación de las pruebas manuales.
+- 10 regresiones nuevas; 71 pruebas de documentos/backup/restore y 449 totales superadas; analyze, formato, diff y Windows debug aislado verificados. Pendiente repetición manual A/B/vacío; sin push.
+
 ### PROD-5 — Documentos originales y copias
 
 - Schema 36: metadatos gestionados nullable, migración compatible desde 35 y Drift regenerado; no modifica históricos ni archivos reales.

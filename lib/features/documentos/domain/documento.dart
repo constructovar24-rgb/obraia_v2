@@ -15,6 +15,11 @@ class Documento {
   final String? sha256Original;
   final DateTime? incorporadoUtc;
   bool get protegido => rutaGestionada != null && sha256Original != null;
+  String get estadoProteccion => protegido && tamanoBytes <= 0
+      ? 'Archivo vacío / revisar'
+      : protegido
+      ? 'Protegido por OBRA IA'
+      : 'Archivo externo';
   final String id;
   final String expedienteId;
   final String titulo;

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+import 'original_source_reader.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:crypto/crypto.dart';
@@ -6,7 +8,11 @@ import '../../../core/environment/environment_paths.dart';
 
 /// Immutable original files. Paths use hashed tenant identifiers and content hashes.
 class ManagedDocumentStore {
-  ManagedDocumentStore(this.paths);
+  ManagedDocumentStore(
+    this.paths, {
+    Future<Uint8List> Function(File)? sourceReader,
+  }) : _sourceReader = sourceReader ?? readStableOriginal;
+  final Future<Uint8List> Function(File) _sourceReader;
   final EnvironmentPaths paths;
   static const maxFileBytes = 100 * 1024 * 1024;
 
@@ -52,11 +58,12 @@ class ManagedDocumentStore {
     String tenantId,
   ) async {
     final source = File(sourcePath);
-    if (!await source.exists()) throw StateError('Archivo no encontrado.');
-    if (await source.length() > maxFileBytes) {
-      throw StateError('El archivo supera 100 MB.');
+    final bytes = await _sourceReader(source);
+    if (bytes.isEmpty) {
+      throw StateError(
+        'El archivo está vacío (0 bytes). Guarda su contenido antes de incorporarlo.',
+      );
     }
-    final bytes = await source.readAsBytes();
     if (bytes.length > maxFileBytes) {
       throw StateError('El archivo supera 100 MB.');
     }
@@ -64,26 +71,42 @@ class ManagedDocumentStore {
     final relative = '${tenantSegment(tenantId)}/$hash.original';
     final target = await resolve(relative, tenantId, hash);
     await target.parent.create(recursive: true);
-    if (await target.exists()) {
-      if (sha256.convert(await target.readAsBytes()).toString() != hash) {
+    final staging = await target.parent.createTemp('.import-');
+    try {
+      final candidate = File(p.join(staging.path, 'original.pending'));
+      await candidate.writeAsBytes(bytes, flush: true);
+      if (await candidate.length() != bytes.length ||
+          sha256.convert(await candidate.readAsBytes()).toString() != hash) {
+        throw StateError('No se pudo comprobar la copia del original.');
+      }
+      final current = await _sourceReader(source);
+      if (current.length != bytes.length ||
+          sha256.convert(current).toString() != hash) {
         throw StateError(
-          'El archivo gestionado fue modificado. Revise su integridad.',
+          'El archivo cambió durante la incorporación. Guarda el archivo y vuelve a seleccionarlo.',
         );
       }
-    } else {
-      // Exclusive creation prevents silent replacement. A failed write stays detectable.
-      await target.create(exclusive: true);
-      await target.writeAsBytes(bytes, flush: true);
+      // No await between the existence check and rename: imports in this process
+      // cannot interleave publication. Only a fully written candidate is visible.
+      if (target.existsSync()) {
+        if (target.lengthSync() != bytes.length ||
+            sha256.convert(target.readAsBytesSync()).toString() != hash) {
+          throw StateError(
+            'El archivo gestionado fue modificado. Revise su integridad.',
+          );
+        }
+      } else {
+        candidate.renameSync(target.path);
+      }
+      return ManagedOriginal(
+        relative,
+        hash,
+        bytes.length,
+        p.basename(source.path),
+      );
+    } finally {
+      if (await staging.exists()) await staging.delete(recursive: true);
     }
-    if (sha256.convert(await target.readAsBytes()).toString() != hash) {
-      throw StateError('No se pudo comprobar la copia del original.');
-    }
-    return ManagedOriginal(
-      relative,
-      hash,
-      bytes.length,
-      p.basename(source.path),
-    );
   }
 
   Future<String> verify({
@@ -95,6 +118,9 @@ class ManagedDocumentStore {
     try {
       final file = await resolve(relative, tenantId, hash);
       if (!await file.exists()) return 'Archivo no encontrado';
+      if (size <= 0 || await file.length() == 0) {
+        return 'Archivo vacío / revisar';
+      }
       if (await file.length() != size ||
           sha256.convert(await file.readAsBytes()).toString() != hash) {
         return 'Archivo modificado / revisar';

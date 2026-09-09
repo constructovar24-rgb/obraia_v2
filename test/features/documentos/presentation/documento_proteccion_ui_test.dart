@@ -46,4 +46,38 @@ void main() {
       },
     );
   }
+  testWidgets(
+    'vacío anterior muestra advertencia y mantiene el original bloqueado',
+    (tester) async {
+      final document = Documento(
+        id: 'doc',
+        expedienteId: 'obra',
+        titulo: 'Ficticio vacío',
+        nombreArchivo: 'original.txt',
+        rutaArchivo: 'C:/ficticio/original.txt',
+        mimeType: 'text/plain',
+        tamanoBytes: 0,
+        fecha: DateTime(2026),
+        observaciones: null,
+        tipo: DocumentoTipo.otro,
+        rutaGestionada: 'gestionado',
+        sha256Original: 'hash',
+        incorporadoUtc: DateTime(2026),
+      );
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(home: EditarDocumentoScreen(documento: document)),
+        ),
+      );
+      expect(find.text('Archivo vacío / revisar'), findsOneWidget);
+      expect(find.text('Protegido por OBRA IA'), findsNothing);
+      final pathField = tester
+          .widgetList<TextField>(find.byType(TextField))
+          .singleWhere(
+            (field) => field.controller?.text == document.rutaArchivo,
+          );
+      expect(pathField.readOnly, isTrue);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

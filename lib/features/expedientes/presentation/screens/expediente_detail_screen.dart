@@ -662,7 +662,7 @@ class _DocumentosTab extends ConsumerWidget {
                           child: Text(
                             'Tipo: ${_formatearTipo(documento.tipo)}\n'
                             'Archivo: ${documento.nombreArchivo}\n'
-                            '${documento.protegido ? 'Protegido por OBRA IA' : 'Archivo externo'}\n'
+                            '${documento.estadoProteccion}\n'
                             'Fecha: ${_formatearFecha(documento.fecha)}',
                             style: textTheme.bodyMedium,
                           ),

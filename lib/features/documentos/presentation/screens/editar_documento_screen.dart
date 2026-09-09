@@ -183,9 +183,7 @@ class _EditarDocumentoScreenState extends ConsumerState<EditarDocumentoScreen> {
             child: ListView(
               children: [
                 AppSection(
-                  title: widget.documento.protegido
-                      ? 'Protegido por OBRA IA'
-                      : 'Archivo externo',
+                  title: widget.documento.estadoProteccion,
                   subtitle:
                       'Modifica la información del documento y guarda los cambios.',
                   child: Column(

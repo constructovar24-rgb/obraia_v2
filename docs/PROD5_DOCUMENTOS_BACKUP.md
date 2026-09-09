@@ -108,3 +108,25 @@ La alteración/pérdida de archivos gestionados, la reparación y el fallo a mit
 Verificación final: 439 pruebas superadas (26 nuevas de PROD-5: 9 de originales/repositorio, 13 de backup documental, 2 de UI, 1 de migración y 1 adicional de rollback); analyze sin incidencias; Windows debug compilado en copia aislada con 361 archivos relevantes idénticos; formato propio y git diff --check sin errores.
 
 Veredicto: GO para aceptación manual en Desarrollo, no autorización de uso como archivo único ni de publicación. Regresiones de presupuestos, facturas/PDF congelado, circuito proveedor, entornos, DB/migraciones y backups incluidas en la suite completa. Pruebas siempre en memoria o temporales; Producción y datos de desarrollo existentes intactos. No se ha hecho push.
+
+## Corrección de aceptación manual — originales vacíos (2026-09-09)
+
+Defecto confirmado en la implementación inicial: se aceptaba `readAsBytes()` vacío, se calculaba SHA-256 de cero bytes y se persistía tamaño 0. La verificación comparaba la copia con ese mismo tamaño/hash y devolvía «Integridad correcta». La prueba de rechazo de fuente vacía falla en el commit inicial; el caso A/B recreando la misma ruta, con persistencia y exportación de ambos, pasa ya en ese commit. No hay caché por nombre o ruta en este flujo ni evidencia para atribuir el incidente a OneDrive. No se puede reconstruir retrospectivamente si la fuente manual estaba vacía, aún sin guardar/sincronizar o cambió durante la lectura; no se han abierto ni reparado sus registros para investigar.
+
+Corrección: se rechazan originales de 0 bytes con un aviso. Al guardar se lee el tamaño declarado completo mediante un único handle, se rechazan EOF prematuro, cambios de longitud/metadatos y fuentes no disponibles; se cierra el handle siempre. Se escribe y valida una copia temporal en el mismo almacenamiento, se vuelve a abrir y leer la ruta para comparar sus bytes/hash y se publica por rename únicamente el candidato completo. La deduplicación sigue siendo por contenido y tenant, sin reutilización por nombre. Los temporales se eliminan en éxito y fallo; Drift solo recibe metadatos tras completar la incorporación. Si SQLite falla después, puede quedar una copia válida no referenciada, nunca un registro protegido con una copia parcial.
+
+Se captura el contenido guardado en disco al pulsar Guardar; no el texto aún no guardado en un editor. No se promete bloquear ediciones externas posteriores a la última comprobación ni coordinar varios procesos independientes. La publicación sin puntos de suspensión evita carreras entre incorporaciones en esta instancia de la aplicación.
+
+Los registros anteriores de tamaño cero se conservan sin modificar. Listado/ficha y comprobación muestran «Archivo vacío / revisar» y la exportación gestionada los rechaza. Su original permanece bloqueado en la edición, para no reescribir la evidencia de la aceptación manual. Los backups históricos siguen conservando sus bytes/metadatos; no se reparan ni eliminan automáticamente.
+
+Schema 36 sin cambios; sin migración ni regeneración. Verificación de la corrección: 10 pruebas nuevas (9 de incorporación/regresión y 1 de interfaz); 71 pruebas de documentos/backup/restore y 449 en la suite completa superadas. Analyze sin incidencias; formato propio verificado; git diff --check sin errores. Windows debug compilado en copia aislada con 362 archivos relevantes idénticos. No se han ejecutado migraciones sobre datos manuales. No se publica PROD-5.
+
+### Repetir únicamente esta parte de la aceptación
+
+1. Abrir la versión corregida y confirmar Desarrollo. No borrar ni editar los documentos de la prueba anterior.
+2. En una carpeta temporal nueva, guardar y cerrar `original.txt` con «Documento ficticio PROD-5». Incorporarlo con un título nuevo, comprobar tamaño positivo e integridad y exportarlo con otro nombre: debe conservar A.
+3. Renombrar esa fuente y crear un nuevo `original.txt` en exactamente la misma ruta con «Segundo documento ficticio PROD-5». Guardar/cerrar el editor; si está en OneDrive, esperar a que esté disponible localmente. Incorporarlo como otro documento nuevo: tamaño positivo, integridad correcta y exportación con B.
+4. Exportar de nuevo el primer documento: debe seguir devolviendo A. No sobrescribir las exportaciones anteriores; elegir nombres nuevos.
+5. Intentar incorporar un archivo ficticio vacío: debe aparecer un aviso y no crearse el documento. El registro vacío de la aceptación anterior debe mostrar «Archivo vacío / revisar», sin alterarlo ni eliminarlo.
+
+No hace falta repetir restauraciones ni emitir facturas para validar esta corrección. La aceptación global de PROD-5 continúa pendiente; sin push, PROD-6 ni Fase 5.
