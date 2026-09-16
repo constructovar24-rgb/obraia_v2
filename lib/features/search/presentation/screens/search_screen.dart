@@ -8,6 +8,7 @@ import '../../../facturas/presentation/screens/editar_factura_screen.dart';
 import '../../../presupuestos/presentation/screens/presupuesto_detail_screen.dart';
 import '../../data/search_repository.dart';
 import '../../domain/search_result.dart';
+import '../providers/search_providers.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
@@ -45,9 +46,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         _searchFocusNode.requestFocus();
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Búsqueda global'),
-        ),
+        appBar: AppBar(title: const Text('Búsqueda global')),
         body: Column(
           children: [
             Padding(
@@ -58,7 +57,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 autofocus: true,
                 textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
-                  labelText: 'Buscar clientes, expedientes, presupuestos y facturas',
+                  labelText:
+                      'Buscar clientes, expedientes, presupuestos y facturas',
                   prefixIcon: const Icon(Icons.search),
                   suffixIcon: normalizedQuery.isEmpty
                       ? null
@@ -98,7 +98,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                           );
                         }
 
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return const Center(
                             child: CircularProgressIndicator(),
                           );
@@ -113,7 +114,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                         return ListView.separated(
                           padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
                           itemCount: sections.length,
-                          separatorBuilder: (context, index) => const SizedBox(height: 12),
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 12),
                           itemBuilder: (context, index) {
                             final section = sections[index];
 
@@ -168,9 +170,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => PresupuestoDetailScreen(
-            presupuesto: presupuesto,
-          ),
+          builder: (_) => PresupuestoDetailScreen(presupuesto: presupuesto),
         ),
       );
       return;
@@ -180,11 +180,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => EditarFacturaScreen(
-          factura: factura,
-        ),
-      ),
+      MaterialPageRoute(builder: (_) => EditarFacturaScreen(factura: factura)),
     );
   }
 }
@@ -236,10 +232,7 @@ class _NoResults extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.search_off,
-              size: 64,
-            ),
+            const Icon(Icons.search_off, size: 64),
             const SizedBox(height: 12),
             Text(
               'No hay coincidencias para "$query"',
@@ -254,10 +247,7 @@ class _NoResults extends StatelessWidget {
 }
 
 class _SearchSectionCard extends StatelessWidget {
-  const _SearchSectionCard({
-    required this.section,
-    required this.onTapItem,
-  });
+  const _SearchSectionCard({required this.section, required this.onTapItem});
 
   final SearchResultsSection section;
   final ValueChanged<SearchResultItem> onTapItem;
@@ -278,13 +268,11 @@ class _SearchSectionCard extends StatelessWidget {
                   child: Text(
                     section.title,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
-                Chip(
-                  label: Text(section.items.length.toString()),
-                ),
+                Chip(label: Text(section.items.length.toString())),
               ],
             ),
             const SizedBox(height: 8),
@@ -292,9 +280,7 @@ class _SearchSectionCard extends StatelessWidget {
             ...section.items.map(
               (item) => ListTile(
                 contentPadding: EdgeInsets.zero,
-                leading: CircleAvatar(
-                  child: Icon(_iconForType(item.type)),
-                ),
+                leading: CircleAvatar(child: Icon(_iconForType(item.type))),
                 title: Text(item.title),
                 subtitle: Text(item.subtitle),
                 trailing: const Icon(Icons.chevron_right),

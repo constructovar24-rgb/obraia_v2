@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/backup_providers.dart';
 import '../../data/backup_restore_coordinator.dart';
+import '../widgets/backup_restore_confirmation.dart';
 
 class BackupScreen extends ConsumerWidget {
   const BackupScreen({super.key});
@@ -56,24 +57,9 @@ class BackupScreen extends ConsumerWidget {
         return;
       }
       if (!context.mounted) return;
-      final ok = await showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Restaurar copia de seguridad'),
-          content: Text(
-            '$coverage\n\nLos datos actuales serán sustituidos por los de la copia. Antes, OBRA IA creará una copia de recuperación automática.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancelar'),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('Restaurar copia'),
-            ),
-          ],
-        ),
+      final ok = await showBackupRestoreConfirmation(
+        context,
+        coverage: coverage,
       );
       if (ok != true) {
         return;

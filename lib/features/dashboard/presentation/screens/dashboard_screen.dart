@@ -1,3 +1,4 @@
+import 'package:obraia_v2/features/facturas/presentation/providers/factura_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -19,15 +20,14 @@ import '../../../expedientes/data/expediente_repository.dart';
 import '../../../expedientes/domain/expediente.dart' as expediente_domain;
 import '../../../expedientes/presentation/screens/expedientes_screen.dart';
 import '../../../expedientes/presentation/screens/nuevo_expediente_screen.dart';
-import '../../../facturas/data/factura_repository.dart';
 import '../../../facturas/domain/estado_factura.dart';
 import '../../../facturas/domain/factura.dart' as factura_domain;
 import '../../../facturas/presentation/screens/facturas_screen.dart';
 import '../../../facturas/presentation/screens/nueva_factura_screen.dart';
 import '../../../presupuestos/presentation/screens/nuevo_presupuesto_screen.dart';
 import '../../../presupuestos/presentation/screens/presupuestos_screen.dart';
-import '../../data/dashboard_repository.dart';
 import '../../domain/dashboard_resumen.dart';
+import '../providers/dashboard_providers.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key, this.embedded = false, this.summaryStream});

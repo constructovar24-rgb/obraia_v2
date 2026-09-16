@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:obraia_v2/database/database_provider.dart';
 import 'package:obraia_v2/features/clientes/data/cliente_repository.dart';
 import 'package:obraia_v2/features/clientes/domain/cliente.dart';
 import 'package:obraia_v2/features/expedientes/data/expediente_repository.dart';
@@ -11,19 +9,8 @@ import 'package:obraia_v2/features/facturas/domain/estado_factura.dart';
 import 'package:obraia_v2/features/facturas/domain/factura.dart';
 import 'package:obraia_v2/features/presupuestos/data/presupuesto_repository.dart';
 import 'package:obraia_v2/features/presupuestos/domain/presupuesto.dart';
-import 'package:obraia_v2/features/presupuestos/presentation/providers/presupuesto_providers.dart';
 
 import '../domain/search_result.dart';
-
-final searchRepositoryProvider = Provider<SearchRepository>((ref) {
-  ref.watch(activeTenantIdProvider);
-  return SearchRepository(
-    clienteRepository: ref.watch(clienteRepositoryProvider),
-    expedienteRepository: ref.watch(expedienteRepositoryProvider),
-    presupuestoRepository: ref.watch(presupuestoRepositoryProvider),
-    facturaRepository: ref.watch(facturaRepositoryProvider),
-  );
-});
 
 class SearchRepository {
   SearchRepository({

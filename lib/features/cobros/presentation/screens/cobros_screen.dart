@@ -1,3 +1,4 @@
+import 'package:obraia_v2/features/facturas/presentation/providers/factura_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,7 +13,6 @@ import '../../../../core/widgets/app_page_header.dart';
 import '../../../../core/widgets/app_primary_button.dart';
 import '../../../../core/widgets/money_text.dart';
 import '../../../../core/widgets/status_chip.dart';
-import '../../../facturas/data/factura_repository.dart';
 import '../../../facturas/domain/estado_factura.dart';
 import '../../../facturas/presentation/screens/editar_factura_screen.dart';
 import '../../data/cobro_repository.dart';

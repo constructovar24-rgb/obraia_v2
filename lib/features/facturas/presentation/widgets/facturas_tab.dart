@@ -1,3 +1,4 @@
+import 'package:obraia_v2/features/facturas/presentation/providers/factura_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -7,10 +8,7 @@ import '../../domain/factura.dart' as factura_domain;
 import '../screens/editar_factura_screen.dart';
 
 class FacturasTab extends ConsumerStatefulWidget {
-  const FacturasTab({
-    super.key,
-    required this.expedienteId,
-  });
+  const FacturasTab({super.key, required this.expedienteId});
 
   final String expedienteId;
 
@@ -58,9 +56,7 @@ class _FacturasTabState extends ConsumerState<FacturasTab> {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const Center(child: CircularProgressIndicator());
         }
 
         final facturas = snapshot.data ?? const [];
@@ -97,9 +93,7 @@ class _FacturasTabState extends ConsumerState<FacturasTab> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => EditarFacturaScreen(
-                          factura: factura,
-                        ),
+                        builder: (_) => EditarFacturaScreen(factura: factura),
                       ),
                     );
                   },

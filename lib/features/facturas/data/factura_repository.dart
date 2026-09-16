@@ -3,9 +3,7 @@ import 'dart:async';
 
 import 'package:crypto/crypto.dart';
 import 'package:drift/drift.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:obraia_v2/database/app_database.dart';
-import 'package:obraia_v2/database/database_provider.dart';
 import 'package:obraia_v2/features/clientes/domain/cliente.dart'
     as cliente_domain;
 import 'package:obraia_v2/features/cobros/domain/cobro.dart' as cobro_domain;
@@ -22,12 +20,6 @@ import 'package:obraia_v2/features/presupuestos/domain/presupuesto.dart'
     as presupuesto_domain;
 import 'package:obraia_v2/features/timeline/data/timeline_repository.dart';
 import 'package:uuid/uuid.dart';
-
-final facturaRepositoryProvider = Provider<FacturaRepository>((ref) {
-  ref.watch(activeTenantIdProvider);
-  final database = ref.watch(databaseProvider);
-  return FacturaRepository(database);
-});
 
 class PresupuestoYaConvertidoException implements Exception {
   const PresupuestoYaConvertidoException({
@@ -675,10 +667,9 @@ class FacturaRepository {
           'Configura el nombre y el CIF de la empresa antes de emitir.',
         );
       }
-      if ('${cliente!.nombre} ${cliente.apellidos}'.trim().isEmpty ||
-          cliente.nif.trim().isEmpty) {
+      if (cliente!.nombreDocumental.isEmpty || cliente.nif.trim().isEmpty) {
         throw const FacturaEmisionException(
-          'El cliente necesita nombre y NIF antes de emitir.',
+          'El cliente necesita nombre o razón social y NIF antes de emitir.',
         );
       }
       final presupuesto = factura.presupuestoOrigenId == null
@@ -702,9 +693,7 @@ class FacturaRepository {
           serie: Value(numeracion.serie),
           estado: Value(estadoFacturaToString(estado)),
           fechaEmision: Value(fechaEmision),
-          clienteNombreHistorico: Value(
-            '${cliente.nombre} ${cliente.apellidos}'.trim(),
-          ),
+          clienteNombreHistorico: Value(cliente.nombreDocumental),
           clienteNifHistorico: Value(cliente.nif),
           clienteDireccionHistorica: Value(_direccionCliente(cliente)),
           clienteTelefonoHistorico: Value(cliente.telefono),
@@ -726,12 +715,17 @@ class FacturaRepository {
         ),
       );
       final emitida = (await database.facturasDao.obtenerPorId(facturaId))!;
-      final pdf = await FacturaPdfService().generarPdf(
-        factura: emitida,
-        lineas: lineas,
-        empresaConfiguracion: empresa,
-        cliente: cliente,
-      );
+      late final Uint8List pdf;
+      try {
+        pdf = await FacturaPdfService().generarPdf(
+          factura: emitida,
+          lineas: lineas,
+          empresaConfiguracion: empresa,
+          cliente: cliente,
+        );
+      } on FacturaPdfException catch (error) {
+        throw FacturaEmisionException(error.mensaje);
+      }
       await database.facturaDocumentosEmitidosDao.insertar(
         facturaId: facturaId,
         pdf: pdf,

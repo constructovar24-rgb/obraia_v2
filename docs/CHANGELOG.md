@@ -2,6 +2,19 @@
 
 ## No publicado
 
+### PROD-6 — Preparación del piloto controlado — 2026-09-15
+
+- Aceptación manual superada en Desarrollo el 2026-09-16: factura recibida/coste/pago, factura emitida/cobro, PDF histórico con logotipo configurado, bloqueos de duplicados y excesos, integridad documental, restore de datos/documentos/numeración y persistencia tras reapertura verificados. Backup final `obraia-1789585288035.obraia-backup` copiado también a OneDrive; aplicación DEV cerrada. GO exclusivo de PROD-6 en Desarrollo, sin autorización de Producción, despliegue, commit ni push.
+- Corrección de aceptación: FAC/RECT usan el logotipo configurado; sin ruta mantienen el asset predeterminado y una ruta ilegible o imagen inválida bloquea la emisión sin número ni PDF congelado. Verificados 35 tests relacionados, 461 totales, analyze limpio y Windows debug aislado en `build/prod6-logo-verification-20260916`; schema 36, sin Producción ni push.
+- Auditoría de 28 puntos con clasificación de bloqueantes, controles operativos y mejoras futuras; manual de aceptación ficticia DEV y checklist real posterior separados.
+- Nombre documental común: razón social cuando existe, nombre/apellidos en otro caso. Nuevas facturas y PDF borrador coherentes con presupuesto; FAC/RECT históricas y PDF conservados no se reescriben. Provider de facturas ubicado en presentación.
+- Composición de Dashboard y Búsqueda trasladada a `presentation/providers`; sus repositorios de `data` quedan libres de dependencias hacia presentación, sin cambiar comportamiento.
+- Restore exige reconocer que recupera contadores antiguos y puede omitir operaciones posteriores; sin ajuste de secuencias ni falsa certificación de continuidad.
+- Sin health check nuevo, importaciones, datos operativos reales, configuración PROD, migración, push ni Fase 5. Schema 36.
+- 7 pruebas nuevas y 456 totales superadas; analyze limpio, 23 Dart formateados, Windows debug aislado verificado con 368 archivos idénticos; analysis_options.yaml intacto.
+- Aceptación manual de Desarrollo completada; Producción, piloto con datos reales, despliegue y publicación siguen requiriendo autorización separada. Detalle en PROD6_PILOTO_REAL.md y PROD6_INFORME.md.
+
+
 ### Cierre técnico final de PROD-5 — 2026-09-10
 
 - Aceptación manual de la corrección confirmada por el usuario en Desarrollo: 0 bytes rechazados, histórico advertido, original válido de 62 bytes e integridad/exportación correctas; A/B independientes reutilizando la ruta.

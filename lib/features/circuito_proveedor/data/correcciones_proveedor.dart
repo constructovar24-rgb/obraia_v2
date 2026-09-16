@@ -440,7 +440,9 @@ extension CorreccionesProveedor on CircuitoProveedorRepository {
     if (c.estadoDocumento == 'registrada') await _revertirCostes(id, motivo);
     await _auditar(
       id,
-      'Cambio de imputación',
+      c.estadoDocumento == 'borrador'
+          ? 'Asignación inicial'
+          : 'Cambio de imputación',
       motivo,
       detalle: {
         'anterior': old.map((a) => a.toJson()).toList(),

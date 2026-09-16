@@ -222,6 +222,43 @@ void main() {
       expect(await coste('b'), 0);
     },
   );
+  test(
+    'borrador sin obra se asigna antes de consolidar sin duplicar coste',
+    () async {
+      await db.expedientesDao.insertarExpediente(
+        ExpedientesCompanion.insert(
+          id: 'p6-01',
+          codigo: 'P6-01',
+          nombre: 'Obra ficticia P6-01',
+        ),
+      );
+      final id = await r.crearFactura(
+        input(numero: 'F-P6-01', obra: null, base: 40000, iva: 8400),
+      );
+
+      await r.cambiarImputacion(
+        id,
+        asignaciones: [
+          const AsignacionImporteInput(
+            expedienteId: 'p6-01',
+            importeCentimos: 40000,
+          ),
+        ],
+        destino: 'obra',
+        motivo: 'Obra identificada antes de consolidar',
+      );
+      await r.consolidarFactura(id);
+
+      final hechos = await db.hechosCosteDao.obtenerPorExpediente('p6-01');
+      expect(await coste('p6-01'), 40000);
+      expect(hechos, hasLength(1));
+      expect(hechos.single.importeCosteCentimos, 40000);
+      expect(
+        (await db.circuitoProveedorDao.eventos(id)).map((e) => e.accion),
+        contains('Asignación inicial'),
+      );
+    },
+  );
   test('cambio desde compra reconciliada no duplica costes', () async {
     final id = await registrada();
     await r.cambiarImputacion(

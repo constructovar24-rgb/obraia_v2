@@ -448,12 +448,17 @@ class RectificativaRepository {
           'Falta la configuración de empresa para generar el PDF.',
         );
       }
-      final pdf = await FacturaPdfService().generarPdf(
-        factura: emitida,
-        facturaOriginal: original,
-        lineas: lineas,
-        empresaConfiguracion: empresa,
-      );
+      late final Uint8List pdf;
+      try {
+        pdf = await FacturaPdfService().generarPdf(
+          factura: emitida,
+          facturaOriginal: original,
+          lineas: lineas,
+          empresaConfiguracion: empresa,
+        );
+      } on FacturaPdfException catch (error) {
+        throw RectificativaException(error.mensaje);
+      }
       await database.facturaDocumentosEmitidosDao.insertar(
         facturaId: facturaId,
         pdf: pdf,

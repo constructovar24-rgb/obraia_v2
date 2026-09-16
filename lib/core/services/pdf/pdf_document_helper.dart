@@ -92,9 +92,14 @@ class PdfDocumentHelper {
   }
 
   static Future<pw.MemoryImage?> cargarLogo() async {
+    final bytes = await cargarLogoBytes();
+    return bytes == null ? null : pw.MemoryImage(bytes);
+  }
+
+  static Future<Uint8List?> cargarLogoBytes() async {
     try {
       final bytes = await rootBundle.load('assets/images/logo_empresa.png');
-      return pw.MemoryImage(bytes.buffer.asUint8List());
+      return bytes.buffer.asUint8List();
     } catch (e) {
       debugPrint('No se encontro el logotipo corporativo: $e');
       return null;

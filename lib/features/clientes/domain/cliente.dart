@@ -17,6 +17,14 @@ class Cliente {
   final DateTime fechaCreacion;
   final DateTime fechaModificacion;
 
+  /// Identidad documental: razón social, o nombre completo de la persona.
+  String get nombreDocumental => empresa.trim().isNotEmpty
+      ? empresa.trim()
+      : [
+          nombre.trim(),
+          apellidos.trim(),
+        ].where((parte) => parte.isNotEmpty).join(' ');
+
   const Cliente({
     required this.id,
     required this.nombre,

@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:ui' as ui;
+
 import 'package:flutter/foundation.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -19,6 +22,15 @@ String facturaIvaEtiqueta(double ivaPorcentaje) {
 String facturaTituloPdf(Factura factura) =>
     factura.esRectificativa ? 'FACTURA RECTIFICATIVA' : 'FACTURA';
 
+class FacturaPdfException implements Exception {
+  const FacturaPdfException(this.mensaje);
+
+  final String mensaje;
+
+  @override
+  String toString() => mensaje;
+}
+
 class FacturaPdfService {
   static const double _titleFontSize = 20;
   static const double _generalFontSize = 10;
@@ -34,7 +46,8 @@ class FacturaPdfService {
     cliente_domain.Cliente? cliente,
   }) async {
     final pdf = pw.Document();
-    final logo = await PdfDocumentHelper.cargarLogo();
+    final logoBytes = await resolverLogoBytes(empresaConfiguracion);
+    final logo = logoBytes == null ? null : pw.MemoryImage(logoBytes);
 
     final subtotal = factura.subtotal;
     final ivaImporte = factura.iva;
@@ -81,6 +94,33 @@ class FacturaPdfService {
     );
 
     return pdf.save();
+  }
+
+  @visibleForTesting
+  Future<Uint8List?> resolverLogoBytes(
+    empresa_domain.EmpresaConfiguracion empresaConfiguracion,
+  ) async {
+    final ruta = empresaConfiguracion.logoPath?.trim() ?? '';
+    if (ruta.isEmpty) {
+      return PdfDocumentHelper.cargarLogoBytes();
+    }
+
+    try {
+      final bytes = await File(ruta).readAsBytes();
+      if (bytes.isEmpty) {
+        throw const FormatException('El archivo está vacío.');
+      }
+      final codec = await ui.instantiateImageCodec(bytes);
+      final frame = await codec.getNextFrame();
+      frame.image.dispose();
+      codec.dispose();
+      return bytes;
+    } catch (_) {
+      throw FacturaPdfException(
+        'No se puede usar el logotipo configurado en "$ruta". '
+        'Comprueba que el archivo exista, pueda leerse y sea una imagen PNG o JPEG válida.',
+      );
+    }
   }
 
   pw.Widget _cabecera(
@@ -193,7 +233,7 @@ class FacturaPdfService {
         ? (factura.clienteNombre.trim().isEmpty
               ? 'Cliente no especificado'
               : factura.clienteNombre.trim())
-        : '${cliente.nombre} ${cliente.apellidos}'.trim();
+        : cliente.nombreDocumental;
 
     final direccion = historica
         ? factura.clienteDireccionHistorica

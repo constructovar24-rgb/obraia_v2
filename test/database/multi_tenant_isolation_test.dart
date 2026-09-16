@@ -8,8 +8,8 @@ import 'package:obraia_v2/database/database_lifecycle_controller.dart';
 import 'package:obraia_v2/database/database_provider.dart';
 import 'package:obraia_v2/features/clientes/presentation/providers/cliente_providers.dart';
 import 'package:obraia_v2/features/configuracion/data/empresa_configuracion_repository.dart';
-import 'package:obraia_v2/features/dashboard/data/dashboard_repository.dart';
-import 'package:obraia_v2/features/search/data/search_repository.dart';
+import 'package:obraia_v2/features/dashboard/presentation/providers/dashboard_providers.dart';
+import 'package:obraia_v2/features/search/presentation/providers/search_providers.dart';
 
 const tenantA = '00000000-0000-4000-8000-000000000023';
 const tenantB = '00000000-0000-4000-8000-000000000024';

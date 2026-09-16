@@ -45,12 +45,7 @@ class PresupuestoDocumentalRepository {
         'Vincula un cliente válido al expediente antes de generar el documento.',
       );
     }
-    final nombreCliente = cliente.empresa.trim().isNotEmpty
-        ? cliente.empresa.trim()
-        : [
-            cliente.nombre.trim(),
-            cliente.apellidos.trim(),
-          ].where((v) => v.isNotEmpty).join(' ');
+    final nombreCliente = cliente.nombreDocumental;
     if (nombreCliente.isEmpty) {
       throw const EstadoPresupuestoException(
         'El cliente necesita nombre o razón social.',

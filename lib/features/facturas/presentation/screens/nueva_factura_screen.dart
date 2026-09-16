@@ -1,10 +1,10 @@
+import 'package:obraia_v2/features/facturas/presentation/providers/factura_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/shortcuts/app_shortcuts.dart';
 import '../../../clientes/domain/cliente.dart';
 import '../../../clientes/presentation/providers/cliente_providers.dart';
-import '../../data/factura_repository.dart';
 import '../../domain/estado_factura.dart';
 
 class NuevaFacturaScreen extends ConsumerStatefulWidget {
