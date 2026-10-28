@@ -574,12 +574,18 @@ class PresupuestoDetailScreen extends ConsumerWidget {
                                   100,
                             );
                             final total = centimosAMoneda(subtotal + iva);
+                            final clienteNombre = expediente.clienteNombre
+                                ?.trim();
+                            final cliente =
+                                clienteNombre == null || clienteNombre.isEmpty
+                                ? 'Sin cliente asignado'
+                                : clienteNombre;
                             final confirmarEliminacion = await ConfirmDialog.show(
                               context,
                               title: 'Eliminar presupuesto',
                               message:
                                   'Referencia: ${presupuesto.codigo}\n'
-                                  'Cliente: ${expediente.clienteNombre}\n'
+                                  'Cliente: $cliente\n'
                                   'Obra: ${expediente.codigo} — ${expediente.nombre}\n'
                                   'Total con IVA: ${_formatearMoneda(total)}\n\n'
                                   'Esta acción no se puede deshacer. ¿Quieres eliminar este presupuesto?',

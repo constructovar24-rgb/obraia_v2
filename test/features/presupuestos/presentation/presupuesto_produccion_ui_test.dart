@@ -13,13 +13,28 @@ import 'package:obraia_v2/features/presupuestos/presentation/screens/presupuesto
 import '../data/prod2_test_support.dart';
 
 void main() {
-  for (final state in ['borrador', 'cargando obra', 'aceptado', 'legacy']) {
+  for (final state in [
+    'borrador',
+    'sin cliente',
+    'cliente en blanco',
+    'cargando obra',
+    'aceptado',
+    'legacy',
+  ]) {
     group(state, () {
       late AppDatabase db;
       late domain.Presupuesto presupuesto;
       setUp(() async {
         db = AppDatabase.forTesting(NativeDatabase.memory());
         final id = await crearPropuestaPrueba(db);
+        if (state == 'sin cliente') {
+          await (db.update(db.expedientes)..where((t) => t.id.equals('obra')))
+              .write(const ExpedientesCompanion(clienteId: Value(null)));
+        }
+        if (state == 'cliente en blanco') {
+          await (db.update(db.clientes)..where((t) => t.id.equals('cliente')))
+              .write(const ClientesCompanion(nombre: Value('   ')));
+        }
         final repo = PresupuestoRepository(db);
         if (state == 'aceptado') await repo.aceptarPresupuesto(id);
         if (state == 'legacy') {
@@ -51,7 +66,9 @@ void main() {
         for (var i = 0; i < 30; i++) {
           await tester.pump(const Duration(milliseconds: 30));
         }
-        if (state == 'borrador') {
+        if (state == 'borrador' ||
+            state == 'sin cliente' ||
+            state == 'cliente en blanco') {
           expect(find.text('Añadir línea'), findsOneWidget);
           expect(find.text('Eliminar presupuesto'), findsOneWidget);
           expect(find.text('Aceptar presupuesto'), findsOneWidget);
@@ -68,7 +85,14 @@ void main() {
           expect(mensaje, findsOneWidget);
           final texto = tester.widget<Text>(mensaje).data!;
           expect(texto, contains('Referencia: ${presupuesto.codigo}'));
-          expect(texto, contains('Cliente: CLIENTE DEMO'));
+          expect(
+            texto,
+            contains(
+              state == 'borrador'
+                  ? 'Cliente: CLIENTE DEMO\n'
+                  : 'Cliente: Sin cliente asignado\n',
+            ),
+          );
           expect(texto, contains('Obra: EXP — Obra ficticia'));
           // 2,5 × 10,25 + 3 × 20 = 85,63; IVA 21% = 17,98.
           expect(texto, contains('Total con IVA: 103,61 €'));
