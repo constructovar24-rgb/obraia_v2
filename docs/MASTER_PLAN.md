@@ -1,5 +1,7 @@
 # Plan maestro de OBRA IA
 
+**Aceptación manual cerrada en Desarrollo (2026-10-28):** el usuario confirma la mejora de eliminación en Windows Debug del commit `9d80d8058695c136fa175acc707571c16da8a5e5`: diálogo completo, «Sin cliente asignado» cuando corresponde, Cancelar conserva el registro y Confirmar elimina únicamente el borrador ficticio `PRUEBA-PROD5-P02`. Los dos presupuestos aceptados permanecen intactos y la aplicación queda cerrada. Resuelta la aceptación pendiente de la corrección siguiente; sin avance de fase ni autorización de uso en Producción. Cierre solo documental, sin modificar código o `analysis_options.yaml`, sin acceso a Producción, commit ni push.
+
 **Corrección puntual (2026-10-28):** confirmación de eliminación con texto «Sin cliente asignado» ante nombre ausente o en blanco, manteniendo el nombre real. Seis pruebas de interfaz en memoria superadas, con cancelación sin eliminar. Sin cambios de reglas, esquema o fase; pendiente repetir aceptación manual con compilación actualizada. Sin Producción, commit ni push.
 
 **Mejora puntual cerrada (2026-10-28):** confirmación de eliminación de presupuestos con referencia, cliente, obra y total con IVA redondeado en euros, aviso irreversible y apertura bloqueada mientras carga la obra. Cancelación y reglas de eliminación conservadas. Verificado con cuatro pruebas de interfaz en memoria, formato propio, análisis sin incidencias y revisión de diff. Sin cambio de esquema ni avance de fase; sin aplicación, bases existentes, Producción, commit, push o despliegue.
