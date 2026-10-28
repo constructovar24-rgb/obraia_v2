@@ -551,47 +551,70 @@ class PresupuestoDetailScreen extends ConsumerWidget {
           if (!estadoPresupuestoEsAceptado(presupuesto.estado))
             Consumer(
               builder: (context, ref, _) {
+                final expedienteAsync = ref.watch(
+                  expedienteProvider(presupuesto.expedienteId),
+                );
+                final expediente = expedienteAsync.value;
+                final puedeConfirmar =
+                    !expedienteAsync.isLoading &&
+                    !expedienteAsync.hasError &&
+                    expediente != null;
                 return SizedBox(
                   width: double.infinity,
                   child: OutlinedButton.icon(
-                    onPressed: () async {
-                      final confirmarEliminacion = await ConfirmDialog.show(
-                        context,
-                        title: 'Eliminar presupuesto',
-                        message:
-                            '¿Seguro que quieres eliminar este presupuesto?',
-                        confirmLabel: 'Eliminar',
-                        cancelLabel: 'Cancelar',
-                      );
+                    onPressed: !puedeConfirmar
+                        ? null
+                        : () async {
+                            final subtotal = monedaACentimos(
+                              presupuesto.importeTotal,
+                            );
+                            final iva = monedaACentimos(
+                              centimosAMoneda(subtotal) *
+                                  presupuesto.ivaPorcentaje /
+                                  100,
+                            );
+                            final total = centimosAMoneda(subtotal + iva);
+                            final confirmarEliminacion = await ConfirmDialog.show(
+                              context,
+                              title: 'Eliminar presupuesto',
+                              message:
+                                  'Referencia: ${presupuesto.codigo}\n'
+                                  'Cliente: ${expediente.clienteNombre}\n'
+                                  'Obra: ${expediente.codigo} — ${expediente.nombre}\n'
+                                  'Total con IVA: ${_formatearMoneda(total)}\n\n'
+                                  'Esta acción no se puede deshacer. ¿Quieres eliminar este presupuesto?',
+                              confirmLabel: 'Eliminar',
+                              cancelLabel: 'Cancelar',
+                            );
 
-                      if (!confirmarEliminacion || !context.mounted) {
-                        return;
-                      }
+                            if (!confirmarEliminacion || !context.mounted) {
+                              return;
+                            }
 
-                      final presupuestoRepository = ref.read(
-                        presupuestoRepositoryProvider,
-                      );
+                            final presupuestoRepository = ref.read(
+                              presupuestoRepositoryProvider,
+                            );
 
-                      final eliminado = await presupuestoRepository
-                          .eliminarSiNoFacturado(presupuesto.id);
+                            final eliminado = await presupuestoRepository
+                                .eliminarSiNoFacturado(presupuesto.id);
 
-                      if (!context.mounted) {
-                        return;
-                      }
+                            if (!context.mounted) {
+                              return;
+                            }
 
-                      if (!eliminado) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'No se puede eliminar: el presupuesto ya ha sido facturado.',
-                            ),
-                          ),
-                        );
-                        return;
-                      }
+                            if (!eliminado) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'No se puede eliminar: el presupuesto ya ha sido facturado.',
+                                  ),
+                                ),
+                              );
+                              return;
+                            }
 
-                      Navigator.of(context).pop();
-                    },
+                            Navigator.of(context).pop();
+                          },
                     icon: const Icon(Icons.delete_outline),
                     label: const Text('Eliminar presupuesto'),
                   ),

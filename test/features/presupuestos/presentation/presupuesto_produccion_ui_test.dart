@@ -7,12 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:obraia_v2/database/app_database.dart';
 import 'package:obraia_v2/database/database_provider.dart';
+import 'package:obraia_v2/features/expedientes/data/expediente_repository.dart';
 import 'package:obraia_v2/features/presupuestos/data/presupuesto_repository.dart';
 import 'package:obraia_v2/features/presupuestos/presentation/screens/presupuesto_detail_screen.dart';
 import '../data/prod2_test_support.dart';
 
 void main() {
-  for (final state in ['borrador', 'aceptado', 'legacy']) {
+  for (final state in ['borrador', 'cargando obra', 'aceptado', 'legacy']) {
     group(state, () {
       late AppDatabase db;
       late domain.Presupuesto presupuesto;
@@ -35,7 +36,13 @@ void main() {
         addTearDown(tester.view.resetDevicePixelRatio);
         await tester.pumpWidget(
           ProviderScope(
-            overrides: [databaseProvider.overrideWithValue(db)],
+            overrides: [
+              databaseProvider.overrideWithValue(db),
+              if (state == 'cargando obra')
+                expedienteProvider(
+                  presupuesto.expedienteId,
+                ).overrideWith((ref) => const Stream.empty()),
+            ],
             child: MaterialApp(
               home: PresupuestoDetailScreen(presupuesto: presupuesto),
             ),
@@ -49,6 +56,42 @@ void main() {
           expect(find.text('Eliminar presupuesto'), findsOneWidget);
           expect(find.text('Aceptar presupuesto'), findsOneWidget);
           expect(find.text('Ver PDF borrador'), findsOneWidget);
+          await tester.ensureVisible(find.text('Eliminar presupuesto'));
+          await tester.tap(find.text('Eliminar presupuesto'));
+          await tester.pumpAndSettle();
+          final dialogo = find.byType(AlertDialog);
+          expect(dialogo, findsOneWidget);
+          final mensaje = find.descendant(
+            of: dialogo,
+            matching: find.textContaining('Referencia:'),
+          );
+          expect(mensaje, findsOneWidget);
+          final texto = tester.widget<Text>(mensaje).data!;
+          expect(texto, contains('Referencia: ${presupuesto.codigo}'));
+          expect(texto, contains('Cliente: CLIENTE DEMO'));
+          expect(texto, contains('Obra: EXP — Obra ficticia'));
+          // 2,5 × 10,25 + 3 × 20 = 85,63; IVA 21% = 17,98.
+          expect(texto, contains('Total con IVA: 103,61 €'));
+          expect(texto, contains('Esta acción no se puede deshacer.'));
+          await tester.tap(find.text('Cancelar'));
+          await tester.pumpAndSettle();
+          expect(dialogo, findsNothing);
+          final conservado = await tester.runAsync(
+            () => db.presupuestosDao.obtenerPorId(presupuesto.id),
+          );
+          expect(conservado, isNotNull);
+          expect(conservado!.eliminado, isFalse);
+          expect(find.text('Eliminar presupuesto'), findsOneWidget);
+        } else if (state == 'cargando obra') {
+          final eliminar = find.widgetWithText(
+            OutlinedButton,
+            'Eliminar presupuesto',
+          );
+          expect(tester.widget<OutlinedButton>(eliminar).onPressed, isNull);
+          await tester.ensureVisible(eliminar);
+          await tester.tap(eliminar);
+          await tester.pump();
+          expect(find.byType(AlertDialog), findsNothing);
         } else {
           expect(find.text('Añadir línea'), findsNothing);
           expect(find.text('Eliminar presupuesto'), findsNothing);
